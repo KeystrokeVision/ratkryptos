@@ -339,16 +339,52 @@ public class ROMCompatibility {
     // ==================== GENÉRICO ====================
     
     private boolean openGenericAutoStart() {
+        // [KRYPTOS-PATCH BTMOB] lista COMPLETA de atividades de autostart conhecidas
         try {
-            // Abre configurações do app diretamente
+            Intent bg = new Intent("com.android.settings.action.BACKGROUND_OPTIMIZE");
+            bg.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(bg);
+            Log.d(TAG, "Abrindo BACKGROUND_OPTIMIZE");
+            return true;
+        } catch (Throwable ignored) {}
+        Intent[] intents = {
+            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.autostart.AutoStartActivity")),
+            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.powersaver.PowerSaverSettings")),
+            new Intent().setComponent(new ComponentName("com.oneplus.security", "com.oneplus.security.startupapp.StartupAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.oneplus.security", "com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity")),
+            new Intent().setComponent(new ComponentName("com.oplus.battery", "com.oplus.powermanager.fuelgaue.PowerControlActivity")),
+            new Intent().setComponent(new ComponentName("com.oplus.securitypermission", "com.oplus.securitypermission.startup.StartupAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.coloros.powermanager.fuelgaue", "com.coloros.powermanager.fuelgaue.PowerUsageModelActivity")),
+            new Intent().setComponent(new ComponentName("com.evenwell.powersaving.g3", "com.evenwell.powersaving.g3.exception.PowerSaverExceptionActivity")),
+            new Intent().setComponent(new ComponentName("com.yulong.android.coolsafe", "com.yulong.android.coolsafe.ui.activity.AutoStartActivity")),
+            new Intent().setComponent(new ComponentName("com.iqoo.powersaving", "com.iqoo.powersaving.PowerSavingManagerActivity")),
+            new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.BgStartUpManager")),
+            new Intent().setComponent(new ComponentName("com.vivo.abe", "com.vivo.applicationbehaviorengine.ui.ExcessivePowerManager")),
+            new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.PurviewTabActivity")),
+            new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupAwakedAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.bootstart.BootStartActivity")),
+            new Intent().setComponent(new ComponentName("com.samsung.android.sm.battery.ui.usage", "com.samsung.android.sm.battery.ui.usage.CheckableAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.samsung.android.sm_cn", "com.samsung.android.sm.ui.battery.BatteryActivity")),
+            new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartDetailManagementActivity")),
+            new Intent().setComponent(new ComponentName("com.meizu.safe", "com.meizu.safe.permission.SmartBGActivity"))
+        };
+        for (Intent it : intents) {
+            try {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(it);
+                Log.d(TAG, "Autostart generico: " + it.getComponent());
+                return true;
+            } catch (Throwable ignored) {}
+        }
+        try {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.setData(Uri.parse("package:" + context.getPackageName()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-            Log.d(TAG, "📱 Abrindo configurações genéricas do app");
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "❌ Erro: " + e.getMessage());
+            Log.e(TAG, "Erro: " + e.getMessage());
             return false;
         }
     }
