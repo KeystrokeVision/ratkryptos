@@ -69,9 +69,8 @@ while True:
         if not is_server_healthy():
             print("[WATCHDOG] Servidor na porta 7771 nao respondeu! Executando recuperacao...")
             
-            # Matar processos python anteriores (exceto o próprio watchdog)
-            cur_pid = os.getpid()
-            ps_cmd = f"Get-Process -Name 'python' -ErrorAction SilentlyContinue | Where-Object {{$_.Id -ne {cur_pid}}} | ForEach-Object {{ Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue }}"
+            # Matar SOLO el proceso que escucha en 7771 (no matar todos los python)
+            ps_cmd = "Get-NetTCPConnection -LocalPort 7771 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }"
             subprocess.run(["powershell", "-Command", ps_cmd], cwd=SERVER_DIR)
             time.sleep(2)
 

@@ -32,3 +32,9 @@
 - UNA sola IA escribe (agente primario). Revisor e investigador solo leen.
 - Un cambio = un commit. Si se rompe, git para atras.
 - Tareas paralelas: git worktree, una sesion por carpeta.
+
+## Shell (IMPORTANTE)
+- El shell es PowerShell 5.1: NO usar && , usar ; para encadenar comandos.
+- Verificar compilacion del APK solo en el VPS (aca no hay SDK ni venv).
+- Antes de escribir un archivo, mostrar el diff.
+- Un cambio por vez.

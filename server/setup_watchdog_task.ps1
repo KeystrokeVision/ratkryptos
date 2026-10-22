@@ -1,6 +1,6 @@
 # Configura a Tarefa Agendada no Windows para garantir Zero Downtime do Servidor Gangstar
 $TaskName = "GangstarServerWatchdog"
-$ServerDir = "C:\Users\Administrador\Downloads\vida\vida\finalvnc\finalvnc\server"
+$ServerDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $WatchdogScript = "$ServerDir\watchdog.py"
 
 Write-Host "======================================================================"

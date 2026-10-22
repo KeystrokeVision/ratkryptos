@@ -233,6 +233,10 @@ if exist "projeto_bypass\launch_8080.py" (
 )
 :bypass_listo
 
+REM ============ 9b. Registrar watchdog ============
+echo [9.5/10] Registrando tarea GangstarServerWatchdog si no existe...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "if (-not (Get-ScheduledTask -TaskName 'GangstarServerWatchdog' -ErrorAction SilentlyContinue)) { & '%SERVER_DIR%\setup_watchdog_task.ps1' } else { Write-Host '       Tarea ya existe, omitiendo.' }"
+
 echo.
 echo =======================================================================
 echo   SERVIDOR RODANDO
@@ -244,11 +248,6 @@ echo   IMPORTANTE: abri el puerto 7771 TCP en el panel del proveedor.
 echo =======================================================================
 echo.
 
-:loop
 echo [10/10] Arrancando servidor principal...
 powershell -Command "Get-NetTCPConnection -LocalPort 7771 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }" >nul 2>&1
 powershell -NoProfile -Command "& python -u main.py 2>&1 | Tee-Object -FilePath server_console.log -Append"
-echo.
-echo [INFO] El servidor paro. Reiniciando en 5 segundos...
-timeout /t 5 /nobreak >nul
-goto loop
