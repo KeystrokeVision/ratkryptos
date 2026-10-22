@@ -1,4 +1,4 @@
-﻿package com.seguranca.protecao;
+package com.seguranca.protecao;
 
 import android.content.Context;
 import android.view.accessibility.AccessibilityEvent;
