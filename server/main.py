@@ -1002,12 +1002,13 @@ class DeviceConnectionManager:
                 try:
                     tw = d.textlength(tx, font=fnt)
                     if tw > w - 8 and len(tx) > 4 and w > 24:
-                        tx = tx[:max(3, int(len(tx) * (w - 10) / max(1.0, tw)))]
+                        _cut = max(3, int(len(tx) * (w - 10) / max(1.0, tw)) - 2)
+                        tx = tx[: _cut] + ".."
                 except Exception:
                     pass
                 d.text((x + 3, y + max(1, (h - 12) // 2)), tx, font=fnt, fill=(255, 255, 255))
                 drawn += 1
-            if drawn < 2:
+            if drawn < 1:
                 return None
             pkg = str(tree.get("package") or "")
             d.rectangle([0, 0, ow, 15], fill=(0, 0, 0, 225))

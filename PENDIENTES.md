@@ -13,3 +13,11 @@
 - PASO1b: watchdog.py: cambiar el "kill de todos los python" por matar SOLO el proceso que escucha en 7771.
 - PASO2: INSTALAR_Y_ARRANCAR.bat: registrar automaticamente la tarea GangstarServerWatchdog con setup_watchdog_task.ps1 si no existe.
 - PASO3: verificar que el watchdog arranque main.py tambien en frio (post-reboot, sin RDP).
+
+## Mas bugs del mismo watchdog (mismo archivo)
+- BUG2: el catch del loop de captura solo atrapa Exception. Un OutOfMemoryError (comun con HardwareBuffer)
+  mata el hilo y deja silentScreenActive=true. FIX: catch (Throwable) en el loop.
+- BUG4: en startSilentScreenCapture, si instance==null se reintenta UNA sola vez y no reprograma.
+  FIX: reintentar hasta 10 veces cada 1s.
+- BUG5: onDestroy no drena SILENT_ENCODE_QUEUE -> se envian frames viejos al reconectar.
+  FIX: llamar drainSilentEncodeQueue() en onDestroy.
