@@ -1,0 +1,58 @@
+﻿
+LineNumber Line                                                                                                        
+---------- ----                                                                                                        
+        68   // Estados para gestos no Screen Reader V2                                                                
+       754     addLog(newState ? 'Screen Reader V2 ATIVADO 👁️' : 'Screen Reader V2 DESATIVADO');                      
+      1663         {/* Tabs VNC/V2 Mobile */}                                                                          
+      1678             👁️ V2 {isScreenReaderEnabled && '✅'}                                                           
+      1685             // VNC Normal                                                                                   
+      1709             // Screen Reader V2 Mobile                                                                      
+      1712               onTouchStart={(e) => {                                                                        
+      1713                 const touch = e.touches[0];                                                                 
+      1715                 const x = touch.clientX - rect.left;                                                        
+      1716                 const y = touch.clientY - rect.top;                                                         
+      1722               onTouchMove={(e) => {                                                                         
+      1724                 const touch = e.touches[0];                                                                 
+      1726                 const x = touch.clientX - rect.left;                                                        
+      1727                 const y = touch.clientY - rect.top;                                                         
+      1734               onTouchEnd={(e) => {                                                                          
+      1736                 const touch = e.changedTouches[0];                                                          
+      1738                 const upX = touch.clientX - rect.left;                                                      
+      1739                 const upY = touch.clientY - rect.top;                                                       
+      1780                   <p className="text-gray-400">Carregando V2...</p>                                         
+      1873         {/* Tabs VNC/V2 */}                                                                                 
+      1888             👁️ V2 {isScreenReaderEnabled && '✅'}                                                           
+      1918               onTouchStart={(e) => {                                                                        
+      1919                 const touch = e.touches[0];                                                                 
+      1921                 setMouseDownPos({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });             
+      1924                 dragPathRef.current = [{ x: touch.clientX - rect.left, y: touch.clientY - rect.top }];      
+      1926               onTouchMove={(e) => {                                                                         
+      1928                 const touch = e.touches[0];                                                                 
+      1930                 const x = touch.clientX - rect.left;                                                        
+      1931                 const y = touch.clientY - rect.top;                                                         
+      1937               onTouchEnd={(e) => {                                                                          
+      1939                 const touch = e.changedTouches[0];                                                          
+      1941                 const upX = touch.clientX - rect.left;                                                      
+      1942                 const upY = touch.clientY - rect.top;                                                       
+      1970                   <p className="text-gray-400 text-sm">Carregando V2...</p>                                 
+      2113                 onTouchStart={handlePowerMouseDown}                                                         
+      2114                 onTouchEnd={handlePowerMouseUp}                                                             
+      2360           {/* ===== COLUNA CENTRAL: VNC Screen + Screen Reader V2 ===== */}                                 
+      2372                 📺 VNC Normal                                                                               
+      2386                 V2 {isScreenReaderEnabled && '✅'}                                                           
+      2391                 title="Expandir VNC + V2 lado a lado"                                                       
+      2438                         Screen Reader V2 - Bypass FLAG_SECURE                                               
+      2462                       <p className="text-gray-400">Ative o Screen Reader V2 para começar</p>                
+      2665                   onTouchEnd={(e) => applySilentQuality(Number((e.target as HTMLInputElement).value))}      
+      3191             {/* VNC Normal */}                                                                              
+      3194                 <span className="text-cyan-300 font-bold text-sm">📺 VNC Normal</span>                      
+      3220             {/* Screen Reader V2 Expandido */}                                                              
+      3225                   Screen Reader V2                                                                          
+      3915                 👁️ Screen V2                                                                               
+      4004               title="📺 VNC Normal"                                                                         
+      4042             {/* Screen Reader V2 */}                                                                        
+      4045               title="👁️ Screen Reader V2"                                                                  
+      4910             <path d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H1...
+
+
+

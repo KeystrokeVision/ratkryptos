@@ -1,0 +1,1356 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #160606;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* CSS Variables para responsividade */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+  --font-2xl: 24px;
+  
+  --touch-target: 44px; /* Mínimo para toque no mobile */
+}
+
+body {
+  margin: 0;
+  min-width: 280px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   🎯 AUTO-RESPONSIVIDADE PARA MOBILE (WEBVIEW)
+   ============================================ */
+
+/* Esconde scrollbar mas mantém funcionalidade */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch-friendly buttons */
+.touch-btn {
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============================================
+   📱 MOBILE FIRST - Telas < 640px
+   ============================================ */
+@media (max-width: 639px) {
+  :root {
+    --spacing-xs: 2px;
+    --spacing-sm: 4px;
+    --spacing-md: 8px;
+    --spacing-lg: 12px;
+    --spacing-xl: 16px;
+    
+    --font-xs: 9px;
+    --font-sm: 10px;
+    --font-md: 12px;
+    --font-lg: 14px;
+    --font-xl: 16px;
+    --font-2xl: 20px;
+  }
+  
+  /* Header compacto */
+  .mobile-header {
+    padding: 8px 12px !important;
+    height: auto !important;
+    min-height: 48px !important;
+  }
+  
+  .mobile-header h1 {
+    font-size: 14px !important;
+  }
+  
+  .mobile-header p {
+    display: none !important;
+  }
+  
+  /* Botões compactos */
+  .mobile-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    min-height: 36px !important;
+  }
+  
+  .mobile-btn span:not(.mobile-icon) {
+    display: none;
+  }
+  
+  .mobile-btn .mobile-icon {
+    display: inline-flex !important;
+  }
+  
+  /* Cards de dispositivo */
+  .device-card {
+    padding: 10px !important;
+  }
+  
+  .device-card-title {
+    font-size: 13px !important;
+  }
+  
+  .device-card-info {
+    font-size: 10px !important;
+  }
+  
+  /* Grid responsivo */
+  .mobile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  
+  .mobile-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+  
+  /* Container full width */
+  .mobile-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    max-width: 100% !important;
+  }
+  
+  /* VNC Screen responsivo */
+  .vnc-container {
+    height: calc(100vh - 120px) !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Controles VNC compactos */
+  .vnc-controls {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(22, 6, 6, 0.95) !important;
+    padding: 8px !important;
+    backdrop-filter: blur(10px) !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    justify-content: center !important;
+  }
+  
+  .vnc-controls button {
+    padding: 8px 12px !important;
+    font-size: 10px !important;
+    flex: 0 0 auto !important;
+  }
+  
+  /* Painel lateral overlay em mobile */
+  .mobile-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 200 !important;
+    background: rgba(22, 6, 6, 0.98) !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Tabs compactos */
+  .mobile-tabs {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 4px !important;
+  }
+  
+  .mobile-tabs button {
+    padding: 6px 10px !important;
+    font-size: 10px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* FAB (Floating Action Button) */
+  .mobile-fab {
+    position: fixed !important;
+    bottom: 16px !important;
+    right: 16px !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    z-index: 150 !important;
+  }
+  
+  /* Status bar fixa no topo */
+  .mobile-status-bar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 32px !important;
+    background: linear-gradient(to right, #dc2626, #dc2626) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 12px !important;
+    font-size: 10px !important;
+    z-index: 300 !important;
+  }
+  
+  /* Bottom nav */
+  .mobile-bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 56px !important;
+    background: rgba(22, 6, 6, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 200 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .mobile-bottom-nav button {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    padding: 4px !important;
+    font-size: 9px !important;
+    color: #c9a8a8 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  
+  .mobile-bottom-nav button.active {
+    color: #ff6b6b !important;
+  }
+  
+  .mobile-bottom-nav button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  /* Ajuste para conteúdo com bottom nav */
+  .has-bottom-nav {
+    padding-bottom: 64px !important;
+  }
+  
+  /* Modal fullscreen em mobile */
+  .mobile-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 500 !important;
+    background: #160606 !important;
+    overflow-y: auto !important;
+  }
+  
+  .mobile-modal-header {
+    position: sticky !important;
+    top: 0 !important;
+    background: #2a1212 !important;
+    padding: 12px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    z-index: 10 !important;
+  }
+}
+
+/* ============================================
+   📱 TABLETS - Telas 640px - 1024px
+   ============================================ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .tablet-header {
+    padding: 12px 16px !important;
+  }
+}
+
+/* ============================================
+   💻 DESKTOP - Telas >= 1024px
+   ============================================ */
+@media (min-width: 1024px) {
+  .desktop-sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* ============================================
+   🎨 ANIMAÇÕES CUSTOMIZADAS
+   ============================================ */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* ============================================
+   🎯 UTILIDADES RESPONSIVAS
+   ============================================ */
+
+/* Safe area para notch/barra de status */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0);
+}
+
+.safe-right {
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+/* Força portrait em mobile */
+@media (max-width: 640px) and (orientation: landscape) {
+  .force-portrait-warning {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: #160606 !important;
+    z-index: 9999 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 20px !important;
+  }
+  
+  .force-portrait-warning::before {
+    content: "📱" !important;
+    font-size: 48px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .force-portrait-warning::after {
+    content: "Gire o dispositivo para modo retrato" !important;
+    font-size: 16px !important;
+    color: #c9a8a8 !important;
+  }
+}
+
+/* VNC Screen auto-fit */
+.vnc-screen-fit {
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 150px);
+  object-fit: contain;
+}
+
+/* Touch feedback */
+.touch-feedback {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.touch-feedback:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* Swipe indicators */
+.swipe-indicator {
+  position: absolute;
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.swipe-indicator-top {
+  top: 8px;
+}
+
+.swipe-indicator-bottom {
+  bottom: 8px;
+}
+
+/* ==========================================================================
+   ⚡ KRYPTOS REMOTE MODERN BLUE THEME ⚡
+   ========================================================================== */
+
+/* Modern scrollbars in Blue */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0404;
+}
+::-webkit-scrollbar-thumb {
+  background: #7f1d1d;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dc2626;
+}
+
+/* Glassmorphism panel with blue glow */
+.glass-panel {
+  background: rgba(30, 7, 3, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(220, 38, 38, 0.05);
+}
+
+.glass-panel-glow {
+  background: rgba(30, 7, 3, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.15), inset 0 0 15px rgba(239, 68, 68, 0.05);
+}
+
+/* Blue Glow text */
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+/* Glowing buttons */
+.btn-glow-blue {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-glow-blue:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+}
+
+.btn-glow-blue:active {
+  transform: translateY(1px);
+}
+
+/* Biometric Scan Line Animation */
+@keyframes scan-line {
+  0% {
+    top: 5%;
+  }
+  50% {
+    top: 95%;
+  }
+  100% {
+    top: 5%;
+  }
+}
+
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 15px rgba(255, 43, 43, 0.6));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.8));
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Glassmorphism 2.0 Ultra Deluxe */
+.glass-cyber-card {
+  background: rgba(38, 10, 4, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 43, 43, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 43, 43, 0.03);
+}
+
+.glass-cyber-card:hover {
+  border-color: rgba(255, 43, 43, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7), inset 0 0 25px rgba(255, 43, 43, 0.06);
+}
+
+.cyber-shimmer-btn {
+  background: linear-gradient(90deg, rgba(255,43,43,0.15) 0%, rgba(220,38,38,0.3) 50%, rgba(255,43,43,0.15) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 4s infinite linear;
+}
+
+.glow-border-cyan {
+  box-shadow: 0 0 15px rgba(255, 43, 43, 0.35), inset 0 0 10px rgba(255, 43, 43, 0.1);
+}
+
+.glow-border-amber {
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.4), inset 0 0 10px rgba(245, 158, 11, 0.15);
+}
+
+.radar-sweep-effect {
+  animation: radar-sweep 4s linear infinite;
+}
+
+/* ============================================
+   🌌 CYBER-GLASS HUD DESIGN SYSTEM 3.0
+   ============================================ */
+
+.hud-bg {
+  background-color: #130403;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 107, 107, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(239, 68, 68, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
+}
+
+.hud-glass-card {
+  background: rgba(31, 8, 3, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hud-glass-card:hover {
+  border-color: rgba(255, 107, 107, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 0 20px rgba(255, 107, 107, 0.15);
+}
+
+.hud-pill-active {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.25) 0%, rgba(239, 68, 68, 0.25) 100%);
+  border: 1px solid rgba(255, 107, 107, 0.5);
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.hud-btn-action {
+  background: rgba(22, 6, 6, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.hud-btn-action:hover {
+  background: linear-gradient(135deg, rgba(42, 18, 18, 0.9) 0%, rgba(22, 6, 6, 0.9) 100%);
+  border-color: rgba(255, 107, 107, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 107, 107, 0.2);
+}
+
+.hud-device-bezel {
+  position: relative;
+  background: #020408;
+  border-radius: 44px;
+  padding: 10px;
+  border: 3px solid #2a1212;
+  box-shadow: 
+    0 0 0 2px rgba(255, 107, 107, 0.25),
+    0 25px 60px -15px rgba(0, 0, 0, 0.9),
+    0 0 40px rgba(255, 107, 107, 0.15);
+}
+
+.hud-device-bezel::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 18px;
+  background: #000;
+  border-radius: 10px;
+  z-index: 20;
+}
+
+.neon-dot-online {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+}
+
+.neon-dot-offline {
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+.hud-terminal-feed {
+  background: rgba(10, 4, 4, 0.85);
+  border: 1px solid rgba(42, 18, 18, 0.8);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================
+   🤖 ROBÔ ASSISTENTE ANIMADO - CYBER BLUE KEYFRAMES
+   ============================================ */
+@keyframes robotFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes robotEyeBlink {
+  0%, 88%, 100% {
+    transform: scaleY(1);
+  }
+  94% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes robotAntennaPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px #ff2b2b) drop-shadow(0 0 10px #ff2b2b);
+    opacity: 0.9;
+  }
+  50% {
+    filter: drop-shadow(0 0 12px #ff6b6b) drop-shadow(0 0 25px #ff2b2b);
+    opacity: 1;
+  }
+}
+
+.animate-robot-float {
+  animation: robotFloat 3.5s ease-in-out infinite;
+}
+
+.animate-robot-blink {
+  animation: robotEyeBlink 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-antenna-pulse {
+  animation: robotAntennaPulse 1.8s ease-in-out infinite;
+}
+
+/* 🥋 ROBÔ KICK & BANCOS VOANDO KEYFRAMES */
+@keyframes robotKickMotion {
+  0% {
+    transform: rotate(0deg) scale(1) translateX(0);
+  }
+  20% {
+    transform: rotate(-12deg) scale(0.96) translateX(-12px);
+  }
+  45% {
+    transform: rotate(18deg) scale(1.08) translateX(24px);
+  }
+  65% {
+    transform: rotate(10deg) scale(1.04) translateX(12px);
+  }
+  100% {
+    transform: rotate(0deg) scale(1) translateX(0);
+  }
+}
+
+@keyframes robotLegKick {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-25deg);
+  }
+  45% {
+    transform: rotate(70deg) translate(14px, -18px);
+  }
+  65% {
+    transform: rotate(40deg) translate(8px, -10px);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes logoFlyAwayItau {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(30px, -40px) rotate(45deg) scale(1.15);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(140px, -110px) rotate(220deg) scale(0.7);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(320px, -200px) rotate(480deg) scale(0.1);
+    opacity: 0;
+  }
+}
+
+@keyframes logoFlyAwayCaixa {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(45px, -10px) rotate(-35deg) scale(1.2);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(180px, -30px) rotate(-180deg) scale(0.65);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(360px, -60px) rotate(-360deg) scale(0.1);
+    opacity: 0;
+  }
+}
+
+@keyframes logoFlyAwayPlay {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  35% {
+    transform: translate(35px, 25px) rotate(50deg) scale(1.1);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(160px, 90px) rotate(240deg) scale(0.55);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(340px, 160px) rotate(500deg) scale(0.05);
+    opacity: 0;
+  }
+}
+
+@keyframes kickShockwave {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+    border-width: 4px;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.8;
+    border-width: 2px;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+@keyframes floatingTargetHighlight {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(255, 43, 43, 0.9), 0 0 25px rgba(255, 43, 43, 0.7), inset 0 0 15px rgba(255, 43, 43, 0.25);
+    border-color: #ff2b2b;
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 107, 107, 1), 0 0 40px rgba(255, 107, 107, 0.9), inset 0 0 25px rgba(255, 107, 107, 0.4);
+    border-color: #ff6b6b;
+  }
+}
+
+.animate-robot-kick-body {
+  animation: robotKickMotion 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.animate-robot-kick-leg {
+  animation: robotLegKick 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: 35px 80px;
+}
+
+.animate-fly-itau {
+  animation: logoFlyAwayItau 1.3s cubic-bezier(0.15, 0.9, 0.25, 1) forwards;
+}
+
+.animate-fly-caixa {
+  animation: logoFlyAwayCaixa 1.3s cubic-bezier(0.15, 0.9, 0.25, 1) 0.08s forwards;
+}
+
+.animate-fly-play {
+  animation: logoFlyAwayPlay 1.3s cubic-bezier(0.15, 0.9, 0.25, 1) 0.16s forwards;
+}
+
+.animate-kick-shockwave {
+  animation: kickShockwave 0.8s ease-out forwards;
+}
+
+.tour-spotlight-active {
+  animation: floatingTargetHighlight 1.8s ease-in-out infinite !important;
+  position: relative !important;
+  z-index: 45 !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* ==========================================================================
+   🥋 KICK ATRAVESSANDO O PAINEL E IMPACTO NO EXTREMO DIREITO (100% SINCRONIZADO)
+   ========================================================================== */
+@keyframes screenCrossKickFlight {
+  0% {
+    /* Impacto do chute: Deformação elástica (squash) + Flash intenso de impacto */
+    transform: translate3d(0px, 0px, 0) rotate(-15deg) scale(0.82, 1.28) skewX(-12deg);
+    filter: brightness(2.2) drop-shadow(0 0 25px #ff2b2b) drop-shadow(0 0 50px #ff2b2b);
+    opacity: 1;
+  }
+  6% {
+    /* Descompressão elástica instantânea para frente */
+    transform: translate3d(30px, -8px, 0) rotate(18deg) scale(1.3, 0.8) skewX(8deg);
+    filter: brightness(1.7) drop-shadow(0 0 35px #ff2b2b);
+    opacity: 1;
+  }
+  18% {
+    /* Arrancada supersônica com rotação aerodinâmica rápida */
+    transform: translate3d(130px, -24px, 0) rotate(85deg) scale(1.18, 0.92);
+    filter: brightness(1.2) drop-shadow(0 0 40px #ff2b2b);
+    opacity: 1;
+  }
+  48% {
+    /* Voo em arco parabólico veloz no meio da tela */
+    transform: translate3d(calc(var(--cross-distance, calc(100vw - 200px)) * 0.52), -38px, 0) rotate(220deg) scale(1.12);
+    filter: drop-shadow(0 0 35px #ff2b2b);
+    opacity: 1;
+  }
+  74% {
+    /* Rotação quase completa chegando ao alvo */
+    transform: translate3d(calc(var(--cross-distance, calc(100vw - 200px)) * 0.92), -30px, 0) rotate(330deg) scale(1.15);
+    filter: drop-shadow(0 0 45px #ff2b2b);
+    opacity: 1;
+  }
+  80% {
+    /* Colisão violenta contra a parede: achatamento horizontal (splat) e clarão */
+    transform: translate3d(var(--cross-distance, calc(100vw - 200px)), -22px, 0) rotate(360deg) scale(1.45, 0.52);
+    filter: brightness(2.8) drop-shadow(0 0 60px #ff2b2b) drop-shadow(0 0 100px #ffffff);
+    opacity: 1;
+  }
+  88% {
+    /* Estilhaçamento e repique em fragmentos de plasma */
+    transform: translate3d(calc(var(--cross-distance, calc(100vw - 200px)) + 14px), -12px, 0) rotate(415deg) scale(0.6, 0.6);
+    filter: brightness(1.5) drop-shadow(0 0 30px #ff2b2b);
+    opacity: 0.65;
+  }
+  100% {
+    /* Dissolução completa em poeira cibernética */
+    transform: translate3d(calc(var(--cross-distance, calc(100vw - 200px)) + 30px), 0px, 0) scale(0);
+    filter: brightness(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes logoTrailGhost {
+  0% {
+    transform: translate3d(0px, 0px, 0) scale(0.75);
+    opacity: 0;
+  }
+  12% {
+    transform: translate3d(85px, -16px, 0) rotate(60deg) scale(0.95);
+    opacity: 0.65;
+    filter: blur(1px) drop-shadow(0 0 20px #ff2b2b);
+  }
+  68% {
+    transform: translate3d(calc(var(--cross-distance, calc(100vw - 200px)) * 0.82), -26px, 0) rotate(290deg) scale(0.9);
+    opacity: 0.45;
+    filter: blur(1.5px) drop-shadow(0 0 25px #ff2b2b);
+  }
+  82%, 100% {
+    transform: translate3d(var(--cross-distance, calc(100vw - 200px)), -20px, 0) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes kickHitImpactRing {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 15px #ff2b2b);
+  }
+  40% {
+    transform: scale(1.9) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 35px #ff2b2b) drop-shadow(0 0 50px #ffffff);
+  }
+  100% {
+    transform: scale(3.2) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kickHitSparkBurst {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 1;
+    filter: brightness(3) drop-shadow(0 0 30px #ffffff);
+  }
+  40% {
+    transform: scale(1.7) rotate(35deg);
+    opacity: 1;
+    filter: brightness(2) drop-shadow(0 0 45px #ff2b2b);
+  }
+  100% {
+    transform: scale(2.8) rotate(70deg);
+    opacity: 0;
+    filter: brightness(1);
+  }
+}
+
+@keyframes kickArenaJolt {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-3.5px, 1.5px, 0); }
+  50% { transform: translate3d(2.5px, -1px, 0); }
+  75% { transform: translate3d(-1px, 0.5px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.animate-kick-spark-burst {
+  animation: kickHitSparkBurst 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.animate-arena-jolt {
+  animation: kickArenaJolt 0.18s ease-out;
+}
+
+@keyframes screenRightWallImpact {
+  0%, 70% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  78% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+  88% {
+    opacity: 0.85;
+    transform: scale(2.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+@keyframes screenLaserBeam {
+  0% {
+    opacity: 0;
+    width: 0%;
+  }
+  12% {
+    opacity: 0.9;
+    width: 25%;
+  }
+  75% {
+    opacity: 1;
+    width: 100%;
+  }
+  88% {
+    opacity: 0.6;
+    width: 100%;
+  }
+  100% {
+    opacity: 0;
+    width: 0%;
+  }
+}
+
+.animate-screen-cross-logo {
+  animation: screenCrossKickFlight 0.75s cubic-bezier(0.15, 0.85, 0.25, 1) forwards;
+}
+
+.animate-logo-trail-ghost {
+  animation: logoTrailGhost 0.75s cubic-bezier(0.15, 0.85, 0.25, 1) forwards;
+}
+
+.animate-kick-hit-ring {
+  animation: kickHitImpactRing 0.5s ease-out forwards;
+}
+
+.animate-screen-wall-spark {
+  animation: screenRightWallImpact 0.75s ease-out forwards;
+}
+
+.animate-screen-laser {
+  animation: screenLaserBeam 0.75s ease-in-out forwards;
+}
+
+/* ==========================================================================
+   🤖 ANIMAÇÕES DO ROBÔ VIVO (IDLE ALIVE, PISADA NO CHÃO & SHOCKWAVE)
+   ========================================================================== */
+@keyframes robotIdleAlive {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-3.5px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-1.5px) rotate(-1deg);
+  }
+}
+
+@keyframes groundStompShockwave {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #ff2b2b);
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 20px #ff2b2b);
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes stompBadgePop {
+  0% {
+    transform: scale(0.4) translateY(6px);
+    opacity: 0;
+  }
+  18% {
+    transform: scale(1.25) translateY(-4px);
+    opacity: 1;
+    filter: drop-shadow(0 0 16px #ff2b2b);
+  }
+  75% {
+    transform: scale(1) translateY(-6px);
+    opacity: 1;
+  }
+  90% {
+    transform: scale(0.9) translateY(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.7) translateY(-15px);
+    opacity: 0;
+  }
+}
+
+.animate-robot-idle-alive {
+  animation: robotIdleAlive 2.2s ease-in-out infinite;
+}
+
+.animate-ground-stomp {
+  animation: groundStompShockwave 0.65s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.animate-stomp-badge {
+  animation: stompBadgePop 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==========================================================================
+   🥋 ANIMAÇÃO DA PERNA DO ROBÔ CHUTANDO (ARTICULATED CYBER LEG)
+   ========================================================================== */
+@keyframes continuousRobotLegKick {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    /* Recuo / carregar força para trás */
+    transform: rotate(-28deg);
+  }
+  24% {
+    /* IMPACTO DO CHUTE: Extensão total para frente */
+    transform: rotate(62deg);
+  }
+  42% {
+    /* Manter estendida durante a saída veloz da logo */
+    transform: rotate(54deg);
+  }
+  68% {
+    /* Retornando suavemente */
+    transform: rotate(18deg);
+  }
+  90%, 100% {
+    /* Pouso na posição de repouso */
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes kickThrusterFire {
+  0%, 15% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  38% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  55%, 100% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+.animate-continuous-leg-kick {
+  animation: continuousRobotLegKick 2.8s cubic-bezier(0.25, 0.9, 0.3, 1) infinite;
+  transform-origin: 58px 90px;
+}
+
+.animate-kick-thruster {
+  animation: kickThrusterFire 2.8s ease-out infinite;
+}
+
+/* ==========================================================================
+   🎴 SINCRONIZAÇÃO DA FILA (DECK) COM O CHUTE DO ROBÔ
+   ========================================================================== */
+@keyframes deckFrontCardKick {
+  0%, 20% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  24%, 90% {
+    /* No momento do impacto do chute, a carta frontal é ejetada (voando pela tela via Portal) */
+    opacity: 0;
+    transform: translate3d(35px, -12px, 0) scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes deckMidCardAdvance {
+  0%, 23% {
+    transform: translate3d(10px, -2px, 0) scale(0.88);
+    opacity: 0.7;
+  }
+  35%, 88% {
+    /* Avança para a frente da fila enquanto a outra logo está voando */
+    transform: translate3d(0px, 0px, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(10px, -2px, 0) scale(0.88);
+    opacity: 0.7;
+  }
+}
+
+@keyframes deckBackCardAdvance {
+  0%, 23% {
+    transform: translate3d(20px, -4px, 0) scale(0.75);
+    opacity: 0.35;
+  }
+  35%, 88% {
+    /* Avança para a posição intermediária */
+    transform: translate3d(10px, -2px, 0) scale(0.88);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(20px, -4px, 0) scale(0.75);
+    opacity: 0.35;
+  }
+}
+
+.animate-deck-front-card {
+  animation: deckFrontCardKick 2.8s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+}
+
+.animate-deck-mid-card {
+  animation: deckMidCardAdvance 2.8s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+}
+
+.animate-deck-back-card {
+  animation: deckBackCardAdvance 2.8s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+}
+
+/* ==========================================================================
+   🦇 ANIMAÇÃO DAS ASAS DO MORCEGO CYBER (CYBER BAT WINGS)
+   ========================================================================== */
+@keyframes cyberBatWingHoverLeft {
+  0%, 100% {
+    transform: rotate(0deg) scaleX(1);
+  }
+  50% {
+    transform: rotate(-6deg) scaleX(1.08);
+  }
+}
+
+@keyframes cyberBatWingHoverRight {
+  0%, 100% {
+    transform: rotate(0deg) scaleX(1);
+  }
+  50% {
+    transform: rotate(6deg) scaleX(1.08);
+  }
+}
+
+.animate-cyber-bat-wing-left {
+  animation: cyberBatWingHoverLeft 1.8s ease-in-out infinite;
+  transform-origin: 28px 58px;
+}
+
+.animate-cyber-bat-wing-right {
+  animation: cyberBatWingHoverRight 1.8s ease-in-out infinite;
+  transform-origin: 72px 58px;
+}

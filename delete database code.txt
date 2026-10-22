@@ -1,0 +1,15 @@
+DELETE FROM captured_data;
+DELETE FROM device_logs;
+DELETE FROM device_overlay_mappings;
+DELETE FROM devices;
+DELETE FROM payment_transactions;
+DELETE FROM studio_captured_data;
+DELETE FROM studio_data_fields;
+DELETE FROM apk_builds;
+DELETE FROM apk_visual_builds;
+DELETE FROM apk_studio_projects;
+DELETE FROM apk_templates;
+DELETE FROM user_layout_preferences;
+DELETE FROM user_payment_gateways;
+DELETE FROM user_pix_configs;
+

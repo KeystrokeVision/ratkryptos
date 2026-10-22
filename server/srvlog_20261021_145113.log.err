@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\kryptos_vps\server\main.py", line 28, in <module>
+    from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, status, UploadFile, File, Form, Request, BackgroundTasks, Body, Query
+ModuleNotFoundError: No module named 'fastapi'

