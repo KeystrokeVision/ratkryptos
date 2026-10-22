@@ -8,7 +8,8 @@ Write-Host "   ⚙️ REGISTRANDO TAREFA AGENDADA DE MONITORAMENTO DO SERVIDOR �
 Write-Host "======================================================================"
 
 # Verifica se o Python esta disponivel
-$PythonPath = (Get-Command python -ErrorAction SilentlyContinue).Source
+$PythonPath = "$ServerDir\venv\Scripts\python.exe"
+if (-not (Test-Path $PythonPath)) { $PythonPath = (Get-Command python -ErrorAction SilentlyContinue).Source }
 if (-not $PythonPath) {
     if (Test-Path "$ServerDir\venv\Scripts\python.exe") {
         $PythonPath = "$ServerDir\venv\Scripts\python.exe"

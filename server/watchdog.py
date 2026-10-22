@@ -85,8 +85,8 @@ while True:
             subprocess.Popen([sys.executable, "main.py"], cwd=SERVER_DIR)
             time.sleep(10)
 
-        # Verificar se o servidor bypass 8080 esta ativo
-        ensure_bypass_server()
+        # [KRYPTOS-PATCH] 8080 e do BTMOB - bypass desativado
+        # ensure_bypass_server()
 
         time.sleep(15)
 
