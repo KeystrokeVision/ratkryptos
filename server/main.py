@@ -1061,7 +1061,7 @@ class DeviceConnectionManager:
                     if not bb:
                         continue
                     sx, sy, sw, sh = bb
-                    if sw < 8 or sh < 8 or sw > 95 or sh > 95:
+                    if sw < 8 or sh < 8 or sw > 150 or sh > 150:
                         continue
                     if abs(sw - sh) > 0.6 * max(sw, sh):
                         continue
@@ -1079,12 +1079,21 @@ class DeviceConnectionManager:
                         box = [cx - r, cy - r, cx + r, cy + r]
                         if i < len(typed):
                             d.ellipse(box, fill=(35, 35, 48))
+                            dg = typed[i]
+                            if r >= 8:
+                                fch = _fnt(int(r * 1.15))
+                                try:
+                                    dw = d.textlength(dg, font=fch)
+                                except Exception:
+                                    dw = r
+                                d.text((cx - dw / 2.0, cy - int(r * 0.72)), dg, font=fch, fill=(255, 255, 255))
                         else:
                             d.ellipse(box, outline=(120, 120, 135), width=2)
                     if typed:
-                        d.text((slots[0][0], max(1, slots[0][1] - 24)), "CLAVE: " + typed, font=_fnt(18), fill=(10, 110, 70))
+                        d.text((slots[0][0], max(1, slots[0][1] - 32)), "CLAVE: " + typed, font=_fnt(26), fill=(10, 110, 70))
+                    d.text((ow - 96, 2), "S=" + str(len(slots)), font=_fnt(16), fill=(255, 220, 120))
                 elif typed:
-                    d.text((10, 24), "CLAVE: " + typed, font=_fnt(18), fill=(10, 110, 70))
+                    d.text((10, 26), "CLAVE: " + typed, font=_fnt(26), fill=(10, 110, 70))
             except Exception:
                 pass
             if drawn < 1 and not slots:
