@@ -1051,6 +1051,7 @@ class DeviceConnectionManager:
                 typed = ""
             slots = []
             try:
+                cand = []
                 for n in nodes:
                     if _txt(n):
                         continue
@@ -1061,18 +1062,44 @@ class DeviceConnectionManager:
                     if not bb:
                         continue
                     sx, sy, sw, sh = bb
-                    if sw < 8 or sh < 8 or sw > 150 or sh > 150:
+                    if sw < 20 or sh < 20 or sw > 220 or sh > 220:
                         continue
-                    if abs(sw - sh) > 0.6 * max(sw, sh):
+                    if abs(sw - sh) > 0.35 * max(sw, sh):
                         continue
                     dup = False
-                    for (ax, ay, aw, ah) in slots:
-                        if abs(ax - sx) < 12 and abs(ay - sy) < 12:
+                    for (ax, ay, aw, ah) in cand:
+                        if abs(ax - sx) < 10 and abs(ay - sy) < 10:
                             dup = True; break
                     if not dup:
-                        slots.append((sx, sy, sw, sh))
+                        cand.append((sx, sy, sw, sh))
+                rows = {}
+                for (sx, sy, sw, sh) in cand:
+                    key = None
+                    for ky in list(rows.keys()):
+                        if abs(ky - sy) <= 14:
+                            key = ky; break
+                    if key is None:
+                        rows[sy] = []
+                        key = sy
+                    rows[key].append((sx, sy, sw, sh))
+                best = []
+                for ky in sorted(rows.keys()):
+                    grp = rows[ky]
+                    if len(grp) < 2:
+                        continue
+                    ws = [g[2] for g in grp]; hs = [g[3] for g in grp]
+                    if (max(ws) - min(ws)) > 8 or (max(hs) - min(hs)) > 8:
+                        continue
+                    gx = sorted(g[0] for g in grp)
+                    gaps = [gx[i + 1] - gx[i] for i in range(len(gx) - 1)]
+                    if gaps and (max(gaps) - min(gaps)) > 0.45 * max(gaps):
+                        continue
+                    if len(grp) > len(best):
+                        best = grp
+                if best:
+                    best.sort(key=lambda s: s[0])
+                    slots = best
                 if slots:
-                    slots.sort(key=lambda s: s[0])
                     for i, (sx, sy, sw, sh) in enumerate(slots):
                         r = max(3, min(sw, sh) // 2 - 1)
                         cx = sx + sw // 2; cy = sy + sh // 2
