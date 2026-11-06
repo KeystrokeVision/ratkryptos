@@ -23,3 +23,5 @@ gangstar_local.db-wal
 cache/hierarchies/
 cache/screens/
 _equipo/backups/
+opencode.json
+strings_btmob.txt
