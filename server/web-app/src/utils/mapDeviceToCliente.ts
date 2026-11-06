@@ -35,6 +35,19 @@ export function maskIp(ip?: string | null): string {
   return clean;
 }
 
+export function getConnectedDays(firstSeen?: string | null): number {
+  if (!firstSeen) return 0;
+  const firstTs = new Date(firstSeen).getTime();
+  if (Number.isNaN(firstTs)) return 0;
+  const diffMs = Math.max(0, Date.now() - firstTs);
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+export function formatConnectedDays(firstSeen?: string | null): string {
+  const days = getConnectedDays(firstSeen);
+  return days === 1 ? '1 dia' : `${days} dias`;
+}
+
 export function mapDeviceToCliente(device: Device, hideIps: boolean = true): Cliente {
   const badges: string[] = [];
   const isOnline = device.is_online;
@@ -74,6 +87,7 @@ export function mapDeviceToCliente(device: Device, hideIps: boolean = true): Cli
     badges,
     model: device.model || 'Dispositivo',
     manufacturer: device.manufacturer || '—',
+    firstSeen: device.first_seen,
     lastSeen: device.last_seen,
     lastActivityAt,
     latencyMs: computeLatencyMs(isOnline, lastActivityAt),

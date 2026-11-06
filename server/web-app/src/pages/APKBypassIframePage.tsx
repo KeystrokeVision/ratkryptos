@@ -29,25 +29,25 @@ export default function APKBypassIframePage() {
   return (
     <div className="min-h-screen bg-[#190503] text-white flex flex-col">
       {/* Header Superior */}
-      <div className="bg-[#290903]/90 border-b border-cyan-500/20 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-md">
+      <div className="bg-[#1a1a1e]/90 border-b border-[#2a2a31]/20 px-6 py-3 flex items-center justify-between shadow-lg backdrop-blur-md">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold transition-all border border-slate-700"
+            className="flex items-center gap-2 px-3 py-1.5 bg-[#24242a] hover:bg-[#2a2a31] text-slate-200 rounded-md text-xs font-bold transition-all border border-[#2a2a31]"
           >
             <ArrowLeft className="w-4 h-4" />
             Voltar ao Dashboard
           </button>
           
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-r from-amber-500 to-red-600 rounded-lg shadow-md">
+            <div className="p-1.5 bg-gradient-to-r from-amber-500 to-[#ef4444] rounded-md shadow-md">
               <Zap className="w-5 h-5 text-yellow-300 animate-pulse" />
             </div>
             <div>
-              <h1 className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 uppercase tracking-wider">
+              <h1 className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#f87171] to-[#f87171] uppercase tracking-wider">
                 Gerador de APK Bypass & Dropper
               </h1>
-              <p className="text-[10px] font-mono text-cyan-400/80">
+              <p className="text-[10px] font-mono text-[#ef4444]/80">
                 Sessão Conectada: <span className="text-amber-300 font-bold">{effectiveUser}</span> ({effectiveRole.toUpperCase()})
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function APKBypassIframePage() {
               const iframe = document.getElementById('bypass-frame') as HTMLIFrameElement;
               if (iframe) iframe.src = iframeSrc;
             }}
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors"
+            className="p-2 bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 rounded-md border border-[#2a2a31] transition-colors"
             title="Recarregar Gerador"
           >
             <RefreshCw className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function APKBypassIframePage() {
             href={iframeSrc}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors"
+            className="p-2 bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 rounded-md border border-[#2a2a31] transition-colors"
             title="Abrir em Nova Aba"
           >
             <ExternalLink className="w-4 h-4" />

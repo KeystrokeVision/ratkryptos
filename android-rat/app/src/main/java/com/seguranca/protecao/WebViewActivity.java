@@ -35,6 +35,8 @@ public class WebViewActivity extends Activity {
             ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
+        setContentView(webView);
+
         // Configurações avançadas do WebView para compatibilidade máxima com sites modernos
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -61,7 +63,16 @@ public class WebViewActivity extends Activity {
         }
 
         // Evita abrir links externos no navegador padrão do Android
+        WebView.setWebContentsDebuggingEnabled(true);
+        webView.setWebChromeClient(new android.webkit.WebChromeClient());
+        WebView.setWebContentsDebuggingEnabled(true);
+        webView.setWebChromeClient(new android.webkit.WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Log.e(TAG, "WebView error " + errorCode + ": " + description + " en " + failingUrl);
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -109,7 +120,6 @@ public class WebViewActivity extends Activity {
             return;
         }
 
-        setContentView(webView);
     }
 
     @Override

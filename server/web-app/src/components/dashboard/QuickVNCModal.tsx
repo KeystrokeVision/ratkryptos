@@ -150,7 +150,7 @@ function QuickV2Canvas({
     canvas.height = devH;
 
     // Definição de Cores pelo Tema Escolhido
-    let bgColor = '#02050c';
+    let bgColor = '#0c0202';
     let gridColor = 'rgba(239, 68, 68, 0.12)';
     let defaultStroke = 'rgba(61, 32, 32, 0.6)';
     let clickStroke = '#ef4444';
@@ -346,15 +346,15 @@ function QuickV2Canvas({
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-[#02050c] p-1 overflow-hidden select-none">
+    <div className="relative w-full h-full flex flex-col items-center justify-center bg-[#0c0202] p-1 overflow-hidden select-none">
       {loading ? (
-        <div className="flex flex-col items-center justify-center p-4 text-cyan-400 font-mono text-xs animate-pulse gap-2">
-          <Eye className="w-6 h-6 text-cyan-300 animate-spin" />
+        <div className="flex flex-col items-center justify-center p-4 text-[#ef4444] font-mono text-xs animate-pulse gap-2">
+          <Eye className="w-6 h-6 text-[#ef4444] animate-spin" />
           <span>Sincronizando Estrutura V2...</span>
           <button
             type="button"
             onClick={() => onCommand({ action: 'TOGGLE_SCREEN_READER', enabled: true })}
-            className="px-2 py-1 bg-cyan-950 border border-cyan-500/40 rounded text-[10px] text-cyan-300 font-bold hover:bg-cyan-900 transition-colors cursor-pointer"
+            className="px-2 py-1 bg-[#121214] border border-[#2a2a31]/40 rounded text-[10px] text-[#ef4444] font-bold hover:bg-[#1a1a1e] transition-colors cursor-pointer"
           >
             ⚡ Forçar Sincronia V2
           </button>
@@ -365,7 +365,7 @@ function QuickV2Canvas({
             ref={canvasRef}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
-            className="max-h-full max-w-full object-contain rounded-lg border border-cyan-500/40 cursor-crosshair hover:border-cyan-300 transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] touch-none"
+            className="max-h-full max-w-full object-contain rounded-md border border-[#2a2a31]/40 cursor-crosshair hover:border-[#4a4a56] transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] touch-none"
             title="Clique ou arraste na Tela V2 para controlar o aparelho"
           />
           {touchVisuals.map((t) => (
@@ -375,7 +375,7 @@ function QuickV2Canvas({
               style={{ left: `${t.x * 100}%`, top: `${t.y * 100}%` }}
             >
               {t.type === 'click' ? (
-                <div className="w-8 h-8 rounded-full border-2 border-cyan-400 bg-cyan-500/40 animate-ping shadow-[0_0_15px_#ef4444]" />
+                <div className="w-8 h-8 rounded-full border-2 border-[#3a3a44] bg-[#ef4444]/40 animate-ping shadow-[0_0_15px_#ef4444]" />
               ) : (
                 <div className="w-6 h-6 rounded-full border-2 border-amber-400 bg-amber-500/40 animate-pulse shadow-[0_0_15px_#f59e0b]" />
               )}
@@ -492,14 +492,14 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-3 bg-slate-950/85 backdrop-blur-xl animate-in fade-in duration-200 overflow-y-auto">
-      <div className={`relative w-full ${getGridColsClass()} bg-[#1e0603] border border-cyan-500/40 rounded-3xl shadow-[0_25px_70px_rgba(255,43,43,0.25)] overflow-hidden flex flex-col my-auto max-h-[96vh]`}>
+      <div className={`relative w-full ${getGridColsClass()} bg-[#1e0603] border border-[#2a2a31]/40 rounded-3xl shadow-[0_25px_70px_rgba(239,68,68,0.25)] overflow-hidden flex flex-col my-auto max-h-[96vh]`}>
         {/* Top Glow Bar */}
-        <div className="h-[2.5px] w-full bg-gradient-to-r from-blue-600 via-cyan-400 via-emerald-400 to-purple-600 animate-pulse" />
+        <div className="h-[2.5px] w-full bg-gradient-to-r from-[#ef4444] via-[#f87171] via-emerald-400 to-[#84cc16] animate-pulse" />
 
         {/* Global Multi-VNC Control Header */}
-        <div className="flex flex-wrap items-center justify-between px-4 py-2.5 border-b border-cyan-500/25 bg-[#2c0903]/95 backdrop-blur-md gap-2">
+        <div className="flex flex-wrap items-center justify-between px-4 py-2.5 border-b border-[#2a2a31]/25 bg-[#2c0903]/95 backdrop-blur-md gap-2">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 font-mono text-sm font-black shadow-[0_0_15px_rgba(255,43,43,0.3)]">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-[#ef4444]/20 border border-[#3a3a44]/40 text-[#ef4444] font-mono text-sm font-black shadow-[0_0_15px_rgba(239,68,68,0.3)]">
               📺
             </div>
             <div>
@@ -507,7 +507,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                 <h3 className="text-white font-black text-sm uppercase font-mono tracking-wider">
                   {t('vnc.quick_title')} ({devices.length})
                 </h3>
-                <span className="text-[10px] text-cyan-300 bg-cyan-950/90 border border-cyan-500/40 px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
+                <span className="text-[10px] text-[#ef4444] bg-[#121214]/90 border border-[#2a2a31]/40 px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
                   {t('vnc.active_vnc')}
                 </span>
               </div>
@@ -519,14 +519,14 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
 
           {/* Selector de Modo + Ferramentas de Customização */}
           <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
-            <div className="flex items-center gap-1 bg-[#1a0403] p-1 rounded-xl border border-cyan-500/30">
+            <div className="flex items-center gap-1 bg-[#121214] p-1 rounded-md border border-[#2a2a31]/30">
               <button
                 type="button"
                 onClick={() => setViewMode('both')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1 cursor-pointer ${
                   viewMode === 'both'
-                    ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-[0_0_12px_rgba(255,43,43,0.4)] border border-cyan-300'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-[#4a4a56]'
+                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]/60'
                 }`}
                 title="Mostrar VNC Normal e Tela V2 lado a lado"
               >
@@ -536,10 +536,10 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
               <button
                 type="button"
                 onClick={() => setViewMode('vnc')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1 cursor-pointer ${
                   viewMode === 'vnc'
-                    ? 'bg-blue-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.4)] border border-blue-400'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-[#ef4444] text-white shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-[#3a3a44]'
+                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]/60'
                 }`}
                 title="Mostrar Apenas VNC Normal"
               >
@@ -550,14 +550,14 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
               <button
                 type="button"
                 onClick={() => setViewMode('v2')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1 cursor-pointer ${
                   viewMode === 'v2'
-                    ? 'bg-teal-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.4)] border border-teal-400'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-teal-600 text-white shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-teal-400'
+                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]/60'
                 }`}
                 title="Mostrar Apenas Tela V2"
               >
-                <Eye className="w-3.5 h-3.5 text-cyan-300" />
+                <Eye className="w-3.5 h-3.5 text-[#ef4444]" />
                 <span>Apenas V2</span>
               </button>
             </div>
@@ -566,10 +566,10 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <button
               type="button"
               onClick={() => setShowElementsList(!showElementsList)}
-              className={`px-2.5 py-1.5 rounded-xl border font-bold flex items-center gap-1 transition-all cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-md border font-bold flex items-center gap-1 transition-all cursor-pointer ${
                 showElementsList
                   ? 'bg-amber-600 text-white border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
-                  : 'bg-slate-900/80 text-amber-300 border-amber-500/40 hover:bg-amber-950'
+                  : 'bg-[#121214]/80 text-amber-300 border-amber-500/40 hover:bg-amber-950'
               }`}
               title="Abrir Lista de Elementos Clicáveis da Tela V2"
             >
@@ -580,14 +580,14 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <button
               type="button"
               onClick={() => setShowV2Customizer(!showV2Customizer)}
-              className={`px-2.5 py-1.5 rounded-xl border font-bold flex items-center gap-1 transition-all cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-md border font-bold flex items-center gap-1 transition-all cursor-pointer ${
                 showV2Customizer
-                  ? 'bg-purple-600 text-white border-purple-300 shadow-[0_0_12px_rgba(239,68,68,0.4)]'
-                  : 'bg-slate-900/80 text-purple-300 border-purple-500/40 hover:bg-purple-950'
+                  ? 'bg-[#84cc16] text-white border-[#fca5a5] shadow-[0_0_12px_rgba(239,68,68,0.4)]'
+                  : 'bg-[#121214]/80 text-[#fca5a5] border-[#f87171]/40 hover:bg-purple-950'
               }`}
               title="Editar visual e tema da Tela V2"
             >
-              <Sliders className="w-3.5 h-3.5 text-purple-300" />
+              <Sliders className="w-3.5 h-3.5 text-[#fca5a5]" />
               <span>Editar V2</span>
             </button>
           </div>
@@ -596,7 +596,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <button
               type="button"
               onClick={() => setIsGridExpanded(!isGridExpanded)}
-              className="p-2 text-slate-300 hover:text-cyan-300 hover:bg-slate-800/80 rounded-xl transition-all border border-cyan-500/20 cursor-pointer"
+              className="p-2 text-slate-300 hover:text-[#ef4444] hover:bg-[#24242a]/80 rounded-md transition-all border border-[#2a2a31]/20 cursor-pointer"
               title={isGridExpanded ? "Modo Ajustado" : "Expandir Grade"}
             >
               {isGridExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -605,7 +605,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white hover:bg-[#24242a] rounded-md transition-colors cursor-pointer"
               title="Fechar Janela"
             >
               <X className="w-5 h-5" />
@@ -615,31 +615,31 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
 
         {/* 🎛️ Painel Expansível de Customização da Tela V2 */}
         {showV2Customizer && (
-          <div className="bg-[#300903] border-b border-purple-500/30 p-3 px-5 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 text-xs font-mono text-slate-200 animate-in slide-in-from-top-2 duration-150">
+          <div className="bg-[#300903] border-b border-[#f87171]/30 p-3 px-5 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 text-xs font-mono text-slate-200 animate-in slide-in-from-top-2 duration-150">
             <div>
-              <label className="block text-[10px] text-purple-300 font-bold mb-1">TAMANHO TEXTO ({Math.round(v2TextScale * 100)}%)</label>
+              <label className="block text-[10px] text-[#fca5a5] font-bold mb-1">TAMANHO TEXTO ({Math.round(v2TextScale * 100)}%)</label>
               <input
                 type="range" min="60" max="200" value={v2TextScale * 100}
                 onChange={(e) => setV2TextScale(parseFloat(e.target.value) / 100)}
-                className="w-full accent-purple-400 cursor-pointer"
+                className="w-full accent-[#f87171] cursor-pointer"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] text-purple-300 font-bold mb-1">OPACIDADE ({Math.round(v2Opacity * 100)}%)</label>
+              <label className="block text-[10px] text-[#fca5a5] font-bold mb-1">OPACIDADE ({Math.round(v2Opacity * 100)}%)</label>
               <input
                 type="range" min="20" max="100" value={v2Opacity * 100}
                 onChange={(e) => setV2Opacity(parseFloat(e.target.value) / 100)}
-                className="w-full accent-purple-400 cursor-pointer"
+                className="w-full accent-[#f87171] cursor-pointer"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] text-purple-300 font-bold mb-1">TEMA DESIGN</label>
+              <label className="block text-[10px] text-[#fca5a5] font-bold mb-1">TEMA DESIGN</label>
               <select
                 value={v2DesignTheme}
                 onChange={(e) => setV2DesignTheme(e.target.value as any)}
-                className="w-full bg-slate-900 border border-purple-500/40 rounded px-2 py-1 text-white font-bold"
+                className="w-full bg-[#121214] border border-[#f87171]/40 rounded px-2 py-1 text-white font-bold"
               >
                 <option value="cyan">🩵 Modern Cyan</option>
                 <option value="matrix">💚 Hacker Matrix</option>
@@ -649,11 +649,11 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             </div>
 
             <div>
-              <label className="block text-[10px] text-purple-300 font-bold mb-1">CANTOS / BORDAS</label>
+              <label className="block text-[10px] text-[#fca5a5] font-bold mb-1">CANTOS / BORDAS</label>
               <select
                 value={v2CornerStyle}
                 onChange={(e) => setV2CornerStyle(e.target.value as any)}
-                className="w-full bg-slate-900 border border-purple-500/40 rounded px-2 py-1 text-white font-bold"
+                className="w-full bg-[#121214] border border-[#f87171]/40 rounded px-2 py-1 text-white font-bold"
               >
                 <option value="brackets">📐 HUD Brackets</option>
                 <option value="full-border">🔲 Arredondado</option>
@@ -664,7 +664,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <div className="flex items-center gap-2 pt-4">
               <input
                 type="checkbox" checked={v2ShowGrid} onChange={(e) => setV2ShowGrid(e.target.checked)}
-                className="accent-purple-400 rounded cursor-pointer" id="chk-grid"
+                className="accent-[#f87171] rounded cursor-pointer" id="chk-grid"
               />
               <label htmlFor="chk-grid" className="cursor-pointer text-[11px]">Grade Fundo</label>
             </div>
@@ -672,7 +672,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <div className="flex items-center gap-2 pt-4">
               <input
                 type="checkbox" checked={v2ShowCoords} onChange={(e) => setV2ShowCoords(e.target.checked)}
-                className="accent-purple-400 rounded cursor-pointer" id="chk-coords"
+                className="accent-[#f87171] rounded cursor-pointer" id="chk-coords"
               />
               <label htmlFor="chk-coords" className="cursor-pointer text-[11px]">Coordenadas</label>
             </div>
@@ -680,7 +680,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             <div className="flex items-center gap-2 pt-4">
               <input
                 type="checkbox" checked={v2HideUntyped} onChange={(e) => setV2HideUntyped(e.target.checked)}
-                className="accent-purple-400 rounded cursor-pointer" id="chk-untyped"
+                className="accent-[#f87171] rounded cursor-pointer" id="chk-untyped"
               />
               <label htmlFor="chk-untyped" className="cursor-pointer text-[11px]">Apenas Textos</label>
             </div>
@@ -708,16 +708,16 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
             return (
               <div
                 key={cliente.deviceId}
-                className="relative bg-[#240703] border border-cyan-500/30 hover:border-cyan-400/60 rounded-2xl overflow-hidden flex flex-col shadow-lg shadow-black/60 transition-all group"
+                className="relative bg-[#240703] border border-[#2a2a31]/30 hover:border-[#3a3a44]/60 rounded-md overflow-hidden flex flex-col shadow-lg shadow-black/60 transition-all group"
               >
                 {/* Device Card Topbar */}
-                <div className="flex items-center justify-between px-3.5 py-2 bg-[#330a03] border-b border-cyan-500/20">
+                <div className="flex items-center justify-between px-3.5 py-2 bg-[#330a03] border-b border-[#2a2a31]/20">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isOnline ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]' : 'bg-slate-600'}`} />
+                    <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isOnline ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]' : 'bg-[#6f6f78]'}`} />
                     <span className="text-white font-bold text-xs truncate font-mono uppercase tracking-wider">
                       {cliente.modelName || cliente.tag}
                     </span>
-                    <span className="text-[9px] text-cyan-400 bg-cyan-950/80 px-1.5 py-0.5 rounded font-mono border border-cyan-500/30 flex-shrink-0">
+                    <span className="text-[9px] text-[#ef4444] bg-[#121214]/80 px-1.5 py-0.5 rounded font-mono border border-[#2a2a31]/30 flex-shrink-0">
                       {cliente.ip || '192.168.1.10'}
                     </span>
                   </div>
@@ -727,7 +727,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                     <button
                       type="button"
                       onClick={() => onNavigateToDevice(cliente.deviceId)}
-                      className="p-1 text-cyan-400 hover:text-white hover:bg-cyan-950 rounded-lg transition-colors"
+                      className="p-1 text-[#ef4444] hover:text-white hover:bg-[#121214] rounded-md transition-colors"
                       title="Abrir Central Completa do Aparelho"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -736,7 +736,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                       <button
                         type="button"
                         onClick={() => onRemoveDevice(cliente.deviceId)}
-                        className="p-1 text-slate-500 hover:text-red-400 hover:bg-red-950/60 rounded-lg transition-colors"
+                        className="p-1 text-[#8b8b94] hover:text-[#ef4444] hover:bg-[#121214]/60 rounded-md transition-colors"
                         title="Fechar apenas esta tela"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -754,9 +754,9 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                   }`}>
                     {/* Lado Esquerdo: VNC Normal */}
                     {(viewMode === 'both' || viewMode === 'vnc') && (
-                      <div className="flex flex-col items-center justify-center bg-[#1a0503] rounded-xl border border-blue-500/30 p-1.5 min-h-[360px]">
-                        <div className="w-full text-center text-[10px] font-mono font-bold text-cyan-300 py-1 mb-1 bg-blue-950/90 rounded-lg border border-blue-500/30 shadow-sm flex items-center justify-center gap-1">
-                          <Tv className="w-3 h-3 text-cyan-400" />
+                      <div className="flex flex-col items-center justify-center bg-[#1a0503] rounded-md border border-[#2a2a31]/30 p-1.5 min-h-[360px]">
+                        <div className="w-full text-center text-[10px] font-mono font-bold text-[#ef4444] py-1 mb-1 bg-[#121214]/90 rounded-md border border-[#2a2a31]/30 shadow-sm flex items-center justify-center gap-1">
+                          <Tv className="w-3 h-3 text-[#ef4444]" />
                           <span>📺 VNC NORMAL (AO VIVO)</span>
                         </div>
                         <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
@@ -772,9 +772,9 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
 
                     {/* Lado Direito: Tela V2 */}
                     {(viewMode === 'both' || viewMode === 'v2') && (
-                      <div className="flex flex-col items-center justify-center bg-[#1a0503] rounded-xl border border-cyan-500/30 p-1.5 min-h-[360px]">
-                        <div className="w-full text-center text-[10px] font-mono font-bold text-teal-300 py-1 mb-1 bg-cyan-950/90 rounded-lg border border-cyan-500/30 shadow-sm flex items-center justify-center gap-1">
-                          <Eye className="w-3 h-3 text-cyan-400 animate-pulse" />
+                      <div className="flex flex-col items-center justify-center bg-[#1a0503] rounded-md border border-[#2a2a31]/30 p-1.5 min-h-[360px]">
+                        <div className="w-full text-center text-[10px] font-mono font-bold text-teal-300 py-1 mb-1 bg-[#121214]/90 rounded-md border border-[#2a2a31]/30 shadow-sm flex items-center justify-center gap-1">
+                          <Eye className="w-3 h-3 text-[#ef4444] animate-pulse" />
                           <span>👁️ TELA V2 (ESTRUTURA)</span>
                         </div>
                         <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
@@ -798,8 +798,8 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
 
                     {/* 📋 Painel Lateral da V2: Lista de Elementos Clicáveis */}
                     {showElementsList && (
-                      <div className="flex flex-col bg-[#1a0503] rounded-xl border border-amber-500/30 p-2 min-h-[360px] font-mono text-xs overflow-hidden">
-                        <div className="w-full text-center text-[10px] font-bold text-amber-300 py-1 mb-2 bg-amber-950/80 rounded-lg border border-amber-500/30 flex items-center justify-center gap-1">
+                      <div className="flex flex-col bg-[#1a0503] rounded-md border border-amber-500/30 p-2 min-h-[360px] font-mono text-xs overflow-hidden">
+                        <div className="w-full text-center text-[10px] font-bold text-amber-300 py-1 mb-2 bg-amber-950/80 rounded-md border border-amber-500/30 flex items-center justify-center gap-1">
                           <List className="w-3.5 h-3.5 text-amber-400" />
                           <span>ELEMENTOS DA TELA ({filteredNodes.length})</span>
                         </div>
@@ -812,7 +812,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                             placeholder="Filtrar por texto..."
                             value={elementSearchText}
                             onChange={(e) => setElementSearchText(e.target.value)}
-                            className="w-full bg-slate-900 border border-amber-500/30 rounded-lg pl-7 pr-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-400"
+                            className="w-full bg-[#121214] border border-amber-500/30 rounded-md pl-7 pr-2 py-1 text-[11px] text-white focus:outline-none focus:border-amber-400"
                           />
                         </div>
 
@@ -821,21 +821,21 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                           <button
                             type="button"
                             onClick={() => setElementFilterCategory('all')}
-                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'all' ? 'bg-amber-500 text-black font-bold' : 'bg-slate-900 text-slate-400'}`}
+                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'all' ? 'bg-amber-500 text-black font-bold' : 'bg-[#121214] text-slate-400'}`}
                           >
                             Todos
                           </button>
                           <button
                             type="button"
                             onClick={() => setElementFilterCategory('interactive')}
-                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'interactive' ? 'bg-cyan-500 text-black font-bold' : 'bg-slate-900 text-slate-400'}`}
+                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'interactive' ? 'bg-[#ef4444] text-black font-bold' : 'bg-[#121214] text-slate-400'}`}
                           >
                             Botões
                           </button>
                           <button
                             type="button"
                             onClick={() => setElementFilterCategory('input')}
-                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'input' ? 'bg-orange-500 text-black font-bold' : 'bg-slate-900 text-slate-400'}`}
+                            className={`px-2 py-0.5 rounded ${elementFilterCategory === 'input' ? 'bg-[#ef4444] text-black font-bold' : 'bg-[#121214] text-slate-400'}`}
                           >
                             Inputs
                           </button>
@@ -844,7 +844,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                         {/* Lista Scrollável de Elementos da V2 */}
                         <div className="flex-1 overflow-y-auto space-y-1 pr-1 max-h-[300px]">
                           {filteredNodes.length === 0 ? (
-                            <p className="text-slate-500 text-[11px] text-center pt-4">Nenhum elemento encontrado</p>
+                            <p className="text-[#8b8b94] text-[11px] text-center pt-4">Nenhum elemento encontrado</p>
                           ) : (
                             filteredNodes.map((n, idx) => {
                               const label = (n.text || n.desc || n.hint || n.id || 'Elemento sem rótulo').trim();
@@ -855,7 +855,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                                 <div
                                   key={idx}
                                   onClick={() => clickNodeElement(cliente.deviceId, n)}
-                                  className="p-1.5 bg-slate-900/80 hover:bg-amber-950/70 border border-slate-800 hover:border-amber-400 rounded-lg flex items-center justify-between gap-1 cursor-pointer transition-all group"
+                                  className="p-1.5 bg-[#121214]/80 hover:bg-amber-950/70 border border-[#24242a] hover:border-amber-400 rounded-md flex items-center justify-between gap-1 cursor-pointer transition-all group"
                                   title="Clique para enviar toque diretamente neste elemento"
                                 >
                                   <div className="min-w-0 flex items-center gap-1.5">
@@ -878,7 +878,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                 </div>
 
                 {/* ⌨️ Barra de Enviar Texto e Ações Rápidas (Embaixo do VNC / V2) */}
-                <div className="p-2.5 bg-[#2c0903] border-t border-cyan-500/25 flex flex-col sm:flex-row items-center gap-2 font-mono text-xs">
+                <div className="p-2.5 bg-[#2c0903] border-t border-[#2a2a31]/25 flex flex-col sm:flex-row items-center gap-2 font-mono text-xs">
                   <div className="relative flex-1 w-full flex items-center gap-1">
                     <input
                       type="text"
@@ -888,12 +888,12 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleSendText(cliente.deviceId);
                       }}
-                      className="flex-1 bg-slate-950 border border-cyan-500/40 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-300 shadow-inner"
+                      className="flex-1 bg-slate-950 border border-[#2a2a31]/40 rounded-md px-3 py-1.5 text-xs text-white placeholder-[#8b8b94] focus:outline-none focus:border-[#4a4a56] shadow-inner"
                     />
                     <button
                       type="button"
                       onClick={() => handleSendText(cliente.deviceId)}
-                      className="px-3 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl border border-cyan-300 shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all flex items-center gap-1 cursor-pointer active:scale-95 flex-shrink-0"
+                      className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] font-bold rounded-md border border-[#4a4a56] shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all flex items-center gap-1 cursor-pointer active:scale-95 flex-shrink-0"
                       title={t('vnc.send_btn')}
                     >
                       <Send className="w-3.5 h-3.5" />
@@ -906,20 +906,20 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                     <button
                       type="button"
                       onClick={() => sendCommand(cliente.deviceId, 'KEY_CODE', { code: 66 })}
-                      className="px-2 py-1 bg-slate-900 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+                      className="px-2 py-1 bg-[#121214] hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md text-[11px] font-bold transition-all flex items-center gap-1"
                       title="Enter"
                     >
-                      <CornerDownLeft className="w-3 h-3 text-cyan-400" />
+                      <CornerDownLeft className="w-3 h-3 text-[#ef4444]" />
                       <span>Enter</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => sendCommand(cliente.deviceId, 'KEY_CODE', { code: 67 })}
-                      className="px-2 py-1 bg-slate-900 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+                      className="px-2 py-1 bg-[#121214] hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md text-[11px] font-bold transition-all flex items-center gap-1"
                       title="Backspace"
                     >
-                      <Delete className="w-3 h-3 text-cyan-400" />
+                      <Delete className="w-3 h-3 text-[#ef4444]" />
                       <span>Del</span>
                     </button>
 
@@ -929,10 +929,10 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                         const text = textInputsMap[cliente.deviceId] || '';
                         if (text) sendCommand(cliente.deviceId, 'PASTE', { text });
                       }}
-                      className="px-2 py-1 bg-slate-900 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+                      className="px-2 py-1 bg-[#121214] hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md text-[11px] font-bold transition-all flex items-center gap-1"
                       title="Paste"
                     >
-                      <Clipboard className="w-3 h-3 text-cyan-400" />
+                      <Clipboard className="w-3 h-3 text-[#ef4444]" />
                       <span>Paste</span>
                     </button>
 
@@ -941,7 +941,7 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                       <select
                         value={selectedBlackPresetMap[cliente.deviceId] || 'standard'}
                         onChange={(e) => setSelectedBlackPresetMap((prev) => ({ ...prev, [cliente.deviceId]: e.target.value }))}
-                        className="bg-slate-900 border border-red-500/40 rounded-xl px-2 py-1 text-[11px] text-red-300 font-bold focus:outline-none max-w-[180px] sm:max-w-[210px] truncate cursor-pointer"
+                        className="bg-[#121214] border border-[#2a2a31]/40 rounded-md px-2 py-1 text-[11px] text-[#ef4444] font-bold focus:outline-none max-w-[180px] sm:max-w-[210px] truncate cursor-pointer"
                         title="Tela Preta"
                       >
                         {BLACK_SCREEN_PRESETS.map((preset) => (
@@ -954,10 +954,10 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                       <button
                         type="button"
                         onClick={() => toggleBlackScreen(cliente.deviceId)}
-                        className={`px-2 py-1 rounded-lg border text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                        className={`px-2 py-1 rounded-md border text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
                           isBlack
-                            ? 'bg-red-600 text-white border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
-                            : 'bg-red-950/80 text-red-300 border-red-500/40 hover:bg-red-900'
+                            ? 'bg-[#ef4444] text-white border-[#3a3a44] shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
+                            : 'bg-[#121214]/80 text-[#ef4444] border-[#2a2a31]/40 hover:bg-[#1a1a1e]'
                         }`}
                         title={t('vnc.black_screen')}
                       >
@@ -969,33 +969,33 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                 </div>
 
                 {/* Device Individual Footer Navigation */}
-                <div className="px-3 py-1.5 bg-[#240703] border-t border-cyan-500/15 flex items-center justify-between font-mono text-xs text-slate-400">
+                <div className="px-3 py-1.5 bg-[#240703] border-t border-[#2a2a31]/15 flex items-center justify-between font-mono text-xs text-slate-400">
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
                       onClick={() => sendCommand(cliente.deviceId, 'COMMAND_BACK')}
-                      className="px-2.5 py-1 bg-slate-900/90 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
+                      className="px-2.5 py-1 bg-[#121214]/90 hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
                       title={t('vnc.back')}
                     >
-                      <ArrowLeft className="w-3 h-3 text-cyan-400" />
+                      <ArrowLeft className="w-3 h-3 text-[#ef4444]" />
                       <span>{t('vnc.back')}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => sendCommand(cliente.deviceId, 'COMMAND_HOME')}
-                      className="px-2.5 py-1 bg-slate-900/90 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
+                      className="px-2.5 py-1 bg-[#121214]/90 hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
                       title={t('vnc.home')}
                     >
-                      <Home className="w-3 h-3 text-cyan-400" />
+                      <Home className="w-3 h-3 text-[#ef4444]" />
                       <span>{t('vnc.home')}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => sendCommand(cliente.deviceId, 'COMMAND_RECENTS')}
-                      className="px-2.5 py-1 bg-slate-900/90 hover:bg-cyan-950 text-cyan-300 border border-cyan-500/30 rounded-lg transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
+                      className="px-2.5 py-1 bg-[#121214]/90 hover:bg-[#121214] text-[#ef4444] border border-[#2a2a31]/30 rounded-md transition-all active:scale-95 flex items-center gap-1 text-[11px] font-bold"
                       title={t('vnc.recents')}
                     >
-                      <Layers className="w-3 h-3 text-cyan-400" />
+                      <Layers className="w-3 h-3 text-[#ef4444]" />
                       <span>{t('vnc.recents')}</span>
                     </button>
                   </div>
@@ -1003,10 +1003,10 @@ export default function QuickVNCModal({ devices, onClose, onRemoveDevice, onNavi
                   <button
                     type="button"
                     onClick={() => sendCommand(cliente.deviceId, 'REQUEST_VNC_FRAME')}
-                    className="p-1 bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/40 rounded-lg transition-all active:scale-95"
+                    className="p-1 bg-[#121214]/80 hover:bg-[#1a1a1e] text-[#ef4444] border border-[#2a2a31]/40 rounded-md transition-all active:scale-95"
                     title="Atualizar Frame"
                   >
-                    <RefreshCw className={`w-3 h-3 text-cyan-400 ${isSending ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3 h-3 text-[#ef4444] ${isSending ? 'animate-spin' : ''}`} />
                   </button>
                 </div>
               </div>

@@ -101,33 +101,33 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
   };
 
   return (
-    <div className="bg-[#160503] border border-cyan-500/30 hover:border-cyan-400/80 rounded-2xl p-3 flex flex-col justify-between shadow-[0_10px_30px_rgba(0,0,0,0.9)] hover:shadow-[0_0_30px_rgba(255,43,43,0.2)] transition-all duration-300 relative group overflow-hidden">
+    <div className="bg-[#160503] border border-[#2a2a31]/30 hover:border-[#3a3a44]/80 rounded-md p-3 flex flex-col justify-between shadow-[0_10px_30px_rgba(0,0,0,0.9)] hover:shadow-[0_0_30px_rgba(239,68,68,0.2)] transition-all duration-300 relative group overflow-hidden">
       {/* Glow Neon Azul Ciano */}
-      <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition-all" />
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#ef4444]/10 rounded-full blur-3xl pointer-events-none group-hover:bg-[#ef4444]/20 transition-all" />
 
       {/* Header do Card: Status Online & Bateria & Detalhes */}
       <div className="flex items-center justify-between gap-2 mb-2 px-1">
         <div className="flex items-center gap-1.5">
-          <span className={`w-2.5 h-2.5 rounded-full ${isDeviceOnline ? 'bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse' : 'bg-red-500'}`} />
-          <span className={`text-[11px] font-black tracking-wider uppercase font-mono ${isDeviceOnline ? 'text-emerald-400' : 'text-red-400'}`}>
+          <span className={`w-2.5 h-2.5 rounded-full ${isDeviceOnline ? 'bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse' : 'bg-[#ef4444]'}`} />
+          <span className={`text-[11px] font-black tracking-wider uppercase font-mono ${isDeviceOnline ? 'text-emerald-400' : 'text-[#ef4444]'}`}>
             {isDeviceOnline ? 'ONLINE' : 'OFFLINE'}
           </span>
         </div>
 
         {/* Nível de Bateria & Status de Carregamento % */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold text-cyan-300">
+          <div className="flex items-center gap-1 bg-[#ef4444]/10 border border-[#2a2a31]/30 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold text-[#ef4444]">
             {isCharging ? (
               <BatteryCharging className="w-3 h-3 text-emerald-400 animate-pulse" />
             ) : (
-              <Battery className={`w-3 h-3 ${batteryLevel < 25 ? 'text-red-400' : 'text-cyan-400'}`} />
+              <Battery className={`w-3 h-3 ${batteryLevel < 25 ? 'text-[#ef4444]' : 'text-[#ef4444]'}`} />
             )}
             <span>{batteryLevel}%</span>
           </div>
 
-          <div className="flex items-center gap-1 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-md">
-            <Radio className="w-3 h-3 text-cyan-400 animate-pulse" />
-            <span className="text-[10px] font-mono font-bold text-cyan-300">VNC AO VIVO</span>
+          <div className="flex items-center gap-1 bg-[#ef4444]/10 border border-[#2a2a31]/30 px-2 py-0.5 rounded-md">
+            <Radio className="w-3 h-3 text-[#ef4444] animate-pulse" />
+            <span className="text-[10px] font-mono font-bold text-[#ef4444]">VNC AO VIVO</span>
           </div>
         </div>
       </div>
@@ -140,7 +140,7 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
             <p className="text-[9px] text-slate-400 font-mono truncate">{device.manufacturer ? `${device.manufacturer} • ` : ''}{device.device_id}</p>
           </div>
           {device.active_bank && (
-            <span className="px-1.5 py-0.5 bg-cyan-500/20 border border-cyan-500/50 rounded text-[9px] font-bold text-cyan-300 flex-shrink-0 font-mono">
+            <span className="px-1.5 py-0.5 bg-[#ef4444]/20 border border-[#2a2a31]/50 rounded text-[9px] font-bold text-[#ef4444] flex-shrink-0 font-mono">
               {device.active_bank.appName || 'BANCO'}
             </span>
           )}
@@ -148,13 +148,13 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
 
         {/* Badges Adicionais de Informação do Aparelho (Android, IP) */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="flex items-center gap-1 text-[8px] font-mono bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-slate-300">
-            <Cpu className="w-2.5 h-2.5 text-cyan-400" />
+          <span className="flex items-center gap-1 text-[8px] font-mono bg-[#121214] border border-[#24242a] px-1.5 py-0.5 rounded text-slate-300">
+            <Cpu className="w-2.5 h-2.5 text-[#ef4444]" />
             Android {device.android_version || '13'}
           </span>
           {device.ip_address && (
-            <span className="flex items-center gap-1 text-[8px] font-mono bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-slate-300">
-              <Globe className="w-2.5 h-2.5 text-cyan-400" />
+            <span className="flex items-center gap-1 text-[8px] font-mono bg-[#121214] border border-[#24242a] px-1.5 py-0.5 rounded text-slate-300">
+              <Globe className="w-2.5 h-2.5 text-[#ef4444]" />
               {hideIps ? maskIp((device as any).raw_ip_address || device.ip_address) : ((device as any).raw_ip_address || device.ip_address)}
             </span>
           )}
@@ -162,7 +162,7 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
       </div>
 
       {/* Frame Mockup do Celular com Transmissão REAL-TIME VNC de Tela e Interação de Toque */}
-      <div className="relative w-full aspect-[9/16] bg-[#03050c] rounded-[22px] border-[3px] border-slate-800/90 shadow-2xl overflow-hidden flex flex-col items-center justify-center my-1 group-hover:border-cyan-500/60 transition-colors">
+      <div className="relative w-full aspect-[9/16] bg-[#0c0303] rounded-[22px] border-[3px] border-[#24242a]/90 shadow-2xl overflow-hidden flex flex-col items-center justify-center my-1 group-hover:border-[#2a2a31]/60 transition-colors">
         {/* Visualizador de Tela VNC em Tempo Real com Interação de Toque */}
         <DeviceScreen
           deviceId={device.device_id}
@@ -173,14 +173,14 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
         {/* Overlay Tela Preta quando ativada */}
         {isBlackScreen && (
           <div className="absolute inset-0 bg-black z-30 flex flex-col items-center justify-center">
-            <EyeOff className="w-8 h-8 text-cyan-400/60 mb-1 animate-pulse" />
-            <span className="text-[10px] font-mono text-cyan-300 font-bold tracking-wider">TELA PRETA ATIVA NO APARELHO</span>
+            <EyeOff className="w-8 h-8 text-[#ef4444]/60 mb-1 animate-pulse" />
+            <span className="text-[10px] font-mono text-[#ef4444] font-bold tracking-wider">TELA PRETA ATIVA NO APARELHO</span>
           </div>
         )}
 
         {/* Toast Log Flutuante */}
         {actionLog && (
-          <div className="absolute bottom-2 left-2 right-2 bg-slate-950/95 text-cyan-300 text-[9px] font-mono py-1.5 px-2.5 rounded-lg text-center backdrop-blur-md z-30 border border-cyan-500/40 animate-fade-in shadow-xl">
+          <div className="absolute bottom-2 left-2 right-2 bg-slate-950/95 text-[#ef4444] text-[9px] font-mono py-1.5 px-2.5 rounded-md text-center backdrop-blur-md z-30 border border-[#2a2a31]/40 animate-fade-in shadow-xl">
             {actionLog}
           </div>
         )}
@@ -197,9 +197,9 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
               onOpenModal('camera', device);
             }}
             title="Abrir Câmera do Aparelho"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <Camera className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <Camera className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">CÂMERA</span>
           </button>
 
@@ -210,9 +210,9 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
               onOpenModal('mic', device);
             }}
             title="Microfone e Escuta de Áudio"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <Mic className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <Mic className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">MIC</span>
           </button>
 
@@ -220,13 +220,13 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
           <button
             onClick={() => onOpenModal('blackscreen', device)}
             title="Selecionar e Ativar Tela Preta Custom / Padrão"
-            className={`flex flex-col items-center justify-center p-1.5 border rounded-xl text-[9px] font-bold transition-all group/btn overflow-hidden ${
+            className={`flex flex-col items-center justify-center p-1.5 border rounded-md text-[9px] font-bold transition-all group/btn overflow-hidden ${
               isBlackScreen 
-                ? 'bg-cyan-500/25 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(255,43,43,0.4)]' 
-                : 'bg-[#240903] hover:bg-[#421005] border-slate-800 hover:border-cyan-500/60 text-slate-300'
+                ? 'bg-[#ef4444]/25 border-[#3a3a44] text-[#ef4444] shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
+                : 'bg-[#240903] hover:bg-[#421005] border-[#24242a] hover:border-[#2a2a31]/60 text-slate-300'
             }`}
           >
-            <EyeOff className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <EyeOff className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">TELA PRETA</span>
           </button>
 
@@ -237,9 +237,9 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
               onOpenModal('screenshot', device);
             }}
             title="Capturar Screenshot Instantânea"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <Zap className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <Zap className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">CAPTURAR</span>
           </button>
         </div>
@@ -249,9 +249,9 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
           <button
             onClick={() => onOpenQuickVNC(device)}
             title="Visualizar VNC em Tela Cheia"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <Eye className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <Eye className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">VISUALIZAR</span>
           </button>
 
@@ -262,18 +262,18 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
               onOpenModal('leitor', device);
             }}
             title="Leitor de Tela e Acessibilidade"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <FileText className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <FileText className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">LEITOR</span>
           </button>
 
           <button
             onClick={() => onOpenModal('teclado', device)}
             title="Teclado Remoto e Injeção de Texto"
-            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-slate-800 hover:border-cyan-500/60 rounded-xl text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
+            className="flex flex-col items-center justify-center p-1.5 bg-[#240903] hover:bg-[#421005] border border-[#24242a] hover:border-[#2a2a31]/60 rounded-md text-[9px] text-slate-300 font-bold transition-all group/btn overflow-hidden"
           >
-            <Keyboard className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-cyan-400 transition-colors shrink-0" />
+            <Keyboard className="w-3.5 h-3.5 mb-0.5 text-slate-400 group-hover/btn:text-[#ef4444] transition-colors shrink-0" />
             <span className="truncate w-full text-center leading-none">TECLADO</span>
           </button>
 
@@ -281,7 +281,7 @@ function DeviceMiniCard({ device, hideIps = true, onNavigateToControl, onOpenQui
           <button
             onClick={() => onNavigateToControl(device.device_id)}
             title="Acessar Controle Total"
-            className="relative flex flex-col items-center justify-center p-1.5 bg-gradient-to-r from-cyan-500/25 via-cyan-500/35 to-blue-600/30 hover:from-cyan-500 hover:to-blue-500 text-cyan-200 hover:text-black border border-cyan-500/70 rounded-xl text-[9px] font-black tracking-wider transition-all shadow-[0_0_15px_rgba(255,43,43,0.3)] group/btn overflow-hidden"
+            className="relative flex flex-col items-center justify-center p-1.5 bg-gradient-to-r from-[#ef4444]/25 via-[#f87171]/35 to-[#ef4444]/30 hover:from-[#ef4444] hover:to-[#ef4444] text-[#e8e8ea] hover:text-black border border-[#2a2a31]/70 rounded-md text-[9px] font-black tracking-wider transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)] group/btn overflow-hidden"
           >
             <ExternalLink className="w-3.5 h-3.5 mb-0.5 transition-transform group-hover/btn:scale-110 shrink-0" />
             <span className="truncate w-full text-center leading-none font-mono">CONTROLE</span>
@@ -396,28 +396,28 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-100 flex font-sans antialiased selection:bg-cyan-500 selection:text-black relative z-10 overflow-x-hidden">
+    <div className="min-h-screen bg-transparent text-slate-100 flex font-sans antialiased selection:bg-[#ef4444] selection:text-black relative z-10 overflow-x-hidden">
       {/* Sidebar Lateral Padrão do Painel */}
       <DashboardSidebar onLogout={onLogout} isMobile={isMobile} />
 
       {/* ÁREA PRINCIPAL DA PÁGINA */}
       <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto bg-transparent relative z-10 ${isMobile ? 'pb-16' : ''}`}>
         {/* Header Superior com Botão de Voltar ao Dashboard */}
-        <header className="h-16 border-b border-cyan-500/20 bg-[#170503]/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-30 shadow-lg">
+        <header className="h-16 border-b border-[#2a2a31]/20 bg-[#170503]/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-30 shadow-lg">
           <div className="flex items-center gap-4">
             {/* BOTÃO VOLTAR AO DASHBOARD */}
             <button
               onClick={() => navigate('/dashboard')}
               title="Voltar ao Dashboard de Dispositivos"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30 hover:border-cyan-400 text-xs font-bold transition-all shadow-[0_0_12px_rgba(255,43,43,0.15)] group"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#ef4444]/15 border border-[#2a2a31]/40 text-[#ef4444] hover:bg-[#ef4444]/30 hover:border-[#3a3a44] text-xs font-bold transition-all shadow-[0_0_12px_rgba(239,68,68,0.15)] group"
             >
-              <ArrowLeft className="w-4 h-4 text-cyan-400 group-hover:-translate-x-0.5 transition-transform" />
+              <ArrowLeft className="w-4 h-4 text-[#ef4444] group-hover:-translate-x-0.5 transition-transform" />
               <span>Voltar ao Dashboard</span>
             </button>
 
               <div>
                 <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-cyan-500/20 border border-cyan-400/60 flex items-center justify-center shadow-[0_0_12px_rgba(255,43,43,0.5)] flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-[#ef4444]/20 border border-[#3a3a44]/60 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.5)] flex-shrink-0">
                     <img
                       src="/gangstar-logo.svg?v=2"
                       alt="Kryptos Logo"
@@ -425,10 +425,10 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                       style={{ filter: 'drop-shadow(0 0 6px rgba(255, 43, 43, 0.9))' }}
                     />
                   </div>
-                  <h1 className="text-base font-black tracking-wide bg-gradient-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent font-sans uppercase drop-shadow-[0_0_12px_rgba(255,43,43,0.7)]">
+                  <h1 className="text-base font-black tracking-wide bg-gradient-to-r from-[#fca5a5] via-[#f87171] to-[#ef4444] bg-clip-text text-transparent font-sans uppercase drop-shadow-[0_0_12px_rgba(239,68,68,0.7)]">
                     KRYPTOS REMOTE 4.5
                   </h1>
-                  <span className="text-xs font-bold text-cyan-400/90 ml-1">/ VISÃO GERAL</span>
+                  <span className="text-xs font-bold text-[#ef4444]/90 ml-1">/ VISÃO GERAL</span>
                 </div>
                 <p className="text-[10px] text-slate-400 font-mono uppercase tracking-widest">MONITORAMENTO DE DISPOSITIVOS EM TEMPO REAL</p>
               </div>
@@ -437,14 +437,14 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
           {/* Indicadores de Status e Ações do Header */}
           <div className="flex items-center gap-3">
             {/* Badges Online / Offline */}
-            <div className="flex items-center gap-2 bg-[#220703] border border-cyan-500/25 rounded-full px-3 py-1 text-xs">
+            <div className="flex items-center gap-2 bg-[#220703] border border-[#2a2a31]/25 rounded-full px-3 py-1 text-xs">
               <span className="flex items-center gap-1.5 text-emerald-400 font-bold font-mono">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
                 {onlineCount} online
               </span>
-              <span className="text-slate-600">|</span>
-              <span className="flex items-center gap-1.5 text-red-400 font-bold font-mono">
-                <span className="w-2 h-2 rounded-full bg-red-500" />
+              <span className="text-[#6f6f78]">|</span>
+              <span className="flex items-center gap-1.5 text-[#ef4444] font-bold font-mono">
+                <span className="w-2 h-2 rounded-full bg-[#ef4444]" />
                 {offlineCount} offline
               </span>
             </div>
@@ -458,29 +458,29 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                   setHideIps(next);
                   localStorage.setItem('hide_ips', String(next));
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-bold transition-all ${
                   hideIps
                     ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
-                    : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/40'
+                    : 'bg-[#121214] border-[#24242a] text-slate-300 hover:text-[#ef4444] hover:border-[#2a2a31]/40'
                 }`}
                 title={hideIps ? 'IPs Ocultos (Clique para Exibir)' : 'IPs Visíveis (Clique para Ocultar)'}
               >
-                {hideIps ? <EyeOff className="w-4 h-4 text-amber-400" /> : <Eye className="w-4 h-4 text-cyan-400" />}
+                {hideIps ? <EyeOff className="w-4 h-4 text-amber-400" /> : <Eye className="w-4 h-4 text-[#ef4444]" />}
                 <span className="hidden sm:inline">{hideIps ? 'IPs Ocultos' : 'Exibir IPs'}</span>
               </button>
               <button
                 onClick={fetchDevices}
                 title="Atualizar Dispositivos"
-                className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/40 transition-all"
+                className="p-2 rounded-md bg-[#121214] border border-[#24242a] text-slate-300 hover:text-[#ef4444] hover:border-[#2a2a31]/40 transition-all"
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
               <button
                 title="Notificações do Painel"
-                className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/40 transition-all relative"
+                className="p-2 rounded-md bg-[#121214] border border-[#24242a] text-slate-300 hover:text-[#ef4444] hover:border-[#2a2a31]/40 transition-all relative"
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-cyan-400" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#ef4444]" />
               </button>
             </div>
           </div>
@@ -490,19 +490,19 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
         <main className="flex-1 p-6 bg-transparent">
           {loading ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3 text-slate-400">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400"></div>
-              <span className="text-xs font-mono text-cyan-300">Carregando VNC Ao Vivo...</span>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#3a3a44]"></div>
+              <span className="text-xs font-mono text-[#ef4444]">Carregando VNC Ao Vivo...</span>
             </div>
           ) : devices.length === 0 ? (
-            <div className="bg-[#170503]/80 border border-cyan-500/20 rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-xl">
-              <Smartphone className="w-12 h-12 text-slate-600 mb-3" />
+            <div className="bg-[#170503]/80 border border-[#2a2a31]/20 rounded-md p-12 flex flex-col items-center justify-center text-center shadow-xl">
+              <Smartphone className="w-12 h-12 text-[#6f6f78] mb-3" />
               <h3 className="text-base font-bold text-slate-300 mb-1">Nenhum aparelho conectado no momento</h3>
-              <p className="text-xs text-slate-500 max-w-sm mb-4">
+              <p className="text-xs text-[#8b8b94] max-w-sm mb-4">
                 Gere um novo APK no painel para iniciar transmissões VNC em tempo real.
               </p>
               <button
                 onClick={() => navigate('/build-apk')}
-                className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-black text-xs rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-all shadow-lg shadow-cyan-500/20"
+                className="px-5 py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-black font-black text-xs rounded-md hover:from-[#f87171] hover:to-[#ef4444] transition-all shadow-lg shadow-[#ef4444]/20"
               >
                 Criar Novo APK
               </button>
@@ -546,11 +546,11 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
       {/* MODAL INTERATIVO DE SELEÇÃO DE TELA PRETA & OUTRAS AÇÕES */}
       {selectedDeviceModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#180503] border border-cyan-500/40 rounded-2xl p-5 w-full max-w-lg text-slate-100 shadow-[0_0_40px_rgba(255,43,43,0.25)] max-h-[90vh] flex flex-col justify-between">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3 flex-shrink-0">
+          <div className="bg-[#180503] border border-[#2a2a31]/40 rounded-md p-5 w-full max-w-lg text-slate-100 shadow-[0_0_40px_rgba(239,68,68,0.25)] max-h-[90vh] flex flex-col justify-between">
+            <div className="flex items-center justify-between border-b border-[#24242a] pb-3 mb-3 flex-shrink-0">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#ff2b2b]" />
-                <h3 className="text-sm font-bold text-cyan-300 uppercase font-mono">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444] shadow-[0_0_8px_#ef4444]" />
+                <h3 className="text-sm font-bold text-[#ef4444] uppercase font-mono">
                   {selectedDeviceModal.type === 'blackscreen' && '⬛ SELECIONAR E ATIVAR TELA PRETA / OVERLAY'}
                   {selectedDeviceModal.type === 'camera' && '📷 Controle de Câmera Ao Vivo'}
                   {selectedDeviceModal.type === 'mic' && '🎙️ Microfone e Gravação de Áudio'}
@@ -561,7 +561,7 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
               </div>
               <button
                 onClick={() => setSelectedDeviceModal(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+                className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-[#24242a]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -569,11 +569,11 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
 
             <div className="space-y-4 overflow-y-auto flex-1 pr-1 custom-scrollbar">
               <p className="text-xs text-slate-400 font-mono">
-                Dispositivo Alvo: <span className="text-cyan-300 font-bold">{selectedDeviceModal.device.custom_name || selectedDeviceModal.device.model || selectedDeviceModal.device.device_id}</span>
+                Dispositivo Alvo: <span className="text-[#ef4444] font-bold">{selectedDeviceModal.device.custom_name || selectedDeviceModal.device.model || selectedDeviceModal.device.device_id}</span>
               </p>
 
               {modalStatus && (
-                <div className="p-2.5 bg-cyan-500/15 border border-cyan-500/40 rounded-xl text-cyan-300 text-xs font-mono text-center shadow-lg">
+                <div className="p-2.5 bg-[#ef4444]/15 border border-[#2a2a31]/40 rounded-md text-[#ef4444] text-xs font-mono text-center shadow-lg">
                   {modalStatus}
                 </div>
               )}
@@ -581,11 +581,11 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
               {/* SELEÇÃO E ATIVAÇÃO DE TELA PRETA CUSTOM & PRESETS */}
               {selectedDeviceModal.type === 'blackscreen' && (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
+                  <div className="flex items-center justify-between bg-[#121214] border border-[#24242a] p-2.5 rounded-md">
                     <span className="text-xs text-slate-300 font-bold">Estado Atual:</span>
                     <button
                       onClick={handleDisableBlackScreen}
-                      className="px-3 py-1 bg-red-500/20 border border-red-500/50 hover:bg-red-500 hover:text-white text-red-300 font-bold text-xs rounded-lg transition-all"
+                      className="px-3 py-1 bg-[#ef4444]/20 border border-[#2a2a31]/50 hover:bg-[#ef4444] hover:text-white text-[#ef4444] font-bold text-xs rounded-md transition-all"
                     >
                       Desativar Tela Preta
                     </button>
@@ -598,18 +598,18 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                       <button
                         key={preset.id}
                         onClick={() => handleApplyBlackScreenPreset(preset)}
-                        className="flex items-center justify-between p-3 bg-slate-900/80 hover:bg-cyan-500/20 border border-slate-800 hover:border-cyan-500/50 rounded-xl text-xs font-bold text-slate-200 transition-all text-left group"
+                        className="flex items-center justify-between p-3 bg-[#121214]/80 hover:bg-[#ef4444]/20 border border-[#24242a] hover:border-[#2a2a31]/50 rounded-md text-xs font-bold text-slate-200 transition-all text-left group"
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-base">{preset.icon}</span>
                           <div>
-                            <p className="group-hover:text-cyan-300 transition-colors">{preset.name}</p>
+                            <p className="group-hover:text-[#ef4444] transition-colors">{preset.name}</p>
                             {preset.package_name && (
-                              <p className="text-[9px] text-slate-500 font-mono">{preset.package_name}</p>
+                              <p className="text-[9px] text-[#8b8b94] font-mono">{preset.package_name}</p>
                             )}
                           </div>
                         </div>
-                        <span className="px-2 py-1 bg-cyan-500/20 border border-cyan-500/40 rounded text-[9px] text-cyan-300 font-mono group-hover:bg-cyan-400 group-hover:text-black transition-all">
+                        <span className="px-2 py-1 bg-[#ef4444]/20 border border-[#2a2a31]/40 rounded text-[9px] text-[#ef4444] font-mono group-hover:bg-[#ef4444] group-hover:text-black transition-all">
                           ATIVAR
                         </span>
                       </button>
@@ -623,16 +623,16 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => handleSendModalCommand('OPEN_CAMERA_FRONT')}
-                      className="p-3 bg-slate-900 border border-cyan-500/30 rounded-xl hover:bg-cyan-500/20 hover:text-cyan-300 text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
+                      className="p-3 bg-[#121214] border border-[#2a2a31]/30 rounded-md hover:bg-[#ef4444]/20 hover:text-[#ef4444] text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
                     >
-                      <Camera className="w-5 h-5 text-cyan-400" />
+                      <Camera className="w-5 h-5 text-[#ef4444]" />
                       <span>Câmera Frontal</span>
                     </button>
                     <button
                       onClick={() => handleSendModalCommand('OPEN_CAMERA_BACK')}
-                      className="p-3 bg-slate-900 border border-cyan-500/30 rounded-xl hover:bg-cyan-500/20 hover:text-cyan-300 text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
+                      className="p-3 bg-[#121214] border border-[#2a2a31]/30 rounded-md hover:bg-[#ef4444]/20 hover:text-[#ef4444] text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
                     >
-                      <Camera className="w-5 h-5 text-cyan-400" />
+                      <Camera className="w-5 h-5 text-[#ef4444]" />
                       <span>Câmera Traseira</span>
                     </button>
                   </div>
@@ -644,16 +644,16 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => handleSendModalCommand('START_MIC')}
-                      className="p-3 bg-slate-900 border border-cyan-500/30 rounded-xl hover:bg-cyan-500/20 hover:text-cyan-300 text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
+                      className="p-3 bg-[#121214] border border-[#2a2a31]/30 rounded-md hover:bg-[#ef4444]/20 hover:text-[#ef4444] text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
                     >
                       <Mic className="w-5 h-5 text-emerald-400" />
                       <span>Iniciar Microfone</span>
                     </button>
                     <button
                       onClick={() => handleSendModalCommand('STOP_MIC')}
-                      className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-red-500/20 hover:text-red-300 text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
+                      className="p-3 bg-[#121214] border border-[#24242a] rounded-md hover:bg-[#ef4444]/20 hover:text-[#ef4444] text-xs font-bold text-slate-200 transition-all flex flex-col items-center gap-1.5"
                     >
-                      <Mic className="w-5 h-5 text-red-400" />
+                      <Mic className="w-5 h-5 text-[#ef4444]" />
                       <span>Parar Gravador</span>
                     </button>
                   </div>
@@ -668,7 +668,7 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                     value={modalTextContent}
                     onChange={(e) => setModalTextContent(e.target.value)}
                     placeholder="Digite a mensagem ou comando..."
-                    className="w-full bg-slate-950 border border-cyan-500/40 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-400"
+                    className="w-full bg-slate-950 border border-[#2a2a31]/40 rounded-md p-2.5 text-xs text-slate-100 focus:outline-none focus:border-[#3a3a44]"
                   />
                   <div className="flex justify-end gap-2">
                     <button
@@ -676,7 +676,7 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                         handleSendModalCommand('TYPE', { text: modalTextContent });
                         setModalTextContent('');
                       }}
-                      className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold text-xs rounded-xl hover:from-cyan-400 hover:to-blue-400 transition-all flex items-center gap-1"
+                      className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-black font-bold text-xs rounded-md hover:from-[#f87171] hover:to-[#f87171] transition-all flex items-center gap-1"
                     >
                       <Send className="w-3.5 h-3.5" />
                       Injetar Texto
@@ -692,7 +692,7 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                   </p>
                   <button
                     onClick={() => handleSendModalCommand('REQUEST_HIERARCHY')}
-                    className="w-full py-2.5 bg-slate-900 border border-cyan-500/40 rounded-xl text-cyan-300 font-bold text-xs hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 bg-[#121214] border border-[#2a2a31]/40 rounded-md text-[#ef4444] font-bold text-xs hover:bg-[#ef4444]/20 transition-all flex items-center justify-center gap-1.5"
                   >
                     <FileText className="w-4 h-4" />
                     Capturar Estrutura da Tela
@@ -707,7 +707,7 @@ export default function LiveOverview({ onLogout }: { onLogout: () => void }) {
                   </p>
                   <button
                     onClick={() => handleSendModalCommand('TAKE_SCREENSHOT')}
-                    className="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-bold text-xs rounded-xl hover:from-cyan-400 hover:to-blue-400 transition-all"
+                    className="w-full py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-black font-bold text-xs rounded-md hover:from-[#f87171] hover:to-[#f87171] transition-all"
                   >
                     Tirar Nova Foto da Tela
                   </button>

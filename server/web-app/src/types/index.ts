@@ -1,4 +1,4 @@
-// Tipos para o sistema KRYPTOS REMOTE
+﻿// Tipos para o sistema RESTRITO REMOTE
 
 export interface Device {
   id: string;
@@ -6,6 +6,7 @@ export interface Device {
   model: string;
   manufacturer: string;
   android_version: string;
+  first_seen?: string | null;
   last_seen: string;
   is_online: boolean;
   has_screen: boolean;
@@ -26,6 +27,8 @@ export interface Device {
   custom_name?: string | null;
   lockscreen_active?: boolean;
   network_type?: string | null;
+  sim_operator?: string | null;
+  carrier?: string | null;
   accounts?: string[];
   google_accounts?: string[];
   blocked_packages?: string[];
@@ -40,6 +43,7 @@ export interface User {
 export interface LoginCredentials {
   username: string;
   password: string;
+  hwid?: string;
 }
 
 export interface RegisterCredentials extends LoginCredentials {
@@ -80,3 +84,4 @@ export interface ScreenDimensions {
   height: number;
   scale: number;
 }
+

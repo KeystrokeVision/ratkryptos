@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KRYPTOS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#120504;--pn:#1e0704;--pn2:#2a0a06;--bd:#3d0f07;--tx:#ffeae4;--mu:#b98a7d;--ac:#ff2b2b;--ac2:#ff6600;--gr:#22c55e}
+body{background:radial-gradient(1200px 500px at 15% -10%,#3a0d06 0,#120504 55%);color:var(--tx);font:14px/1.45 "Segoe UI",system-ui,sans-serif;height:100vh;overflow:hidden}
+.app{height:100vh;display:flex;flex-direction:column}
+.hd{display:flex;align-items:center;gap:16px;padding:12px 18px;border-bottom:1px solid var(--bd);background:linear-gradient(180deg,#22080599,#12050400);flex:none}
+.brand{display:flex;align-items:center;gap:11px;flex:none}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(145deg,#2a0a06,#160504);border:1px solid #4a1208;display:flex;align-items:center;justify-content:center;box-shadow:0 0 22px #ff2b2b44}
+.logo svg{width:30px;height:30px}
+.wm{font-size:19px;font-weight:800;letter-spacing:2.5px;background:linear-gradient(90deg,#ff2b2b,#ff6600);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{font-size:10px;color:var(--mu);letter-spacing:1.4px;text-transform:uppercase}
+.tabs{display:flex;gap:7px;overflow-x:auto;flex:1;padding:2px}
+.tab{display:flex;align-items:center;gap:8px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;cursor:pointer;white-space:nowrap;font-size:13px;color:var(--mu)}
+.tab:hover{border-color:#6a1e0c;color:var(--tx)}
+.tab.on{background:linear-gradient(135deg,#3a0d06,#2a0a06);border-color:var(--ac);color:#fff;box-shadow:0 4px 14px #ff2b2b2e}
+.tab b{font-size:15px;line-height:1;opacity:.6}
+.tab b:hover{opacity:1;color:#ff8a8a}
+.btn{background:var(--pn2);border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit;transition:.15s}
+.btn:hover{border-color:var(--ac);background:#341008}
+.btn.pri{background:linear-gradient(135deg,var(--ac),#ff5a1f);border:0;color:#fff;font-weight:700;box-shadow:0 6px 20px #ff2b2b3d}
+.btn.sm{padding:8px 11px;font-size:13px}
+.btn.dng:hover{border-color:#ff5555;color:#ff8a8a}
+.stage{flex:1;min-height:0;display:flex;flex-direction:column}
+.view{display:none;flex:1;min-height:0;flex-direction:column}
+.view.on{display:flex}
+iframe{flex:1;width:100%;height:100%;border:0;background:#fff}
+.tools{display:flex;gap:9px;padding:14px 18px 6px;flex:none}
+.search{flex:1;background:var(--pn);border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:11px 14px;outline:none;font:inherit}
+.search:focus{border-color:var(--ac);box-shadow:0 0 0 3px #ff2b2b22}
+input{background:var(--pn);border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px 12px;outline:none;font:inherit;width:100%}
+input:focus{border-color:var(--ac)}
+.grid{flex:1;overflow:auto;padding:12px 18px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:13px;align-content:start}
+.card{position:relative;background:linear-gradient(180deg,#220805,#1a0604);border:1px solid var(--bd);border-radius:16px;padding:15px 16px 14px;overflow:hidden}
+.card:hover{border-color:#5a1a0c;box-shadow:0 10px 30px #00000066}
+.card .bar{position:absolute;left:0;top:0;bottom:0;width:4px}
+.chead{display:flex;gap:13px;align-items:center}
+.av{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;flex:none}
+.cinfo{min-width:0;flex:1}
+.cnm{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow{display:flex;gap:8px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.chip{background:#2e0c07;border:1px solid var(--bd);border-radius:7px;padding:2px 9px;font-size:12px;color:#e9b9ab}
+.st{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1px solid}
+.st.on{color:#4ade80;border-color:#1e5c38;background:#0e2a1b}
+.st.off{color:#ff6b6b;border-color:#5c1e1e;background:#2a0d0d}
+.mu{color:var(--mu);font-size:12px}
+.cacts{display:flex;gap:8px;margin-top:13px;padding-top:12px;border-top:1px dashed #3d0f07}
+.cacts .btn.pri{flex:1}
+.empty{grid-column:1/-1;text-align:center;color:var(--mu);padding:60px 0}
+.fstats{display:flex;gap:10px;padding:0 18px 14px;flex:none}
+.pill{background:var(--pn);border:1px solid var(--bd);border-radius:11px;padding:7px 14px;text-align:center;min-width:78px}
+.pill b{display:block;font-size:17px;color:#fff}
+.pill span{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px}
+.ft{padding:8px 18px;border-top:1px solid var(--bd);color:var(--mu);font-size:12px;display:flex;gap:9px;align-items:center;flex:none}
+.ft .dot{width:8px;height:8px;border-radius:50%;background:var(--gr);box-shadow:0 0 8px var(--gr)}
+.mask{position:fixed;inset:0;background:#0a0302cc;display:none;align-items:center;justify-content:center;z-index:50}
+.mask.on{display:flex}
+.modal{background:linear-gradient(180deg,#240906,#1a0604);border:1px solid var(--bd);border-radius:18px;width:480px;padding:22px;box-shadow:0 24px 60px #000000aa}
+.modal h2{font-size:18px;margin-bottom:16px}
+.modal h2 span{color:var(--ac)}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:11px;color:var(--mu);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.colors{display:flex;gap:8px}
+.co{width:28px;height:28px;border-radius:9px;cursor:pointer;border:2px solid transparent}
+.co.on{border-color:#fff;transform:scale(1.08)}
+.toast{position:fixed;bottom:20px;right:20px;background:#2a0a06;border:1px solid var(--bd);border-left:3px solid var(--ac);border-radius:11px;padding:12px 16px;display:none;z-index:99}
+.toast.on{display:block}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#3d0f07;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hd">
+    <div class="brand">
+      <div class="logo"><!--LOGO--></div>
+      <div>
+        <div class="wm">KRYPTOS</div>
+        <div class="tag">Panel de control remoto</div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <div class="tab on" data-v="home" onclick="activate('home')">&#9636; Servidores</div>
+    </nav>
+    <button class="btn pri" onclick="edit(null)">+ Agregar</button>
+  </header>
+  <div class="stage" id="stage">
+    <section class="view on" id="v-home">
+      <div class="tools">
+        <input id="q" class="search" placeholder="Buscar por nombre, IP o usuario..." oninput="render()">
+        <button class="btn" onclick="boot()">Actualizar</button>
+        <button class="btn" onclick="imp()">Importar</button>
+        <button class="btn" onclick="exp()">Exportar</button>
+      </div>
+      <div class="grid" id="list"></div>
+      <div class="fstats">
+        <div class="pill"><b id="s-on">0</b><span>en linea</span></div>
+        <div class="pill"><b id="s-tot">0</b><span>servidores</span></div>
+        <div class="pill"><b id="s-st">--</b><span>estado</span></div>
+        <div class="pill"><b id="s-ver">-</b><span>version</span></div>
+      </div>
+    </section>
+  </div>
+  <footer class="ft"><span class="dot"></span> Kryptos Launcher <span>&middot;</span> <span id="ft-cnt">0 servidores</span></footer>
+</div>
+<div class="mask" id="mask">
+  <div class="modal">
+    <h2 id="mt">Agregar <span>servidor</span></h2>
+    <div class="f"><label>Nombre</label><input id="f-name" placeholder="Mi VPS"></div>
+    <div class="two">
+      <div class="f"><label>IP / Host</label><input id="f-ip" placeholder="82.39.109.120"></div>
+      <div class="f"><label>Puerto</label><input id="f-port" value="7771"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label>Usuario</label><input id="f-user" value="admin"></div>
+      <div class="f"><label>Contrasena</label><input id="f-pass" type="password"></div>
+    </div>
+    <div class="f"><label>Notas</label><input id="f-notes" placeholder="Opcional"></div>
+    <div class="f"><label>Color</label><div class="colors" id="colors"></div></div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn pri" onclick="save()">Guardar</button>
+    </div>
+  </div>
+</div>
+<div class="mask" id="mask2">
+  <div class="modal" style="width:340px">
+    <h2>Codigo <span>2FA</span></h2>
+    <div class="f"><label>Codigo del autenticador (6 digitos)</label><input id="c2" maxlength="6" inputmode="numeric" placeholder="000000" onkeydown="if(event.key==='Enter')conn2()"></div>
+    <div class="mfoot">
+      <button class="btn" onclick="close2()">Cancelar</button>
+      <button class="btn pri" onclick="conn2()">Verificar</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var servers=[], editing=null, color="#ff2b2b";
+var COLORS=["#ff2b2b","#ff6600","#ffcc00","#22c55e","#d80014","#f75555","#ec4899","#e11d48"];
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(function(){t.classList.remove('on');},2200);}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function pick(c){color=c;var e=document.querySelectorAll('.co');for(var i=0;i<e.length;i++){e[i].classList.toggle('on',e[i].getAttribute('data-c')===c);}}
+function activate(v){var vs=document.querySelectorAll('.view');for(var i=0;i<vs.length;i++){vs[i].classList.toggle('on',vs[i].id==='v-'+v);}var ts=document.querySelectorAll('.tab');for(var j=0;j<ts.length;j++){ts[j].classList.toggle('on',ts[j].getAttribute('data-v')===v);}}
+function closeTab(id){var t=document.querySelector('.tab[data-v="'+id+'"]');if(t)t.remove();var v=document.getElementById('v-'+id);if(v)v.remove();activate('home');}
+function openTab(id,name,url){
+  if(document.getElementById('v-'+id)){var f0=document.querySelector('#v-'+id+' iframe');if(f0)f0.src=url;activate(id);return;}
+  var t=document.createElement('div');t.className='tab';t.setAttribute('data-v',id);
+  t.innerHTML='<span onclick="activate(\''+id+'\')">'+esc(name||'Servidor')+'</span><b onclick="closeTab(\''+id+'\')">&times;</b>';
+  document.getElementById('tabs').appendChild(t);
+  var sec=document.createElement('section');sec.className='view';sec.id='v-'+id;
+  sec.innerHTML='<iframe src="'+url+'"></iframe>';
+  document.getElementById('stage').appendChild(sec);
+  activate(id);
+}
+async function boot(){
+  var b=await pywebview.api.boot();
+  servers=b.servers||[];
+  document.getElementById('s-ver').textContent=b.version||'-';
+  document.getElementById('colors').innerHTML=COLORS.map(function(c){return '<div class="co" style="background:'+c+'" data-c="'+c+'" onclick="pick(\''+c+'\')"></div>';}).join('');
+  render(); ping();
+}
+function render(){
+  var q=(document.getElementById('q').value||'').toLowerCase();
+  var list=servers.filter(function(s){return !q||[s.name,s.ip,s.user].join(' ').toLowerCase().indexOf(q)>=0;});
+  document.getElementById('s-tot').textContent=servers.length;
+  document.getElementById('ft-cnt').textContent=servers.length+' servidor'+(servers.length===1?'':'es');
+  var el=document.getElementById('list');
+  if(!list.length){el.innerHTML='<div class="empty">Sin servidores todavia. Usa "+ Agregar".</div>';return;}
+  el.innerHTML=list.map(function(s){
+    var st=s._on?'<span class="st on">CONECTADO</span>':'<span class="st off">DESCONECTADO</span>';
+    return '<div class="card">'
+      +'<div class="bar" style="background:'+esc(s.color||'#ff2b2b')+'"></div>'
+      +'<div class="chead">'
+      +'<div class="av" style="background:'+esc(s.color||'#ff2b2b')+'">'+esc((s.name||'?').charAt(0)).toUpperCase()+'</div>'
+      +'<div class="cinfo"><div class="cnm">'+esc(s.name)+'</div>'
+      +'<div class="crow"><span class="chip">'+esc(s.ip)+':'+esc(s.port||7771)+'</span>'+st+'</div>'
+      +'<div class="crow"><span class="mu">usuario: '+esc(s.user||'-')+'</span></div></div></div>'
+      +'<div class="cacts">'
+      +'<button class="btn pri sm" onclick="conn(\''+s.id+'\')">&#9654; Conectar</button>'
+      +'<button class="btn sm" title="Abrir en navegador" onclick="ext(\''+s.id+'\')">&#8599;</button>'
+      +'<button class="btn sm" title="Editar" onclick="edit(\''+s.id+'\')">&#9998;</button>'
+      +'<button class="btn sm dng" title="Borrar" onclick="del(\''+s.id+'\')">&#128465;</button>'
+      +'</div></div>';
+  }).join('');
+}
+async function ping(){
+  try{
+    var r=await pywebview.api.ping_all();
+    var on=0; servers.forEach(function(s){s._on=!!r[s.id]; if(s._on)on++;});
+    document.getElementById('s-on').textContent=on;
+    document.getElementById('s-st').textContent=on?'OK':'--';
+    render();
+  }catch(e){}
+}
+function edit(id){
+  editing=id?servers.filter(function(s){return s.id===id;})[0]:null;
+  document.getElementById('mt').innerHTML=editing?'Editar <span>servidor</span>':'Agregar <span>servidor</span>';
+  document.getElementById('f-name').value=editing?editing.name:'';
+  document.getElementById('f-ip').value=editing?editing.ip:'';
+  document.getElementById('f-port').value=editing?(editing.port||7771):7771;
+  document.getElementById('f-user').value=editing?(editing.user||'admin'):'admin';
+  document.getElementById('f-pass').value=editing?(editing.password||''):'';
+  document.getElementById('f-notes').value=editing?(editing.notes||''):'';
+  pick(editing?(editing.color||'#ff2b2b'):'#ff2b2b');
+  document.getElementById('mask').classList.add('on');
+}
+function closeModal(){document.getElementById('mask').classList.remove('on');}
+async function save(){
+  var nid=editing?editing.id:await pywebview.api.new_id();
+  var o={id:nid,name:document.getElementById('f-name').value.trim()||'Servidor',
+    ip:document.getElementById('f-ip').value.trim(),
+    port:parseInt(document.getElementById('f-port').value)||7771,
+    user:document.getElementById('f-user').value.trim(),
+    password:document.getElementById('f-pass').value,
+    notes:document.getElementById('f-notes').value.trim(),
+    color:color, addedAt:new Date().toISOString()};
+  if(!o.ip){toast('Falta la IP');return;}
+  if(editing){Object.assign(editing,o);}else{servers.push(o);}
+  await pywebview.api.save_servers(servers);
+  closeModal(); render(); toast('Guardado');
+}
+async function del(id){
+  servers=servers.filter(function(s){return s.id!==id;});
+  await pywebview.api.save_servers(servers); render(); toast('Eliminado');
+}
+var two_sid=null, two_tft=null;
+async function conn(id){
+  var s=servers.filter(function(x){return x.id===id;})[0];
+  if(!s)return;
+  toast('Conectando...');
+  var r=await pywebview.api.connect(id);
+  if(!r){toast('Error');return;}
+  if(r.need2fa){two_sid=id;two_tft=r.tft;document.getElementById('c2').value='';document.getElementById('mask2').classList.add('on');document.getElementById('c2').focus();return;}
+  if(!r.ok){toast(r.msg||'Error');return;}
+  openTab(id, s.name, r.url);
+  toast(r.msg||'Conectado');
+}
+async function conn2(){
+  var code=(document.getElementById('c2').value||'').trim();
+  if(code.length<6){toast('Codigo de 6 digitos');return;}
+  toast('Verificando...');
+  var sv=servers.filter(function(x){return x.id===two_sid;})[0];
+  var r=await pywebview.api.connect(two_sid, code, two_tft);
+  if(!r||!r.ok){toast(r&&r.msg?r.msg:'Codigo incorrecto');return;}
+  document.getElementById('mask2').classList.remove('on');
+  openTab(two_sid, sv?sv.name:'', r.url);
+  toast('Conectado');
+}
+function close2(){document.getElementById('mask2').classList.remove('on');}
+async function ext(id){
+  var s=servers.filter(function(x){return x.id===id;})[0];
+  if(s) await pywebview.api.open_external('http://'+s.ip+':'+(s.port||7771)+'/');
+}
+async function imp(){
+  var t=await pywebview.api.import_servers();
+  if(!t)return;
+  try{var a=JSON.parse(t);if(Array.isArray(a)){servers=a;await pywebview.api.save_servers(servers);render();toast('Importado');}}catch(e){toast('JSON invalido');}
+}
+async function exp(){ await pywebview.api.export_servers(JSON.stringify(servers,null,2)); }
+window.addEventListener('pywebviewready',boot);
+</script>
+</body>
+</html>

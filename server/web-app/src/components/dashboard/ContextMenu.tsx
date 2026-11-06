@@ -131,22 +131,22 @@ export default function ContextMenu({ visible, x, y, cliente, onClose, onRename,
       <div className="fixed inset-0 z-[100]" onClick={onClose} onContextMenu={(e) => e.preventDefault()} />
       <div
         ref={menuRef}
-        className="fixed z-[101] min-w-[220px] max-w-[280px] bg-[#290903]/90 backdrop-blur-md border border-blue-500/20/80 rounded-xl shadow-2xl shadow-black/50 py-1 text-sm"
+        className="fixed z-[101] min-w-[220px] max-w-[280px] bg-[#1a1a1e]/90 backdrop-blur-md border border-[#2a2a31]/20/80 rounded-md shadow-2xl shadow-black/50 py-1 text-sm"
         style={{ left: x, top: y }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-3 py-2.5 border-b border-blue-500/10/80">
+        <div className="px-3 py-2.5 border-b border-[#2a2a31]/10/80">
           <p className="text-white font-semibold truncate">{cliente.modelName || cliente.tag}</p>
-          <p className="text-cyan-400 font-mono text-xs truncate">{cliente.ip}</p>
+          <p className="text-[#ef4444] font-mono text-xs truncate">{cliente.ip}</p>
           {!isOnline && (
-            <p className="text-red-400 text-[10px] mt-1">Dispositivo offline</p>
+            <p className="text-[#ef4444] text-[10px] mt-1">Dispositivo offline</p>
           )}
         </div>
 
         {MENU_SECTIONS.map((section, sectionIdx) => (
           <div key={section.title ?? sectionIdx}>
             {section.title && (
-              <p className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-widest text-slate-500 font-semibold">
+              <p className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-widest text-[#8b8b94] font-semibold">
                 {section.title}
               </p>
             )}
@@ -161,8 +161,8 @@ export default function ContextMenu({ visible, x, y, cliente, onClose, onRename,
                   onClick={() => handleAction(item)}
                   className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-colors ${
                     itemDisabled
-                      ? 'text-slate-600 cursor-not-allowed opacity-50'
-                      : 'text-slate-200 hover:bg-[#440e05]/80 hover:text-white'
+                      ? 'text-[#6f6f78] cursor-not-allowed opacity-50'
+                      : 'text-slate-200 hover:bg-[#121214]/80 hover:text-white'
                   }`}
                 >
                   {item.icon && <span className="w-5 text-center">{item.icon}</span>}
@@ -171,7 +171,7 @@ export default function ContextMenu({ visible, x, y, cliente, onClose, onRename,
               );
             })}
             {sectionIdx < MENU_SECTIONS.length - 1 && (
-              <div className="my-1 border-t border-blue-500/10/80" />
+              <div className="my-1 border-t border-[#2a2a31]/10/80" />
             )}
           </div>
         ))}

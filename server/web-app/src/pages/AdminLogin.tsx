@@ -135,19 +135,19 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-950 to-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#121214] via-[#121214] to-slate-950 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-red-600 rounded-full mb-4 shadow-lg shadow-red-500/30">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-[#ef4444] rounded-full mb-4 shadow-lg shadow-[#ef4444]/30">
             <Shield className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
-          <p className="text-red-300">Acesso Restrito - Administradores</p>
+          <p className="text-[#ef4444]">Acesso Restrito - Administradores</p>
         </div>
 
         {/* Form Container */}
-        <div className="bg-[#440e05]/90 backdrop-blur rounded-2xl shadow-2xl p-8 border border-red-500/30">
+        <div className="bg-[#121214]/90 backdrop-blur rounded-md shadow-2xl p-8 border border-[#2a2a31]/30">
           {!needs2FA && !needs2FASetup ? (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
@@ -160,7 +160,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-red-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 font-mono"
+                    className="w-full pl-10 pr-4 py-3 bg-[#24242a] border border-[#2a2a31]/30 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ef4444] font-mono"
                     placeholder="admin"
                     required
                   />
@@ -177,7 +177,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-red-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 font-mono"
+                    className="w-full pl-10 pr-4 py-3 bg-[#24242a] border border-[#2a2a31]/30 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ef4444] font-mono"
                     placeholder="••••••••"
                     required
                   />
@@ -185,7 +185,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
               </div>
 
               {error && (
-                <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg text-sm font-mono">
+                <div className="bg-[#ef4444]/10 border border-[#2a2a31] text-[#ef4444] px-4 py-3 rounded-md text-sm font-mono">
                   ⚠️ {error}
                 </div>
               )}
@@ -193,7 +193,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2 font-mono uppercase tracking-wider"
+                className="w-full bg-[#ef4444] hover:bg-[#f87171] text-white font-semibold py-3 px-4 rounded-md transition-colors disabled:opacity-50 flex items-center justify-center space-x-2 font-mono uppercase tracking-wider"
               >
                 {loading ? (
                   <>
@@ -211,7 +211,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
           ) : needs2FASetup ? (
             <div className="space-y-4">
               <div className="text-center mb-3">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-red-950/60 border border-red-500/40 rounded-full mb-2 text-red-400">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-[#121214]/60 border border-[#2a2a31]/40 rounded-full mb-2 text-[#ef4444]">
                   <QrCode className="w-6 h-6" />
                 </div>
                 <h2 className="text-sm font-bold text-white uppercase font-mono">Configurar Google Authenticator (Admin)</h2>
@@ -220,26 +220,26 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
 
               {totpQrCode && (
                 <div className="flex justify-center my-2">
-                  <div className="p-3 bg-white rounded-xl shadow-lg border-2 border-red-500/40">
+                  <div className="p-3 bg-white rounded-md shadow-lg border-2 border-[#2a2a31]/40">
                     <img src={totpQrCode} alt="QR Code 2FA Admin" className="w-40 h-40 object-contain rounded" />
                   </div>
                 </div>
               )}
 
               {totpSecret && (
-                <div className="bg-slate-900 border border-red-500/20 rounded-lg p-2.5">
+                <div className="bg-[#121214] border border-[#2a2a31]/20 rounded-md p-2.5">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-bold text-gray-400 uppercase font-mono">Chave Manual</span>
                     <button
                       type="button"
                       onClick={handleCopySecret}
-                      className="text-[10px] text-red-400 hover:text-white flex items-center gap-1 font-mono"
+                      className="text-[10px] text-[#ef4444] hover:text-white flex items-center gap-1 font-mono"
                     >
                       {copiedSecret ? <CheckCircle2 className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
                       {copiedSecret ? 'Copiado!' : 'Copiar'}
                     </button>
                   </div>
-                  <div className="font-mono text-xs text-red-300 break-all select-all bg-black/50 p-1.5 rounded text-center">
+                  <div className="font-mono text-xs text-[#ef4444] break-all select-all bg-black/50 p-1.5 rounded text-center">
                     {totpSecret}
                   </div>
                 </div>
@@ -257,13 +257,13 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                     onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="000000"
                     autoFocus
-                    className="w-full py-3 bg-slate-900 border border-red-500/30 rounded-lg text-center text-2xl font-bold tracking-[0.35em] text-red-400 placeholder-slate-700 focus:outline-none focus:border-red-500 font-mono"
+                    className="w-full py-3 bg-[#121214] border border-[#2a2a31]/30 rounded-md text-center text-2xl font-bold tracking-[0.35em] text-[#ef4444] placeholder-[#2a2a31] focus:outline-none focus:border-[#2a2a31] font-mono"
                     required
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500 text-red-400 px-3 py-2 rounded-lg text-xs font-mono">
+                  <div className="bg-[#ef4444]/10 border border-[#2a2a31] text-[#ef4444] px-3 py-2 rounded-md text-xs font-mono">
                     ⚠️ {error}
                   </div>
                 )}
@@ -271,7 +271,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                 <button
                   type="submit"
                   disabled={loading || totpCode.length < 6}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 text-xs uppercase font-mono"
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-bold py-3 rounded-md transition-all flex items-center justify-center gap-2 text-xs uppercase font-mono"
                 >
                   {loading ? <Loader className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                   <span>Confirmar & Entrar</span>
@@ -290,7 +290,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
           ) : (
             <div className="space-y-4">
               <div className="text-center mb-4">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-red-950/60 border border-red-500/40 rounded-full mb-2 text-red-400">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-[#121214]/60 border border-[#2a2a31]/40 rounded-full mb-2 text-[#ef4444]">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <h2 className="text-base font-bold text-white uppercase font-mono">Autenticação em 2 Etapas</h2>
@@ -306,13 +306,13 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                     onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="000000"
                     autoFocus
-                    className="w-full py-3 bg-slate-900 border border-red-500/30 rounded-lg text-center text-3xl font-bold tracking-[0.35em] text-red-400 placeholder-slate-700 focus:outline-none focus:border-red-500 font-mono"
+                    className="w-full py-3 bg-[#121214] border border-[#2a2a31]/30 rounded-md text-center text-3xl font-bold tracking-[0.35em] text-[#ef4444] placeholder-[#2a2a31] focus:outline-none focus:border-[#2a2a31] font-mono"
                     required
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500 text-red-400 px-3 py-2 rounded-lg text-xs font-mono">
+                  <div className="bg-[#ef4444]/10 border border-[#2a2a31] text-[#ef4444] px-3 py-2 rounded-md text-xs font-mono">
                     ⚠️ {error}
                   </div>
                 )}
@@ -320,7 +320,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                 <button
                   type="submit"
                   disabled={loading || totpCode.length < 6}
-                  className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 text-xs uppercase font-mono"
+                  className="w-full bg-[#ef4444] hover:bg-[#f87171] disabled:opacity-50 text-white font-bold py-3 rounded-md transition-all flex items-center justify-center gap-2 text-xs uppercase font-mono"
                 >
                   {loading ? <Loader className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                   <span>Verificar Código</span>
@@ -339,7 +339,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
           )}
         </div>
 
-        <p className="text-center text-red-400/50 text-xs mt-6">
+        <p className="text-center text-[#ef4444]/50 text-xs mt-6">
           🔒 Área restrita - Acesso não autorizado é proibido
         </p>
       </div>

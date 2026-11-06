@@ -1,0 +1,584 @@
+=== BLOQUE 1 | src/index.css | css ===
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  background: #0a0a0b;
+  color: #e8e8ea;
+  font-optical-sizing: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #0a0a0b;
+  color: #e8e8ea;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #a3e635;
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #a3e635;
+  color: #0a0a0b;
+}
+
+.console-shell {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.panel,
+.card {
+  overflow: hidden;
+  border: 1px solid #2a2a31;
+  border-radius: 6px;
+  background: #121214;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #2a2a31;
+}
+
+.panel-body {
+  padding: 18px 22px;
+}
+
+.dashboard-title {
+  margin: 0;
+  color: #e8e8ea;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-subtitle {
+  margin: 5px 0 0;
+  color: #8b8b94;
+  font-size: 12px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid #2a2a31;
+  background: #121214;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #8b8b94;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.field {
+  min-height: 36px;
+  border: 1px solid #2a2a31;
+  border-radius: 6px;
+  background: #0a0a0b;
+  color: #e8e8ea;
+  font-size: 12px;
+}
+
+.field::placeholder {
+  color: #696970;
+}
+
+.field:focus {
+  border-color: #a3e635;
+  outline: none;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(300px, 100%);
+  padding: 0 10px;
+}
+
+.search-field input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #e8e8ea;
+  font-size: 12px;
+}
+
+.status-select {
+  min-width: 138px;
+  padding: 0 30px 0 10px;
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #e8e8ea;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.btn-primary {
+  border-color: #a3e635;
+  background: #a3e635;
+  color: #10120a;
+}
+
+.btn-primary:hover:not(:disabled) {
+  border-color: #bef264;
+  background: #bef264;
+}
+
+.btn-secondary {
+  border-color: #2a2a31;
+  background: #1a1a1e;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #24242a;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: #a8a8b0;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: #1a1a1e;
+  color: #e8e8ea;
+}
+
+.btn-danger {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
+  color: #f87171;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.18);
+}
+
+.btn-icon {
+  width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-color: #2a2a31;
+  background: #1a1a1e;
+  color: #a8a8b0;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: #24242a;
+  color: #e8e8ea;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid #2a2a31;
+  background: #141416;
+  color: #8b8b94;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #222226;
+  color: #c8c8ce;
+  font-size: 12px;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.row {
+  transition: background 120ms ease;
+}
+
+.row:hover,
+.row.row-selected {
+  background: #1a1a1e;
+}
+
+.cell {
+  vertical-align: middle;
+}
+
+.check-cell {
+  width: 42px;
+  text-align: center;
+}
+
+.device-cell {
+  min-width: 220px;
+}
+
+.device-name {
+  color: #e8e8ea;
+  font-weight: 600;
+}
+
+.device-model,
+.muted {
+  color: #8b8b94;
+  font-size: 11px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.device-id {
+  margin-top: 3px;
+  color: #777780;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #a3e635;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.battery-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.battery-good {
+  color: #34d399;
+}
+
+.battery-mid {
+  color: #fbbf24;
+}
+
+.battery-low {
+  color: #f87171;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.chip::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.chip-online {
+  border-color: rgba(52, 211, 153, 0.18);
+  background: rgba(52, 211, 153, 0.09);
+  color: #34d399;
+}
+
+.chip-idle {
+  border-color: rgba(251, 191, 36, 0.18);
+  background: rgba(251, 191, 36, 0.09);
+  color: #fbbf24;
+}
+
+.chip-error {
+  border-color: rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.09);
+  color: #f87171;
+}
+
+.latency {
+  display: inline-flex;
+  min-width: 68px;
+  align-items: center;
+  gap: 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.latency-mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.latency-good {
+  color: #34d399;
+}
+
+.latency-good .latency-mark {
+  background: #34d399;
+}
+
+.latency-mid {
+  color: #fbbf24;
+}
+
+.latency-mid .latency-mark {
+  background: #fbbf24;
+}
+
+.latency-high {
+  color: #f87171;
+}
+
+.latency-high .latency-mark {
+  background: #f87171;
+}
+
+.context-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.context-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 5px);
+  right: 0;
+  width: 176px;
+  padding: 4px;
+  border: 1px solid #2a2a31;
+  border-radius: 6px;
+  background: #1a1a1e;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.context-menu button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #c8c8ce;
+  text-align: left;
+  font-size: 11px;
+}
+
+.context-menu button:hover {
+  background: #24242a;
+  color: #e8e8ea;
+}
+
+.context-menu button.menu-danger {
+  color: #f87171;
+}
+
+.menu-divider {
+  height: 1px;
+  margin: 4px 2px;
+  background: #2a2a31;
+}
+
+.bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-bottom: 1px solid rgba(163, 230, 53, 0.2);
+  background: rgba(163, 230, 53, 0.055);
+}
+
+.bulk-count {
+  margin-right: auto;
+  color: #c9e89a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 22px;
+  border-top: 1px solid #2a2a31;
+  color: #8b8b94;
+  font-size: 11px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.page-current {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(163, 230, 53, 0.3);
+  border-radius: 5px;
+  background: rgba(163, 230, 53, 0.1);
+  color: #a3e635;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.empty {
+  padding: 42px 20px;
+  color: #8b8b94;
+  text-align: center;
+  font-size: 12px;
+}
+
+.skeleton {
+  min-height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #1a1a1e 25%, #24242a 50%, #1a1a1e 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .console-shell {
+    padding: 16px;
+  }
+
+  .panel-head,
+  .toolbar {
+    align-items: flex-start;
+  }
+
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .toolbar-group {
+    width: 100%;
+  }
+
+  .search-field {
+    flex: 1;
+  }
+
+  .panel-head,
+  .panel-body,
+  .toolbar,
+  .pagination,
+  .bulk-bar {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
+=== FIN BLOQUE 1 ===
+
+=== BLOQUE 2 | src/components/dashboard/DeviceTable.tsx | tsx ===
+import { useMemo, useState } from "react";
+import DeviceRow, { type Device } from "./DeviceRow";
+
+const INITIAL_DEVICES: Device[] = [
+  { id: "EQ-1048", name: "Almacén Madrid · 04", model: "Samsung Galaxy XCover6 Pro", android: "Android 14", battery: 92, network: "Wi-Fi · MAD-OPS", status: "online", lastSeen: "Ahora", latency: 38 },
+  { id: "EQ-1032", name: "Reparto Barcelona · 12", model: "Motorola Moto G54", android: "Android 13", battery: 67, network: "4G · Movistar", status: "online", lastSeen: "Hace 1 min", latency: 84 },
+  { id: "EQ-1021", name: "Terminal Valencia · 02", model: "Zebra TC26", android: "Android 11", battery: 41, network: "Wi-Fi · VLC-LOCAL", status: "idle", lastSeen: "Hace 18 min", latency: 126 },
+  { id: "EQ-1017", name: "Almacén Sevilla · 08", model: "Samsung Galaxy A34", android: "Android 14", battery: 78, network: "Wi-Fi · SVQ-OPS", status: "online", lastSeen: "Hace 2 min", latency: 52 },
+  { id: "EQ-1009", name: "Reparto Bilbao · 03", model: "Motorola Moto G52", android: "Android 12", battery: 19, network: "4G · Vodafone", status: "idle", lastSeen: "Hace 42 min", latency: 214 },
+  { id: "EQ-0996", name: "Terminal Málaga · 01", model: "Zebra TC21", android: "Android 11", battery: 86, network: "Wi-Fi · AGP-LOCAL", status: "online", lastSeen: "Hace 3 min", latency: 67 },
+  { id: "EQ-0984", name: "Almacén Zaragoza · 05", model: "Samsung Galaxy XCover5", android: "Android 13", battery: 54, network: "Wi-Fi · ZAZ-OPS", status: "error", lastSeen: "Hace 2 h", latency: 486 },
+  { id: "EQ-0972", name: "Reparto A Coruña · 07", model: "Motorola Moto G73", android: "Android 13", battery: 33, network: "4G · Orange", status: "idle", lastSeen: "Hace 27 min", latency: 171 },
+  { id: "EQ-0955", name: "Terminal Murcia · 06", model: "Samsung Galaxy A14", android: "Android 14", battery: 100, network: "Wi-Fi · MJV-LOCAL", status: "online", lastSeen: "Hace 4 min", latency: 43 },
+  { id: "EQ-0938", name: "Almacén Valladolid · 02", model: "Zebra TC26", android: "Android 11", battery: 12, network: "Sin conexión", status: "error", lastSeen: "Hace 5 h", latency: null },
+  { id: "EQ-0924", name: "Reparto Granada · 09", model: "Motorola Moto G54", android: "Android 13", battery: 73, network: "4G · Movistar", status: "online", lastSeen: "Hace 1 min", latency: 96 },
+  { id: "EQ-0901", name: "Terminal Alicante · 03", model: "Samsung Galaxy A34", android: "Android 14", battery: 28, network: "Wi-Fi · ALC-OPS", status: "idle", lastSeen: "Hace 1 

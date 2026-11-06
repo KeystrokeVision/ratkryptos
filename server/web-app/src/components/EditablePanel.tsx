@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
+﻿import React, { useState, useRef, useEffect, ReactNode } from 'react';
 
 interface EditablePanelProps {
   id: string;
@@ -97,7 +97,7 @@ export const EditablePanel: React.FC<EditablePanelProps> = ({
   const resizeHandleStyle = (position: string): React.CSSProperties => {
     const base: React.CSSProperties = {
       position: 'absolute',
-      backgroundColor: 'rgba(239, 68, 68, 0.7)',
+      backgroundColor: 'rgba(59, 130, 246, 0.7)',
       zIndex: 100,
       display: isEditMode ? 'block' : 'none',
     };
@@ -112,13 +112,13 @@ export const EditablePanel: React.FC<EditablePanelProps> = ({
       case 'n':
         return { ...base, top: -4, left: 0, width: '100%', height: 8, cursor: 'ns-resize' };
       case 'se':
-        return { ...base, right: -6, bottom: -6, width: 16, height: 16, cursor: 'nwse-resize', borderRadius: '4px', backgroundColor: 'rgba(239, 68, 68, 1)' };
+        return { ...base, right: -6, bottom: -6, width: 16, height: 16, cursor: 'nwse-resize', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 1)' };
       case 'sw':
-        return { ...base, left: -6, bottom: -6, width: 16, height: 16, cursor: 'nesw-resize', borderRadius: '4px', backgroundColor: 'rgba(239, 68, 68, 1)' };
+        return { ...base, left: -6, bottom: -6, width: 16, height: 16, cursor: 'nesw-resize', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 1)' };
       case 'ne':
-        return { ...base, right: -6, top: -6, width: 16, height: 16, cursor: 'nesw-resize', borderRadius: '4px', backgroundColor: 'rgba(239, 68, 68, 1)' };
+        return { ...base, right: -6, top: -6, width: 16, height: 16, cursor: 'nesw-resize', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 1)' };
       case 'nw':
-        return { ...base, left: -6, top: -6, width: 16, height: 16, cursor: 'nwse-resize', borderRadius: '4px', backgroundColor: 'rgba(239, 68, 68, 1)' };
+        return { ...base, left: -6, top: -6, width: 16, height: 16, cursor: 'nwse-resize', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 1)' };
       default:
         return base;
     }
@@ -133,24 +133,24 @@ export const EditablePanel: React.FC<EditablePanelProps> = ({
         width: width,
         height: height,
         ...style,
-        outline: isEditMode ? '3px dashed #ef4444' : 'none',
+        outline: isEditMode ? '3px dashed #ff4d6d' : 'none',
         outlineOffset: '2px',
         transition: isResizing ? 'none' : 'outline 0.2s',
       }}
     >
-      {/* Título do painel em modo edição */}
+      {/* TÃ­tulo do painel em modo ediÃ§Ã£o */}
       {isEditMode && title && (
-        <div className="absolute -top-7 left-0 text-xs text-blue-400 font-bold bg-gray-900 px-2 py-1 rounded z-50 whitespace-nowrap">
-          📐 {title} ({Math.round(width)}x{Math.round(height)})
+        <div className="absolute -top-7 left-0 text-xs text-red-400 font-bold bg-gray-900 px-2 py-1 rounded z-50 whitespace-nowrap">
+          ðŸ“ {title} ({Math.round(width)}x{Math.round(height)})
         </div>
       )}
 
-      {/* Conteúdo */}
+      {/* ConteÃºdo */}
       <div className="w-full h-full overflow-hidden">
         {children}
       </div>
 
-      {/* Handles de resize - só aparecem em modo edição */}
+      {/* Handles de resize - sÃ³ aparecem em modo ediÃ§Ã£o */}
       {isEditMode && (
         <>
           <div style={resizeHandleStyle('e')} onMouseDown={(e) => handleResizeStart(e, 'e')} title="Arrastar para redimensionar largura" />
@@ -168,3 +168,4 @@ export const EditablePanel: React.FC<EditablePanelProps> = ({
 };
 
 export default EditablePanel;
+

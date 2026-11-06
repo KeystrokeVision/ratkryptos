@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+﻿import { useEffect, useRef, useState, useCallback } from 'react';
 import { getApiBaseUrl } from '@/services/api';
 import type { ScreenDimensions } from '@/types';
 
@@ -7,7 +7,7 @@ interface DeviceScreenProps {
   onCommand: (command: any) => void;
   isBlackScreenActive: boolean;
   onConnectionStatusChange?: (status: 'online' | 'offline' | 'stale') => void;
-  /** Método/engine de captura atual para exibir badge discreto no viewer */
+  /** MÃ©todo/engine de captura atual para exibir badge discreto no viewer */
   captureMethod?: 'standard' | 'silent';
   killerFrameOnPointerMove?: boolean;
   onRequestFrame?: () => void;
@@ -36,7 +36,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const phoneFrameRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState<ScreenDimensions>(DEFAULT_DIMENSIONS);
+  const [, setDimensions] = useState<ScreenDimensions>(DEFAULT_DIMENSIONS);
   const dimensionsRef = useRef<ScreenDimensions>(DEFAULT_DIMENSIONS);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnectTimeout, setIsConnectTimeout] = useState(false);
@@ -70,7 +70,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
   const staleCheckRef = useRef<number | null>(null);
   const reconnectAttemptsRef = useRef<number>(0);
 
-  // Hot-path refs — no React re-render per frame
+  // Hot-path refs â€” no React re-render per frame
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const lastFrameTsRef = useRef<number | null>(null);
   const isDeviceOfflineRef = useRef(false);
@@ -103,10 +103,10 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
       win.count = 0;
       win.start = Date.now();
       
-      // Latência real de rede (ping) para streaming ultra responsivo
+      // LatÃªncia real de rede (ping) para streaming ultra responsivo
       const pingMs = Math.floor(16 + Math.sin(Date.now() / 1200) * 5 + Math.random() * 6);
       if (fpsLabelRef.current) {
-        fpsLabelRef.current.textContent = `${fps.toFixed(0)} FPS · ${pingMs}ms`;
+        fpsLabelRef.current.textContent = `${fps.toFixed(0)} FPS Â· ${pingMs}ms`;
       }
     }, 500);
     return () => window.clearInterval(intervalId);
@@ -149,12 +149,13 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
 
     const canvas = canvasRef.current;
     if (canvas) {
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
     }
     if (phoneFrameRef.current) {
-      phoneFrameRef.current.style.width = `${width + 24}px`;
-      phoneFrameRef.current.style.height = `${height + 24}px`;
+      phoneFrameRef.current.style.width = '100%';
+      phoneFrameRef.current.style.height = '100%';
+      phoneFrameRef.current.style.maxHeight = '100%';
     }
   }, []);
 
@@ -214,7 +215,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
         bitmap.close();
       })
       .catch(() => {
-        // Frame corrupto ou decode falhou — descarta silenciosamente
+        // Frame corrupto ou decode falhou â€” descarta silenciosamente
       })
       .finally(() => {
         isDecodingRef.current = false;
@@ -232,7 +233,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
     }
   }, [processNextFrame]);
 
-  // Transmissão via WebSocket
+  // TransmissÃ£o via WebSocket
   useEffect(() => {
     if (!deviceId) return;
     let cancelled = false;
@@ -340,7 +341,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
           onCommand?.({ action: 'PING' });
         } catch (e) {}
 
-        // Só marca como offline se realmente passar de 90 segundos sem nenhum frame
+        // SÃ³ marca como offline se realmente passar de 90 segundos sem nenhum frame
         if (Date.now() - lastFrameTsRef.current > 90000) {
           if (!isDeviceOfflineRef.current) {
             isDeviceOfflineRef.current = true;
@@ -361,17 +362,17 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
   }, [onConnectionStatusChange, streamStatus]);
 
   // Retorna coordenadas NORMALIZADAS (0.0 a 1.0) relativas ao frame do bitmap.
-  // Isso garante que o Java possa mapear corretamente para qualquer resolução física,
-  // independente da resolução de captura do VNC.
+  // Isso garante que o Java possa mapear corretamente para qualquer resoluÃ§Ã£o fÃ­sica,
+  // independente da resoluÃ§Ã£o de captura do VNC.
   const getDeviceCoordinates = useCallback((clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0, normX: 0, normY: 0 };
 
     const rect = canvas.getBoundingClientRect();
-    // Posição relativa dentro do canvas CSS (0..rect.width / 0..rect.height)
+    // PosiÃ§Ã£o relativa dentro do canvas CSS (0..rect.width / 0..rect.height)
     const cssX = clientX - rect.left;
     const cssY = clientY - rect.top;
-    // Coordenadas normalizadas (0.0..1.0) — agnósticas à resolução
+    // Coordenadas normalizadas (0.0..1.0) â€” agnÃ³sticas Ã  resoluÃ§Ã£o
     const normX = Math.max(0, Math.min(1, cssX / rect.width));
     const normY = Math.max(0, Math.min(1, cssY / rect.height));
 
@@ -436,7 +437,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
     const deltaTime = Date.now() - touchStart.time;
     const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-    // Se moveu menos que 10 pixels em CSS, considera um CLICK rápido
+    // Se moveu menos que 10 pixels em CSS, considera um CLICK rÃ¡pido
     if (distance < 10) {
       onCommand({
         action: 'CLICK',
@@ -469,7 +470,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
     const deltaY = e.clientY - touchStart.clientY;
     const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-    // Se mover mais de 15px em CSS, cancela o long press pois o usuário quer realizar um swipe/arraste
+    // Se mover mais de 15px em CSS, cancela o long press pois o usuÃ¡rio quer realizar um swipe/arraste
     if (distance > 15 && longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
@@ -497,32 +498,32 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
   }, []);
 
   return (
-    <div ref={containerRef} className="relative flex items-center justify-center">
+    <div ref={containerRef} className="relative flex items-center justify-center w-full h-full max-h-full">
       <div
         ref={phoneFrameRef}
-        className="relative bg-slate-950 rounded-[36px] p-0.5 shadow-[0_0_40px_rgba(239,68,68,0.4)] border-[3px] border-cyan-500/70 overflow-hidden"
-        style={{ width: dimensions.width + 12, height: dimensions.height + 12 }}
+        className="relative bg-black rounded-[32px] overflow-hidden cursor-crosshair flex items-center justify-center mx-auto transition-all w-full h-full border border-[#162744]"
+        style={{ width: '100%', height: '100%', maxHeight: '100%' }}
       >
-        {/* Notch / Punch Hole da Câmera do Celular */}
-        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-950 rounded-full z-30 border border-cyan-500/30 flex items-center justify-center gap-2 shadow-inner pointer-events-none">
+        {/* Notch / Punch Hole da CÃ¢mera do Celular */}
+        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-30 border border-[#162744] flex items-center justify-center gap-2 shadow-inner pointer-events-none">
           <div className="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-700"></div>
           <div className="w-1.5 h-1.5 rounded-full bg-slate-800"></div>
         </div>
 
-        <div className="relative w-full h-full bg-slate-950 rounded-[32px] overflow-hidden">
+        <div className="relative w-full h-full bg-slate-950 rounded-[32px] overflow-hidden flex items-center justify-center" data-screen="true">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 z-20">
               <div className="text-white text-center">
                 {isConnectTimeout ? (
                   <>
-                    <div className="text-3xl mb-2">📡</div>
+                    <div className="text-3xl mb-2">ðŸ“¡</div>
                     <p className="text-xs font-semibold text-amber-300">Aguardando frames VNC...</p>
-                    <p className="text-[10px] text-slate-400 mt-1">Verifique se a captura está ativa no dispositivo</p>
+                    <p className="text-[10px] text-slate-400 mt-1">Verifique se a captura estÃ¡ ativa no dispositivo</p>
                   </>
                 ) : (
                   <>
-                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400 mx-auto mb-2"></div>
-                    <p className="text-xs font-semibold text-cyan-300">Conectando...</p>
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-400 mx-auto mb-2"></div>
+                    <p className="text-xs font-semibold text-pink-300">Conectando...</p>
                   </>
                 )}
               </div>
@@ -530,18 +531,16 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
           )}
 
           <div
-            className="relative overflow-hidden flex items-center justify-center"
-            style={{ width: dimensions.width, height: dimensions.height }}
+            className="relative w-full h-full overflow-hidden flex items-center justify-center"
           >
             <canvas
               ref={canvasRef}
-              className="w-full h-full cursor-pointer touch-none"
+              className="w-full h-full cursor-crosshair touch-none"
               style={{
-                width: dimensions.width,
-                height: dimensions.height,
+                width: '100%',
+                height: '100%',
                 imageRendering: 'crisp-edges',
-                filter: isBlackScreenActive ? 'brightness(0.6)' : 'none',
-                transition: 'filter 0.3s ease'
+                filter: 'none',
               }}
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUp}
@@ -560,13 +559,13 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
                         className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none z-50"
                         style={{ left: `${t.x * 100}%`, top: `${t.y * 100}%` }}
                       >
-                        <span className="absolute w-16 h-16 rounded-full border-2 border-cyan-300 animate-ping opacity-90 shadow-[0_0_25px_#ff2b2b]" />
+                        <span className="absolute w-16 h-16 rounded-full border-2 border-pink-300 animate-ping opacity-90 shadow-[0_0_25px_#ff1e4d]" />
                         <span className="absolute w-10 h-10 rounded-full border border-purple-400 animate-pulse opacity-80" />
-                        <span className="w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_20px_#ff2b2b] border-2 border-white flex items-center justify-center">
+                        <span className="w-5 h-5 rounded-full bg-gradient-to-r from-red-400 to-red-500 shadow-[0_0_20px_#ff1e4d] border-2 border-white flex items-center justify-center">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                         </span>
-                        <span className="absolute top-6 bg-[#1a0403]/95 border border-cyan-400/80 text-cyan-200 text-[10px] font-mono font-black px-2 py-0.5 rounded-md shadow-[0_0_15px_rgba(255,43,43,0.5)] backdrop-blur-md whitespace-nowrap uppercase tracking-wider z-50">
-                          ⚡ TOQUE ({(t.x * 100).toFixed(0)}%, {(t.y * 100).toFixed(0)}%)
+                        <span className="absolute top-6 bg-[#04091a]/95 border border-red-400/80 text-pink-200 text-[10px] font-mono font-black px-2 py-0.5 rounded-md shadow-[0_0_15px_rgba(0,240,255,0.5)] backdrop-blur-md whitespace-nowrap uppercase tracking-wider z-50">
+                          âš¡ TOQUE ({(t.x * 100).toFixed(0)}%, {(t.y * 100).toFixed(0)}%)
                         </span>
                       </div>
                     )}
@@ -579,7 +578,7 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
                         <span className="absolute w-20 h-20 rounded-full border-2 border-amber-400 animate-ping opacity-100 shadow-[0_0_30px_#f59e0b]" />
                         <span className="w-7 h-7 rounded-full bg-gradient-to-r from-amber-500 to-red-600 shadow-[0_0_25px_#f59e0b] border-2 border-white animate-bounce" />
                         <span className="absolute top-7 bg-amber-950/95 border border-amber-400 text-amber-200 text-[10px] font-mono font-black px-2 py-0.5 rounded-md shadow-[0_0_15px_rgba(245,158,11,0.5)] backdrop-blur-md whitespace-nowrap uppercase tracking-wider z-50">
-                          🎯 PRESSÃO LONGA
+                          ðŸŽ¯ PRESSÃƒO LONGA
                         </span>
                       </div>
                     )}
@@ -588,8 +587,8 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
                       <svg className="absolute inset-0 w-full h-full pointer-events-none z-40">
                         <defs>
                           <linearGradient id={`swipe-grad-${t.id}`} x1={`${t.x * 100}%`} y1={`${t.y * 100}%`} x2={`${t.endX * 100}%`} y2={`${t.endY * 100}%`}>
-                            <stop offset="0%" stopColor="#ff2b2b" stopOpacity="1" />
-                            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.8" />
+                            <stop offset="0%" stopColor="#ff1e4d" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#ff0066" stopOpacity="0.8" />
                           </linearGradient>
                         </defs>
                         <line
@@ -602,8 +601,8 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
                           strokeDasharray="8 4"
                           className="animate-pulse"
                         />
-                        <circle cx={`${t.x * 100}%`} cy={`${t.y * 100}%`} r="8" fill="#ff2b2b" className="animate-ping" />
-                        <circle cx={`${t.endX * 100}%`} cy={`${t.endY * 100}%`} r="9" fill="#ef4444" stroke="#ffffff" strokeWidth="2" />
+                        <circle cx={`${t.x * 100}%`} cy={`${t.y * 100}%`} r="8" fill="#ff1e4d" className="animate-ping" />
+                        <circle cx={`${t.endX * 100}%`} cy={`${t.endY * 100}%`} r="9" fill="#ff0066" stroke="#ffffff" strokeWidth="2" />
                       </svg>
                     )}
                   </div>
@@ -617,18 +616,18 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
             onClick={() => setShowTouchVisualizer(!showTouchVisualizer)}
             className={`absolute top-2 left-2 px-3 py-1.5 rounded-xl text-[11px] font-mono font-bold z-50 shadow-lg backdrop-blur-md transition-all cursor-pointer flex items-center gap-1.5 ${
               showTouchVisualizer
-                ? 'bg-cyan-500/30 text-cyan-200 border border-cyan-400 shadow-[0_0_15px_rgba(239,68,68,0.4)] animate-pulse'
+                ? 'bg-red-500/30 text-pink-200 border border-red-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] animate-pulse'
                 : 'bg-slate-900/90 text-slate-400 border border-slate-700 hover:text-white'
             }`}
             title="Alternar indicador visual dos toques e gestos na tela"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span>🎯 TOQUES: {showTouchVisualizer ? 'VISÍVEIS' : 'OCULTOS'}</span>
+            <span className="w-2 h-2 rounded-full bg-red-400 animate-ping" />
+            <span>ðŸŽ¯ TOQUES: {showTouchVisualizer ? 'VISÃVEIS' : 'OCULTOS'}</span>
           </button>
 
           {isBlackScreenActive && (
             <div className="absolute top-2 left-2 bg-gradient-to-r from-red-600 to-amber-600 text-white px-3 py-1 rounded-full text-[10px] font-bold animate-pulse z-30 shadow-[0_0_10px_rgba(239,68,68,0.5)] border border-red-400/40 pointer-events-none">
-              🔴 TELA PRETA ATIVA
+              ðŸ”´ TELA PRETA ATIVA
             </div>
           )}
 
@@ -636,15 +635,15 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
             <>
               <span
                 ref={fpsLabelRef}
-                className="absolute top-8 right-2 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold z-30 bg-slate-950/80 text-cyan-300 border border-cyan-500/30 shadow shadow-cyan-500/20 backdrop-blur-md"
+                className="absolute top-8 right-2 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold z-30 bg-slate-950/80 text-pink-300 border border-red-500/30 shadow shadow-red-500/20 backdrop-blur-md"
               >
-                — FPS
+                â€” FPS
               </span>
               <div
                 className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold z-30 shadow backdrop-blur-md ${
                   captureMethod === 'silent'
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white border border-cyan-400/40 shadow-blue-500/30'
-                    : 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border border-indigo-400/40 shadow-indigo-500/30'
+                    ? 'bg-gradient-to-r from-red-600 to-red-500 text-white border border-red-400/50 shadow-red-500/30'
+                    : 'bg-gradient-to-r from-red-600 to-red-600 text-white border border-red-400/50 shadow-red-500/30'
                 }`}
                 title={captureMethod === 'silent' ? 'Captura silenciosa (takeScreenshot)' : 'Captura HVNC'}
               >
@@ -654,19 +653,19 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
           )}
 
           {streamStatus !== 'online' && (
-            <div className="absolute bottom-4 left-4 bg-slate-950/80 border border-cyan-500/30 backdrop-blur-md text-cyan-300 text-[10px] px-3 py-1 rounded-full shadow-lg">
-              {streamStatus === 'connecting' ? '🔄 Conectando...' : '🔄 Reconectando...'}
+            <div className="absolute bottom-4 left-4 bg-slate-950/80 border border-red-500/30 backdrop-blur-md text-pink-300 text-[10px] px-3 py-1 rounded-full shadow-lg">
+              {streamStatus === 'connecting' ? 'ðŸ”„ Conectando...' : 'ðŸ”„ Reconectando...'}
             </div>
           )}
 
           {isDeviceOffline && (
-            <div className="absolute inset-0 flex items-center justify-center bg-[#120303]/95 z-40 backdrop-blur-md p-4">
-              <div className="text-center text-white p-6 max-w-sm border border-cyan-500/30 rounded-2xl bg-[#240803] shadow-[0_0_35px_rgba(239,68,68,0.25)] relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
-                <div className="text-5xl mb-3 animate-pulse">📴</div>
-                <h3 className="text-lg font-black uppercase tracking-wider mb-1 text-cyan-300 font-mono">Dispositivo Sem Resposta</h3>
+            <div className="absolute inset-0 flex items-center justify-center bg-[#030712]/95 z-40 backdrop-blur-md p-4">
+              <div className="text-center text-white p-6 max-w-sm border border-red-500/30 rounded-2xl bg-[#091124] shadow-[0_0_35px_rgba(6,182,212,0.25)] relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-400 to-transparent"></div>
+                <div className="text-5xl mb-3 animate-pulse">ðŸ“´</div>
+                <h3 className="text-lg font-black uppercase tracking-wider mb-1 text-pink-300 font-mono">Dispositivo Sem Resposta</h3>
                 <p className="text-slate-400 text-xs mb-4 leading-relaxed">
-                  Sem novas imagens do aparelho no último minuto. A conexão pode ter oscilado ou o dispositivo entrou em repouso.
+                  Sem novas imagens do aparelho no Ãºltimo minuto. A conexÃ£o pode ter oscilado ou o dispositivo entrou em repouso.
                 </p>
                 <div className="space-y-2.5">
                   <button
@@ -683,13 +682,13 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
                         }
                       } catch (e) {}
                     }}
-                    className="w-full py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/25 border border-cyan-400/30 transition-all uppercase tracking-wider font-mono flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                    className="w-full py-2.5 bg-gradient-to-r from-red-600 to-red-600 hover:from-red-500 hover:to-red-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-red-500/25 border border-red-400/40 transition-all uppercase tracking-wider font-mono flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                   >
-                    <span>⚡ Reconectar & Forçar Resposta</span>
+                    <span>âš¡ Reconectar & ForÃ§ar Resposta</span>
                   </button>
-                  <div className="bg-cyan-950/50 border border-cyan-500/20 rounded-xl p-2 text-cyan-300 text-[10px] font-mono flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                    <span>Reconexão automática ativa em segundo plano...</span>
+                  <div className="bg-red-950/50 border border-red-500/20 rounded-xl p-2 text-pink-300 text-[10px] font-mono flex items-center justify-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
+                    <span>ReconexÃ£o automÃ¡tica ativa em segundo plano...</span>
                   </div>
                 </div>
               </div>
@@ -702,3 +701,4 @@ export default function DeviceScreen({ deviceId, onCommand, isBlackScreenActive,
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 
 interface ButtonStyle {
   backgroundColor?: string;
@@ -21,10 +21,10 @@ interface EditableButtonProps {
 // Cores predefinidas
 const PRESET_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16',
-  '#22c55e', '#10b981', '#ef4444', '#ef4444', '#ef4444',
-  '#ef4444', '#ef4444', '#f65c8b', '#ef4444', '#ef46d9',
-  '#ec4899', '#f43f5e', '#9c8080', '#2a1212', '#000000',
-  '#ffffff', '#f1f5f9', '#e1d5cb', '#c9a8a8', '#7a5050',
+  '#22c55e', '#ff4757', '#14b8a6', '#ff2e5d', '#ff3b6b',
+  '#ff4d6d', '#6366f1', '#8b5cf6', '#ff0066', '#d946ef',
+  '#ec4899', '#f43f5e', '#64748b', '#1e293b', '#000000',
+  '#ffffff', '#f1f5f9', '#cbd5e1', '#94a3b8', '#475569',
 ];
 
 export const EditableButton: React.FC<EditableButtonProps> = ({
@@ -101,15 +101,15 @@ export const EditableButton: React.FC<EditableButtonProps> = ({
     <div className="relative">
       <button
         onClick={handleClick}
-        className={`${className} ${isEditMode ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-800' : ''}`}
+        className={`${className} ${isEditMode ? 'ring-2 ring-red-400 ring-offset-2 ring-offset-gray-800' : ''}`}
         style={buttonStyle}
         disabled={disabled && !isEditMode}
-        title={isEditMode ? `✏️ Clique para editar cores de: ${id}` : title}
+        title={isEditMode ? `âœï¸ Clique para editar cores de: ${id}` : title}
       >
         {children}
         {isEditMode && (
-          <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs shadow-lg">
-            ✏️
+          <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs shadow-lg">
+            âœï¸
           </span>
         )}
       </button>
@@ -118,12 +118,12 @@ export const EditableButton: React.FC<EditableButtonProps> = ({
       {showColorPicker && isEditMode && (
         <div 
           ref={pickerRef}
-          className="absolute z-[9999] top-full left-1/2 transform -translate-x-1/2 mt-2 p-4 bg-gray-900 rounded-xl shadow-2xl border-2 border-blue-500"
+          className="absolute z-[9999] top-full left-1/2 transform -translate-x-1/2 mt-2 p-4 bg-gray-900 rounded-xl shadow-2xl border-2 border-red-500"
           style={{ minWidth: '240px' }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="text-sm text-white mb-3 font-bold flex items-center gap-2">
-            🎨 Editar: <span className="text-blue-400">{id}</span>
+            ðŸŽ¨ Editar: <span className="text-red-400">{id}</span>
           </div>
           
           {/* Seletor de propriedade */}
@@ -132,31 +132,31 @@ export const EditableButton: React.FC<EditableButtonProps> = ({
               onClick={() => setEditingProperty('bg')}
               className={`flex-1 px-3 py-2 text-xs rounded-lg font-semibold transition-all ${
                 editingProperty === 'bg' 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-red-600 text-white' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              🎨 Fundo
+              ðŸŽ¨ Fundo
             </button>
             <button
               onClick={() => setEditingProperty('text')}
               className={`flex-1 px-3 py-2 text-xs rounded-lg font-semibold transition-all ${
                 editingProperty === 'text' 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-red-600 text-white' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ✏️ Texto
+              âœï¸ Texto
             </button>
             <button
               onClick={() => setEditingProperty('border')}
               className={`flex-1 px-3 py-2 text-xs rounded-lg font-semibold transition-all ${
                 editingProperty === 'border' 
-                  ? 'bg-blue-600 text-white' 
+                  ? 'bg-red-600 text-white' 
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
             >
-              ⬜ Borda
+              â¬œ Borda
             </button>
           </div>
 
@@ -188,12 +188,12 @@ export const EditableButton: React.FC<EditableButtonProps> = ({
             ))}
           </div>
 
-          {/* Botão fechar */}
+          {/* BotÃ£o fechar */}
           <button
             onClick={() => setShowColorPicker(false)}
             className="w-full mt-4 px-3 py-2 text-sm bg-red-600 hover:bg-red-500 text-white rounded-lg font-semibold transition-all"
           >
-            ✓ Fechar
+            âœ“ Fechar
           </button>
         </div>
       )}
@@ -202,3 +202,5 @@ export const EditableButton: React.FC<EditableButtonProps> = ({
 };
 
 export default EditableButton;
+
+

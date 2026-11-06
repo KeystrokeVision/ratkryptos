@@ -1,18 +1,18 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
-import DeviceControl from './pages/DeviceControl';
-import APKBuilder from './pages/APKBuilder';
-import APKBuilderSelect from './pages/APKBuilderSelect';
-import APKBuilderVisual from './pages/APKBuilderVisual';
-import APKStudio from './pages/APKStudio';
-import APKBypassIframePage from './pages/APKBypassIframePage';
-import AdminLogin from './pages/AdminLogin';
-import AdminPanel from './pages/AdminPanel';
-import WinBuilder from './pages/WinBuilder';
-import WinDeviceControl from './pages/WinDeviceControl';
-import LiveOverview from './pages/LiveOverview';
+import { useState, useEffect, lazy, Suspense } from 'react';
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const DeviceControl = lazy(() => import('./pages/DeviceControlModern'));
+const APKBuilder = lazy(() => import('./pages/APKBuilder'));
+const APKBuilderSelect = lazy(() => import('./pages/APKBuilderSelect'));
+const APKBuilderVisual = lazy(() => import('./pages/APKBuilderVisual'));
+const APKStudio = lazy(() => import('./pages/APKStudio'));
+const APKBypassIframePage = lazy(() => import('./pages/APKBypassIframePage'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const WinBuilder = lazy(() => import('./pages/WinBuilder'));
+const WinDeviceControl = lazy(() => import('./pages/WinDeviceControl'));
+const LiveOverview = lazy(() => import('./pages/LiveOverview'));
 import BackgroundAnimation from './components/BackgroundAnimation';
 import ErrorBoundary from './components/ErrorBoundary';
 import { authAPI } from './services/api';
@@ -243,8 +243,8 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#290903] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen bg-[#1a1a1e] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a2a31]"></div>
       </div>
     );
   }
@@ -252,6 +252,7 @@ function App() {
   return (
     <Router>
       <BackgroundAnimation />
+      <Suspense fallback={<div className="min-h-screen bg-[#1a1a1e] flex items-center justify-center text-[#ef4444] font-bold">Cargando...</div>}>
       <Routes>
         {/* ==================== ROTAS DE USUÁRIO NORMAL ==================== */}
         <Route 
@@ -376,6 +377,7 @@ function App() {
           element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
         />
       </Routes>
+      </Suspense>
     </Router>
   );
 }

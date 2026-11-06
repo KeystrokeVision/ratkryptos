@@ -318,18 +318,18 @@ export default function WinDeviceControl() {
   return (
     <div className="flex flex-col h-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
       {/* Top Navbar */}
-      <header className="h-16 bg-slate-900/90 border-b border-cyan-500/20 px-6 flex items-center justify-between backdrop-blur-xl shrink-0 z-30">
+      <header className="h-16 bg-[#121214]/90 border-b border-[#2a2a31]/20 px-6 flex items-center justify-between backdrop-blur-xl shrink-0 z-30">
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate('/win-builder')}
-            className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500 text-slate-400 hover:text-cyan-400 transition"
+            className="p-2 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31] text-slate-400 hover:text-[#ef4444] transition"
             title="Voltar à Central Windows"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+            <div className="p-2 rounded-md bg-[#ef4444]/10 text-[#ef4444] border border-[#2a2a31]/30">
               <Monitor className="w-6 h-6" />
             </div>
             <div>
@@ -350,14 +350,14 @@ export default function WinDeviceControl() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-4 bg-slate-950 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs text-slate-400">
-            <span>FPS: <strong className="text-cyan-400">{fps}</strong></span>
-            <span>Latência: <strong className="text-purple-400">{latency}ms</strong></span>
+          <div className="flex items-center space-x-4 bg-slate-950 px-3.5 py-1.5 rounded-md border border-[#24242a] text-xs text-slate-400">
+            <span>FPS: <strong className="text-[#ef4444]">{fps}</strong></span>
+            <span>Latência: <strong className="text-[#f87171]">{latency}ms</strong></span>
           </div>
 
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500 text-slate-300 transition"
+            className="p-2 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31] text-slate-300 transition"
             title={isFullscreen ? 'Sair do Modo Tela Cheia' : 'Modo Tela Cheia'}
           >
             {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
@@ -366,11 +366,11 @@ export default function WinDeviceControl() {
       </header>
 
       {/* Main Grid Content */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 p-5 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 p-5 overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#121214] via-slate-950 to-black">
         
         {/* Painel Esquerdo: Atalhos de Teclado & Ações Específicas de Windows PC */}
-        <div className="lg:col-span-3 bg-slate-900/60 backdrop-blur-xl border border-cyan-500/20 rounded-3xl p-5 shadow-2xl flex flex-col space-y-4 overflow-y-auto">
-          <div className="flex items-center space-x-2 text-cyan-400 font-bold text-sm border-b border-slate-800 pb-3">
+        <div className="lg:col-span-3 bg-[#121214]/60 backdrop-blur-xl border border-[#2a2a31]/20 rounded-3xl p-5 shadow-2xl flex flex-col space-y-4 overflow-y-auto">
+          <div className="flex items-center space-x-2 text-[#ef4444] font-bold text-sm border-b border-[#24242a] pb-3">
             <Key className="w-4 h-4" />
             <h2>Controles & Teclas Windows</h2>
           </div>
@@ -381,25 +381,25 @@ export default function WinDeviceControl() {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => handleSendKey('WIN')}
-                className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 hover:bg-slate-900 text-cyan-300 font-bold text-xs transition text-center"
+                className="p-2.5 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31]/60 hover:bg-[#121214] text-[#ef4444] font-bold text-xs transition text-center"
               >
                 🪟 Menu Iniciar
               </button>
               <button
                 onClick={() => handleSendKey('WIN_D')}
-                className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 hover:bg-slate-900 text-cyan-300 font-bold text-xs transition text-center"
+                className="p-2.5 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31]/60 hover:bg-[#121214] text-[#ef4444] font-bold text-xs transition text-center"
               >
                 🖥️ Area Trabalho
               </button>
               <button
                 onClick={() => handleSendKey('WIN_E')}
-                className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 hover:bg-slate-900 text-cyan-300 font-bold text-xs transition text-center"
+                className="p-2.5 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31]/60 hover:bg-[#121214] text-[#ef4444] font-bold text-xs transition text-center"
               >
                 📁 Explorador
               </button>
               <button
                 onClick={() => handleSendKey('ALT_TAB')}
-                className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 hover:bg-slate-900 text-cyan-300 font-bold text-xs transition text-center"
+                className="p-2.5 rounded-md bg-slate-950 border border-[#24242a] hover:border-[#2a2a31]/60 hover:bg-[#121214] text-[#ef4444] font-bold text-xs transition text-center"
               >
                 🔄 Alt + Tab
               </button>
@@ -414,7 +414,7 @@ export default function WinDeviceControl() {
                 <button
                   key={k}
                   onClick={() => handleSendKey(k)}
-                  className="py-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-lg font-mono text-[11px] font-bold transition"
+                  className="py-2 bg-slate-950 hover:bg-[#24242a] border border-[#24242a] text-slate-300 rounded-md font-mono text-[11px] font-bold transition"
                 >
                   {k}
                 </button>
@@ -423,7 +423,7 @@ export default function WinDeviceControl() {
           </div>
 
           {/* Caixa de Digitação de Texto */}
-          <div className="space-y-2 border-t border-slate-800 pt-3">
+          <div className="space-y-2 border-t border-[#24242a] pt-3">
             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Digitar Texto no PC Alvo</label>
             <div className="flex space-x-2">
               <input
@@ -432,11 +432,11 @@ export default function WinDeviceControl() {
                 onChange={e => setTypeText(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSendText()}
                 placeholder="Digite texto ou URL..."
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                className="flex-1 bg-slate-950 border border-[#24242a] rounded-md px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-[#2a2a31]"
               />
               <button
                 onClick={handleSendText}
-                className="p-2 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold rounded-xl transition"
+                className="p-2 bg-[#ef4444] hover:bg-[#ef4444] text-slate-950 font-bold rounded-md transition"
                 title="Enviar Texto"
               >
                 <Send className="w-4 h-4" />
@@ -445,16 +445,16 @@ export default function WinDeviceControl() {
           </div>
 
           {/* Ações de Sistema */}
-          <div className="space-y-2 border-t border-slate-800 pt-3 flex-1 flex flex-col justify-end">
+          <div className="space-y-2 border-t border-[#24242a] pt-3 flex-1 flex flex-col justify-end">
             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Ações de Segurança & Tela</label>
             
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleToggleBlackScreen}
-                className={`py-3 rounded-xl font-bold text-[11px] transition flex items-center justify-center space-x-1.5 border shadow-lg ${
+                className={`py-3 rounded-md font-bold text-[11px] transition flex items-center justify-center space-x-1.5 border shadow-lg ${
                   isBlackScreenOn
                     ? 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                    : 'bg-slate-950 hover:bg-slate-900 border-cyan-500/40 text-cyan-300 shadow-[0_0_15px_rgba(255,43,43,0.15)]'
+                    : 'bg-slate-950 hover:bg-[#121214] border-[#2a2a31]/40 text-[#ef4444] shadow-[0_0_15px_rgba(239,68,68,0.15)]'
                 }`}
               >
                 <span>{isBlackScreenOn ? '💡 DESATIVAR PRETA' : '🖤 ATIVAR TELA PRETA'}</span>
@@ -462,7 +462,7 @@ export default function WinDeviceControl() {
 
               <button
                 onClick={() => setShowCustomBlackModal(true)}
-                className="py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/50 text-purple-300 font-bold text-[11px] transition flex items-center justify-center space-x-1.5 shadow-lg"
+                className="py-3 rounded-md bg-[#84cc16]/20 hover:bg-[#84cc16]/30 border border-[#f87171]/50 text-[#fca5a5] font-bold text-[11px] transition flex items-center justify-center space-x-1.5 shadow-lg"
               >
                 <Palette className="w-3.5 h-3.5" />
                 <span>PERSONALIZAR</span>
@@ -472,7 +472,7 @@ export default function WinDeviceControl() {
 
             <button
               onClick={handleLockPC}
-              className="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-bold text-xs transition flex items-center justify-center space-x-2"
+              className="w-full py-2.5 rounded-md bg-[#f87171]/20 hover:bg-[#f87171]/30 border border-[#f87171]/40 text-[#fca5a5] font-bold text-xs transition flex items-center justify-center space-x-2"
             >
               <Lock className="w-4 h-4" />
               <span>Bloquear PC (LockWorkStation)</span>
@@ -481,14 +481,14 @@ export default function WinDeviceControl() {
             <div className="grid grid-cols-2 gap-2 pt-1">
               <button
                 onClick={handleShutdownPC}
-                className="py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-xs transition flex items-center justify-center space-x-1.5"
+                className="py-2.5 rounded-md bg-[#ef4444]/20 hover:bg-[#ef4444]/30 border border-[#ef4444]/40 text-rose-300 font-bold text-xs transition flex items-center justify-center space-x-1.5"
               >
                 <Power className="w-4 h-4" />
                 <span>Desligar PC</span>
               </button>
               <button
                 onClick={handleRestartPC}
-                className="py-2.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/40 text-blue-300 font-bold text-xs transition flex items-center justify-center space-x-1.5"
+                className="py-2.5 rounded-md bg-[#ef4444]/20 hover:bg-[#ef4444]/30 border border-[#2a2a31]/40 text-[#ef4444] font-bold text-xs transition flex items-center justify-center space-x-1.5"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Reiniciar PC</span>
@@ -498,11 +498,11 @@ export default function WinDeviceControl() {
         </div>
 
         {/* Painel Central: Monitor VNC Horizontal (16:9 Desktop Real) */}
-        <div className="lg:col-span-6 bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="lg:col-span-6 bg-[#121214]/60 backdrop-blur-xl border border-[#24242a] rounded-3xl p-4 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
           
           {/* Top Bar do Monitor */}
-          <div className="w-full flex items-center justify-between px-3 py-2 bg-slate-950/80 rounded-xl border border-slate-800 mb-3 text-xs">
-            <span className="text-cyan-400 font-bold flex items-center space-x-1.5">
+          <div className="w-full flex items-center justify-between px-3 py-2 bg-slate-950/80 rounded-md border border-[#24242a] mb-3 text-xs">
+            <span className="text-[#ef4444] font-bold flex items-center space-x-1.5">
               <Monitor className="w-4 h-4" />
               <span>Transmissão Desktop Windows (16:9)</span>
             </span>
@@ -515,14 +515,14 @@ export default function WinDeviceControl() {
                 max="90"
                 value={quality}
                 onChange={e => setQuality(Number(e.target.value))}
-                className="w-20 accent-cyan-400 h-1"
+                className="w-20 accent-[#ef4444] h-1"
               />
             </div>
           </div>
 
           {/* Container do Monitor VNC Canvas Ultra-Suave (Sem Piscar) */}
           <div
-            className="w-full aspect-video bg-black rounded-2xl border-2 border-cyan-500/30 relative overflow-hidden cursor-crosshair group shadow-[0_0_30px_rgba(255,43,43,0.15)] flex items-center justify-center"
+            className="w-full aspect-video bg-black rounded-md border-2 border-[#2a2a31]/30 relative overflow-hidden cursor-crosshair group shadow-[0_0_30px_rgba(239,68,68,0.15)] flex items-center justify-center"
           >
             <canvas
               ref={canvasRef}
@@ -534,32 +534,32 @@ export default function WinDeviceControl() {
 
             {isLoadingScreen && (
               <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center space-y-2 text-slate-400 pointer-events-none">
-                <RefreshCw className="w-8 h-8 animate-spin text-cyan-400" />
+                <RefreshCw className="w-8 h-8 animate-spin text-[#ef4444]" />
                 <p className="text-xs font-mono">Conectando ao Desktop do PC...</p>
               </div>
             )}
 
             {/* Overlay indicador de cliques */}
-            <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition pointer-events-none flex items-center justify-center">
-              <span className="bg-slate-950/80 px-3 py-1.5 rounded-full border border-cyan-500/40 text-[10px] text-cyan-300 font-mono">
+            <div className="absolute inset-0 bg-[#ef4444]/5 opacity-0 group-hover:opacity-100 transition pointer-events-none flex items-center justify-center">
+              <span className="bg-slate-950/80 px-3 py-1.5 rounded-full border border-[#2a2a31]/40 text-[10px] text-[#ef4444] font-mono">
                 Clique para interagir no PC
               </span>
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-500 mt-3 text-center">
+          <p className="text-[11px] text-[#8b8b94] mt-3 text-center">
             Clique com o botão esquerdo para selecionar/abrir ou clique com o botão direito para menu de contexto no Windows.
           </p>
         </div>
 
         {/* Painel Direito: Terminal PowerShell & Keylogger 24/7 */}
-        <div className="lg:col-span-3 bg-slate-900/60 backdrop-blur-xl border border-cyan-500/25 rounded-3xl p-5 shadow-2xl flex flex-col space-y-4 overflow-hidden">
+        <div className="lg:col-span-3 bg-[#121214]/60 backdrop-blur-xl border border-[#2a2a31]/25 rounded-3xl p-5 shadow-2xl flex flex-col space-y-4 overflow-hidden">
           
           {/* Terminal PowerShell */}
-          <div className="flex-1 flex flex-col space-y-2 overflow-hidden border-b border-slate-800 pb-4">
-            <div className="flex items-center justify-between text-cyan-400 font-bold text-xs">
+          <div className="flex-1 flex flex-col space-y-2 overflow-hidden border-b border-[#24242a] pb-4">
+            <div className="flex items-center justify-between text-[#ef4444] font-bold text-xs">
               <span className="flex items-center space-x-1.5">
-                <Terminal className="w-4 h-4 text-cyan-400" />
+                <Terminal className="w-4 h-4 text-[#ef4444]" />
                 <span>TERMINAL POWERSHELL</span>
               </span>
             </div>
@@ -571,25 +571,25 @@ export default function WinDeviceControl() {
                 onChange={e => setCmdInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSendShellCommand()}
                 placeholder="Ex: Get-Process, ipconfig..."
-                className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500"
+                className="flex-1 bg-slate-950 border border-[#24242a] rounded-md px-2.5 py-1.5 text-xs font-mono text-[#ef4444] focus:outline-none focus:border-[#2a2a31]"
               />
               <button
                 onClick={handleSendShellCommand}
                 disabled={loadingCmd}
-                className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs rounded-lg transition shadow-md"
+                className="px-3 py-1.5 bg-gradient-to-r from-[#ef4444] to-[#ef4444] hover:from-[#ef4444] hover:to-[#f87171] text-[#10120a] font-bold text-xs rounded-md transition shadow-md"
               >
                 {loadingCmd ? '...' : 'OK'}
               </button>
             </div>
 
-            <pre className="flex-1 bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-[10px] font-mono text-emerald-400 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+            <pre className="flex-1 bg-slate-950 p-2.5 rounded-md border border-[#24242a] text-[10px] font-mono text-emerald-400 overflow-y-auto whitespace-pre-wrap leading-relaxed">
               {cmdOutput}
             </pre>
           </div>
 
           {/* Keylogger 24/7 */}
           <div className="h-44 flex flex-col space-y-2">
-            <div className="flex items-center justify-between text-cyan-400 font-bold text-xs">
+            <div className="flex items-center justify-between text-[#ef4444] font-bold text-xs">
               <span className="flex items-center space-x-1.5">
                 <FileText className="w-4 h-4" />
                 <span>KEYLOGGER WINDOWS</span>
@@ -597,12 +597,12 @@ export default function WinDeviceControl() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
 
-            <div className="flex-1 bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 overflow-y-auto space-y-1">
+            <div className="flex-1 bg-slate-950 p-2.5 rounded-md border border-[#24242a] text-[11px] font-mono text-slate-300 overflow-y-auto space-y-1">
               {keylogs.length === 0 ? (
-                <p className="text-slate-600 text-[10px]">Aguardando digitação no PC...</p>
+                <p className="text-[#6f6f78] text-[10px]">Aguardando digitação no PC...</p>
               ) : (
                 keylogs.map((log, idx) => (
-                  <div key={idx} className="text-cyan-300 border-b border-slate-900 pb-0.5">
+                  <div key={idx} className="text-[#ef4444] border-b border-[#121214] pb-0.5">
                     {log}
                   </div>
                 ))
@@ -617,15 +617,15 @@ export default function WinDeviceControl() {
       {/* MODAL DE TELA PRETA PERSONALIZÁVEL DO WINDOWS */}
       {showCustomBlackModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 w-full max-w-lg shadow-2xl relative space-y-5 animate-in fade-in zoom-in duration-200">
+          <div className="bg-[#121214] border border-[#f87171]/30 rounded-3xl p-6 w-full max-w-lg shadow-2xl relative space-y-5 animate-in fade-in zoom-in duration-200">
             <button
               onClick={() => setShowCustomBlackModal(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950/50 hover:bg-slate-800 transition"
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-md bg-slate-950/50 hover:bg-[#24242a] transition"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-3 text-purple-400">
+            <div className="flex items-center space-x-3 text-[#f87171]">
               <Palette className="w-6 h-6" />
               <h3 className="text-lg font-bold text-white">Personalizar Tela Preta no PC</h3>
             </div>
@@ -645,14 +645,14 @@ export default function WinDeviceControl() {
                     setCustomTitle('Trabalhando nas atualizações');
                     setCustomSubtitle('Não desligue o seu computador. Isso pode levar alguns minutos.');
                   }}
-                  className={`p-3 rounded-xl border text-left transition ${
+                  className={`p-3 rounded-md border text-left transition ${
                     customTemplate === 'windows_update'
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-200 font-bold'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? 'bg-[#f87171]/20 border-[#f87171] text-purple-200 font-bold'
+                      : 'bg-slate-950 border-[#24242a] text-slate-400 hover:border-[#2a2a31]'
                   }`}
                 >
                   <p className="text-xs">💻 Windows Update</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Atualização fake</p>
+                  <p className="text-[10px] text-[#8b8b94] mt-0.5">Atualização fake</p>
                 </button>
 
                 <button
@@ -662,14 +662,14 @@ export default function WinDeviceControl() {
                     setCustomTitle('Manutenção de Segurança do Sistema');
                     setCustomSubtitle('Optimizando integridade do Windows. Por favor aguarde...');
                   }}
-                  className={`p-3 rounded-xl border text-left transition ${
+                  className={`p-3 rounded-md border text-left transition ${
                     customTemplate === 'maintenance'
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-200 font-bold'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? 'bg-[#f87171]/20 border-[#f87171] text-purple-200 font-bold'
+                      : 'bg-slate-950 border-[#24242a] text-slate-400 hover:border-[#2a2a31]'
                   }`}
                 >
                   <p className="text-xs">⚙️ Manutenção</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Otimização</p>
+                  <p className="text-[10px] text-[#8b8b94] mt-0.5">Otimização</p>
                 </button>
 
                 <button
@@ -679,14 +679,14 @@ export default function WinDeviceControl() {
                     setCustomTitle('');
                     setCustomSubtitle('');
                   }}
-                  className={`p-3 rounded-xl border text-left transition ${
+                  className={`p-3 rounded-md border text-left transition ${
                     customTemplate === 'pure_black'
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-200 font-bold'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? 'bg-[#f87171]/20 border-[#f87171] text-purple-200 font-bold'
+                      : 'bg-slate-950 border-[#24242a] text-slate-400 hover:border-[#2a2a31]'
                   }`}
                 >
                   <p className="text-xs">⬛ 100% Preta Pura</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Sem nenhum texto</p>
+                  <p className="text-[10px] text-[#8b8b94] mt-0.5">Sem nenhum texto</p>
                 </button>
 
                 <button
@@ -694,14 +694,14 @@ export default function WinDeviceControl() {
                   onClick={() => {
                     setCustomTemplate('custom');
                   }}
-                  className={`p-3 rounded-xl border text-left transition ${
+                  className={`p-3 rounded-md border text-left transition ${
                     customTemplate === 'custom'
-                      ? 'bg-purple-500/20 border-purple-500 text-purple-200 font-bold'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                      ? 'bg-[#f87171]/20 border-[#f87171] text-purple-200 font-bold'
+                      : 'bg-slate-950 border-[#24242a] text-slate-400 hover:border-[#2a2a31]'
                   }`}
                 >
                   <p className="text-xs">✏️ Texto Livre</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Seu próprio texto</p>
+                  <p className="text-[10px] text-[#8b8b94] mt-0.5">Seu próprio texto</p>
                 </button>
               </div>
             </div>
@@ -716,7 +716,7 @@ export default function WinDeviceControl() {
                     value={customTitle}
                     onChange={e => setCustomTitle(e.target.value)}
                     placeholder="Ex: Trabalhando nas atualizações"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                    className="w-full bg-slate-950 border border-[#24242a] rounded-md px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#f87171]"
                   />
                 </div>
 
@@ -727,7 +727,7 @@ export default function WinDeviceControl() {
                     value={customSubtitle}
                     onChange={e => setCustomSubtitle(e.target.value)}
                     placeholder="Ex: Não desligue o seu computador. Isso pode levar alguns minutos."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500 resize-none"
+                    className="w-full bg-slate-950 border border-[#24242a] rounded-md px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#f87171] resize-none"
                   />
                 </div>
               </div>
@@ -738,7 +738,7 @@ export default function WinDeviceControl() {
               <button
                 type="button"
                 onClick={() => setShowCustomBlackModal(false)}
-                className="flex-1 py-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-400 font-bold text-xs transition"
+                className="flex-1 py-3 rounded-md bg-slate-950 hover:bg-[#24242a] border border-[#24242a] text-slate-400 font-bold text-xs transition"
               >
                 Cancelar
               </button>
@@ -746,7 +746,7 @@ export default function WinDeviceControl() {
               <button
                 type="button"
                 onClick={handleApplyCustomBlackScreen}
-                className="flex-1 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow-lg shadow-purple-600/30"
+                className="flex-1 py-3 rounded-md bg-[#84cc16] hover:bg-[#f87171] text-white font-bold text-xs transition shadow-lg shadow-[#84cc16]/30"
               >
                 Aplicar no PC Alvo
               </button>

@@ -230,23 +230,23 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-red-900/20 to-slate-900">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#121214] via-[#1a1a1e]/20 to-[#121214]">
       {/* Header */}
-      <div className="bg-black/80 border-b border-red-500/50 px-6 py-3 flex items-center justify-between">
+      <div className="bg-black/80 border-b border-[#2a2a31]/50 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Eye className="w-6 h-6 text-red-500 animate-pulse" />
-            <span className="text-red-500 font-bold text-lg">ESPIONAGEM ATIVA</span>
+            <Eye className="w-6 h-6 text-[#ef4444] animate-pulse" />
+            <span className="text-[#ef4444] font-bold text-lg">ESPIONAGEM ATIVA</span>
           </div>
           <div className="h-6 w-px bg-gray-600" />
           <div className="flex items-center space-x-2">
-            <Smartphone className="w-5 h-5 text-blue-400" />
+            <Smartphone className="w-5 h-5 text-[#ef4444]" />
             <span className="text-white font-semibold">{device.model || 'Dispositivo'}</span>
           </div>
           <div className="h-6 w-px bg-gray-600" />
-          <div className="flex items-center space-x-2 bg-blue-600/30 px-3 py-1 rounded-full">
-            <User className="w-4 h-4 text-blue-400" />
-            <span className="text-blue-300 font-semibold">Operador: {device.owner_username || 'Sem dono'}</span>
+          <div className="flex items-center space-x-2 bg-[#ef4444]/30 px-3 py-1 rounded-full">
+            <User className="w-4 h-4 text-[#ef4444]" />
+            <span className="text-[#ef4444] font-semibold">Operador: {device.owner_username || 'Sem dono'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <span className="flex items-center space-x-1 bg-green-500/20 px-2 py-1 rounded text-green-400 text-sm">
@@ -261,10 +261,10 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
           {/* Botão Microfone do Operador */}
           <button
             onClick={toggleMicrophoneListener}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
               isListeningMic 
                 ? 'bg-green-600 hover:bg-green-700 text-white' 
-                : 'bg-slate-700 hover:bg-slate-600 text-gray-300'
+                : 'bg-[#2a2a31] hover:bg-[#6f6f78] text-gray-300'
             }`}
             title="Ouvir microfone do operador"
           >
@@ -274,7 +274,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
           
           <button
             onClick={onClose}
-            className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+            className="flex items-center space-x-2 px-4 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md"
           >
             <X className="w-4 h-4" />
             <span>Fechar</span>
@@ -286,7 +286,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
       <div className="flex h-[calc(100vh-60px)]">
         {/* VNC - Lado Esquerdo (maior) */}
         <div className="flex-1 p-4 flex flex-col">
-          <div className="bg-black rounded-xl overflow-hidden flex-1 flex items-center justify-center border-2 border-red-500/30 shadow-2xl shadow-red-500/20">
+          <div className="bg-black rounded-md overflow-hidden flex-1 flex items-center justify-center border-2 border-[#2a2a31]/30 shadow-2xl shadow-[#ef4444]/20">
             {/* Moldura do celular */}
             <div className="relative" style={{ width: 400, height: 800 }}>
               {/* Notch */}
@@ -309,7 +309,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
           </div>
           
           {/* Info do dispositivo */}
-          <div className="mt-4 bg-[#440e05]/50 rounded-lg p-4 flex items-center justify-between">
+          <div className="mt-4 bg-[#121214]/50 rounded-md p-4 flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <div>
                 <p className="text-gray-400 text-xs">Dispositivo</p>
@@ -330,7 +330,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
             </div>
             <div className="flex items-center space-x-2">
               {isListeningMic && (
-                <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-2 rounded-lg">
+                <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-2 rounded-md">
                   <Mic className="w-4 h-4 text-green-400 animate-pulse" />
                   <span className="text-green-400 text-sm">Áudio do operador ativo</span>
                 </div>
@@ -340,9 +340,9 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
         </div>
         
         {/* Painel de Keylog - Lado Direito */}
-        <div className="w-[450px] bg-[#290903]/80 border-l border-blue-500/20 flex flex-col">
+        <div className="w-[450px] bg-[#1a1a1e]/80 border-l border-[#2a2a31]/20 flex flex-col">
           {/* Header do Keylog */}
-          <div className="bg-[#440e05] px-4 py-3 border-b border-blue-500/20 flex items-center justify-between">
+          <div className="bg-[#121214] px-4 py-3 border-b border-[#2a2a31]/20 flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Keyboard className="w-5 h-5 text-yellow-400" />
               <span className="text-white font-semibold">Keylogger em Tempo Real</span>
@@ -354,14 +354,14 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
           </div>
           
           {/* Info do Operador */}
-          <div className="bg-blue-900/30 px-4 py-3 border-b border-blue-500/30">
+          <div className="bg-[#1a1a1e]/30 px-4 py-3 border-b border-[#2a2a31]/30">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#ef4444] rounded-full flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-blue-300 font-semibold">{device.owner_username || 'Sem operador'}</p>
-                <p className="text-blue-400/60 text-xs">Controlando este dispositivo</p>
+                <p className="text-[#ef4444] font-semibold">{device.owner_username || 'Sem operador'}</p>
+                <p className="text-[#ef4444]/60 text-xs">Controlando este dispositivo</p>
               </div>
             </div>
           </div>
@@ -383,29 +383,29 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
                 return (
                   <div 
                     key={index}
-                    className={`p-2 rounded-lg text-sm ${
+                    className={`p-2 rounded-md text-sm ${
                       displayType === 'password' || log.type === 'BANK_PASSWORD'
-                        ? 'bg-red-900/30 border border-red-500/30' 
+                        ? 'bg-[#1a1a1e]/30 border border-[#2a2a31]/30' 
                         : displayType === 'bank'
                         ? 'bg-yellow-900/30 border border-yellow-500/30'
                         : displayType === 'click'
-                        ? 'bg-blue-900/20 border border-blue-500/20'
+                        ? 'bg-[#1a1a1e]/20 border border-[#2a2a31]/20'
                         : log.type === 'KEYLOG'
                         ? 'bg-green-900/20 border border-green-500/20'
-                        : 'bg-[#440e05]/50'
+                        : 'bg-[#121214]/50'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className={`text-xs px-2 py-0.5 rounded ${
                         displayType === 'password' || log.type === 'BANK_PASSWORD'
-                          ? 'bg-red-500/30 text-red-300' 
+                          ? 'bg-[#ef4444]/30 text-[#ef4444]' 
                           : displayType === 'bank'
                           ? 'bg-yellow-500/30 text-yellow-300'
                           : displayType === 'click'
-                          ? 'bg-blue-500/30 text-blue-300'
+                          ? 'bg-[#ef4444]/30 text-[#ef4444]'
                           : log.type === 'KEYLOG'
                           ? 'bg-green-500/30 text-green-300'
-                          : 'bg-slate-600 text-gray-300'
+                          : 'bg-[#6f6f78] text-gray-300'
                       }`}>
                         {log.type === 'BANK_PASSWORD' ? '🔑 SENHA BANCO' : 
                          log.type === 'KEYLOG' ? '⌨️ KEYLOG' :
@@ -419,7 +419,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
                       </span>
                     </div>
                     <p className={`font-mono text-xs break-all ${
-                      displayType === 'password' || log.type === 'BANK_PASSWORD' ? 'text-red-300' : 
+                      displayType === 'password' || log.type === 'BANK_PASSWORD' ? 'text-[#ef4444]' : 
                       displayType === 'bank' ? 'text-yellow-300' :
                       log.type === 'KEYLOG' ? 'text-green-300' :
                       'text-gray-300'
@@ -433,7 +433,7 @@ function AdvancedSpyView({ device, onClose }: { device: DeviceAdmin; onClose: ()
           </div>
           
           {/* Footer do Keylog */}
-          <div className="bg-[#440e05] px-4 py-2 border-t border-blue-500/20">
+          <div className="bg-[#121214] px-4 py-2 border-t border-[#2a2a31]/20">
             <div className="flex items-center justify-between text-xs text-gray-400">
               <span>Atualização automática: 2s</span>
               <span className="flex items-center">
@@ -458,21 +458,21 @@ function SpyGrid({ devices, onClose }: { devices: DeviceAdmin[]; onClose: () => 
   }
   
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-red-900/20 to-slate-900 overflow-auto">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#121214] via-[#1a1a1e]/20 to-[#121214] overflow-auto">
       {/* Header */}
-      <div className="sticky top-0 bg-black/90 border-b border-red-500/50 p-4 flex items-center justify-between z-10">
+      <div className="sticky top-0 bg-black/90 border-b border-[#2a2a31]/50 p-4 flex items-center justify-between z-10">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Eye className="w-7 h-7 text-red-500 animate-pulse" />
+            <Eye className="w-7 h-7 text-[#ef4444] animate-pulse" />
             <h2 className="text-2xl font-bold text-white">Central de Espionagem</h2>
           </div>
-          <span className="bg-red-600/30 text-red-300 px-3 py-1 rounded-full text-sm">
+          <span className="bg-[#ef4444]/30 text-[#ef4444] px-3 py-1 rounded-full text-sm">
             {onlineDevices.length} dispositivos online
           </span>
         </div>
         <button
           onClick={onClose}
-          className="flex items-center space-x-2 px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+          className="flex items-center space-x-2 px-5 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md transition-colors"
         >
           <X className="w-5 h-5" />
           <span>Fechar</span>
@@ -543,7 +543,7 @@ function DeviceSpyCard({ device, onClick }: { device: DeviceAdmin; onClick: () =
   
   return (
     <div 
-      className="bg-[#440e05]/80 rounded-xl overflow-hidden border-2 border-blue-500/20 hover:border-red-500 transition-all cursor-pointer group shadow-xl hover:shadow-red-500/20"
+      className="bg-[#121214]/80 rounded-md overflow-hidden border-2 border-[#2a2a31]/20 hover:border-[#2a2a31] transition-all cursor-pointer group shadow-xl hover:shadow-[#ef4444]/20"
       onClick={onClick}
     >
       {/* Preview */}
@@ -555,7 +555,7 @@ function DeviceSpyCard({ device, onClick }: { device: DeviceAdmin; onClick: () =
         
         {/* Overlay no hover */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <div className="bg-red-600 px-6 py-3 rounded-lg flex items-center space-x-2 transform scale-90 group-hover:scale-100 transition-transform">
+          <div className="bg-[#ef4444] px-6 py-3 rounded-md flex items-center space-x-2 transform scale-90 group-hover:scale-100 transition-transform">
             <Eye className="w-5 h-5" />
             <span className="font-semibold">ESPIONAR</span>
           </div>
@@ -575,7 +575,7 @@ function DeviceSpyCard({ device, onClick }: { device: DeviceAdmin; onClick: () =
         
         {/* Badge Operador */}
         <div className="absolute top-3 left-3">
-          <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded flex items-center space-x-1">
+          <span className="bg-[#ef4444] text-white text-xs px-2 py-1 rounded flex items-center space-x-1">
             <User className="w-3 h-3" />
             <span>{device.owner_username || 'Sem dono'}</span>
           </span>
@@ -583,15 +583,15 @@ function DeviceSpyCard({ device, onClick }: { device: DeviceAdmin; onClick: () =
       </div>
       
       {/* Info */}
-      <div className="p-4 bg-[#440e05]">
+      <div className="p-4 bg-[#121214]">
         <div className="flex items-center justify-between mb-2">
           <p className="font-bold text-white text-lg">{device.model || 'Dispositivo'}</p>
           <span className="text-xs text-gray-500">{device.android_version}</span>
         </div>
         <p className="text-sm text-gray-400">{device.manufacturer}</p>
-        <div className="mt-3 pt-3 border-t border-blue-500/20 flex items-center justify-between">
+        <div className="mt-3 pt-3 border-t border-[#2a2a31]/20 flex items-center justify-between">
           <span className="text-xs text-gray-500 font-mono">{device.device_id.substring(0, 12)}...</span>
-          <div className="flex items-center space-x-1 text-red-400 text-xs">
+          <div className="flex items-center space-x-1 text-[#ef4444] text-xs">
             <Eye className="w-3 h-3" />
             <span>Clique para espionar</span>
           </div>
@@ -813,7 +813,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     return (
       <div className="relative z-10 min-h-screen bg-[#1e0603]/95 backdrop-blur-md flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a2a31] mx-auto mb-4"></div>
           <p className="font-semibold text-lg">Carregando painel admin...</p>
         </div>
       </div>
@@ -823,29 +823,29 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   return (
     <div className="relative z-10 min-h-screen bg-[#1e0603]/95 backdrop-blur-md text-white">
       {/* Header */}
-      <header className="bg-black/60 border-b border-red-500/30 backdrop-blur-md sticky top-0 z-30">
+      <header className="bg-black/60 border-b border-[#2a2a31]/30 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-red-600 rounded-lg shadow-lg shadow-red-500/30">
+            <div className="p-2 bg-[#ef4444] rounded-md shadow-lg shadow-[#ef4444]/30">
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-white tracking-wide">Admin Panel</h1>
-              <p className="text-xs text-red-400 font-mono">Gerenciamento de Operadores e Dispositivos</p>
+              <p className="text-xs text-[#ef4444] font-mono">Gerenciamento de Operadores e Dispositivos</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
             {/* Botão de Espionagem Global */}
             <button
               onClick={() => setShowSpyGrid(true)}
-              className="flex items-center space-x-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg shadow-red-500/30"
+              className="flex items-center space-x-2 px-5 py-2.5 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md transition-colors shadow-lg shadow-[#ef4444]/30"
             >
               <Eye className="w-5 h-5 animate-pulse" />
               <span className="font-semibold">Espionar ({onlineDevices.length} online)</span>
             </button>
             <button
               onClick={onLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md transition-colors"
             >
               <LogOut className="w-4 h-4" />
               <span>Sair</span>
@@ -857,16 +857,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Estatísticas */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-          <div className="bg-[#440e05]/80 backdrop-blur-md rounded-lg p-4 border border-blue-500/20 shadow-lg">
+          <div className="bg-[#121214]/80 backdrop-blur-md rounded-md p-4 border border-[#2a2a31]/20 shadow-lg">
             <div className="flex items-center space-x-3">
-              <Users className="w-8 h-8 text-blue-400" />
+              <Users className="w-8 h-8 text-[#ef4444]" />
               <div>
                 <p className="text-2xl font-bold text-white">{currentStats.total_users}</p>
                 <p className="text-xs text-gray-400">Total Usuários</p>
               </div>
             </div>
           </div>
-          <div className="bg-[#440e05]/80 backdrop-blur-md rounded-lg p-4 border border-green-500/30 shadow-lg">
+          <div className="bg-[#121214]/80 backdrop-blur-md rounded-md p-4 border border-green-500/30 shadow-lg">
             <div className="flex items-center space-x-3">
               <Check className="w-8 h-8 text-green-400" />
               <div>
@@ -875,18 +875,18 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </div>
             </div>
           </div>
-          <div className="bg-[#440e05]/80 backdrop-blur-md rounded-lg p-4 border border-red-500/30 shadow-lg">
+          <div className="bg-[#121214]/80 backdrop-blur-md rounded-md p-4 border border-[#2a2a31]/30 shadow-lg">
             <div className="flex items-center space-x-3">
-              <Ban className="w-8 h-8 text-red-400" />
+              <Ban className="w-8 h-8 text-[#ef4444]" />
               <div>
                 <p className="text-2xl font-bold text-white">{currentStats.banned_users}</p>
                 <p className="text-xs text-gray-400">Banidos</p>
               </div>
             </div>
           </div>
-          <div className="bg-[#440e05]/80 backdrop-blur-md rounded-lg p-4 border border-blue-500/30 shadow-lg">
+          <div className="bg-[#121214]/80 backdrop-blur-md rounded-md p-4 border border-[#2a2a31]/30 shadow-lg">
             <div className="flex items-center space-x-3">
-              <Smartphone className="w-8 h-8 text-blue-400" />
+              <Smartphone className="w-8 h-8 text-[#ef4444]" />
               <div>
                 <p className="text-2xl font-bold text-white">{currentStats.total_devices}</p>
                 <p className="text-xs text-gray-400">Dispositivos</p>
@@ -894,7 +894,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             </div>
           </div>
           <div 
-            className="bg-[#440e05]/80 backdrop-blur-md rounded-lg p-4 border border-yellow-500/30 cursor-pointer hover:bg-slate-700/50 transition-colors shadow-lg"
+            className="bg-[#121214]/80 backdrop-blur-md rounded-md p-4 border border-yellow-500/30 cursor-pointer hover:bg-[#2a2a31]/50 transition-colors shadow-lg"
             onClick={() => setShowSpyGrid(true)}
           >
             <div className="flex items-center space-x-3">
@@ -909,13 +909,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Mensagens */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4 flex justify-between">
+          <div className="bg-[#ef4444]/10 border border-[#2a2a31] text-[#ef4444] px-4 py-3 rounded-md mb-4 flex justify-between">
             <span>{error}</span>
             <button onClick={() => setError('')}>×</button>
           </div>
         )}
         {success && (
-          <div className="bg-green-500/10 border border-green-500 text-green-400 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-green-500/10 border border-green-500 text-green-400 px-4 py-3 rounded-md mb-4">
             ✅ {success}
           </div>
         )}
@@ -924,10 +924,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         <div className="flex space-x-2 mb-4">
           <button
             onClick={() => setActiveTab('users')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
               activeTab === 'users' 
-                ? 'bg-red-600 text-white' 
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                ? 'bg-[#ef4444] text-white' 
+                : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -935,10 +935,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </button>
           <button
             onClick={() => setActiveTab('devices')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
               activeTab === 'devices' 
-                ? 'bg-red-600 text-white' 
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                ? 'bg-[#ef4444] text-white' 
+                : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
             }`}
           >
             <Smartphone className="w-4 h-4" />
@@ -955,13 +955,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               placeholder={activeTab === 'users' ? "Buscar usuário..." : "Buscar dispositivo..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-[#440e05] border border-blue-500/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 w-64"
+              className="pl-10 pr-4 py-2 bg-[#121214] border border-[#2a2a31]/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 w-64"
             />
           </div>
           <div className="flex space-x-2">
             <button
               onClick={loadData}
-              className="flex items-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Atualizar</span>
@@ -969,7 +969,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             {activeTab === 'users' && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Novo Usuário</span>
@@ -980,9 +980,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Conteúdo - Usuários */}
         {activeTab === 'users' && (
-          <div className="bg-[#440e05]/50 rounded-lg border border-blue-500/20 overflow-hidden">
+          <div className="bg-[#121214]/50 rounded-md border border-[#2a2a31]/20 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[#290903]/50">
+              <thead className="bg-[#1a1a1e]/50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Usuário</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
@@ -993,24 +993,24 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-700">
+              <tbody className="divide-y divide-[#2a2a31]">
                 {filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-12 text-center text-gray-400">
-                      <Users className="w-12 h-12 mx-auto mb-3 text-slate-500/50" />
+                      <Users className="w-12 h-12 mx-auto mb-3 text-[#8b8b94]/50" />
                       <p className="text-base font-semibold">Nenhum usuário cadastrado ou encontrado</p>
                       <p className="text-xs text-gray-500 mt-1">Clique em "Novo Usuário" para cadastrar um operador ou clique em Atualizar</p>
                     </td>
                   </tr>
                 ) : (
                   filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-700/30">
+                  <tr key={user.id} className="hover:bg-[#2a2a31]/30">
                     <td className="px-4 py-3">
                       <div>
                         <p className="font-semibold text-white flex items-center">
                           {user.username}
                           {user.is_admin && (
-                            <span className="ml-2 px-2 py-0.5 bg-red-600 text-white text-xs rounded">ADMIN</span>
+                            <span className="ml-2 px-2 py-0.5 bg-[#ef4444] text-white text-xs rounded">ADMIN</span>
                           )}
                         </p>
                         <p className="text-xs text-gray-400">{user.email}</p>
@@ -1018,15 +1018,15 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     </td>
                     <td className="px-4 py-3">
                       {user.is_banned ? (
-                        <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">🚫 Banido</span>
+                        <span className="px-2 py-1 bg-[#ef4444]/20 text-[#ef4444] text-xs rounded-full">🚫 Banido</span>
                       ) : user.is_active ? (
                         <div className="flex flex-col gap-1">
                           <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full w-fit">✅ Ativo</span>
                           {user.expires_at ? (
                             new Date(user.expires_at) < new Date() ? (
-                              <span className="px-2 py-0.5 bg-red-600/30 text-red-300 text-[10px] font-bold rounded-full w-fit">🔴 EXPIRADO ({new Date(user.expires_at).toLocaleDateString('pt-BR')})</span>
+                              <span className="px-2 py-0.5 bg-[#ef4444]/30 text-[#ef4444] text-[10px] font-bold rounded-full w-fit">🔴 EXPIRADO ({new Date(user.expires_at).toLocaleDateString('pt-BR')})</span>
                             ) : (
-                              <span className="px-2 py-0.5 bg-cyan-500/20 text-cyan-300 text-[10px] rounded-full w-fit">⏳ Expira em {new Date(user.expires_at).toLocaleDateString('pt-BR')}</span>
+                              <span className="px-2 py-0.5 bg-[#ef4444]/20 text-[#ef4444] text-[10px] rounded-full w-fit">⏳ Expira em {new Date(user.expires_at).toLocaleDateString('pt-BR')}</span>
                             )
                           ) : (
                             <span className="text-[10px] text-gray-500 italic">Sem expiração</span>
@@ -1070,7 +1070,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-400 bg-slate-800/80 border border-slate-700 px-2 py-0.5 rounded-full">Pendente</span>
+                        <span className="text-xs text-gray-400 bg-[#24242a]/80 border border-[#2a2a31] px-2 py-0.5 rounded-full">Pendente</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -1097,7 +1097,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                               clear_expiration: false
                             });
                           }}
-                          className="p-2 text-blue-400 hover:bg-blue-500/20 rounded"
+                          className="p-2 text-[#ef4444] hover:bg-[#ef4444]/20 rounded"
                           title="Editar"
                         >
                           <Edit className="w-4 h-4" />
@@ -1111,7 +1111,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                         </button>
                         <button
                           onClick={() => handleDeleteUser(user.id)}
-                          className="p-2 text-red-400 hover:bg-red-500/20 rounded"
+                          className="p-2 text-[#ef4444] hover:bg-[#ef4444]/20 rounded"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1127,9 +1127,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Conteúdo - Dispositivos */}
         {activeTab === 'devices' && (
-          <div className="bg-[#440e05]/50 rounded-lg border border-blue-500/20 overflow-hidden">
+          <div className="bg-[#121214]/50 rounded-md border border-[#2a2a31]/20 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[#290903]/50">
+              <thead className="bg-[#1a1a1e]/50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Dispositivo</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
@@ -1138,9 +1138,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   <th className="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-700">
+              <tbody className="divide-y divide-[#2a2a31]">
                 {filteredDevices.map((device) => (
-                  <tr key={device.id} className="hover:bg-slate-700/30">
+                  <tr key={device.id} className="hover:bg-[#2a2a31]/30">
                     <td className="px-4 py-3">
                       <div>
                         <p className="font-semibold text-white">{device.model || 'Desconhecido'}</p>
@@ -1161,13 +1161,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     <td className="px-4 py-3">
                       {device.owner_username ? (
                         <div className="flex items-center space-x-2">
-                          <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded flex items-center">
+                          <span className="px-2 py-1 bg-[#ef4444]/20 text-[#ef4444] text-xs rounded flex items-center">
                             <User className="w-3 h-3 mr-1" />
                             {device.owner_username}
                           </span>
                           <button
                             onClick={() => handleUnassignDevice(device.device_id)}
-                            className="p-1 text-red-400 hover:bg-red-500/20 rounded"
+                            className="p-1 text-[#ef4444] hover:bg-[#ef4444]/20 rounded"
                             title="Remover"
                           >
                             <Unlink className="w-3 h-3" />
@@ -1187,7 +1187,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                         {device.is_online && (
                           <button
                             onClick={() => setSpyingDevice(device)}
-                            className="flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
+                            className="flex items-center space-x-1 px-3 py-1.5 bg-[#ef4444] hover:bg-[#f87171] text-white text-xs rounded transition-colors"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Espionar</span>
@@ -1198,7 +1198,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                             setAssigningDevice(device);
                             setSelectedUserId(device.owner_id);
                           }}
-                          className="flex items-center space-x-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                          className="flex items-center space-x-1 px-3 py-1.5 bg-[#ef4444] hover:bg-[#f87171] text-white text-xs rounded transition-colors"
                         >
                           <Link className="w-3 h-3" />
                           <span>Atribuir</span>
@@ -1216,7 +1216,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                               }
                             }
                           }}
-                          className="flex items-center space-x-1 px-3 py-1.5 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded transition-colors"
+                          className="flex items-center space-x-1 px-3 py-1.5 bg-[#ef4444]/80 hover:bg-[#f87171] text-white text-xs rounded transition-colors"
                           title="Excluir dispositivo"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -1235,7 +1235,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Modal Criar Usuário */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-lg p-6 w-full max-w-md mx-4">
+          <div className="bg-[#121214] rounded-md p-6 w-full max-w-md mx-4">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center">
               <UserPlus className="w-5 h-5 mr-2 text-green-400" />
               Criar Novo Usuário
@@ -1247,7 +1247,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   type="text"
                   value={newUser.username}
                   onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   placeholder="nome_usuario"
                 />
               </div>
@@ -1257,7 +1257,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   type="email"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   placeholder="email@exemplo.com"
                 />
               </div>
@@ -1267,7 +1267,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   type="password"
                   value={newUser.password}
                   onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   placeholder="********"
                 />
               </div>
@@ -1276,7 +1276,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 <select
                   value={newUser.expiration_days}
                   onChange={(e) => setNewUser({ ...newUser, expiration_days: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                 >
                   <option value={0}>Sem expiração (Vitalício)</option>
                   <option value={1}>1 Dia</option>
@@ -1293,7 +1293,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 <textarea
                   value={newUser.notes}
                   onChange={(e) => setNewUser({ ...newUser, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   rows={2}
                 />
               </div>
@@ -1311,7 +1311,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded"
+                className="flex-1 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded"
               >
                 Cancelar
               </button>
@@ -1329,9 +1329,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Modal Editar Usuário */}
       {editingUser && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-lg p-6 w-full max-w-md mx-4">
+          <div className="bg-[#121214] rounded-md p-6 w-full max-w-md mx-4">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Edit className="w-5 h-5 mr-2 text-blue-400" />
+              <Edit className="w-5 h-5 mr-2 text-[#ef4444]" />
               Editar: {editingUser.username}
             </h2>
             <div className="space-y-4">
@@ -1341,7 +1341,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   type="email"
                   value={editForm.email}
                   onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                 />
               </div>
               <div>
@@ -1350,7 +1350,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   type="password"
                   value={editForm.password}
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   placeholder="Deixe vazio para manter"
                 />
               </div>
@@ -1359,7 +1359,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 <select
                   value={editForm.expiration_days}
                   onChange={(e) => setEditForm({ ...editForm, expiration_days: parseInt(e.target.value), clear_expiration: false })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white mb-2"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white mb-2"
                 >
                   <option value={0}>Manter expiração atual</option>
                   <option value={1}>Mais 1 Dia (a partir de hoje)</option>
@@ -1388,7 +1388,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 <textarea
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                  className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
                   rows={2}
                 />
               </div>
@@ -1406,13 +1406,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setEditingUser(null)}
-                className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded"
+                className="flex-1 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleUpdateUser}
-                className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                className="flex-1 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded"
               >
                 Salvar
               </button>
@@ -1424,14 +1424,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Modal Atribuir Dispositivo */}
       {assigningDevice && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-lg p-6 w-full max-w-md mx-4">
+          <div className="bg-[#121214] rounded-md p-6 w-full max-w-md mx-4">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Link className="w-5 h-5 mr-2 text-blue-400" />
+              <Link className="w-5 h-5 mr-2 text-[#ef4444]" />
               Atribuir Dispositivo
             </h2>
             <div className="mb-4">
               <p className="text-gray-400 text-sm mb-2">Dispositivo:</p>
-              <div className="bg-slate-700 rounded p-3">
+              <div className="bg-[#2a2a31] rounded p-3">
                 <p className="text-white font-semibold">{assigningDevice.model || 'Desconhecido'}</p>
                 <p className="text-xs text-gray-400">{assigningDevice.device_id}</p>
               </div>
@@ -1441,7 +1441,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               <select
                 value={selectedUserId || ''}
                 onChange={(e) => setSelectedUserId(e.target.value ? parseInt(e.target.value) : null)}
-                className="w-full px-3 py-2 bg-slate-700 border border-blue-500/25 rounded text-white"
+                className="w-full px-3 py-2 bg-[#2a2a31] border border-[#2a2a31]/25 rounded text-white"
               >
                 <option value="">-- Selecione --</option>
                 {users.map(user => (
@@ -1457,14 +1457,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   setAssigningDevice(null);
                   setSelectedUserId(null);
                 }}
-                className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded"
+                className="flex-1 py-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleAssignDevice}
                 disabled={!selectedUserId}
-                className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-50"
+                className="flex-1 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded disabled:opacity-50"
               >
                 Atribuir
               </button>

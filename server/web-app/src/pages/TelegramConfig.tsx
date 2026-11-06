@@ -223,25 +223,25 @@ export default function TelegramConfig() {
   
   if (loading && !status) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-[#121214] via-purple-900 to-[#121214] flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-[#ef4444] animate-spin" />
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#121214] via-purple-900 to-[#121214] p-6">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-lg bg-[#440e05] hover:bg-slate-700 text-white"
+            className="p-2 rounded-md bg-[#121214] hover:bg-[#2a2a31] text-white"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-md bg-[#ef4444] flex items-center justify-center">
               <MessageCircle className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -253,21 +253,21 @@ export default function TelegramConfig() {
         
         {/* Mensagens */}
         {error && (
-          <div className="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <span className="text-red-300">{error}</span>
+          <div className="mb-4 p-4 bg-[#ef4444]/20 border border-[#2a2a31] rounded-md flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-[#ef4444]" />
+            <span className="text-[#ef4444]">{error}</span>
           </div>
         )}
         
         {success && (
-          <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg flex items-center gap-3">
+          <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-md flex items-center gap-3">
             <CheckCircle className="w-5 h-5 text-green-500" />
             <span className="text-green-300">{success}</span>
           </div>
         )}
         
         {/* Status Card */}
-        <div className="bg-[#440e05]/50 rounded-xl p-6 border border-blue-500/20 mb-6">
+        <div className="bg-[#121214]/50 rounded-md p-6 border border-[#2a2a31]/20 mb-6">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             📊 Status da Conexão
           </h2>
@@ -296,7 +296,7 @@ export default function TelegramConfig() {
         </div>
         
         {/* Formulário baseado no step */}
-        <div className="bg-[#440e05]/50 rounded-xl p-6 border border-blue-500/20">
+        <div className="bg-[#121214]/50 rounded-md p-6 border border-[#2a2a31]/20">
           
           {step === 'config' && (
             <>
@@ -306,7 +306,7 @@ export default function TelegramConfig() {
               </h2>
               
               {/* Info do Bot */}
-              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
+              <div className="bg-green-500/10 border border-green-500/30 rounded-md p-4 mb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <Bot className="w-8 h-8 text-green-500" />
                   <div>
@@ -320,10 +320,10 @@ export default function TelegramConfig() {
               </div>
               
               <div className="space-y-4">
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                  <p className="text-blue-300 text-sm">
+                <div className="bg-[#ef4444]/10 border border-[#2a2a31]/30 rounded-md p-4">
+                  <p className="text-[#ef4444] text-sm">
                     📌 <strong>Para obter API ID e Hash:</strong><br />
-                    1. Acesse <a href="https://my.telegram.org" target="_blank" rel="noopener" className="underline hover:text-blue-200">my.telegram.org</a><br />
+                    1. Acesse <a href="https://my.telegram.org" target="_blank" rel="noopener" className="underline hover:text-[#e8e8ea]">my.telegram.org</a><br />
                     2. Faça login com seu número<br />
                     3. Vá em "API development tools"<br />
                     4. Crie um app e copie as credenciais
@@ -339,7 +339,7 @@ export default function TelegramConfig() {
                       value={apiId}
                       onChange={(e) => setApiId(e.target.value)}
                       placeholder="12345678"
-                      className="w-full bg-slate-700 text-white pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="w-full bg-[#2a2a31] text-white pl-10 pr-4 py-3 rounded-md focus:ring-2 focus:ring-[#ef4444] outline-none"
                     />
                   </div>
                 </div>
@@ -353,7 +353,7 @@ export default function TelegramConfig() {
                       value={apiHash}
                       onChange={(e) => setApiHash(e.target.value)}
                       placeholder="abcdef1234567890abcdef1234567890"
-                      className="w-full bg-slate-700 text-white pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="w-full bg-[#2a2a31] text-white pl-10 pr-4 py-3 rounded-md focus:ring-2 focus:ring-[#ef4444] outline-none"
                     />
                   </div>
                 </div>
@@ -367,7 +367,7 @@ export default function TelegramConfig() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+5511999999999"
-                      className="w-full bg-slate-700 text-white pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="w-full bg-[#2a2a31] text-white pl-10 pr-4 py-3 rounded-md focus:ring-2 focus:ring-[#ef4444] outline-none"
                     />
                   </div>
                   <p className="text-gray-500 text-xs mt-1">Use o mesmo número que você usa no Telegram</p>
@@ -376,7 +376,7 @@ export default function TelegramConfig() {
                 <button
                   onClick={handleConfigure}
                   disabled={loading || !apiId || !apiHash || !phone}
-                  className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white rounded-md font-semibold flex items-center justify-center gap-2 shadow-lg"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5" />}
                   Conectar ao Telegram
@@ -402,13 +402,13 @@ export default function TelegramConfig() {
                   onChange={(e) => setVerificationCode(e.target.value)}
                   placeholder="12345"
                   maxLength={6}
-                  className="w-full bg-slate-700 text-white text-center text-2xl tracking-widest px-4 py-4 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full bg-[#2a2a31] text-white text-center text-2xl tracking-widest px-4 py-4 rounded-md focus:ring-2 focus:ring-[#ef4444] outline-none"
                 />
                 
                 <button
                   onClick={handleVerifyCode}
                   disabled={loading || !verificationCode}
-                  className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-md font-semibold flex items-center justify-center gap-2"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
                   Verificar Código
@@ -433,13 +433,13 @@ export default function TelegramConfig() {
                   value={password2FA}
                   onChange={(e) => setPassword2FA(e.target.value)}
                   placeholder="Sua senha 2FA"
-                  className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full bg-[#2a2a31] text-white px-4 py-3 rounded-md focus:ring-2 focus:ring-[#ef4444] outline-none"
                 />
                 
                 <button
                   onClick={handleVerifyPassword}
                   disabled={loading || !password2FA}
-                  className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-md font-semibold flex items-center justify-center gap-2"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-5 h-5" />}
                   Verificar Senha
@@ -459,7 +459,7 @@ export default function TelegramConfig() {
                   O bot <strong>@{status?.bot_username}</strong> está pronto para criptografar APKs
                 </p>
                 
-                <div className="bg-slate-700/50 rounded-lg p-4 mb-6">
+                <div className="bg-[#2a2a31]/50 rounded-md p-4 mb-6">
                   <p className="text-gray-300 text-sm">
                     🔐 Quando você gerar um APK, ele será automaticamente enviado para o bot de crypter.
                   </p>
@@ -467,7 +467,7 @@ export default function TelegramConfig() {
                 
                 <button
                   onClick={handleDisconnect}
-                  className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 mx-auto"
+                  className="px-6 py-3 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md font-semibold flex items-center justify-center gap-2 mx-auto"
                 >
                   <Unplug className="w-5 h-5" />
                   Desconectar

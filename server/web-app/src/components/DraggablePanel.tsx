@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+﻿import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { GripVertical, Minimize2, Maximize2, X } from 'lucide-react';
 
 export interface PanelPosition {
@@ -39,7 +39,7 @@ export function DraggablePanel({
   positions,
   setPositions,
   className = '',
-  headerColor = 'from-[#4c0f04] via-[#360b03] to-[#2c0803]',
+  headerColor = 'from-[#0d1e4c] via-[#0b1636] to-[#07112c]',
 }: DraggablePanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -47,7 +47,7 @@ export function DraggablePanel({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
-  // Posição atual do painel
+  // PosiÃ§Ã£o atual do painel
   const position = positions[id] || {
     id,
     x: initialPosition?.x ?? 0,
@@ -59,7 +59,7 @@ export function DraggablePanel({
     visible: true,
   };
 
-  // Inicializa posição se não existir
+  // Inicializa posiÃ§Ã£o se nÃ£o existir
   useEffect(() => {
     if (!positions[id]) {
       setPositions(prev => ({
@@ -172,7 +172,7 @@ export function DraggablePanel({
   return (
     <div
       ref={panelRef}
-      className={`fixed bg-[#360b03]/90 backdrop-blur-2xl rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.7)] border border-cyan-500/30 overflow-hidden ${className}`}
+      className={`fixed bg-[#0b1636]/90 backdrop-blur-2xl rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.7)] border border-red-500/30 overflow-hidden ${className}`}
       style={{
         left: position.x,
         top: position.y,
@@ -183,21 +183,21 @@ export function DraggablePanel({
       }}
       onClick={bringToFront}
     >
-      {/* Header arrastável */}
+      {/* Header arrastÃ¡vel */}
       <div
-        className={`flex items-center justify-between px-3 py-2 bg-gradient-to-r ${headerColor} border-b border-cyan-500/25 cursor-move select-none`}
+        className={`flex items-center justify-between px-3 py-2 bg-gradient-to-r ${headerColor} border-b border-red-500/25 cursor-move select-none`}
         onMouseDown={handleDragStart}
       >
         <div className="flex items-center gap-2 min-w-0">
-          <GripVertical className="w-4 h-4 text-cyan-400/70 flex-shrink-0" />
+          <GripVertical className="w-4 h-4 text-red-400/70 flex-shrink-0" />
           {icon}
-          <span className="text-cyan-300 font-extrabold text-xs font-mono uppercase tracking-wider truncate">{title}</span>
+          <span className="text-pink-300 font-extrabold text-xs font-mono uppercase tracking-wider truncate">{title}</span>
         </div>
         
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); toggleMinimize(); }}
-            className="p-1 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 rounded-lg transition-colors"
+            className="p-1 hover:bg-red-500/20 text-slate-300 hover:text-pink-300 rounded-lg transition-colors"
             title={position.minimized ? 'Expandir' : 'Minimizar'}
           >
             {position.minimized ? (
@@ -216,7 +216,7 @@ export function DraggablePanel({
         </div>
       </div>
 
-      {/* Conteúdo */}
+      {/* ConteÃºdo */}
       {!position.minimized && (
         <div className="p-3 overflow-auto custom-scrollbar" style={{ height: 'calc(100% - 40px)' }}>
           {children}
@@ -226,10 +226,10 @@ export function DraggablePanel({
       {/* Handle de redimensionamento */}
       {!position.minimized && (
         <div
-          className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize hover:bg-cyan-500/30 transition-colors rounded-tl-lg"
+          className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize hover:bg-red-500/30 transition-colors rounded-tl-lg"
           onMouseDown={handleResizeStart}
           style={{
-            background: 'linear-gradient(135deg, transparent 50%, rgba(255,43,43,0.4) 50%)',
+            background: 'linear-gradient(135deg, transparent 50%, rgba(0,240,255,0.4) 50%)',
           }}
         />
       )}
@@ -238,8 +238,8 @@ export function DraggablePanel({
 }
 
 
-// Hook para gerenciar posições dos painéis
-export function usePanelPositions(storageKey: string = 'gangstar-remote-panel-positions') {
+// Hook para gerenciar posiÃ§Ãµes dos painÃ©is
+export function usePanelPositions(storageKey: string = 'RESTRITO-remote-panel-positions') {
   const [positions, setPositions] = useState<Record<string, PanelPosition>>({});
 
   // Carregar do localStorage
@@ -250,7 +250,7 @@ export function usePanelPositions(storageKey: string = 'gangstar-remote-panel-po
         setPositions(JSON.parse(saved));
       }
     } catch (e) {
-      console.error('Erro ao carregar posições:', e);
+      console.error('Erro ao carregar posiÃ§Ãµes:', e);
     }
   }, [storageKey]);
 
@@ -261,7 +261,7 @@ export function usePanelPositions(storageKey: string = 'gangstar-remote-panel-po
     }
   }, [positions, storageKey]);
 
-  // Resetar todas as posições
+  // Resetar todas as posiÃ§Ãµes
   const resetPositions = useCallback(() => {
     localStorage.removeItem(storageKey);
     setPositions({});
@@ -275,7 +275,7 @@ export function usePanelPositions(storageKey: string = 'gangstar-remote-panel-po
     }));
   }, []);
 
-  // Verificar quais painéis estão ocultos
+  // Verificar quais painÃ©is estÃ£o ocultos
   const hiddenPanels = Object.entries(positions)
     .filter(([_, p]) => !p.visible)
     .map(([id]) => id);
@@ -289,7 +289,7 @@ export function usePanelPositions(storageKey: string = 'gangstar-remote-panel-po
   };
 }
 
-// Componente de menu para painéis ocultos
+// Componente de menu para painÃ©is ocultos
 export function HiddenPanelsMenu({
   hiddenPanels,
   showPanel,
@@ -307,20 +307,20 @@ export function HiddenPanelsMenu({
     <div className="fixed bottom-4 right-4 z-[9999]">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2"
+        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2"
       >
-        <span>📦 Painéis Ocultos ({hiddenPanels.length})</span>
+        <span>ðŸ“¦ PainÃ©is Ocultos ({hiddenPanels.length})</span>
       </button>
       
       {isOpen && (
-        <div className="absolute bottom-12 right-0 bg-[#440e05] rounded-lg shadow-xl border border-blue-500/25 p-2 min-w-[200px]">
+        <div className="absolute bottom-12 right-0 bg-[#111c44] rounded-lg shadow-xl border border-red-500/25 p-2 min-w-[200px]">
           {hiddenPanels.map(id => (
             <button
               key={id}
               onClick={() => { showPanel(id); setIsOpen(false); }}
               className="w-full text-left px-3 py-2 text-white hover:bg-slate-700 rounded transition-colors text-sm"
             >
-              ➕ {panelNames[id] || id}
+              âž• {panelNames[id] || id}
             </button>
           ))}
         </div>
@@ -330,4 +330,5 @@ export function HiddenPanelsMenu({
 }
 
 export default DraggablePanel;
+
 

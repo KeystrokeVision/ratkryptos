@@ -11,13 +11,13 @@ function formatLatency(ms: number): { text: string; className: string } {
   if (ms <= 60) {
     return {
       text: `⚡ ${ms}ms`,
-      className: 'text-cyan-300 bg-cyan-950/80 border-cyan-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)] font-bold',
+      className: 'text-[#ef4444] bg-[#121214]/80 border-[#2a2a31]/50 shadow-[0_0_10px_rgba(239,68,68,0.3)] font-bold',
     };
   }
   if (ms <= 180) {
     return {
       text: `📶 ${ms}ms`,
-      className: 'text-cyan-300 bg-cyan-950/80 border-cyan-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)] font-bold',
+      className: 'text-[#ef4444] bg-[#121214]/80 border-[#2a2a31]/50 shadow-[0_0_10px_rgba(239,68,68,0.3)] font-bold',
     };
   }
   if (ms <= 400) {
@@ -28,7 +28,7 @@ function formatLatency(ms: number): { text: string; className: string } {
   }
   return {
     text: `🚨 ${ms}ms`,
-    className: 'text-red-400 bg-red-950/90 border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.6)] animate-bounce font-black',
+    className: 'text-[#ef4444] bg-[#121214]/90 border-[#2a2a31]/80 shadow-[0_0_15px_rgba(239,68,68,0.6)] animate-bounce font-black',
   };
 }
 
@@ -49,7 +49,7 @@ export default function LatencyBadge({ lastActivityAt, isOnline }: LatencyBadgeP
       if (!isOnlineRef.current || !lastActivityRef.current) {
         el.textContent = '—';
         el.className =
-          'font-mono text-[10px] px-2 py-0.5 rounded-lg border border-slate-800 text-slate-500 bg-slate-900/60';
+          'font-mono text-[10px] px-2 py-0.5 rounded-md border border-[#24242a] text-[#8b8b94] bg-[#121214]/60';
         return;
       }
 
@@ -80,7 +80,7 @@ export default function LatencyBadge({ lastActivityAt, isOnline }: LatencyBadgeP
 
       const { text, className } = formatLatency(calculatedMs);
       el.textContent = text;
-      el.className = `font-mono text-[10px] px-2 py-0.5 rounded-lg border ${className}`;
+      el.className = `font-mono text-[10px] px-2 py-0.5 rounded-md border ${className}`;
     };
 
     update();
@@ -95,7 +95,7 @@ export default function LatencyBadge({ lastActivityAt, isOnline }: LatencyBadgeP
     if (!isOnline || !lastActivityAt) {
       el.textContent = '—';
       el.className =
-        'font-mono text-[10px] px-2 py-0.5 rounded-lg border border-slate-800 text-slate-500 bg-slate-900/60';
+        'font-mono text-[10px] px-2 py-0.5 rounded-md border border-[#24242a] text-[#8b8b94] bg-[#121214]/60';
       return;
     }
 
@@ -119,12 +119,12 @@ export default function LatencyBadge({ lastActivityAt, isOnline }: LatencyBadgeP
 
     const { text, className } = formatLatency(calculatedMs);
     el.textContent = text;
-    el.className = `font-mono text-[10px] px-2 py-0.5 rounded-lg border ${className}`;
+    el.className = `font-mono text-[10px] px-2 py-0.5 rounded-md border ${className}`;
   }, [isOnline, lastActivityAt]);
 
   if (!isOnline) {
     return (
-      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-blue-500/20 text-slate-500 bg-[#440e05]/40">
+      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-[#2a2a31]/20 text-[#8b8b94] bg-[#121214]/40">
         —
       </span>
     );
@@ -133,7 +133,7 @@ export default function LatencyBadge({ lastActivityAt, isOnline }: LatencyBadgeP
   return (
     <span
       ref={spanRef}
-      className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-blue-500/20 text-slate-400 bg-[#440e05]/40"
+      className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-[#2a2a31]/20 text-slate-400 bg-[#121214]/40"
     />
   );
 }

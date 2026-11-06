@@ -26,6 +26,7 @@ export interface Cliente {
   badges: string[];
   model: string;
   manufacturer: string;
+  firstSeen?: string | null;
   lastSeen?: string;
   latencyMs: number;
   lastActivityAt?: string;

